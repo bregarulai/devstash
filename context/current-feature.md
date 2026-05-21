@@ -2,20 +2,19 @@
 
 ## Status
 
-Completed
+<!-- Not Started|In Progress|Completed -->
 
 ## Goals
 
+<!-- Goals & requirements -->
+
 ## Notes
 
-- Part 1 of 3 phases for dashboard UI
-- Reference: context/screenshots/dashboard-ui-main.png
-- Depends on project-overview.md and mock-data.ts
-- Follows Next.js 16 conventions with App Router
-
-<!-- Keep this updated. Earliest to latest -->
+<!-- Any extra notes -->
 
 ## History
+
+<!-- Keep this updated. Earliest to latest -->
 
 - **Initial setup** - Next.js 16, Tailwind CSS V4, Typescript configured (Completed)
 
