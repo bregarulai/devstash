@@ -26,28 +26,15 @@ Read the following to get the full context of the project:
 | Build      | `npm run build` |
 | Lint       | `npm run lint`  |
 
-## Project structure
-
-```
-app/
-  layout.tsx    — Root layout. Imports globals.css. Sets Geist fonts.
-  page.tsx      — Root page (app router).
-  globals.css   — Tailwind entry point. All CSS variables (light/dark) defined here.
-components/
-  ui/           — shadcn/ui components. Import with `@/components/ui/<name>`.
-lib/
-  utils.ts      — Exports `cn()` (clsx + tailwind-merge). Use for conditional class names.
-```
-
-- `@/*` path alias maps to project root (see `tsconfig.json`).
-- `public/` is the static assets directory.
-
 ## Key conventions
+
+- **CRITICAL: ALWAYS read `context/coding-standards.md` before any write, edit, update, or refactor to the codebase.** This is extremely important and must be followed without exception.
 
 - **No `tailwind.config.js`** — Tailwind v4 picks up config from `app/globals.css` (`@theme` blocks).
 - **No `postcss.config.js` needed** — Next.js 15+ reads `postcss.config.mjs` automatically.
 - **Dark mode** — Toggled via CSS class (e.g. `<html className="dark">`). Variables in `:root` and `.dark` blocks control theming.
 - **shadcn components** — Added via `npx shadcn@latest add <component>`. Do not hand-edit `components/ui/` files; regenerate with shadcn.
+- **Always use shadcn components** — Always use shadcn components for UI elements. If a component is not in the `components/ui` directory, install it from shadcn rather than creating a custom implementation.
 - **CSS variables** — All colors/tokens use `oklch()`. Do not assume hex/rgb values are stable.
 - **`cn()` utility** — Always use `cn()` from `lib/utils.ts` for conditional class merging. Do not use `clsx` or `tailwind-merge` directly in components.
 
