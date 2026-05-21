@@ -1,8 +1,12 @@
 # Dashboard UI Phase 2
 
+# Current Feature
+
+This is phase 2 of 3 for the dashboard UI layout. Use the screenshot referenced below for how it should look. Use the data from the mock data file referenced below. Just import it directly for now until we implement a database.
+
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
@@ -15,7 +19,7 @@ Not Started
 
 ## Notes
 
-This is phase 2 of 3 for the dashboard UI layout. Use the screenshot referenced below for how it should look. Use the data from the mock data file referenced below. Just import it directly for now until we implement a database.
+<!-- Any extra notes -->
 
 ## References
 

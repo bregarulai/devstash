@@ -1,6 +1,7 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { FolderDown, PanelLeft, Plus, Search } from 'lucide-react';
+import { FolderDown, Plus } from 'lucide-react';
 import { SearchBar } from './SearchBar';
 
 export function TopBar() {
@@ -8,9 +9,6 @@ export function TopBar() {
     <header className='flex h-16 items-center justify-between border-b border-border bg-background pr-6'>
       <div className='flex items-center gap-4'>
         <div className='flex items-center justify-center w-64'>
-          <div className='border-r border-border pr-4 mr-4'>
-            <PanelLeft />
-          </div>
           <SearchBar />
         </div>
       </div>
