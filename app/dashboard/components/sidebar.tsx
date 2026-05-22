@@ -118,7 +118,7 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                       className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground text-sm'
                     >
                       {collection.isFavorite ? (
-                        <Star className='h-4 w-4 fill-(--color-note) text-(--color-note)' />
+                        <Star className='h-4 w-4 fill-note text-note' />
                       ) : null}
                       <span className='truncate'>{collection.name}</span>
                       <span className='ml-auto text-xs text-muted-foreground'>
@@ -140,7 +140,7 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                       className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground text-sm'
                     >
                       {collection.isFavorite ? (
-                        <Star className='h-4 w-4 fill-(--color-note) text-(--color-note)' />
+                        <Star className='h-4 w-4 fill-note text-note' />
                       ) : null}
                       <span className='truncate'>{collection.name}</span>
                       <span className='ml-auto text-xs text-muted-foreground'>
