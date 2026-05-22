@@ -14,6 +14,10 @@
 - Keep components focused - one job per component
 - Extract reusable logic into custom hooks
 
+## UI
+
+- ALWAYS use shadcn component when possible. DO NOT make UI components
+
 ## Next.js
 
 - Server components by default
@@ -50,11 +54,11 @@ Example v4 configuration:
 
 ## File Organization
 
-- Components: `src/components/[feature]/ComponentName.tsx`
-- Pages: `src/app/[route]/page.tsx`
-- Server Actions: `src/actions/[feature].ts`
-- Types: `src/types/[feature].ts`
-- Lib/Utils: `src/lib/[utility].ts`
+- Components: `components/[feature]/ComponentName.tsx`
+- Pages: `app/[route]/page.tsx`
+- Server Actions: `actions/[feature].ts`
+- Types: `types/[feature].ts`
+- Lib/Utils: `lib/[utility].ts`
 
 ## Naming
 
