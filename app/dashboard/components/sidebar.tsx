@@ -30,6 +30,9 @@ function ItemTypeItem({ type }: { type: ItemType }) {
       <span className='truncate font-medium'>
         {type.name.charAt(0).toUpperCase() + type.name.slice(1)}
       </span>
+      <span className='ml-auto text-xs text-muted-foreground'>
+        {type.itemCount}
+      </span>
     </Link>
   );
 }
