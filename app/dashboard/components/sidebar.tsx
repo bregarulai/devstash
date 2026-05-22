@@ -2,71 +2,16 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import type { Collection } from '@/lib/mock-data';
 import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link as LinkIcon,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  Heart,
-  Folder,
-} from 'lucide-react';
-
-interface ItemType {
-  name: 'snippet' | 'prompt' | 'command' | 'note' | 'file' | 'image' | 'link';
-  icon: string;
-  color: string;
-  isSystem: boolean;
-}
-
-const ITEM_TYPES: ItemType[] = [
-  { name: 'snippet', icon: 'Code', color: '#3b82f6', isSystem: true },
-  { name: 'prompt', icon: 'Sparkles', color: '#8b5cf6', isSystem: true },
-  { name: 'command', icon: 'Terminal', color: '#f97316', isSystem: true },
-  { name: 'note', icon: 'StickyNote', color: '#fde047', isSystem: true },
-  { name: 'file', icon: 'File', color: '#6b7280', isSystem: true },
-  { name: 'image', icon: 'Image', color: '#ec4899', isSystem: true },
-  { name: 'link', icon: 'Link', color: '#10b981', isSystem: true },
-];
-
-const typeIcons: Record<string, React.ReactNode> = {
-  snippet: <Code className='h-4 w-4' />,
-  prompt: <Sparkles className='h-4 w-4' />,
-  command: <Terminal className='h-4 w-4' />,
-  note: <StickyNote className='h-4 w-4' />,
-  file: <File className='h-4 w-4' />,
-  image: <Image className='h-4 w-4' />,
-  link: <LinkIcon className='h-4 w-4' />,
-};
-
-const typePaths: Record<string, string> = {
-  snippet: '/items/snippets',
-  prompt: '/items/prompts',
-  command: '/items/commands',
-  note: '/items/note',
-  file: '/items/files',
-  image: '/items/images',
-  link: '/items/links',
-};
-
-// Mock favorite collections
-const favoriteCollections: Collection[] = [
-  { id: 'col-1', name: 'React Patterns', itemCount: 12, isFavorite: true },
-  { id: 'col-3', name: 'Context Files', itemCount: 5, isFavorite: true },
-];
-
-// Mock recent collections
-const recentCollections: Collection[] = [
-  { id: 'col-2', name: 'Python Snippets', itemCount: 8, isFavorite: false },
-  { id: 'col-4', name: 'DevOps Commands', itemCount: 15, isFavorite: false },
-  { id: 'col-5', name: 'AI Prompts', itemCount: 20, isFavorite: false },
-];
+  favoriteCollections,
+  ITEM_TYPES,
+  ItemType,
+  recentCollections,
+  typeIcons,
+  typePaths,
+} from '@/lib/mock-data';
+import { ChevronLeft, ChevronRight, ChevronDown, Star } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 function ItemTypeItem({ type }: { type: ItemType }) {
   const Icon = typeIcons[type.name];
@@ -76,7 +21,10 @@ function ItemTypeItem({ type }: { type: ItemType }) {
       href={typePaths[type.name]}
       className='group flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
     >
-      <span className='flex h-5 w-5 shrink-0 items-center justify-center' style={{ color: type.color }}>
+      <span
+        className='flex h-5 w-5 shrink-0 items-center justify-center'
+        style={{ color: type.color }}
+      >
         {Icon}
       </span>
       <span className='truncate font-medium'>
@@ -86,7 +34,15 @@ function ItemTypeItem({ type }: { type: ItemType }) {
   );
 }
 
-function CollapsibleSection({ title, children, defaultOpen = true }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
+function CollapsibleSection({
+  title,
+  children,
+  defaultOpen = true,
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
@@ -95,27 +51,14 @@ function CollapsibleSection({ title, children, defaultOpen = true }: { title: st
         onClick={() => setIsOpen(!isOpen)}
         className='flex w-full items-center gap-1.5 px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'
       >
-        {isOpen ? <ChevronDown className='h-3.5 w-3.5' /> : <ChevronRight className='h-3.5 w-3.5' />}
+        {isOpen ? (
+          <ChevronDown className='h-3.5 w-3.5' />
+        ) : (
+          <ChevronRight className='h-3.5 w-3.5' />
+        )}
         {title}
       </button>
       {isOpen && <div className='mt-1 space-y-0.5'>{children}</div>}
-    </div>
-  );
-}
-
-function CollapsibleSubsection({ title, children }: { title: string; children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(true);
-
-  return (
-    <div className='ml-2 border-l border-border pl-2'>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className='flex w-full items-center gap-1.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground'
-      >
-        {isOpen ? <ChevronDown className='h-3 w-3' /> : <ChevronRight className='h-3 w-3' />}
-        {title}
-      </button>
-      {isOpen && <div className='mt-0.5 space-y-0.5'>{children}</div>}
     </div>
   );
 }
@@ -134,7 +77,11 @@ export function Sidebar() {
           onClick={() => setIsOpen(!isOpen)}
           className='rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground'
         >
-          {isOpen ? <ChevronLeft className='h-4 w-4' /> : <ChevronRight className='h-4 w-4' />}
+          {isOpen ? (
+            <ChevronLeft className='h-4 w-4' />
+          ) : (
+            <ChevronRight className='h-4 w-4' />
+          )}
         </button>
       </div>
 
@@ -142,7 +89,7 @@ export function Sidebar() {
         {/* Item Types */}
         <div className='mb-4'>
           <h3 className='mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-            Items
+            TYPES
           </h3>
           <div className='space-y-0.5'>
             {ITEM_TYPES.map((type) => (
@@ -150,43 +97,53 @@ export function Sidebar() {
             ))}
           </div>
         </div>
-
+        <Separator className='my-4' />
         {/* Collections */}
         <CollapsibleSection title='COLLECTIONS' defaultOpen={true}>
-          <CollapsibleSubsection title='Favorites'>
-            {favoriteCollections.map((collection) => (
-              <Link
-                key={collection.id}
-                href={`/collections/${collection.id}`}
-                className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
-              >
-                {collection.isFavorite ? (
-                  <Heart className='h-4 w-4 fill-purple-500 text-purple-500' />
-                ) : (
-                  <Folder className='h-4 w-4' />
-                )}
-                <span className='truncate'>{collection.name}</span>
-                <span className='ml-auto text-xs text-muted-foreground'>{collection.itemCount}</span>
-              </Link>
-            ))}
-          </CollapsibleSubsection>
-          <CollapsibleSubsection title='Recent'>
-            {recentCollections.map((collection) => (
-              <Link
-                key={collection.id}
-                href={`/collections/${collection.id}`}
-                className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
-              >
-                {collection.isFavorite ? (
-                  <Heart className='h-4 w-4 fill-purple-500 text-purple-500' />
-                ) : (
-                  <Folder className='h-4 w-4' />
-                )}
-                <span className='truncate'>{collection.name}</span>
-                <span className='ml-auto text-xs text-muted-foreground'>{collection.itemCount}</span>
-              </Link>
-            ))}
-          </CollapsibleSubsection>
+          <div className='mb-1 ml-2 border-l border-border pl-2'>
+            <h3 className='mb-1 px-2 text-xs font-semibold tracking-wider text-muted-foreground'>
+              Favorites
+            </h3>
+            <div className='space-y-0.5'>
+              {favoriteCollections.map((collection) => (
+                <Link
+                  key={collection.id}
+                  href={`/collections/${collection.id}`}
+                  className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
+                >
+                  {collection.isFavorite ? (
+                    <Star className='h-4 w-4 fill-(--color-note) text-(--color-note)' />
+                  ) : null}
+                  <span className='truncate'>{collection.name}</span>
+                  <span className='ml-auto text-xs text-muted-foreground'>
+                    {collection.itemCount}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div className='mb-1 ml-2 border-l border-border pl-2'>
+            <h3 className='mb-1 px-2 text-xs font-semibold tracking-wider text-muted-foreground'>
+              Recent
+            </h3>
+            <div className='space-y-0.5 ml-6'>
+              {recentCollections.map((collection) => (
+                <Link
+                  key={collection.id}
+                  href={`/collections/${collection.id}`}
+                  className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
+                >
+                  {collection.isFavorite ? (
+                    <Star className='h-4 w-4 fill-(--color-note) text-(--color-note)' />
+                  ) : null}
+                  <span className='truncate'>{collection.name}</span>
+                  <span className='ml-auto text-xs text-muted-foreground'>
+                    {collection.itemCount}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
         </CollapsibleSection>
       </div>
 
@@ -198,7 +155,9 @@ export function Sidebar() {
           </div>
           <div className='flex-1 overflow-hidden'>
             <p className='truncate text-sm font-medium'>John Doe</p>
-            <p className='truncate text-xs text-muted-foreground'>demo@devstash.ai</p>
+            <p className='truncate text-xs text-muted-foreground'>
+              demo@devstash.ai
+            </p>
           </div>
         </div>
       </div>

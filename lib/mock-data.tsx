@@ -1,10 +1,20 @@
+import {
+  Code,
+  Sparkles,
+  Terminal,
+  StickyNote,
+  File,
+  Image,
+  Link as LinkIcon,
+} from 'lucide-react';
+
 // Item type definitions
-export interface ItemType {
-  name: string;
-  icon: string;
-  color: string;
-  isSystem: boolean;
-}
+// export interface ItemType {
+//   name: string;
+//   icon: string;
+//   color: string;
+//   isSystem: boolean;
+// }
 
 // A collection the user has created
 export interface Collection {
@@ -14,6 +24,99 @@ export interface Collection {
   itemCount: number;
   isFavorite: boolean;
 }
+
+export interface ItemType {
+  name: 'snippet' | 'prompt' | 'command' | 'note' | 'file' | 'image' | 'link';
+  icon: string;
+  color: string;
+  isSystem: boolean;
+  itemCount: number;
+}
+
+export const ITEM_TYPES: ItemType[] = [
+  {
+    name: 'snippet',
+    icon: 'Code',
+    color: '#3b82f6',
+    isSystem: true,
+    itemCount: 12,
+  },
+  {
+    name: 'prompt',
+    icon: 'Sparkles',
+    color: '#8b5cf6',
+    isSystem: true,
+    itemCount: 5,
+  },
+  {
+    name: 'command',
+    icon: 'Terminal',
+    color: '#f97316',
+    isSystem: true,
+    itemCount: 8,
+  },
+  {
+    name: 'note',
+    icon: 'StickyNote',
+    color: '#fde047',
+    isSystem: true,
+    itemCount: 3,
+  },
+  {
+    name: 'file',
+    icon: 'File',
+    color: '#6b7280',
+    isSystem: true,
+    itemCount: 10,
+  },
+  {
+    name: 'image',
+    icon: 'Image',
+    color: '#ec4899',
+    isSystem: true,
+    itemCount: 7,
+  },
+  {
+    name: 'link',
+    icon: 'Link',
+    color: '#10b981',
+    isSystem: true,
+    itemCount: 15,
+  },
+];
+
+export const typeIcons: Record<string, React.ReactNode> = {
+  snippet: <Code className='h-4 w-4' />,
+  prompt: <Sparkles className='h-4 w-4' />,
+  command: <Terminal className='h-4 w-4' />,
+  note: <StickyNote className='h-4 w-4' />,
+  file: <File className='h-4 w-4' />,
+  image: <Image className='h-4 w-4' />,
+  link: <LinkIcon className='h-4 w-4' />,
+};
+
+export const typePaths: Record<string, string> = {
+  snippet: '/items/snippets',
+  prompt: '/items/prompts',
+  command: '/items/commands',
+  note: '/items/note',
+  file: '/items/files',
+  image: '/items/images',
+  link: '/items/links',
+};
+
+// Mock favorite collections
+export const favoriteCollections: Collection[] = [
+  { id: 'col-1', name: 'React Patterns', itemCount: 12, isFavorite: true },
+  { id: 'col-3', name: 'Context Files', itemCount: 5, isFavorite: true },
+];
+
+// Mock recent collections
+export const recentCollections: Collection[] = [
+  { id: 'col-2', name: 'Python Snippets', itemCount: 8, isFavorite: false },
+  { id: 'col-4', name: 'DevOps Commands', itemCount: 15, isFavorite: false },
+  { id: 'col-5', name: 'AI Prompts', itemCount: 20, isFavorite: false },
+];
 
 // An item in the dashboard
 export interface Item {
@@ -40,15 +143,15 @@ export interface User {
 }
 
 // Item type definitions (system types)
-export const ITEM_TYPES: ItemType[] = [
-  { name: 'snippet', icon: 'Code', color: '#3b82f6', isSystem: true },
-  { name: 'prompt', icon: 'Sparkles', color: '#8b5cf6', isSystem: true },
-  { name: 'command', icon: 'Terminal', color: '#f97316', isSystem: true },
-  { name: 'note', icon: 'StickyNote', color: '#fde047', isSystem: true },
-  { name: 'file', icon: 'File', color: '#6b7280', isSystem: true },
-  { name: 'image', icon: 'Image', color: '#ec4899', isSystem: true },
-  { name: 'link', icon: 'Link', color: '#10b981', isSystem: true },
-];
+// export const ITEM_TYPES: ItemType[] = [
+//   { name: 'snippet', icon: 'Code', color: '#3b82f6', isSystem: true },
+//   { name: 'prompt', icon: 'Sparkles', color: '#8b5cf6', isSystem: true },
+//   { name: 'command', icon: 'Terminal', color: '#f97316', isSystem: true },
+//   { name: 'note', icon: 'StickyNote', color: '#fde047', isSystem: true },
+//   { name: 'file', icon: 'File', color: '#6b7280', isSystem: true },
+//   { name: 'image', icon: 'Image', color: '#ec4899', isSystem: true },
+//   { name: 'link', icon: 'Link', color: '#10b981', isSystem: true },
+// ];
 
 // Sample collections
 export const MOCK_COLLECTIONS: Collection[] = [
