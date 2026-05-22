@@ -86,15 +86,7 @@ function ItemTypeItem({ type }: { type: ItemType }) {
   );
 }
 
-function CollectionSection({
-  title,
-  collections,
-  defaultOpen = true,
-}: {
-  title: string;
-  collections: Collection[];
-  defaultOpen?: boolean;
-}) {
+function CollapsibleSection({ title, children, defaultOpen = true }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
@@ -106,25 +98,24 @@ function CollectionSection({
         {isOpen ? <ChevronDown className='h-3.5 w-3.5' /> : <ChevronRight className='h-3.5 w-3.5' />}
         {title}
       </button>
-      {isOpen && (
-        <div className='space-y-0.5'>
-          {collections.map((collection) => (
-            <Link
-              key={collection.id}
-              href={`/collections/${collection.id}`}
-              className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
-            >
-              {collection.isFavorite ? (
-                <Heart className='h-4 w-4 fill-purple-500 text-purple-500' />
-              ) : (
-                <Folder className='h-4 w-4' />
-              )}
-              <span className='truncate'>{collection.name}</span>
-              <span className='ml-auto text-xs text-muted-foreground'>{collection.itemCount}</span>
-            </Link>
-          ))}
-        </div>
-      )}
+      {isOpen && <div className='mt-1 space-y-0.5'>{children}</div>}
+    </div>
+  );
+}
+
+function CollapsibleSubsection({ title, children }: { title: string; children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <div className='ml-2 border-l border-border pl-2'>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className='flex w-full items-center gap-1.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground'
+      >
+        {isOpen ? <ChevronDown className='h-3 w-3' /> : <ChevronRight className='h-3 w-3' />}
+        {title}
+      </button>
+      {isOpen && <div className='mt-0.5 space-y-0.5'>{children}</div>}
     </div>
   );
 }
@@ -160,11 +151,43 @@ export function Sidebar() {
           </div>
         </div>
 
-        {/* Favorite Collections */}
-        <CollectionSection title='Favorites' collections={favoriteCollections} />
-
-        {/* Recent Collections */}
-        <CollectionSection title='Recent' collections={recentCollections} />
+        {/* Collections */}
+        <CollapsibleSection title='COLLECTIONS' defaultOpen={true}>
+          <CollapsibleSubsection title='Favorites'>
+            {favoriteCollections.map((collection) => (
+              <Link
+                key={collection.id}
+                href={`/collections/${collection.id}`}
+                className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
+              >
+                {collection.isFavorite ? (
+                  <Heart className='h-4 w-4 fill-purple-500 text-purple-500' />
+                ) : (
+                  <Folder className='h-4 w-4' />
+                )}
+                <span className='truncate'>{collection.name}</span>
+                <span className='ml-auto text-xs text-muted-foreground'>{collection.itemCount}</span>
+              </Link>
+            ))}
+          </CollapsibleSubsection>
+          <CollapsibleSubsection title='Recent'>
+            {recentCollections.map((collection) => (
+              <Link
+                key={collection.id}
+                href={`/collections/${collection.id}`}
+                className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
+              >
+                {collection.isFavorite ? (
+                  <Heart className='h-4 w-4 fill-purple-500 text-purple-500' />
+                ) : (
+                  <Folder className='h-4 w-4' />
+                )}
+                <span className='truncate'>{collection.name}</span>
+                <span className='ml-auto text-xs text-muted-foreground'>{collection.itemCount}</span>
+              </Link>
+            ))}
+          </CollapsibleSubsection>
+        </CollapsibleSection>
       </div>
 
       {/* User Avatar */}
