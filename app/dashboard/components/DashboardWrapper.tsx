@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Sidebar } from './sidebar';
-import { TopBar } from './top-bar';
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
+import { TopBar } from './MobilSideBar';
+import { Sidebar } from './Sidebar';
+
+export function DashboardWrapper({ children }: { children: React.ReactNode }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
@@ -22,7 +23,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <Sidebar
           isExpanded={false}
           onToggle={() => setIsExpanded(!isExpanded)}
-          hideToggle
         />
       </div>
 

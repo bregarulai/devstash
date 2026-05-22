@@ -9,17 +9,16 @@ import {
   typeIcons,
   typePaths,
 } from '@/lib/mock-data';
-import { ChevronDown, ChevronLeft, PanelLeft, Star } from 'lucide-react';
+import { ChevronDown, PanelLeft, Star } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface SidebarProps {
   isExpanded: boolean;
   onToggle: () => void;
-  hideToggle?: boolean;
 }
 
-export function Sidebar({ isExpanded, onToggle, hideToggle }: SidebarProps) {
+export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
   return (
     <div className='relative flex h-screen flex-col bg-background'>
       {/* Header */}

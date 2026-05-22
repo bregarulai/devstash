@@ -1,9 +1,9 @@
-import { DashboardLayout } from './components/dashboard-layout';
+import { DashboardWrapper } from './components/DashboardWrapper';
 
 export default function DashboardPage() {
   return (
-    <DashboardLayout>
+    <DashboardWrapper>
       <h1>Dashboard</h1>
-    </DashboardLayout>
+    </DashboardWrapper>
   );
 }

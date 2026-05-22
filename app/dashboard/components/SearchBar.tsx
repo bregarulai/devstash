@@ -1,9 +1,8 @@
-import { Field, FieldLabel } from '@/components/ui/field';
+import { Field } from '@/components/ui/field';
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-  InputGroupText,
 } from '@/components/ui/input-group';
 import { Search } from 'lucide-react';
 
