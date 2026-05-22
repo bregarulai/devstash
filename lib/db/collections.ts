@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 
+
 export interface CollectionWithStats {
   id: string;
   name: string;
@@ -7,7 +8,7 @@ export interface CollectionWithStats {
   itemCount: number;
   isFavorite: boolean;
   itemTypeNames: string[];
-  borderColor: string;
+  contentTypeCounts: Record<string, number>;
   createdAt: Date;
 }
 
@@ -54,6 +55,14 @@ export async function getFavoriteCollections(
       new Set(itemTypes.map((type) => type.name)),
     );
 
+    const contentTypes = collection.items
+      .map((ic) => ic.item?.contentType)
+      .filter(Boolean) as string[];
+    const contentTypeCounts: Record<string, number> = {};
+    for (const ct of contentTypes) {
+      contentTypeCounts[ct] = (contentTypeCounts[ct] || 0) + 1;
+    }
+
     return {
       id: collection.id,
       name: collection.name,
@@ -61,7 +70,7 @@ export async function getFavoriteCollections(
       itemCount: collection._count.items,
       isFavorite: collection.isFavorite,
       itemTypeNames: distinctNames,
-      borderColor: '',
+      contentTypeCounts,
       createdAt: collection.createdAt,
     };
   });
@@ -110,6 +119,14 @@ export async function getRecentCollections(
       new Set(itemTypes.map((type) => type.name)),
     );
 
+    const contentTypes = collection.items
+      .map((ic) => ic.item?.contentType)
+      .filter(Boolean) as string[];
+    const contentTypeCounts: Record<string, number> = {};
+    for (const ct of contentTypes) {
+      contentTypeCounts[ct] = (contentTypeCounts[ct] || 0) + 1;
+    }
+
     return {
       id: collection.id,
       name: collection.name,
@@ -117,7 +134,7 @@ export async function getRecentCollections(
       itemCount: collection._count.items,
       isFavorite: collection.isFavorite,
       itemTypeNames: distinctNames,
-      borderColor: '',
+      contentTypeCounts,
       createdAt: collection.createdAt,
     };
   });
@@ -164,6 +181,14 @@ export async function getAllCollections(
       new Set(itemTypes.map((type) => type.name)),
     );
 
+    const contentTypes = collection.items
+      .map((ic) => ic.item?.contentType)
+      .filter(Boolean) as string[];
+    const contentTypeCounts: Record<string, number> = {};
+    for (const ct of contentTypes) {
+      contentTypeCounts[ct] = (contentTypeCounts[ct] || 0) + 1;
+    }
+
     return {
       id: collection.id,
       name: collection.name,
@@ -171,7 +196,7 @@ export async function getAllCollections(
       itemCount: collection._count.items,
       isFavorite: collection.isFavorite,
       itemTypeNames: distinctNames,
-      borderColor: '',
+      contentTypeCounts,
       createdAt: collection.createdAt,
     };
   });

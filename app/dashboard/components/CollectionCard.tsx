@@ -2,6 +2,19 @@ import Link from 'next/link';
 import { Folder } from 'lucide-react';
 import { ItemTypeIcon } from '@/app/dashboard/components/ItemTypeIcon';
 
+const contentTypeBorderColorMap: Record<string, string> = {
+  TEXT: 'border-l-blue-500',
+  FILE: 'border-l-amber-500',
+  URL: 'border-l-emerald-500',
+};
+
+function getBorderColorFromContentType(contentTypeCounts: Record<string, number>): string {
+  const mostUsedContentType = Object.entries(contentTypeCounts).sort(
+    (a, b) => b[1] - a[1],
+  )[0]?.[0] || '';
+  return contentTypeBorderColorMap[mostUsedContentType] || '';
+}
+
 interface CollectionCardProps {
   collection: {
     id: string;
@@ -10,15 +23,17 @@ interface CollectionCardProps {
     itemCount: number;
     isFavorite: boolean;
     itemTypeNames: string[];
-    borderColor: string;
+    contentTypeCounts: Record<string, number>;
   };
 }
 
 export function CollectionCard({ collection }: CollectionCardProps) {
+  const borderColor = getBorderColorFromContentType(collection.contentTypeCounts);
+
   return (
     <Link
       href={`/collections/${collection.id}`}
-      className={`group rounded-xl border border-border bg-card p-4 transition-all hover:border-border/80 hover:shadow-md ${collection.borderColor ? `border-l-[3px] ${collection.borderColor}` : ''}`}
+      className={`group rounded-xl border border-border bg-card p-4 transition-all hover:border-border/80 hover:shadow-md ${borderColor ? `border-l-[3px] ${borderColor}` : ''}`}
     >
       <div className='flex items-start justify-between'>
         <div className='flex items-center gap-3'>

@@ -4,7 +4,7 @@ import {
   Terminal,
   StickyNote,
   File,
-  Image,
+  Image as ImageIcon,
   Link as LinkIcon,
 } from 'lucide-react';
 
@@ -91,7 +91,7 @@ export const typeIcons: Record<string, React.ReactNode> = {
   command: <Terminal className='h-4 w-4 text-command' />,
   note: <StickyNote className='h-4 w-4 text-note' />,
   file: <File className='h-4 w-4 text-file' />,
-  image: <Image className='h-4 w-4 text-image' />,
+  image: <ImageIcon className='h-4 w-4 text-image' />,
   link: <LinkIcon className='h-4 w-4 text-link' />,
 };
 
