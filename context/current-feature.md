@@ -1,23 +1,22 @@
 # Current Feature
 
+## Feature: Dashboard Collections
+
 ## Status
 
 In Progress
 
 ## Goals
 
-- Implement seed data script (`prisma/seed.ts`) to populate the database with sample data for development and demos
+- Replace dummy collection data with actual database data from Neon PostgreSQL
+- Create `lib/db/collections.ts` with data fetching functions
+- Fetch collections directly in server component
+- Derive collection card border color from most-used content type
+- Show small icons of all types in each collection
+- Update collection stats display
+- Keep current card design and layout intact
 
 ## Notes
-
-- Requires `bcryptjs` for password hashing (12 rounds)
-- Creates 1 user (demo@devstash.io), 7 system item types, and 5 collections with items
-- **React Patterns** — 3 snippets: Custom hooks (useDebounce, useLocalStorage), Component patterns (Context providers, compound components), Utility functions
-- **AI Workflows** — 3 prompts: Code review prompts, Documentation generation, Refactoring assistance
-- **DevOps** — 1 snippet (Docker, CI/CD config), 1 command (deployment scripts), 2 links (real documentation URLs)
-- **Terminal Commands** — 4 commands: Git operations, Docker commands, Process management, Package manager utilities
-- **Design Resources** — 4 links: CSS/Tailwind references, Component libraries, Design systems, Icon libraries (real URLs)
-- Use real URLs for link-type items
 
 ## History
 
@@ -31,4 +30,4 @@ In Progress
 
 - **Prisma + Neon PostgresSQL Setup Completed** - Implemented Prisma + Neon PostgreSQL database layer
 
-- **Seed Data (In Progress)** - Create seed script with user, system item types, and sample collections/items
+- **Seed Data (Completed)** - Create seed script with user, system item types, and sample collections/items

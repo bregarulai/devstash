@@ -1,17 +1,33 @@
 import { DashboardWrapper } from './components/DashboardWrapper';
 import { StatsCards } from './components/StatsCards';
-import { PinnedItems } from './components/PinnedItems';
-import { RecentItems } from './components/RecentItems';
-import { RecentCollections } from './components/RecentCollections';
+import { CollectionsSession } from './components/CollectionsSession';
+import { prisma } from '@/lib/prisma';
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const user = await prisma.user.findFirst({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+    },
+  });
+
+  if (!user) {
+    return (
+      <DashboardWrapper>
+        <div className='flex items-center justify-center h-64 text-muted-foreground'>
+          No user found. Please sign in to view the dashboard.
+        </div>
+      </DashboardWrapper>
+    );
+  }
+
   return (
     <DashboardWrapper>
       <div className='space-y-6'>
         <StatsCards />
-        <PinnedItems />
-        <RecentItems />
-        <RecentCollections />
+        <CollectionsSession user={user} />
       </div>
     </DashboardWrapper>
   );
