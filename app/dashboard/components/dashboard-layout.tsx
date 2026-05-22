@@ -10,7 +10,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className='flex h-screen w-screen overflow-hidden'>
       {/* Sidebar — always visible, compact on mobile */}
-      <div className='hidden lg:flex lg:w-64 lg:shrink-0'>
+      <div className='hidden lg:flex lg:shrink-0'>
         <Sidebar
           isExpanded={isExpanded}
           onToggle={() => setIsExpanded(!isExpanded)}

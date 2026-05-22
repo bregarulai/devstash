@@ -21,7 +21,7 @@ interface SidebarProps {
 
 export function Sidebar({ isExpanded, onToggle, hideToggle }: SidebarProps) {
   return (
-    <div className='relative flex h-screen flex-col border-r border-border bg-background'>
+    <div className='relative flex h-screen flex-col bg-background'>
       {/* Header */}
       <div className='flex h-16 items-center px-4'>
         <Link href='/' className='text-lg font-bold'>
@@ -29,17 +29,20 @@ export function Sidebar({ isExpanded, onToggle, hideToggle }: SidebarProps) {
         </Link>
       </div>
       <Separator />
-      <div className='flex-1 overflow-y-auto my-2'>
+      <div className='flex-1 overflow-y-auto py-2 border-r border-border'>
         {/* Navigation */}
-        <div className='flex items-center justify-between mb-4'>
+        <div
+          className={`flex items-center ${isExpanded ? 'justify-between mr-2' : 'justify-center'} mb-4`}
+        >
           {isExpanded && (
             <p className='px-2 text-xs tracking-wider text-muted-foreground'>
               NAVIGATION
             </p>
           )}
-          <div className='pr-2'>
-            <PanelLeft className='h-5 w-5 shrink-0' onClick={onToggle} />
-          </div>
+          <PanelLeft
+            className='h-5 w-5 shrink-0 cursor-pointer'
+            onClick={onToggle}
+          />
         </div>
         <Separator className='mb-4' />
         {/* Item Types */}
@@ -160,8 +163,8 @@ export function Sidebar({ isExpanded, onToggle, hideToggle }: SidebarProps) {
       </div>
 
       {/* User Avatar */}
-      {isExpanded && (
-        <div className='border-t border-border p-3'>
+      <div className='border-t border-border p-3'>
+        {isExpanded ? (
           <div className='flex items-center justify-center gap-3 rounded-lg p-2'>
             <Avatar>
               <AvatarImage
@@ -177,8 +180,19 @@ export function Sidebar({ isExpanded, onToggle, hideToggle }: SidebarProps) {
               {CURRENT_USER.email}
             </p>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className='flex items-center justify-center'>
+            <Avatar>
+              <AvatarImage
+                src=''
+                alt={CURRENT_USER.name}
+                className='grayscale'
+              />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
