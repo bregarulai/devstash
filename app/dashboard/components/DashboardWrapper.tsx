@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import { TopBar } from './MobilSideBar';
-import { Sidebar } from './Sidebar';
+import { Sidebar } from './sidebar';
 
 export function DashboardWrapper({ children }: { children: React.ReactNode }) {
   const [isExpanded, setIsExpanded] = useState(true);
