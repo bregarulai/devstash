@@ -1,5 +1,19 @@
-import { prisma } from "../lib/prisma";
+import "dotenv/config";
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../generated/prisma/client";
 import bcrypt from "bcryptjs";
+
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  console.error("DATABASE_URL environment variable is not set");
+  process.exit(1);
+}
+
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 // ============================================
 // Demo user
@@ -495,4 +509,5 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
+    await pool.end();
   });
