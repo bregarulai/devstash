@@ -1,5 +1,27 @@
 import { prisma } from '@/lib/prisma';
 
+function getDominantItemTypeColor(
+  itemTypes: Array<{ name: string; color: string }>,
+): string {
+  const colorCounts = new Map<string, number>();
+
+  for (const itemType of itemTypes) {
+    const count = colorCounts.get(itemType.color) || 0;
+    colorCounts.set(itemType.color, count + 1);
+  }
+
+  let dominantColor = '';
+  let maxCount = 0;
+  for (const [color, count] of colorCounts) {
+    if (count > maxCount) {
+      maxCount = count;
+      dominantColor = color;
+    }
+  }
+
+  return dominantColor;
+}
+
 
 export interface CollectionWithStats {
   id: string;
@@ -8,6 +30,7 @@ export interface CollectionWithStats {
   itemCount: number;
   isFavorite: boolean;
   itemTypeNames: string[];
+  dominantItemTypeColor: string;
   contentTypeCounts: Record<string, number>;
   createdAt: Date;
 }
@@ -38,6 +61,7 @@ export async function getFavoriteCollections(
               itemType: {
                 select: {
                   name: true,
+                  color: true,
                 },
               },
             },
@@ -50,10 +74,12 @@ export async function getFavoriteCollections(
   return collections.map((collection) => {
     const itemTypes = collection.items
       .map((ic) => ic.item?.itemType)
-      .filter((type): type is { name: string } => type != null);
+      .filter((type): type is { name: string; color: string } => type != null);
     const distinctNames = Array.from(
       new Set(itemTypes.map((type) => type.name)),
     );
+
+    const dominantColor = getDominantItemTypeColor(itemTypes);
 
     const contentTypes = collection.items
       .map((ic) => ic.item?.contentType)
@@ -70,6 +96,7 @@ export async function getFavoriteCollections(
       itemCount: collection._count.items,
       isFavorite: collection.isFavorite,
       itemTypeNames: distinctNames,
+      dominantItemTypeColor: dominantColor,
       contentTypeCounts,
       createdAt: collection.createdAt,
     };
@@ -102,6 +129,7 @@ export async function getRecentCollections(
               itemType: {
                 select: {
                   name: true,
+                  color: true,
                 },
               },
             },
@@ -114,10 +142,12 @@ export async function getRecentCollections(
   return collections.map((collection) => {
     const itemTypes = collection.items
       .map((ic) => ic.item?.itemType)
-      .filter((type): type is { name: string } => type != null);
+      .filter((type): type is { name: string; color: string } => type != null);
     const distinctNames = Array.from(
       new Set(itemTypes.map((type) => type.name)),
     );
+
+    const dominantColor = getDominantItemTypeColor(itemTypes);
 
     const contentTypes = collection.items
       .map((ic) => ic.item?.contentType)
@@ -134,6 +164,7 @@ export async function getRecentCollections(
       itemCount: collection._count.items,
       isFavorite: collection.isFavorite,
       itemTypeNames: distinctNames,
+      dominantItemTypeColor: dominantColor,
       contentTypeCounts,
       createdAt: collection.createdAt,
     };
@@ -164,6 +195,7 @@ export async function getAllCollections(
               itemType: {
                 select: {
                   name: true,
+                  color: true,
                 },
               },
             },
@@ -176,10 +208,12 @@ export async function getAllCollections(
   return collections.map((collection) => {
     const itemTypes = collection.items
       .map((ic) => ic.item?.itemType)
-      .filter((type): type is { name: string } => type != null);
+      .filter((type): type is { name: string; color: string } => type != null);
     const distinctNames = Array.from(
       new Set(itemTypes.map((type) => type.name)),
     );
+
+    const dominantColor = getDominantItemTypeColor(itemTypes);
 
     const contentTypes = collection.items
       .map((ic) => ic.item?.contentType)
@@ -196,6 +230,7 @@ export async function getAllCollections(
       itemCount: collection._count.items,
       isFavorite: collection.isFavorite,
       itemTypeNames: distinctNames,
+      dominantItemTypeColor: dominantColor,
       contentTypeCounts,
       createdAt: collection.createdAt,
     };
