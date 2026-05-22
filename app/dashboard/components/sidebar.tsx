@@ -36,7 +36,7 @@ export function Sidebar({ isExpanded, onToggle, hideToggle }: SidebarProps) {
         >
           {isExpanded && (
             <p className='px-2 text-xs tracking-wider text-muted-foreground'>
-              NAVIGATION
+              Navigation
             </p>
           )}
           <PanelLeft
@@ -114,7 +114,7 @@ export function Sidebar({ isExpanded, onToggle, hideToggle }: SidebarProps) {
               data-open='true'
             >
               <div className='mb-1 ml-2 pl-2'>
-                <h3 className='mb-1 px-2 text-xs font-semibold tracking-wider text-muted-foreground'>
+                <h3 className='mb-1 px-2 text-xs tracking-wider text-muted-foreground'>
                   Favorites
                 </h3>
                 <div className='space-y-0.5'>
@@ -136,7 +136,7 @@ export function Sidebar({ isExpanded, onToggle, hideToggle }: SidebarProps) {
                 </div>
               </div>
               <div className='mb-1 ml-2 pl-2'>
-                <h3 className='mb-1 px-2 text-xs font-semibold tracking-wider text-muted-foreground'>
+                <h3 className='mb-1 px-2 text-xs tracking-wider text-muted-foreground'>
                   Recent
                 </h3>
                 <div className='space-y-0.5 ml-6'>
