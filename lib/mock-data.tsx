@@ -86,13 +86,13 @@ export const ITEM_TYPES: ItemType[] = [
 ];
 
 export const typeIcons: Record<string, React.ReactNode> = {
-  snippet: <Code className='h-4 w-4' />,
-  prompt: <Sparkles className='h-4 w-4' />,
-  command: <Terminal className='h-4 w-4' />,
-  note: <StickyNote className='h-4 w-4' />,
-  file: <File className='h-4 w-4' />,
-  image: <Image className='h-4 w-4' />,
-  link: <LinkIcon className='h-4 w-4' />,
+  snippet: <Code className='h-4 w-4 text-snippet' />,
+  prompt: <Sparkles className='h-4 w-4 text-prompt' />,
+  command: <Terminal className='h-4 w-4 text-command' />,
+  note: <StickyNote className='h-4 w-4 text-note' />,
+  file: <File className='h-4 w-4 text-file' />,
+  image: <Image className='h-4 w-4 text-image' />,
+  link: <LinkIcon className='h-4 w-4 text-link' />,
 };
 
 export const typePaths: Record<string, string> = {

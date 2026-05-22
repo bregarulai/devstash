@@ -1,5 +1,6 @@
 import { Pin } from 'lucide-react';
-import { MOCK_ITEMS, typeIcons } from '@/lib/mock-data';
+import { MOCK_ITEMS } from '@/lib/mock-data';
+import { ItemTypeIcon } from './ItemTypeIcon';
 
 const pinnedItems = MOCK_ITEMS.filter((item) => item.isPinned);
 
@@ -21,7 +22,7 @@ export function PinnedItems() {
             className='flex items-center gap-4 px-6 py-3 transition-colors hover:bg-muted/50'
           >
             <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted'>
-              {typeIcons[item.type.name]}
+              <ItemTypeIcon type={item.type.name} />
             </div>
             <div className='min-w-0 flex-1'>
               <p className='truncate text-sm font-medium'>{item.title}</p>

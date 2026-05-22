@@ -6,9 +6,9 @@ import {
   favoriteCollections,
   ITEM_TYPES,
   recentCollections,
-  typeIcons,
   typePaths,
 } from '@/lib/mock-data';
+import { ItemTypeIcon } from './ItemTypeIcon';
 import { ChevronDown, PanelLeft, Star } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -52,38 +52,32 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
             </h3>
           )}
           <div className='space-y-0.5'>
-            {ITEM_TYPES.map((type) => {
-              const Icon = typeIcons[type.name];
-              return (
-                <Link
-                  key={type.name}
-                  href={typePaths[type.name]}
-                  className={`group flex items-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground ${isExpanded ? 'gap-3 px-2 py-1.5 text-sm' : 'justify-center px-1 py-2'}`}
-                  title={
-                    isExpanded
-                      ? undefined
-                      : type.name.charAt(0).toUpperCase() + type.name.slice(1)
-                  }
-                >
-                  <span
-                    className='flex h-5 w-5 shrink-0 items-center justify-center'
-                    style={{ color: type.color }}
-                  >
-                    {Icon}
+            {ITEM_TYPES.map((type) => (
+              <Link
+                key={type.name}
+                href={typePaths[type.name]}
+                className={`group flex items-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground ${isExpanded ? 'gap-3 px-2 py-1.5 text-sm' : 'justify-center px-1 py-2'}`}
+                title={
+                  isExpanded
+                    ? undefined
+                    : type.name.charAt(0).toUpperCase() + type.name.slice(1)
+                }
+              >
+                <span className='flex h-5 w-5 shrink-0 items-center justify-center'>
+                  <ItemTypeIcon type={type.name} className='h-4 w-4' />
+                </span>
+                {isExpanded && (
+                  <span className='truncate font-medium'>
+                    {type.name.charAt(0).toUpperCase() + type.name.slice(1)}
                   </span>
-                  {isExpanded && (
-                    <span className='truncate font-medium'>
-                      {type.name.charAt(0).toUpperCase() + type.name.slice(1)}
-                    </span>
-                  )}
-                  {isExpanded && (
-                    <span className='ml-auto text-xs text-muted-foreground'>
-                      {type.itemCount}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
+                )}
+                {isExpanded && (
+                  <span className='ml-auto text-xs text-muted-foreground'>
+                    {type.itemCount}
+                  </span>
+                )}
+              </Link>
+            ))}
           </div>
         </div>
         {isExpanded && <Separator className='my-4' />}
