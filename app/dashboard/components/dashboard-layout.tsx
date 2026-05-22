@@ -1,36 +1,38 @@
 'use client';
 
 import { useState } from 'react';
-import { MobileHeader } from './mobile-header';
 import { Sidebar } from './sidebar';
 import { TopBar } from './top-bar';
 
-export function DashboardLayout() {
+export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
-    <div className='flex h-screen w-screen'>
-      {/* Mobile header with menu button */}
-      <MobileHeader />
-
-      {/* Desktop sidebar */}
-      <div className='hidden lg:block lg:shrink-0 lg:pt-16'>
-        <div
-          className={`transition-all duration-200 ${isExpanded ? 'w-64' : 'w-18'}`}
-        >
-          <Sidebar
-            isExpanded={isExpanded}
-            onToggle={() => setIsExpanded(!isExpanded)}
-          />
-        </div>
+    <div className='flex h-screen w-screen overflow-hidden'>
+      {/* Sidebar — always visible, compact on mobile */}
+      <div className='hidden lg:flex lg:w-64 lg:shrink-0'>
+        <Sidebar
+          isExpanded={isExpanded}
+          onToggle={() => setIsExpanded(!isExpanded)}
+        />
       </div>
 
-      {/* Main content */}
-      <div className='flex min-w-0 flex-1 flex-col lg:pt-16'>
+      {/* Mobile sidebar (compact, icons-only) */}
+      <div className='flex w-14 shrink-0 lg:hidden'>
+        <Sidebar
+          isExpanded={false}
+          onToggle={() => setIsExpanded(!isExpanded)}
+          hideToggle
+        />
+      </div>
+
+      {/* Main content area */}
+      <div className='flex min-w-0 flex-1 flex-col'>
+        {/* Top bar */}
         <TopBar />
-        <main className='min-w-0 flex-1 p-6'>
-          <h2 className='text-2xl font-semibold'>Main</h2>
-        </main>
+
+        {/* Page content */}
+        <main className='flex-1 overflow-y-auto p-6 lg:p-8'>{children}</main>
       </div>
     </div>
   );

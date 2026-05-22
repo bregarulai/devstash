@@ -2,33 +2,48 @@
 
 import Link from 'next/link';
 import {
+  CURRENT_USER,
   favoriteCollections,
   ITEM_TYPES,
   recentCollections,
   typeIcons,
   typePaths,
 } from '@/lib/mock-data';
-import { ChevronDown, ChevronLeft, Star } from 'lucide-react';
+import { ChevronDown, ChevronLeft, PanelLeft, Star } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface SidebarProps {
   isExpanded: boolean;
   onToggle: () => void;
+  hideToggle?: boolean;
 }
 
-export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
+export function Sidebar({ isExpanded, onToggle, hideToggle }: SidebarProps) {
   return (
     <div className='relative flex h-screen flex-col border-r border-border bg-background'>
       {/* Header */}
       <div className='flex h-16 items-center px-4'>
         <Link href='/' className='text-lg font-bold'>
-          DevStash
+          {isExpanded && 'DevStash'}
         </Link>
       </div>
-
-      <div className='flex-1 overflow-y-auto p-2'>
+      <Separator />
+      <div className='flex-1 overflow-y-auto my-2'>
+        {/* Navigation */}
+        <div className='flex items-center justify-between mb-4'>
+          {isExpanded && (
+            <p className='px-2 text-xs tracking-wider text-muted-foreground'>
+              NAVIGATION
+            </p>
+          )}
+          <div className='pr-2'>
+            <PanelLeft className='h-5 w-5 shrink-0' onClick={onToggle} />
+          </div>
+        </div>
+        <Separator className='mb-4' />
         {/* Item Types */}
-        <div className='mb-4'>
+        <div className='mb-4 mx-2'>
           {isExpanded && (
             <h3 className='mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
               TYPES
@@ -42,7 +57,11 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                   key={type.name}
                   href={typePaths[type.name]}
                   className={`group flex items-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground ${isExpanded ? 'gap-3 px-2 py-1.5 text-sm' : 'justify-center px-1 py-2'}`}
-                  title={isExpanded ? undefined : type.name.charAt(0).toUpperCase() + type.name.slice(1)}
+                  title={
+                    isExpanded
+                      ? undefined
+                      : type.name.charAt(0).toUpperCase() + type.name.slice(1)
+                  }
                 >
                   <span
                     className='flex h-5 w-5 shrink-0 items-center justify-center'
@@ -65,9 +84,9 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
             })}
           </div>
         </div>
-        <Separator className='my-4' />
+        {isExpanded && <Separator className='my-4' />}
         {/* Collections */}
-        <div className='mb-4'>
+        <div className='mb-4 mx-2'>
           {isExpanded && (
             <button
               onClick={() => {
@@ -91,7 +110,7 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
               className='mt-1 space-y-0.5'
               data-open='true'
             >
-              <div className='mb-1 ml-2 border-l border-border pl-2'>
+              <div className='mb-1 ml-2 pl-2'>
                 <h3 className='mb-1 px-2 text-xs font-semibold tracking-wider text-muted-foreground'>
                   Favorites
                 </h3>
@@ -113,7 +132,7 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                   ))}
                 </div>
               </div>
-              <div className='mb-1 ml-2 border-l border-border pl-2'>
+              <div className='mb-1 ml-2 pl-2'>
                 <h3 className='mb-1 px-2 text-xs font-semibold tracking-wider text-muted-foreground'>
                   Recent
                 </h3>
@@ -143,27 +162,23 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
       {/* User Avatar */}
       {isExpanded && (
         <div className='border-t border-border p-3'>
-          <div className='flex items-center gap-3 rounded-lg p-2'>
-            <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground'>
-              JD
-            </div>
-            <div className='flex-1 overflow-hidden'>
-              <p className='truncate text-sm font-medium'>John Doe</p>
-              <p className='truncate text-xs text-muted-foreground'>
-                demo@devstash.ai
-              </p>
-            </div>
+          <div className='flex items-center justify-center gap-3 rounded-lg p-2'>
+            <Avatar>
+              <AvatarImage
+                src=''
+                alt={CURRENT_USER.name}
+                className='grayscale'
+              />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+
+            <p className='truncate text-sm font-medium'>{CURRENT_USER.name}</p>
+            <p className='truncate text-xs text-muted-foreground'>
+              {CURRENT_USER.email}
+            </p>
           </div>
         </div>
       )}
-
-      {/* Toggle button */}
-      <button
-        onClick={onToggle}
-        className='absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 flex items-center justify-center rounded-full bg-background border border-border p-1.5 text-muted-foreground hover:text-foreground transition-colors'
-      >
-        <ChevronLeft className={`h-4 w-4 transition-transform ${isExpanded ? '' : 'rotate-180'}`} />
-      </button>
     </div>
   );
 }
