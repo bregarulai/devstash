@@ -156,7 +156,7 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
       </div>
 
       {/* User Avatar */}
-      <div className='border-t border-border p-3'>
+      <div className='border-t border-r border-border p-3'>
         {isExpanded ? (
           <div className='flex items-center justify-center gap-3 rounded-lg p-2'>
             <Avatar>
