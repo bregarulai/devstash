@@ -1,5 +1,4 @@
 import { MobileHeader } from './components/mobile-header';
-import { Sidebar } from './components/sidebar';
 import { TopBar } from './components/top-bar';
 
 export default function DashboardPage() {
@@ -7,11 +6,6 @@ export default function DashboardPage() {
     <div className='flex h-screen w-screen'>
       {/* Mobile header with menu button */}
       <MobileHeader />
-
-      {/* Desktop sidebar */}
-      <div className='hidden lg:block lg:w-64 lg:shrink-0'>
-        <Sidebar />
-      </div>
 
       {/* Main content */}
       <div className='flex min-w-0 flex-1 flex-col'>

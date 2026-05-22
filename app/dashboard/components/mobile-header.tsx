@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 
 export function MobileHeader() {
   return (
-    <div className='fixed inset-x-0 top-0 z-40 flex h-16 items-center border-b border-border bg-background px-4 lg:hidden'>
+    <div className='fixed inset-x-0 top-0 z-40 flex h-16 items-center border-b border-border bg-background px-4'>
       <Sheet>
         <SheetTrigger asChild>
           <Button
