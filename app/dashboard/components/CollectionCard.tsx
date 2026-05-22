@@ -1,6 +1,13 @@
-import Link from 'next/link';
 import { Folder } from 'lucide-react';
 import { ItemTypeIcon } from '@/app/dashboard/components/ItemTypeIcon';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 const contentTypeBorderColorMap: Record<string, string> = {
   TEXT: 'border-l-blue-500',
@@ -8,10 +15,11 @@ const contentTypeBorderColorMap: Record<string, string> = {
   URL: 'border-l-emerald-500',
 };
 
-function getBorderColorFromContentType(contentTypeCounts: Record<string, number>): string {
-  const mostUsedContentType = Object.entries(contentTypeCounts).sort(
-    (a, b) => b[1] - a[1],
-  )[0]?.[0] || '';
+function getBorderColorFromContentType(
+  contentTypeCounts: Record<string, number>,
+): string {
+  const mostUsedContentType =
+    Object.entries(contentTypeCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
   return contentTypeBorderColorMap[mostUsedContentType] || '';
 }
 
@@ -28,34 +36,35 @@ interface CollectionCardProps {
 }
 
 export function CollectionCard({ collection }: CollectionCardProps) {
-  const borderColor = getBorderColorFromContentType(collection.contentTypeCounts);
+  const borderColor = getBorderColorFromContentType(
+    collection.contentTypeCounts,
+  );
 
   return (
-    <Link
-      href={`/collections/${collection.id}`}
-      className={`group rounded-xl border border-border bg-card p-4 transition-all hover:border-border/80 hover:shadow-md ${borderColor ? `border-l-[3px] ${borderColor}` : ''}`}
-    >
-      <div className='flex items-start justify-between'>
-        <div className='flex items-center gap-3'>
-          <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted'>
-            <Folder className='h-5 w-5 text-muted-foreground' />
-          </div>
-          <div className='min-w-0 flex-1'>
-            <p className='truncate text-sm font-medium'>{collection.name}</p>
-            {collection.description && (
-              <p className='truncate text-xs text-muted-foreground'>
-                {collection.description}
-              </p>
-            )}
-          </div>
+    <Card className={`h-full rounded-xl border-l-[3px] ${borderColor} transition-all hover:shadow-md`}>
+      <CardHeader className='flex flex-row items-center gap-3 space-y-0 pb-2'>
+        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted'>
+          <Folder className='h-5 w-5 text-muted-foreground' />
         </div>
-      </div>
-
-      <div className='mt-3 flex items-center justify-between'>
-        <div className='flex items-center gap-1.5'>
+        <div className='min-w-0 flex-1'>
+          <CardTitle className='truncate text-sm font-medium'>
+            {collection.name}
+          </CardTitle>
+          {collection.description && (
+            <CardDescription className='truncate text-xs'>
+              {collection.description}
+            </CardDescription>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className='pb-2'>
+        <div className='flex items-center gap-2'>
           {collection.itemTypeNames.length > 0 ? (
             collection.itemTypeNames.slice(0, 5).map((type, index) => (
-              <span key={index} className='flex h-6 w-6 items-center justify-center rounded bg-muted/50'>
+              <span
+                key={index}
+                className='flex h-6 w-6 items-center justify-center rounded bg-muted/50'
+              >
                 <ItemTypeIcon type={type} className='h-3.5 w-3.5' />
               </span>
             ))
@@ -63,10 +72,12 @@ export function CollectionCard({ collection }: CollectionCardProps) {
             <span className='text-xs text-muted-foreground'>No items</span>
           )}
         </div>
-        <span className='shrink-0 rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground'>
+      </CardContent>
+      <CardFooter>
+        <span className='rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground'>
           {collection.itemCount} items
         </span>
-      </div>
-    </Link>
+      </CardFooter>
+    </Card>
   );
 }

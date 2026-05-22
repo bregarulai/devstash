@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Folder } from 'lucide-react';
 import { CollectionCard } from './CollectionCard';
 import { getAllCollections } from '@/lib/db/collections';
@@ -18,9 +19,16 @@ export async function CollectionsSession({ user }: CollectionsSessionProps) {
     <section className='space-y-6'>
       {/* Collections Session */}
       <div>
-        <div className='flex items-center gap-2 mb-4'>
-          <Folder className='h-4 w-4 text-muted-foreground' />
-          <h2 className='text-lg font-semibold'>Collections</h2>
+        <div className='flex items-center justify-between mb-4'>
+          <div className='flex items-center gap-2'>
+            <h2 className='text-lg font-semibold'>Collections</h2>
+          </div>
+          <Link
+            href='/collections'
+            className='text-sm text-muted-foreground hover:text-foreground transition-colors'
+          >
+            View All
+          </Link>
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
           {collections.map((collection) => (
