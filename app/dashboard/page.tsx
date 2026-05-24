@@ -31,15 +31,12 @@ export default async function DashboardPage() {
     getRecentItems(user.id),
   ]);
 
-  console.log('Pinned Items:', pinnedItems);
-  console.log('Recent Items:', recentItems);
-
   return (
     <DashboardWrapper>
       <div className='space-y-6'>
         <StatsCards userId={user.id} />
-        <PinnedItems items={pinnedItems} />
         <CollectionsSession user={user} />
+        <PinnedItems items={pinnedItems} />
         <RecentItems items={recentItems} />
       </div>
     </DashboardWrapper>
