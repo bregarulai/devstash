@@ -4,43 +4,49 @@ import {
   Heart,
   Star,
 } from 'lucide-react';
-import { MOCK_ITEMS, MOCK_COLLECTIONS, favoriteCollections } from '@/lib/mock-data';
+import { getItemStats } from '@/lib/db/items';
 
-const stats = [
-  {
-    label: 'Total Items',
-    value: MOCK_ITEMS.length,
-    icon: Code,
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/10',
-  },
-  {
-    label: 'Collections',
-    value: MOCK_COLLECTIONS.length,
-    icon: Folder,
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10',
-  },
-  {
-    label: 'Favorite Items',
-    value: MOCK_ITEMS.filter((i) => i.isFavorite).length,
-    icon: Heart,
-    color: 'text-red-500',
-    bgColor: 'bg-red-500/10',
-  },
-  {
-    label: 'Favorite Collections',
-    value: favoriteCollections.length,
-    icon: Star,
-    color: 'text-yellow-500',
-    bgColor: 'bg-yellow-500/10',
-  },
-];
+interface StatsCardsProps {
+  userId: string;
+}
 
-export function StatsCards() {
+export async function StatsCards({ userId }: StatsCardsProps) {
+  const stats = await getItemStats(userId);
+
+  const data = [
+    {
+      label: 'Total Items',
+      value: stats.totalItems,
+      icon: Code,
+      color: 'text-snippet',
+      bgColor: 'bg-snippet/10',
+    },
+    {
+      label: 'Collections',
+      value: stats.totalCollections,
+      icon: Folder,
+      color: 'text-prompt',
+      bgColor: 'bg-prompt/10',
+    },
+    {
+      label: 'Favorite Items',
+      value: stats.favoriteItems,
+      icon: Heart,
+      color: 'text-image',
+      bgColor: 'bg-image/10',
+    },
+    {
+      label: 'Favorite Collections',
+      value: stats.favoriteCollections,
+      icon: Star,
+      color: 'text-command',
+      bgColor: 'bg-command/10',
+    },
+  ];
+
   return (
     <div className='grid grid-cols-2 gap-4 lg:grid-cols-4'>
-      {stats.map((stat) => (
+      {data.map((stat) => (
         <div
           key={stat.label}
           className='rounded-xl border border-border bg-card p-4 transition-colors hover:border-border/80'

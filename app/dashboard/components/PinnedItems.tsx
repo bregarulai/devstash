@@ -1,11 +1,25 @@
 import { Pin } from 'lucide-react';
-import { MOCK_ITEMS } from '@/lib/mock-data';
 import { ItemTypeIcon } from './ItemTypeIcon';
 
-const pinnedItems = MOCK_ITEMS.filter((item) => item.isPinned);
+interface ItemWithDetails {
+  id: string;
+  title: string;
+  description: string | null;
+  itemType: {
+    name: string;
+    icon: string;
+    color: string;
+  };
+  tags: { id: string; name: string }[];
+  updatedAt: Date;
+}
 
-export function PinnedItems() {
-  if (pinnedItems.length === 0) {
+interface PinnedItemsProps {
+  items: ItemWithDetails[];
+}
+
+export function PinnedItems({ items }: PinnedItemsProps) {
+  if (items.length === 0) {
     return null;
   }
 
@@ -16,20 +30,32 @@ export function PinnedItems() {
         <h2 className='text-lg font-semibold'>Pinned Items</h2>
       </div>
       <div className='divide-y divide-border'>
-        {pinnedItems.map((item) => (
+        {items.map((item) => (
           <div
             key={item.id}
             className='flex items-center gap-4 px-6 py-3 transition-colors hover:bg-muted/50'
           >
-            <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted'>
-              <ItemTypeIcon type={item.type.name} />
+            <div
+              className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg'
+              style={{
+                backgroundColor: `${item.itemType.color}15`,
+                borderColor: item.itemType.color,
+              }}
+            >
+              <ItemTypeIcon type={item.itemType.name} />
             </div>
             <div className='min-w-0 flex-1'>
               <p className='truncate text-sm font-medium'>{item.title}</p>
-              <p className='truncate text-xs text-muted-foreground'>{item.description}</p>
+              <p className='truncate text-xs text-muted-foreground'>{item.description ?? ''}</p>
             </div>
-            <span className='shrink-0 rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground'>
-              {item.type.name}
+            <span
+              className='shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium'
+              style={{
+                color: item.itemType.color,
+                backgroundColor: `${item.itemType.color}15`,
+              }}
+            >
+              {item.itemType.name}
             </span>
           </div>
         ))}

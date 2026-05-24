@@ -1,7 +1,10 @@
 import { DashboardWrapper } from './components/DashboardWrapper';
 import { StatsCards } from './components/StatsCards';
 import { CollectionsSession } from './components/CollectionsSession';
+import { PinnedItems } from './components/PinnedItems';
+import { RecentItems } from './components/RecentItems';
 import { prisma } from '@/lib/prisma';
+import { getPinnedItems, getRecentItems } from '@/lib/db/items';
 
 export default async function DashboardPage() {
   const user = await prisma.user.findFirst({
@@ -23,11 +26,21 @@ export default async function DashboardPage() {
     );
   }
 
+  const [pinnedItems, recentItems] = await Promise.all([
+    getPinnedItems(user.id),
+    getRecentItems(user.id),
+  ]);
+
+  console.log('Pinned Items:', pinnedItems);
+  console.log('Recent Items:', recentItems);
+
   return (
     <DashboardWrapper>
       <div className='space-y-6'>
-        <StatsCards />
+        <StatsCards userId={user.id} />
+        <PinnedItems items={pinnedItems} />
         <CollectionsSession user={user} />
+        <RecentItems items={recentItems} />
       </div>
     </DashboardWrapper>
   );

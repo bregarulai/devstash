@@ -1,12 +1,24 @@
 import { Clock } from 'lucide-react';
-import { MOCK_ITEMS } from '@/lib/mock-data';
 import { ItemTypeIcon } from './ItemTypeIcon';
 
-const recentItems = [...MOCK_ITEMS].sort(
-  (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-);
+interface ItemWithDetails {
+  id: string;
+  title: string;
+  description: string | null;
+  itemType: {
+    name: string;
+    icon: string;
+    color: string;
+  };
+  tags: { id: string; name: string }[];
+  updatedAt: Date;
+}
 
-export function RecentItems() {
+interface RecentItemsProps {
+  items: ItemWithDetails[];
+}
+
+export function RecentItems({ items }: RecentItemsProps) {
   return (
     <section className='rounded-xl border border-border bg-card'>
       <div className='flex items-center gap-2 border-b border-border px-6 py-4'>
@@ -14,20 +26,32 @@ export function RecentItems() {
         <h2 className='text-lg font-semibold'>Recent Items</h2>
       </div>
       <div className='divide-y divide-border'>
-        {recentItems.map((item) => (
+        {items.map((item) => (
           <div
             key={item.id}
             className='flex items-center gap-4 px-6 py-3 transition-colors hover:bg-muted/50'
           >
-            <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted'>
-              <ItemTypeIcon type={item.type.name} />
+            <div
+              className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg'
+              style={{
+                backgroundColor: `${item.itemType.color}15`,
+                borderColor: item.itemType.color,
+              }}
+            >
+              <ItemTypeIcon type={item.itemType.name} />
             </div>
             <div className='min-w-0 flex-1'>
               <p className='truncate text-sm font-medium'>{item.title}</p>
-              <p className='truncate text-xs text-muted-foreground'>{item.description}</p>
+              <p className='truncate text-xs text-muted-foreground'>{item.description ?? ''}</p>
             </div>
-            <span className='shrink-0 rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground'>
-              {item.type.name}
+            <span
+              className='shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium'
+              style={{
+                color: item.itemType.color,
+                backgroundColor: `${item.itemType.color}15`,
+              }}
+            >
+              {item.itemType.name}
             </span>
             <span className='shrink-0 text-xs text-muted-foreground'>
               {new Date(item.updatedAt).toLocaleDateString()}
