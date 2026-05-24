@@ -1,6 +1,7 @@
 import { Pin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { ItemTypeIcon } from './ItemTypeIcon';
+import { formatDaysAgo } from '@/lib/utils';
 
 interface ItemWithDetails {
   id: string;
@@ -61,8 +62,11 @@ export function PinnedItems({ items }: PinnedItemsProps) {
                   backgroundColor: `${item.itemType.color}15`,
                 }}
               >
-                {item.itemType.name}
-              </span>
+{item.itemType.name}
+</span>
+              <span className='shrink-0 text-xs text-muted-foreground'>
+                {formatDaysAgo(item.updatedAt)}
+</span>
             </CardContent>
           </Card>
         ))}

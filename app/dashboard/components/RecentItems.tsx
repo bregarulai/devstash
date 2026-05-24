@@ -1,6 +1,7 @@
 import { Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { ItemTypeIcon } from './ItemTypeIcon';
+import { formatDaysAgo } from '@/lib/utils';
 
 interface ItemWithDetails {
   id: string;
@@ -59,9 +60,9 @@ export function RecentItems({ items }: RecentItemsProps) {
               >
                 {item.itemType.name}
               </span>
-              <span className='shrink-0 text-xs text-muted-foreground'>
-                {new Date(item.updatedAt).toLocaleDateString()}
-              </span>
+<span className='shrink-0 text-xs text-muted-foreground'>
+                {formatDaysAgo(item.updatedAt)}
+</span>
             </CardContent>
           </Card>
         ))}
