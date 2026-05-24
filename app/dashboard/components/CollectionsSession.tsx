@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Folder } from 'lucide-react';
 import { CollectionCard } from './CollectionCard';
 import { getAllCollections } from '@/lib/db/collections';
 

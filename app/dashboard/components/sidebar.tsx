@@ -12,6 +12,12 @@ import { ItemTypeIcon } from './ItemTypeIcon';
 import { ChevronDown, PanelLeft, Star } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from '@/components/ui/collapsible';
+import { useState } from 'react';
 
 interface SidebarProps {
   isExpanded: boolean;
@@ -19,6 +25,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
+  const [collectionsOpen, setCollectionsOpen] = useState(true);
+
   return (
     <div className='relative flex h-screen flex-col bg-background'>
       {/* Header */}
@@ -83,29 +91,14 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
         {isExpanded && <Separator className='my-4' />}
         {/* Collections */}
         <div className='mb-4 mx-2'>
-          {isExpanded && (
-            <button
-              onClick={() => {
-                const section = document.getElementById('collections-section');
-                if (section) {
-                  section.dataset.open =
-                    section.dataset.open === 'true' ? 'false' : 'true';
-                }
-              }}
-              className='flex w-full items-center gap-1.5 px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'
-            >
-              <>
-                <ChevronDown className='h-3.5 w-3.5' />
-                COLLECTIONS
-              </>
-            </button>
-          )}
-          {isExpanded && (
-            <div
-              id='collections-section'
-              className='mt-1 space-y-0.5'
-              data-open='true'
-            >
+          <Collapsible open={collectionsOpen} onOpenChange={setCollectionsOpen}>
+            <CollapsibleTrigger className='flex w-full items-center gap-1.5 cursor-pointer px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'>
+              <ChevronDown
+                className={`h-3.5 w-3.5 transition-transform ${collectionsOpen ? 'rotate-0' : '-rotate-90'}`}
+              />
+              COLLECTIONS
+            </CollapsibleTrigger>
+            <CollapsibleContent className='mt-1 space-y-0.5'>
               <div className='mb-1 ml-2 pl-2'>
                 <h3 className='mb-1 px-2 text-xs tracking-wider text-muted-foreground'>
                   Favorites
@@ -150,8 +143,8 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                   ))}
                 </div>
               </div>
-            </div>
-          )}
+            </CollapsibleContent>
+          </Collapsible>
         </div>
       </div>
 
