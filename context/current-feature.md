@@ -2,9 +2,18 @@
 
 ## Status
 
-Completed
+In Progress
 
 ## Goals
+
+- Create `src/lib/db/items.ts` with data fetching functions for items
+- Fetch items directly in server component (no client-side fetching)
+- Display pinned items section (hidden if no pinned items)
+- Display recent items section
+- Item card icon/border derived from item type
+- Display item type tags
+- Update collection stats display
+- Match visual reference from `context/screenshots/dashboard-ui-main.png`
 
 ## Notes
 
@@ -23,3 +32,5 @@ Completed
 - **Seed Data (Completed)** - Create seed script with user, system item types, and sample collections/items
 
 - **Dashboard Collections** - Replaced dummy collection data with actual database data from Neon PostgreSQL, created `lib/db/collections.ts`, derived collection card border color from most-used content type, showed type icons, and updated collection stats display (Completed)
+
+- **Dashboard Items** - Start implementing pinned and recent items sections with database data (In Progress)
