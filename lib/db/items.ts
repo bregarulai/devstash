@@ -325,3 +325,44 @@ export async function getItemStats(userId: string): Promise<{
     favoriteCollections,
   };
 }
+
+export interface SystemItemType {
+  name: string;
+  icon: string;
+  color: string;
+  itemCount: number;
+}
+
+export async function getSystemItemTypesWithCounts(): Promise<SystemItemType[]> {
+  const types = await prisma.itemType.findMany({
+    where: {
+      isSystem: true,
+    },
+    select: {
+      id: true,
+      name: true,
+      icon: true,
+      color: true,
+    },
+  });
+
+  const counts = await prisma.item.groupBy({
+    by: ['itemTypeId'],
+    _count: {
+      id: true,
+    },
+    where: {},
+  });
+
+  const countMap = new Map<string, number>();
+  for (const c of counts) {
+    countMap.set(c.itemTypeId, c._count.id);
+  }
+
+  return types.map((type) => ({
+    name: type.name,
+    icon: type.icon,
+    color: type.color,
+    itemCount: countMap.get(type.id) || 0,
+  }));
+}

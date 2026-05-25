@@ -1,11 +1,30 @@
 'use client';
 
 import { useState } from 'react';
+import { SystemItemType } from '@/lib/db/items';
+import { CollectionWithStats } from '@/lib/db/collections';
 
 import { TopBar } from './MobilSideBar';
 import { Sidebar } from './sidebar';
 
-export function DashboardWrapper({ children }: { children: React.ReactNode }) {
+export function DashboardWrapper({
+  children,
+  user,
+  systemItemTypes,
+  favoriteCollections,
+  recentCollections,
+}: {
+  children: React.ReactNode;
+  user: {
+    id: string;
+    name: string | null;
+    email: string;
+    image: string | null;
+  };
+  systemItemTypes: SystemItemType[];
+  favoriteCollections: CollectionWithStats[];
+  recentCollections: CollectionWithStats[];
+}) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
@@ -16,6 +35,10 @@ export function DashboardWrapper({ children }: { children: React.ReactNode }) {
         <Sidebar
           isExpanded={isExpanded}
           onToggle={() => setIsExpanded(!isExpanded)}
+          systemItemTypes={systemItemTypes}
+          favoriteCollections={favoriteCollections}
+          recentCollections={recentCollections}
+          user={user}
         />
       </div>
 
@@ -24,6 +47,10 @@ export function DashboardWrapper({ children }: { children: React.ReactNode }) {
         <Sidebar
           isExpanded={isMobileExpanded}
           onToggle={() => setIsMobileExpanded(!isMobileExpanded)}
+          systemItemTypes={systemItemTypes}
+          favoriteCollections={favoriteCollections}
+          recentCollections={recentCollections}
+          user={user}
         />
       </div>
 
