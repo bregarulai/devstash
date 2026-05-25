@@ -90,62 +90,67 @@ export function Sidebar({ isExpanded, onToggle }: SidebarProps) {
         </div>
         {isExpanded && <Separator className='my-4' />}
         {/* Collections */}
-        <div className='mb-4 mx-2'>
-          <Collapsible open={collectionsOpen} onOpenChange={setCollectionsOpen}>
-            <CollapsibleTrigger className='flex w-full items-center gap-1.5 cursor-pointer px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'>
-              <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform ${collectionsOpen ? 'rotate-0' : '-rotate-90'}`}
-              />
-              COLLECTIONS
-            </CollapsibleTrigger>
-            <CollapsibleContent className='mt-1 space-y-0.5'>
-              <div className='mb-1 ml-2 pl-2'>
-                <h3 className='mb-1 px-2 text-xs tracking-wider text-muted-foreground'>
-                  Favorites
-                </h3>
-                <div className='space-y-0.5'>
-                  {favoriteCollections.map((collection) => (
-                    <Link
-                      key={collection.id}
-                      href={`/collections/${collection.id}`}
-                      className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground text-sm'
-                    >
-                      {collection.isFavorite ? (
-                        <Star className='h-4 w-4 fill-note text-note' />
-                      ) : null}
-                      <span className='truncate'>{collection.name}</span>
-                      <span className='ml-auto text-xs text-muted-foreground'>
-                        {collection.itemCount}
-                      </span>
-                    </Link>
-                  ))}
+        {isExpanded && (
+          <div className='mb-4 mx-2'>
+            <Collapsible
+              open={collectionsOpen}
+              onOpenChange={setCollectionsOpen}
+            >
+              <CollapsibleTrigger className='flex w-full items-center gap-1.5 cursor-pointer px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform ${collectionsOpen ? 'rotate-0' : '-rotate-90'}`}
+                />
+                COLLECTIONS
+              </CollapsibleTrigger>
+              <CollapsibleContent className='mt-1 space-y-0.5'>
+                <div className='mb-1 ml-2 pl-2'>
+                  <h3 className='mb-1 px-2 text-xs tracking-wider text-muted-foreground'>
+                    Favorites
+                  </h3>
+                  <div className='space-y-0.5'>
+                    {favoriteCollections.map((collection) => (
+                      <Link
+                        key={collection.id}
+                        href={`/collections/${collection.id}`}
+                        className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground text-sm'
+                      >
+                        {collection.isFavorite ? (
+                          <Star className='h-4 w-4 fill-note text-note' />
+                        ) : null}
+                        <span className='truncate'>{collection.name}</span>
+                        <span className='ml-auto text-xs text-muted-foreground'>
+                          {collection.itemCount}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div className='mb-1 ml-2 pl-2'>
-                <h3 className='mb-1 px-2 text-xs tracking-wider text-muted-foreground'>
-                  Recent
-                </h3>
-                <div className='space-y-0.5 ml-6'>
-                  {recentCollections.map((collection) => (
-                    <Link
-                      key={collection.id}
-                      href={`/collections/${collection.id}`}
-                      className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground text-sm'
-                    >
-                      {collection.isFavorite ? (
-                        <Star className='h-4 w-4 fill-note text-note' />
-                      ) : null}
-                      <span className='truncate'>{collection.name}</span>
-                      <span className='ml-auto text-xs text-muted-foreground'>
-                        {collection.itemCount}
-                      </span>
-                    </Link>
-                  ))}
+                <div className='mb-1 ml-2 pl-2'>
+                  <h3 className='mb-1 px-2 text-xs tracking-wider text-muted-foreground'>
+                    Recent
+                  </h3>
+                  <div className='space-y-0.5 ml-6'>
+                    {recentCollections.map((collection) => (
+                      <Link
+                        key={collection.id}
+                        href={`/collections/${collection.id}`}
+                        className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground text-sm'
+                      >
+                        {collection.isFavorite ? (
+                          <Star className='h-4 w-4 fill-note text-note' />
+                        ) : null}
+                        <span className='truncate'>{collection.name}</span>
+                        <span className='ml-auto text-xs text-muted-foreground'>
+                          {collection.itemCount}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+        )}
       </div>
 
       {/* User Avatar */}
