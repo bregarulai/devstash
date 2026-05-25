@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="dark"
+      className={`${geistSans.variable} ${geistMono.variable} dark`}
       style={{ color: "var(--foreground)", backgroundColor: "var(--background)" }}
     >
       <head />
