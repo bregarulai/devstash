@@ -21,6 +21,9 @@ interface RecentItemsProps {
 }
 
 export function RecentItems({ items }: RecentItemsProps) {
+  if (items.length === 0) {
+    return null;
+  }
   return (
     <section>
       <div className='flex items-center gap-2 py-4'>
@@ -60,9 +63,9 @@ export function RecentItems({ items }: RecentItemsProps) {
               >
                 {item.itemType.name}
               </span>
-<span className='shrink-0 text-xs text-muted-foreground'>
+              <span className='shrink-0 text-xs text-muted-foreground'>
                 {formatDaysAgo(item.updatedAt)}
-</span>
+              </span>
             </CardContent>
           </Card>
         ))}

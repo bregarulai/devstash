@@ -7,6 +7,7 @@ import { Sidebar } from './sidebar';
 
 export function DashboardWrapper({ children }: { children: React.ReactNode }) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
   return (
     <div className='flex h-screen w-screen overflow-hidden'>
@@ -21,8 +22,8 @@ export function DashboardWrapper({ children }: { children: React.ReactNode }) {
       {/* Mobile sidebar (compact, icons-only) */}
       <div className='flex w-14 shrink-0 lg:hidden'>
         <Sidebar
-          isExpanded={false}
-          onToggle={() => setIsExpanded(!isExpanded)}
+          isExpanded={isMobileExpanded}
+          onToggle={() => setIsMobileExpanded(!isMobileExpanded)}
         />
       </div>
 
