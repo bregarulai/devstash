@@ -44,6 +44,7 @@ const collections = [
   {
     name: "React Patterns",
     description: "Reusable React hooks, component patterns, and utility functions",
+    isFavorite: true,
     items: [
       {
         title: "useDebounce Hook",
@@ -124,6 +125,7 @@ export function useSessionStorage<T>(key: string, initialValue: T) {
   {
     name: "AI Workflows",
     description: "AI prompt templates and workflow patterns for development",
+    isFavorite: true,
     items: [
       {
         title: "Code Review Prompt",
@@ -177,6 +179,7 @@ Focus on maintainability and readability.`,
   {
     name: "DevOps Essentials",
     description: "Docker, CI/CD configurations, and deployment scripts",
+    isFavorite: true,
     items: [
       {
         title: "Docker Compose for Next.js",
@@ -509,6 +512,7 @@ async function main() {
         data: {
           name: collection.name,
           description: collection.description,
+          isFavorite: (collection as { isFavorite?: boolean }).isFavorite || false,
           userId,
           items: {
             create: itemIds.map((itemId) => ({
@@ -521,6 +525,14 @@ async function main() {
     } else {
       console.log(`   Collection exists: ${collection.name}`);
       
+      // Update isFavorite if specified
+      if ((collection as { isFavorite?: boolean }).isFavorite !== undefined) {
+        await prisma.collection.update({
+          where: { id: coll.id },
+          data: { isFavorite: (collection as { isFavorite?: boolean }).isFavorite || false },
+        });
+      }
+
       for (const item of collection.items) {
         const existingItem = await prisma.item.findFirst({
           where: { title: item.title, userId },

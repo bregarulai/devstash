@@ -4,22 +4,11 @@
 
 ## Status
 
-In Progress
+Completed
 
 ## Goals
 
-- Replace `lib/mock-data.ts` stats with real database data
-- Display system item types in sidebar with icons linking to `/items/[typename]`
-- Show actual collection data from Neon PostgreSQL in sidebar
-- Add "View all collections" link under collections list pointing to `/collections`
-- Update collection card border color based on most-used item type
-- Update `lib/db/items.ts` as needed to support stats functionality
-
 ## Notes
-
-- Reference spec: `context/features/stats-sidebar-spec.md`
-- Need to verify `lib/db/items.ts` has sufficient data fetching functions
-- Use `lib/db/collections.ts` as reference for implementation patterns
 
 ## History
 
