@@ -43,7 +43,6 @@ next-env.d.ts
 
 # prisma
 prisma/generated/
-prisma/migrations/**/*.sql
 generated/
 
 # personal planning docs
