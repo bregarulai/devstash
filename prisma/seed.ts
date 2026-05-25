@@ -47,6 +47,7 @@ const collections = [
     items: [
       {
         title: "useDebounce Hook",
+        description: "A React hook that delays updating a value until after a specified delay, useful for search inputs and API calls",
         contentType: "TEXT" as const,
         content: `import { useState, useEffect } from 'react';
 
@@ -63,9 +64,11 @@ export function useDebounce<T>(value: T, delay: number): T {
         language: "typescript",
         itemType: "snippet",
         tags: ["react", "hooks", "debounce"],
+        isPinned: true,
       },
       {
         title: "useLocalStorage Hook",
+        description: "A React hook that synchronizes a value with localStorage, persisting data across browser sessions",
         contentType: "TEXT" as const,
         content: `import { useState, useEffect } from 'react';
 
@@ -88,9 +91,11 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         language: "typescript",
         itemType: "snippet",
         tags: ["react", "hooks", "localStorage"],
+        isPinned: true,
       },
       {
         title: "useSessionStorage Hook",
+        description: "A React hook that synchronizes a value with sessionStorage, clearing data when the browser tab closes",
         contentType: "TEXT" as const,
         content: `import { useState, useEffect } from 'react';
 
@@ -122,6 +127,7 @@ export function useSessionStorage<T>(key: string, initialValue: T) {
     items: [
       {
         title: "Code Review Prompt",
+        description: "A structured AI prompt for reviewing code quality, performance, security, and style consistency",
         contentType: "TEXT" as const,
         content: `Review the following code for:
 1. Potential bugs or edge cases
@@ -133,9 +139,11 @@ export function useSessionStorage<T>(key: string, initialValue: T) {
 Provide specific suggestions with code examples.`,
         itemType: "prompt",
         tags: ["ai", "code-review", "prompt"],
+        isPinned: true,
       },
       {
         title: "Documentation Generation Prompt",
+        description: "An AI prompt template for generating comprehensive Markdown documentation from code",
         contentType: "TEXT" as const,
         content: `Generate comprehensive documentation for the following code:
 1. Overview of purpose and functionality
@@ -150,6 +158,7 @@ Format in Markdown with clear headings.`,
       },
       {
         title: "Refactoring Assistance Prompt",
+        description: "An AI prompt for analyzing code and suggesting design patterns, abstractions, and testable splits",
         contentType: "TEXT" as const,
         content: `Analyze the following code and suggest refactoring improvements:
 1. Identify code smells and anti-patterns
@@ -161,6 +170,7 @@ Format in Markdown with clear headings.`,
 Focus on maintainability and readability.`,
         itemType: "prompt",
         tags: ["ai", "refactoring", "prompt"],
+        isPinned: true,
       },
     ],
   },
@@ -170,6 +180,7 @@ Focus on maintainability and readability.`,
     items: [
       {
         title: "Docker Compose for Next.js",
+        description: "A Docker Compose configuration for running Next.js with PostgreSQL in development",
         contentType: "TEXT" as const,
         content: `version: '3.8'
 
@@ -204,9 +215,11 @@ volumes:
         language: "yaml",
         itemType: "snippet",
         tags: ["docker", "devops", "nextjs"],
+        isPinned: true,
       },
       {
         title: "Deployment Script",
+        description: "A bash script for automating server deployment with git pull, npm install, Prisma migrations, and PM2 restart",
         contentType: "TEXT" as const,
         content: `#!/bin/bash
 set -e
@@ -235,13 +248,16 @@ echo "Deployment complete!"`,
       },
       {
         title: "Next.js Deployment Guide",
+        description: "Official Next.js documentation covering deployment strategies and best practices",
         contentType: "URL" as const,
         url: "https://nextjs.org/docs/app/getting-started/deployment",
         itemType: "link",
         tags: ["nextjs", "deployment", "guide"],
+        isPinned: true,
       },
       {
         title: "Vercel Deployment Docs",
+        description: "Vercel's guide for deploying Next.js applications with zero configuration",
         contentType: "URL" as const,
         url: "https://vercel.com/docs/deployments/next.js-apps",
         itemType: "link",
@@ -255,6 +271,7 @@ echo "Deployment complete!"`,
     items: [
       {
         title: "Git Reset & Undo Operations",
+        description: "Guide to git reset modes (soft, mixed, hard) and using git bisect for debugging",
         contentType: "TEXT" as const,
         content: `# Undo last commit, keep changes staged
 git reset --soft HEAD~1
@@ -275,9 +292,11 @@ git bisect good v1.0.0`,
         language: "bash",
         itemType: "command",
         tags: ["git", "terminal", "debugging"],
+        isPinned: true,
       },
       {
         title: "Docker Management Commands",
+        description: "Essential Docker Compose commands for starting, logging, stopping, and pruning containers",
         contentType: "TEXT" as const,
         content: `# Start containers in detached mode
 docker-compose up -d
@@ -302,6 +321,7 @@ docker image prune -a`,
       },
       {
         title: "Process Management",
+        description: "Commands for finding and killing processes by port, monitoring memory, and checking disk usage",
         contentType: "TEXT" as const,
         content: `# Find and kill a process by port
 lsof -i :3000 | grep LISTEN | awk '{print $2}' | xargs kill -9
@@ -320,9 +340,11 @@ du -sh ./* | sort -rh | head -20`,
         language: "bash",
         itemType: "command",
         tags: ["process", "terminal", "monitoring"],
+        isPinned: true,
       },
       {
         title: "Package Manager Utilities",
+        description: "Common npm, yarn, and pnpm commands for listing dependencies, checking updates, and inspecting packages",
         contentType: "TEXT" as const,
         content: `# npm
 npm ls --depth=0           # List top-level dependencies
@@ -469,6 +491,8 @@ async function main() {
         const created = await prisma.item.create({
           data: {
             title: item.title,
+            description: (item as { description?: string }).description,
+            isPinned: (item as { isPinned?: boolean }).isPinned || false,
             contentType: item.contentType,
             itemType: { connect: { id: itemType.id } },
             user: { connect: { id: userId } },
@@ -496,6 +520,33 @@ async function main() {
       console.log(`   Created collection: ${collection.name} (${collection.items.length} items)`);
     } else {
       console.log(`   Collection exists: ${collection.name}`);
+      
+      for (const item of collection.items) {
+        const existingItem = await prisma.item.findFirst({
+          where: { title: item.title, userId },
+        });
+
+        if (existingItem) {
+          const itemType = await getOrCreateItemType(item.itemType);
+          const tags = await Promise.all(
+            item.tags.map((tag) => getOrCreateTag(tag)),
+          );
+
+          await prisma.item.update({
+            where: { id: existingItem.id },
+            data: {
+              description: (item as { description?: string }).description,
+              isPinned: (item as { isPinned?: boolean }).isPinned || false,
+              contentType: item.contentType,
+              itemType: { connect: { id: itemType.id } },
+              content: item.contentType === "TEXT" && (item as { content?: string }).content ? (item as { content: string }).content : undefined,
+              url: item.contentType === "URL" && (item as { url?: string }).url ? (item as { url: string }).url : undefined,
+              language: "language" in item && (item as { language?: string }).language ? (item as { language: string }).language : undefined,
+              tags: { set: tags.map((t) => ({ id: t.id })) },
+            },
+          });
+        }
+      }
     }
   }
 

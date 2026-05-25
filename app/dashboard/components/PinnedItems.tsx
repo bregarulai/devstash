@@ -32,7 +32,7 @@ export function PinnedItems({ items }: PinnedItemsProps) {
         <h2 className='text-lg font-semibold'>Pinned Items</h2>
       </div>
 
-      <div className='flex flex-col gap-3 p-6'>
+      <div className='flex flex-col gap-3 py-6'>
         {items.map((item) => (
           <Card
             key={item.id}
@@ -62,11 +62,11 @@ export function PinnedItems({ items }: PinnedItemsProps) {
                   backgroundColor: `${item.itemType.color}15`,
                 }}
               >
-{item.itemType.name}
-</span>
+                {item.itemType.name}
+              </span>
               <span className='shrink-0 text-xs text-muted-foreground'>
                 {formatDaysAgo(item.updatedAt)}
-</span>
+              </span>
             </CardContent>
           </Card>
         ))}
