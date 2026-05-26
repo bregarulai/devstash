@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { SystemItemType } from '@/lib/db/items';
 import { CollectionWithStats } from '@/lib/db/collections';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
+import { Badge } from '@/components/ui/badge';
 
 interface SidebarProps {
   isExpanded: boolean;
@@ -93,6 +94,16 @@ export function Sidebar({
                   <span className='truncate font-medium'>
                     {type.name.charAt(0).toUpperCase() + type.name.slice(1)}
                   </span>
+                )}
+                {isExpanded && type.name === 'file' && (
+                  <Badge variant='outline' className='ml-2 h-4 w-fit rounded-full px-1 text-[10px] font-semibold uppercase'>
+                    PRO
+                  </Badge>
+                )}
+                {isExpanded && type.name === 'image' && (
+                  <Badge variant='outline' className='ml-2 h-4 w-fit rounded-full px-1 text-[10px] font-semibold uppercase'>
+                    PRO
+                  </Badge>
                 )}
                 {isExpanded && (
                   <span className='ml-auto text-xs text-muted-foreground'>
