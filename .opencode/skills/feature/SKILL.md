@@ -29,11 +29,11 @@ Execute the requested action: $ARGUMENTS
 | Action     | Description                               |
 | ---------- | ----------------------------------------- |
 | `load`     | Load a feature spec or inline description |
-| `start`    | Begin implementation, create branch       |
+| `start`    | Create branch, begin implementation       |
 | `review`   | Check goals met, code quality             |
 | `explain`  | Document what changed and why             |
 | `complete` | Commit, push, merge, reset                |
 
-See [actions/](actions/) for detailed instructions.
+**Before executing any action, always read the corresponding file in `actions/` directory for detailed instructions.**
 
 If no action provided, explain the available options.

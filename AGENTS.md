@@ -49,8 +49,15 @@ Read the following to get the full context of the project:
 
 The following skill files are installed and managed by OpenCode:
 
-- `skills/nextjs/` — Next.js App Router guidance
-- `skills/shadcn/` — shadcn/ui component guidance
+### `.agents/skills/` (built-in)
+
+- `nextjs/` — Next.js App Router expert guidance (routing, Server Components, Server Actions, layouts, middleware, data fetching, error handling, metadata, etc.)
+- `shadcn/` — shadcn/ui component guidance (adding, searching, fixing, debugging, styling, composing UI, CLI commands, critical rules)
+
+### `.opencode/skills/` (project-managed)
+
+- `feature/` — Feature workflow lifecycle (load/start/review/explain/complete) — working file: `context/current-feature.md`
+- `list-components/` — List React component files (.tsx/.ts/.jsx/.js) in the components folder
 
 ## Quick reference
 
