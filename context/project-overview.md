@@ -691,46 +691,43 @@ devstash/
 │   ├── schema.prisma
 │   ├── migrations/
 │   └── seed.ts
-├── src/
-│   ├── app/
-│   │   ├── (auth)/
-│   │   │   ├── login/
-│   │   │   └── register/
-│   │   ├── (dashboard)/
-│   │   │   ├── items/
-│   │   │   │   └── [type]/
-│   │   │   ├── collections/
-│   │   │   │   └── [id]/
-│   │   │   └── settings/
-│   │   ├── api/
-│   │   │   ├── items/
-│   │   │   ├── collections/
-│   │   │   ├── ai/
-│   │   │   ├── upload/
-│   │   │   └── webhooks/stripe/
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   ├── components/
-│   │   ├── ui/           # shadcn components
+├── app/
+│   ├── (auth)/
+│   │   ├── login/
+│   │   └── register/
+│   ├── (dashboard)/
+│   │   ├── items/
+│   │   │   └── [type]/
+│   │   ├── collections/
+│   │   │   └── [id]/
+│   │   └── settings/
+│   ├── api/
 │   │   ├── items/
 │   │   ├── collections/
-│   │   ├── layout/
-│   │   └── shared/
-│   ├── lib/
-│   │   ├── prisma.ts
-│   │   ├── auth.ts
-│   │   ├── stripe.ts
-│   │   ├── openai.ts
-│   │   ├── r2.ts
-│   │   └── constants/
-│   ├── hooks/
-│   ├── types/
-│   └── styles/
-│       └── globals.css
+│   │   ├── ai/
+│   │   ├── upload/
+│   │   └── webhooks/stripe/
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   ├── ui/           # shadcn components
+│   ├── items/
+│   ├── collections/
+│   ├── layout/
+│   └── shared/
+├── lib/
+│   ├── prisma.ts
+│   ├── auth.ts
+│   ├── stripe.ts
+│   ├── openai.ts
+│   ├── r2.ts
+│   └── constants/
+├── hooks/
+├── types/
 ├── public/
 ├── .env.example
 ├── next.config.ts
-├── tailwind.config.ts
+├── postcss.config.mjs
 ├── tsconfig.json
 └── package.json
 ```

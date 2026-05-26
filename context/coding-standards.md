@@ -38,7 +38,7 @@
 **CRITICAL**: We are using Tailwind CSS v4, which uses CSS-based configuration.
 
 - **DO NOT** create `tailwind.config.ts` or `tailwind.config.js` files (those are for v3)
-- All theme configuration must be done in CSS using the `@theme` directive in `src/app/globals.css`
+- All theme configuration must be done in CSS using the `@theme` directive in `app/globals.css`
 - Use CSS custom properties for colors, spacing, etc.
 - No JavaScript-based config allowed
 
