@@ -16,7 +16,7 @@
 
 ## UI
 
-- ALWAYS use shadcn component when possible. DO NOT make UI components
+- **CRITICAL** ALWAYS use shadcn component when possible. DO NOT make UI components
 
 ## Next.js
 
