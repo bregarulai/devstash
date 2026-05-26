@@ -71,7 +71,7 @@ export function Sidebar({
         <div className='mb-4 mx-2'>
           {isExpanded && (
             <h3 className='mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-              ITEMS
+              Types
             </h3>
           )}
           <div className='space-y-0.5'>

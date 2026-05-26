@@ -1,12 +1,18 @@
 # Current Feature
 
-## Stats & Sidebar — Replace mock data with database data
+## Add Pro Badge to Sidebar
+
+Add a Pro badge to the file and image type in the sidebar
 
 ## Status
 
-Completed
+Not Started
 
 ## Goals
+
+- Add Pro badge to file and image type in sidebar using shadcn UI Badge component
+- Make badge clean and subtle
+- Make PRO all uppercase
 
 ## Notes
 
@@ -28,4 +34,4 @@ Completed
 
 - **Dashboard Items** - Implemented pinned and recent items sections with database data, created `lib/db/items.ts` with data fetching functions, updated StatsCards to use real data, updated collection stats display (Completed)
 
-- **Stats & Sidebar** - Display stats from database data instead of mock data, show system item types in sidebar with icons linking to /items/[typename], add "View all collections" link under collections list, update collection card border color and type icons, update `lib/db/items.ts` as needed for stats functionality (In Progress)
+- **Stats & Sidebar (Completed)** - Display stats from database data instead of mock data, show system item types in sidebar with icons linking to /items/[typename], add "View all collections" link under collections list, update collection card border color and type icons, update `lib/db/items.ts` as needed for stats functionality
