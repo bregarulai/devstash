@@ -1,7 +1,8 @@
-import { Pin } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { ItemTypeIcon } from './ItemTypeIcon';
+
 import { formatDaysAgo } from '@/lib/utils';
+import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 
 interface ItemWithDetails {
   id: string;
@@ -16,20 +17,19 @@ interface ItemWithDetails {
   updatedAt: Date;
 }
 
-interface PinnedItemsProps {
+interface RecentItemsProps {
   items: ItemWithDetails[];
 }
 
-export function PinnedItems({ items }: PinnedItemsProps) {
+export function RecentItems({ items }: RecentItemsProps) {
   if (items.length === 0) {
     return null;
   }
-
   return (
     <section>
       <div className='flex items-center gap-2 py-4'>
-        <Pin className='h-4 w-4 text-muted-foreground' />
-        <h2 className='text-lg font-semibold'>Pinned Items</h2>
+        <Clock className='h-4 w-4 text-muted-foreground' />
+        <h2 className='text-lg font-semibold'>Recent Items</h2>
       </div>
 
       <div className='flex flex-col gap-3 py-6'>

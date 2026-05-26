@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { CollectionCard } from './CollectionCard';
 import { getAllCollections } from '@/lib/db/collections';
+import { CollectionCard } from '../collectionCard/CollectionCard';
 
 interface CollectionsSessionProps {
   user: {

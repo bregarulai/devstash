@@ -1,9 +1,4 @@
-import {
-  Code,
-  Folder,
-  Heart,
-  Star,
-} from 'lucide-react';
+import { Code, Folder, Heart, Star } from 'lucide-react';
 import { getItemStats } from '@/lib/db/items';
 
 interface StatsCardsProps {

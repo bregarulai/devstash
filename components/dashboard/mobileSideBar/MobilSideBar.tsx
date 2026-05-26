@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { FolderDown, Plus } from 'lucide-react';
-import { SearchBar } from './SearchBar';
+import { SearchBar } from '../searchBar/SearchBar';
 import { Separator } from '@/components/ui/separator';
 
-export function TopBar() {
+export function MobileSideBar() {
   return (
     <>
       <header className='flex align-middle justify-between sticky top-0 z-30 h-16 shrink-0 items-center gap-4 bg-background px-4 sm:px-6'>

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { ItemTypeIcon } from './ItemTypeIcon';
 import { ChevronDown, PanelLeft, Star } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,6 +12,7 @@ import {
 import { useState } from 'react';
 import { SystemItemType } from '@/lib/db/items';
 import { CollectionWithStats } from '@/lib/db/collections';
+import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 
 interface SidebarProps {
   isExpanded: boolean;

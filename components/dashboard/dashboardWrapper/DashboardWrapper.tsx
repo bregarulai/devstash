@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import { SystemItemType } from '@/lib/db/items';
 import { CollectionWithStats } from '@/lib/db/collections';
-
-import { TopBar } from './MobilSideBar';
-import { Sidebar } from './sidebar';
+import { MobileSideBar } from '../mobileSideBar/MobilSideBar';
+import { Sidebar } from '../sidebar/Sidebar';
 
 export function DashboardWrapper({
   children,
@@ -57,7 +56,7 @@ export function DashboardWrapper({
       {/* Main content area */}
       <div className='flex min-w-0 flex-1 flex-col'>
         {/* Top bar */}
-        <TopBar />
+        <MobileSideBar />
 
         {/* Page content */}
         <main className='flex-1 overflow-y-auto p-6 lg:p-8'>{children}</main>

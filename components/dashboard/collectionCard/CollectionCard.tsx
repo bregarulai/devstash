@@ -1,4 +1,3 @@
-import { ItemTypeIcon } from '@/app/dashboard/components/ItemTypeIcon';
 import {
   Card,
   CardContent,
@@ -7,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 
 interface CollectionCardProps {
   collection: {
