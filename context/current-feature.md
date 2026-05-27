@@ -2,7 +2,7 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
@@ -22,6 +22,8 @@ Not Started
 - Validate passwords match, check if user already exists, hash with bcryptjs, create user in database
 
 ## History
+
+- **Auth Credentials** - Added Credentials provider for email/password authentication, created `/api/auth/register` route, updated `auth.config.ts` with placeholder, updated `auth.ts` with bcrypt validation, supports GitHub OAuth + email/password side by side (In Progress)
 
 - **Initial setup** - Next.js 16, Tailwind CSS V4, Typescript configured (Completed)
 
