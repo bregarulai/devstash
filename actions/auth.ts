@@ -51,7 +51,7 @@ export async function handleRegister(formData: FormData) {
   })
 
   revalidatePath("/register")
-  redirect("/sign-in")
+  redirect("/sign-in?success=registered")
 }
 
 export async function handleSignOut() {

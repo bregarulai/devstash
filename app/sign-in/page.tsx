@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { signIn } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { AuthError } from 'next-auth';
+import { SignInToast } from './sign-in-toast';
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -27,6 +28,7 @@ export default async function SignInPage({
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-background px-4'>
+      <SignInToast />
       <div className='w-full max-w-sm space-y-6'>
         <div className='text-center space-y-2'>
           <h1 className='text-2xl font-bold tracking-tight'>
