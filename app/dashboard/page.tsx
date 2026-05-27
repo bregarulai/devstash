@@ -21,6 +21,7 @@ export default async function DashboardPage() {
       name: true,
       email: true,
       image: true,
+      isPro: true,
     },
   });
 

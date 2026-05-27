@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { SystemItemType } from '@/lib/db/items';
 import { CollectionWithStats } from '@/lib/db/collections';
-import { MobileSideBar } from '../mobileSideBar/MobilSideBar';
+import { MobileSideBar } from '../mobileSideBar/MobileSideBar';
 import { Sidebar } from '../sidebar/Sidebar';
 
 export function DashboardWrapper({
@@ -19,6 +19,7 @@ export function DashboardWrapper({
     name: string | null;
     email: string;
     image: string | null;
+    isPro: boolean;
   };
   systemItemTypes: SystemItemType[];
   favoriteCollections: CollectionWithStats[];

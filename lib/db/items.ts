@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { DEFAULT_RECENT_LIMIT } from '@/lib/constants';
 
 export interface ItemWithDetails {
   id: string;
@@ -18,6 +19,42 @@ export interface ItemWithDetails {
   tags: { id: string; name: string }[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export function mapItemToDetails(item: {
+  id: string;
+  title: string;
+  description: string | null;
+  contentType: string;
+  content: string | null;
+  url: string | null;
+  language: string | null;
+  isFavorite: boolean;
+  isPinned: boolean;
+  itemType: {
+    name: string;
+    icon: string;
+    color: string;
+  };
+  tags: { id: string; name: string }[];
+  createdAt: Date;
+  updatedAt: Date;
+}): ItemWithDetails {
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    contentType: item.contentType,
+    content: item.content,
+    url: item.url,
+    language: item.language,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    itemType: item.itemType,
+    tags: item.tags,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  };
 }
 
 export async function getPinnedItems(
@@ -48,26 +85,12 @@ export async function getPinnedItems(
     },
   });
 
-  return items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    contentType: item.contentType,
-    content: item.content,
-    url: item.url,
-    language: item.language,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    itemType: item.itemType,
-    tags: item.tags,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  }));
+  return items.map(mapItemToDetails);
 }
 
 export async function getRecentItems(
   userId: string,
-  limit: number = 10,
+  limit: number = DEFAULT_RECENT_LIMIT,
 ): Promise<ItemWithDetails[]> {
   const items = await prisma.item.findMany({
     where: {
@@ -94,21 +117,7 @@ export async function getRecentItems(
     },
   });
 
-  return items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    contentType: item.contentType,
-    content: item.content,
-    url: item.url,
-    language: item.language,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    itemType: item.itemType,
-    tags: item.tags,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  }));
+  return items.map(mapItemToDetails);
 }
 
 export async function getAllItems(
@@ -140,21 +149,7 @@ export async function getAllItems(
     },
   });
 
-  return items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    contentType: item.contentType,
-    content: item.content,
-    url: item.url,
-    language: item.language,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    itemType: item.itemType,
-    tags: item.tags,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  }));
+  return items.map(mapItemToDetails);
 }
 
 export async function getFavoriteItems(
@@ -187,21 +182,7 @@ export async function getFavoriteItems(
     },
   });
 
-  return items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    contentType: item.contentType,
-    content: item.content,
-    url: item.url,
-    language: item.language,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    itemType: item.itemType,
-    tags: item.tags,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  }));
+  return items.map(mapItemToDetails);
 }
 
 export async function getItemsByType(
@@ -237,21 +218,7 @@ export async function getItemsByType(
     },
   });
 
-  return items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    contentType: item.contentType,
-    content: item.content,
-    url: item.url,
-    language: item.language,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    itemType: item.itemType,
-    tags: item.tags,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  }));
+  return items.map(mapItemToDetails);
 }
 
 export async function searchItems(
@@ -287,21 +254,7 @@ export async function searchItems(
     },
   });
 
-  return items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    contentType: item.contentType,
-    content: item.content,
-    url: item.url,
-    language: item.language,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    itemType: item.itemType,
-    tags: item.tags,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  }));
+  return items.map(mapItemToDetails);
 }
 
 export async function getItemStats(userId: string): Promise<{

@@ -40,4 +40,4 @@ In Progress
 
 - **Add Pro Badge to Sidebar (Completed)** - Added PRO badge to file and image item types in sidebar using shadcn UI Badge component with clean, subtle styling
 
-- **Quick Wins (In Progress)** - Extract duplicate transformation helpers in lib/db/items.ts and lib/db/collections.ts, remove commented-out code from lib/mock-data.tsx, fix filename typo MobilSideBar.tsx → MobileSideBar.tsx, add loading states to dashboard, add aria-label to sidebar toggle, define named constants for magic numbers, add isPro field to user interface, create hooks/ and types/ directories
+- **Quick Wins (In Progress)** - Extract duplicate transformation helpers in lib/db/items.ts, remove commented-out code from lib/mock-data.tsx, fix filename typo MobilSideBar.tsx → MobileSideBar.tsx, add loading states to dashboard, add aria-label to sidebar toggle, define named constants for magic numbers in lib/constants.ts, add isPro field to user interface in dashboard page, create hooks/ and types/ directories
