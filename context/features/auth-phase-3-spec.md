@@ -8,20 +8,25 @@ Replace NextAuth default pages with custom UI. Update user icon, email and usern
 
 ### Sign In Page (`/sign-in`)
 
+- Dark mode only
+- ALWAYS use shadcn components, do not create custom UI component
 - Email and password input fields
 - "Sign in with GitHub" button
 - Link to register page
-- Form validation and error display
+- Form validation and error display with Zod
 
 ### Register Page (`/register`)
 
+- Dark mode only
+- ALWAYS use shadcn components, do not create custom UI component
 - Name, email, password, confirm password fields
-- Form validation (passwords match, email format)
+- Form validation (passwords match, email format) with Zod
 - Submit to `/api/auth/register`
 - Redirect to sign-in on success
 
 ### Bottom Of Sidebar
 
+- ALWAYS use shadcn components, do not create custom UI component
 - Display user avatar (GitHub image or initials fallback)
 - Display user name
 - Dropdown/up on avatar click with "Sign out" link
