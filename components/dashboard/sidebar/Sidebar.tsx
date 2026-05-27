@@ -225,11 +225,11 @@ export function Sidebar({
           )}
         </div>
 
-        {showUserMenu && isExpanded && (
-          <div className='absolute bottom-full left-0 right-0 mb-2 bg-background border border-border rounded-lg shadow-lg z-50 py-1'>
+        {showUserMenu && (
+          <div className={`absolute bottom-full ${isExpanded ? 'left-0 right-0' : 'left-1/2 -translate-x-1/2'} mb-2 bg-background border border-border rounded-lg shadow-lg z-50 py-1`}>
             <Link
               href='/profile'
-              className='block px-3 py-2 text-sm hover:bg-accent transition-colors'
+              className={`block px-3 py-2 text-sm hover:bg-accent transition-colors ${!isExpanded ? 'text-center' : ''}`}
               onClick={() => setShowUserMenu(false)}
             >
               View Profile
@@ -239,7 +239,7 @@ export function Sidebar({
             >
               <button
                 type='submit'
-                className='w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-accent transition-colors'
+                className={`w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-accent transition-colors ${!isExpanded ? 'text-center' : ''}`}
               >
                 Sign out
               </button>

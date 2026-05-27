@@ -58,34 +58,4 @@ export async function handleSignOut() {
   await nextAuthSignOut({ redirectTo: "/" })
 }
 
-const signInSchema = z.object({
-  email: z.email(),
-  password: z.string().min(1),
-})
 
-export async function handleSignIn(data: FormData) {
-  const result = signInSchema.safeParse({
-    email: data.get("email"),
-    password: data.get("password"),
-  })
-
-  if (!result.success) {
-    return { error: result.error.issues[0]?.message || "Validation failed" }
-  }
-
-  const { email, password } = result.data
-
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-    })
-  } catch (error) {
-    if (error instanceof AuthError) {
-      redirect("/sign-in?error=InvalidCredentials")
-    }
-    throw error
-  }
-
-  redirect("/dashboard")
-}

@@ -55,7 +55,6 @@ export default async function SignInPage({
                 }
                 throw error;
               }
-              redirect('/dashboard');
             }}
             className='space-y-4'
           >

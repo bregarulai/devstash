@@ -30,7 +30,7 @@ export default async function RegisterPage({
         </div>
 
         {error && (
-          <div className='text-sm text-red-500 bg-red-50 dark:bg-red-950/20 p-3 rounded'>
+          <div className='rounded-md bg-destructive/15 p-3 text-sm text-destructive'>
             {error}
           </div>
         )}
