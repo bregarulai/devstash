@@ -2,7 +2,7 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
@@ -52,3 +52,5 @@ Not Started
 - **Add Pro Badge to Sidebar (Completed)** - Added PRO badge to file and image item types in sidebar using shadcn UI Badge component with clean, subtle styling
 
 - **Quick Wins (Completed)** - Extract duplicate transformation helpers, remove dead code, fix filename typo, add loading states, add skeleton component, define named constants, add isPro field, create hooks/ and types/ directories
+
+- **Auth Setup** - Implemented NextAuth v5 with GitHub OAuth, split config pattern, proxy protection, and API routes (In Progress)
