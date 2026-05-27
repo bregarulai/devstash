@@ -38,6 +38,11 @@ Read the following to get the full context of the project:
 - **CSS variables** — All colors/tokens use `oklch()`. Do not assume hex/rgb values are stable.
 - **`cn()` utility** — Always use `cn()` from `lib/utils.ts` for conditional class merging. Do not use `clsx` or `tailwind-merge` directly in components.
 
+## Neon MCP
+
+- **ALWAYS use the `dev-stash` project development branch and ONLY the `dev-stash` project development branch when using Neon MCP.**
+- **NEVER touch the production branch unless explicitly specified by the user.**
+
 ## What to avoid
 
 - Don't create a `tailwind.config.js` — it will be ignored by Tailwind v4.
