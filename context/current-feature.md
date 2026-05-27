@@ -1,16 +1,22 @@
-# Current Feature
+# Quick Wins — Code Quality Improvements
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-- 
+- Reduce code duplication by extracting shared transformation helpers
+- Improve code quality by removing dead code and fixing typos
+- Enhance user experience with loading states and accessibility improvements
+- Standardize code patterns with named constants and proper type definitions
+- Create missing directory structure for future development
 
 ## Notes
 
-- 
+- All changes are low-risk with no breaking changes to existing functionality
+- Focus on code quality improvements that follow existing coding standards
+- No authentication or Zod validation added per project requirements
 
 ## History
 
@@ -33,3 +39,5 @@ Not Started
 - **Stats & Sidebar (Completed)** - Display stats from database data instead of mock data, show system item types in sidebar with icons linking to /items/[typename], add "View all collections" link under collections list, update collection card border color and type icons, update `lib/db/items.ts` as needed for stats functionality
 
 - **Add Pro Badge to Sidebar (Completed)** - Added PRO badge to file and image item types in sidebar using shadcn UI Badge component with clean, subtle styling
+
+- **Quick Wins (In Progress)** - Extract duplicate transformation helpers in lib/db/items.ts and lib/db/collections.ts, remove commented-out code from lib/mock-data.tsx, fix filename typo MobilSideBar.tsx → MobileSideBar.tsx, add loading states to dashboard, add aria-label to sidebar toggle, define named constants for magic numbers, add isPro field to user interface, create hooks/ and types/ directories
