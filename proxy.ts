@@ -7,7 +7,7 @@ export async function proxy(request: NextRequest) {
   const isAuthPath = request.nextUrl.pathname.startsWith("/api/auth")
   
   if (!session && !isAuthPath) {
-    const signInUrl = new URL("/api/auth/signin", request.url)
+    const signInUrl = new URL("/sign-in", request.url)
     signInUrl.searchParams.set("callbackUrl", request.nextUrl.pathname)
     return NextResponse.redirect(signInUrl)
   }

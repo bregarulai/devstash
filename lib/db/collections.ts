@@ -2,7 +2,6 @@ import { prisma } from '@/lib/prisma';
 import {
   DEFAULT_FAVORITE_LIMIT,
   DEFAULT_SAMPLE_COUNT,
-  DEFAULT_RECENT_LIMIT,
   DEFAULT_RECENT_COLLECTIONS_LIMIT,
 } from '@/lib/constants';
 

@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { auth } from '@/lib/auth';
 import {
   getPinnedItems,
   getRecentItems,
@@ -15,7 +16,14 @@ import { PinnedItems } from '@/components/dashboard/pinnedItems/PinnedItems';
 import { RecentItems } from '@/components/dashboard/recentItems/RecentItems';
 
 export default async function DashboardPage() {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return <div className="min-h-screen flex items-center justify-center">Not signed in</div>;
+  }
+
   const user = await prisma.user.findFirst({
+    where: { id: session.user.id },
     select: {
       id: true,
       name: true,

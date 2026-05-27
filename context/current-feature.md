@@ -2,7 +2,7 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
@@ -19,7 +19,7 @@ Not Started
 - Form validation and error display with Zod
 - Register submits to `/api/auth/register` and redirects to sign-in on success
 - Sidebar bottom: avatar click shows dropdown with "Sign out" link, clicking avatar goes to `/profile`
-- Avatar logic: use GitHub `image` if available, otherwise generate initials from name (e.g., "Brad Traversy" → "BT")
+- Avatar logic: use GitHub `image` if available, otherwise generate initials from name (e.g., "Brett Trend" → "BT")
 - Create a reusable avatar component that handles both cases
 
 ## History

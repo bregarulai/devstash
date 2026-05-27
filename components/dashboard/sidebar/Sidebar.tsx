@@ -14,6 +14,7 @@ import { SystemItemType } from '@/lib/db/items';
 import { CollectionWithStats } from '@/lib/db/collections';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 import { Badge } from '@/components/ui/badge';
+import { handleSignOut } from '@/actions/auth';
 
 interface SidebarProps {
   isExpanded: boolean;
@@ -39,6 +40,7 @@ export function Sidebar({
   user,
 }: SidebarProps) {
   const [collectionsOpen, setCollectionsOpen] = useState(true);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const displayName = user.name || user.email || 'User';
   const displayImage = user.image || undefined;
@@ -199,33 +201,49 @@ export function Sidebar({
       </div>
 
       {/* User Avatar */}
-      <div className='border-t border-r border-border p-3'>
-        {isExpanded ? (
-          <div className='flex items-center justify-center gap-3 rounded-lg p-2'>
-            <Avatar>
-              <AvatarImage
-                src={displayImage || ''}
-                alt={displayName}
-                className='grayscale'
-              />
-              <AvatarFallback>{fallbackName}</AvatarFallback>
-            </Avatar>
+      <div className='border-t border-r border-border p-3 relative'>
+        <div
+          className={`flex items-center justify-center gap-3 rounded-lg p-2 cursor-pointer hover:bg-accent transition-colors ${isExpanded ? '' : 'justify-center'}`}
+          onClick={() => setShowUserMenu(!showUserMenu)}
+        >
+          <Avatar>
+            <AvatarImage
+              src={displayImage || ''}
+              alt={displayName}
+            />
+            <AvatarFallback>{fallbackName}</AvatarFallback>
+          </Avatar>
 
-            <p className='truncate text-sm font-medium'>{displayName}</p>
-            <p className='truncate text-xs text-muted-foreground'>
-              {user.email}
-            </p>
-          </div>
-        ) : (
-          <div className='flex items-center justify-center'>
-            <Avatar>
-              <AvatarImage
-                src={displayImage || ''}
-                alt={displayName}
-                className='grayscale'
-              />
-              <AvatarFallback>{fallbackName}</AvatarFallback>
-            </Avatar>
+          {isExpanded && (
+            <>
+              <div className='flex-1 min-w-0'>
+                <p className='truncate text-sm font-medium'>{displayName}</p>
+                <p className='truncate text-xs text-muted-foreground'>{user.email}</p>
+              </div>
+              <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
+            </>
+          )}
+        </div>
+
+        {showUserMenu && isExpanded && (
+          <div className='absolute bottom-full left-0 right-0 mb-2 bg-background border border-border rounded-lg shadow-lg z-50 py-1'>
+            <Link
+              href='/profile'
+              className='block px-3 py-2 text-sm hover:bg-accent transition-colors'
+              onClick={() => setShowUserMenu(false)}
+            >
+              View Profile
+            </Link>
+            <form
+              action={handleSignOut}
+            >
+              <button
+                type='submit'
+                className='w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-accent transition-colors'
+              >
+                Sign out
+              </button>
+            </form>
           </div>
         )}
       </div>

@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma"
 import Credentials from "next-auth/providers/credentials"
 
 const overrideProviders = {
-  ...authConfig.providers,
   providers: [
     ...authConfig.providers,
     Credentials({
