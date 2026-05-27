@@ -1,33 +1,20 @@
-# Current Feature: Auth Setup - NextAuth + GitHub Provider
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Install NextAuth v5 (`next-auth@beta`) and `@auth/prisma-adapter`
-- Set up split auth config pattern for edge compatibility (`auth.config.ts` + `auth.ts`)
-- Add GitHub OAuth provider with environment variables
-- Protect `/dashboard/*` routes using Next.js 16 proxy at `proxy.ts`
-- Redirect unauthenticated users to sign-in
-- Create API route at `app/api/auth/[...nextauth]/route.ts`
-- Extend Session type with `user.id` in `types/next-auth.d.ts`
+<!-- Add goals here -->
 
 ## Notes
 
-- Use `next-auth@beta` (NOT `@latest` which installs v4)
-- Proxy file must be at `proxy.ts` (same level as `app/`)
-- Use named export: `export const proxy = auth(...)` not default export
-- Use `session: { strategy: 'jwt' }` with split config pattern
-- Don't set custom `pages.signIn` - use NextAuth's default page
-- Use Context7 to verify the newest config and conventions before implementation
+<!-- Add notes here -->
 
 ## Environment Variables
 
-- `AUTH_SECRET=`
-- `AUTH_GITHUB_ID=`
-- `AUTH_GITHUB_SECRET=`
+<!-- Add environment variables here -->
 
 ## History
 
@@ -53,4 +40,4 @@ In Progress
 
 - **Quick Wins (Completed)** - Extract duplicate transformation helpers, remove dead code, fix filename typo, add loading states, add skeleton component, define named constants, add isPro field, create hooks/ and types/ directories
 
-- **Auth Setup** - Implemented NextAuth v5 with GitHub OAuth, split config pattern, proxy protection, and API routes (In Progress)
+- **Auth Setup (Completed)** - Implemented NextAuth v5 with GitHub OAuth, split config pattern, proxy protection, and API routes
