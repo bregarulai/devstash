@@ -1,26 +1,16 @@
-# Current Feature: Auth UI - Sign In, Register & Sign Out
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Replace NextAuth default pages with custom UI
-- Implement custom sign-in page (`/sign-in`) with email/password and GitHub OAuth
-- Implement register page (`/register`) with form validation and redirect to sign-in
-- Add user avatar, name, and sign-out dropdown at the bottom of the sidebar
-- Support avatar display from GitHub image or initials fallback
+-
 
 ## Notes
 
-- Dark mode only for sign-in and register pages
-- ALWAYS use shadcn components, do not create custom UI components
-- Form validation and error display with Zod
-- Register submits to `/api/auth/register` and redirects to sign-in on success
-- Sidebar bottom: avatar click shows dropdown with "Sign out" link, clicking avatar goes to `/profile`
-- Avatar logic: use GitHub `image` if available, otherwise generate initials from name (e.g., "Brett Trend" → "BT")
-- Create a reusable avatar component that handles both cases
+-
 
 ## History
 
@@ -49,3 +39,5 @@ In Progress
 - **Auth Setup (Completed)** - Implemented NextAuth v5 with GitHub OAuth, split config pattern, proxy protection, and API routes
 
 - **Auth Credentials (Completed)** - Added Credentials provider for email/password authentication, created `/api/auth/register` route, updated `auth.config.ts` with placeholder, updated `auth.ts` with bcrypt validation, supports GitHub OAuth + email/password side by side
+
+- **Auth UI (Completed)** - Implemented custom sign-in page with email/password and GitHub OAuth, register page with form validation, sonner toast notifications, and success redirect
