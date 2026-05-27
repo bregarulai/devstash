@@ -1,4 +1,10 @@
 import { prisma } from '@/lib/prisma';
+import {
+  DEFAULT_FAVORITE_LIMIT,
+  DEFAULT_SAMPLE_COUNT,
+  DEFAULT_RECENT_LIMIT,
+  DEFAULT_RECENT_COLLECTIONS_LIMIT,
+} from '@/lib/constants';
 
 function getDominantItemTypeColor(
   itemTypes: Array<{ name: string; color: string }>,
@@ -46,7 +52,7 @@ export async function getFavoriteCollections(
     orderBy: {
       updatedAt: 'desc',
     },
-    take: 10,
+    take: DEFAULT_FAVORITE_LIMIT,
     include: {
       _count: {
         select: {
@@ -54,7 +60,7 @@ export async function getFavoriteCollections(
         },
       },
       items: {
-        take: 5,
+        take: DEFAULT_SAMPLE_COUNT,
         include: {
           item: {
             include: {
@@ -105,7 +111,7 @@ export async function getFavoriteCollections(
 
 export async function getRecentCollections(
   userId: string,
-  limit: number = 10,
+  limit: number = DEFAULT_RECENT_COLLECTIONS_LIMIT,
 ): Promise<CollectionWithStats[]> {
   const collections = await prisma.collection.findMany({
     where: {

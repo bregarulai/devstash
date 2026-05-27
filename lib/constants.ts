@@ -1,0 +1,4 @@
+export const DEFAULT_RECENT_LIMIT = 10;
+export const DEFAULT_FAVORITE_LIMIT = 10;
+export const DEFAULT_SAMPLE_COUNT = 5;
+export const DEFAULT_RECENT_COLLECTIONS_LIMIT = 5;

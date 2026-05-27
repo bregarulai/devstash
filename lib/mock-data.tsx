@@ -8,14 +8,6 @@ import {
   Link as LinkIcon,
 } from 'lucide-react';
 
-// Item type definitions
-// export interface ItemType {
-//   name: string;
-//   icon: string;
-//   color: string;
-//   isSystem: boolean;
-// }
-
 // A collection the user has created
 export interface Collection {
   id: string;
@@ -141,17 +133,6 @@ export interface User {
   image?: string;
   isPro: boolean;
 }
-
-// Item type definitions (system types)
-// export const ITEM_TYPES: ItemType[] = [
-//   { name: 'snippet', icon: 'Code', color: '#3b82f6', isSystem: true },
-//   { name: 'prompt', icon: 'Sparkles', color: '#8b5cf6', isSystem: true },
-//   { name: 'command', icon: 'Terminal', color: '#f97316', isSystem: true },
-//   { name: 'note', icon: 'StickyNote', color: '#fde047', isSystem: true },
-//   { name: 'file', icon: 'File', color: '#6b7280', isSystem: true },
-//   { name: 'image', icon: 'Image', color: '#ec4899', isSystem: true },
-//   { name: 'link', icon: 'Link', color: '#10b981', isSystem: true },
-// ];
 
 // Sample collections
 export const MOCK_COLLECTIONS: Collection[] = [

@@ -26,6 +26,7 @@ interface SidebarProps {
     name: string | null;
     email: string;
     image: string | null;
+    isPro: boolean;
   };
 }
 
@@ -65,6 +66,7 @@ export function Sidebar({
           <PanelLeft
             className='h-5 w-5 shrink-0 cursor-pointer'
             onClick={onToggle}
+            aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
           />
         </div>
         <Separator className='mb-4' />
