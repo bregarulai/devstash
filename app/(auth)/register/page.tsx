@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { handleRegister } from '@/actions/auth';
-import { RegisterToast } from './register-toast';
+import { RegisterToast } from '@/components/auth/register-toast';
 
 export const metadata: Metadata = {
   title: 'Register',

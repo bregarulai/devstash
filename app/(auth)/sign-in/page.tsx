@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { signIn } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { SignInToast } from './sign-in-toast';
+
 import { handleSignIn } from '@/actions/sign-in';
 import { handleResendVerification } from '@/actions/resend-verification';
+import { SignInToast } from '@/components/auth/sign-in-toast';
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -44,12 +45,18 @@ export default async function SignInPage({
 
         {error === 'UnverifiedEmail' && email && (
           <div className='rounded-md bg-yellow-500/15 p-3 text-sm text-yellow-600'>
-            Your email has not been verified yet. Please check your inbox for a verification email.{' '}
-            <form action={async () => {
-              'use server';
-              await handleResendVerification(email);
-            }}>
-              <button type='submit' className='underline underline-offset-4 hover:text-yellow-700 transition-colors'>
+            Your email has not been verified yet. Please check your inbox for a
+            verification email.{' '}
+            <form
+              action={async () => {
+                'use server';
+                await handleResendVerification(email);
+              }}
+            >
+              <button
+                type='submit'
+                className='underline underline-offset-4 hover:text-yellow-700 transition-colors'
+              >
                 Resend verification email
               </button>
             </form>
@@ -57,10 +64,7 @@ export default async function SignInPage({
         )}
 
         <div className='space-y-4'>
-          <form
-            action={handleSignIn}
-            className='space-y-4'
-          >
+          <form action={handleSignIn} className='space-y-4'>
             <div className='space-y-2'>
               <Label htmlFor='email' className='text-sm font-medium'>
                 Email

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { handleResetPassword } from '@/actions/reset-password';
-import { ResetPasswordToast } from './reset-password-toast';
+import { ResetPasswordToast } from '@/components/auth/reset-password-toast';
 
 export const metadata: Metadata = {
   title: 'Reset Password',
@@ -31,20 +31,9 @@ export default async function ResetPasswordPage({
           </p>
         </div>
 
-        <form
-          action={handleResetPassword}
-          className='space-y-4'
-        >
-          <input
-            type='hidden'
-            name='token'
-            value={token || ''}
-          />
-          <input
-            type='hidden'
-            name='email'
-            value={email || ''}
-          />
+        <form action={handleResetPassword} className='space-y-4'>
+          <input type='hidden' name='token' value={token || ''} />
+          <input type='hidden' name='email' value={email || ''} />
 
           <div className='space-y-2'>
             <Label htmlFor='password' className='text-sm font-medium'>

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { handleForgotPassword } from '@/actions/forgot-password';
-import { ForgotPasswordToast } from './forgot-password-toast';
+import { ForgotPasswordToast } from '@/components/auth/forgot-password-toast';
 
 export const metadata: Metadata = {
   title: 'Forgot Password',
@@ -27,10 +27,7 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
 
-        <form
-          action={handleForgotPassword}
-          className='space-y-4'
-        >
+        <form action={handleForgotPassword} className='space-y-4'>
           <div className='space-y-2'>
             <Label htmlFor='email' className='text-sm font-medium'>
               Email
