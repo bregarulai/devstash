@@ -1,4 +1,4 @@
-# Current Feature
+# Current Feature: Auth Pages Card Consistency
 
 ## Status
 
@@ -6,11 +6,17 @@ Not Started
 
 ## Goals
 
--
+- Wrap sign-in page content in shadcn Card component
+- Wrap register page content in shadcn Card component
+- Wrap forgot-password page content in shadcn Card component
+- Wrap reset-password page content in shadcn Card component
+- Maintain existing layout, spacing, and functionality
 
 ## Notes
 
--
+- Reference: `app/(auth)/verify-email/page.tsx` uses Card with CardHeader, CardTitle, CardDescription, CardContent, CardFooter
+- All pages currently use plain div with `max-w-sm` — need Card wrapper for consistency
+- Card component already exists at `components/ui/card.tsx`
 
 ## History
 
