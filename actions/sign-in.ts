@@ -12,7 +12,7 @@ export async function handleSignIn(formData: FormData) {
   })
 
   if (user && !user.emailVerified) {
-    redirect("/sign-in?error=UnverifiedEmail")
+    redirect(`/sign-in?error=UnverifiedEmail&email=${encodeURIComponent(email)}`)
     return
   }
 

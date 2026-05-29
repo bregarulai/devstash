@@ -447,11 +447,20 @@ async function main() {
         email: demoUser.email,
         name: demoUser.name,
         password: hashedPassword,
+        emailVerified: new Date(),
       },
     });
     console.log(`   Created user: ${user.email}`);
   } else {
-    console.log(`   User already exists: ${user.email}`);
+    if (!user.emailVerified) {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() },
+      });
+      console.log(`   Verified email for user: ${user.email}`);
+    } else {
+      console.log(`   User already exists: ${user.email}`);
+    }
   }
 
   const userId = user.id;
