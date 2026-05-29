@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { handleResetPassword } from '@/actions/reset-password';
+import { ResetPasswordToast } from './reset-password-toast';
 
 export const metadata: Metadata = {
   title: 'Reset Password',
@@ -13,12 +14,13 @@ export const metadata: Metadata = {
 export default async function ResetPasswordPage({
   searchParams,
 }: {
-  searchParams: Promise<{ token?: string; email?: string; error?: string; success?: string }>;
+  searchParams: Promise<{ token?: string; email?: string }>;
 }) {
-  const { token, email, error, success } = await searchParams;
+  const { token, email } = await searchParams;
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-background px-4'>
+      <ResetPasswordToast />
       <div className='w-full max-w-sm space-y-6'>
         <div className='text-center space-y-2'>
           <h1 className='text-2xl font-bold tracking-tight'>
@@ -28,18 +30,6 @@ export default async function ResetPasswordPage({
             Enter your new password below.
           </p>
         </div>
-
-        {success && (
-          <div className='rounded-md bg-green-500/15 p-3 text-sm text-green-600'>
-            {success}
-          </div>
-        )}
-
-        {error && (
-          <div className='rounded-md bg-red-500/15 p-3 text-sm text-red-600'>
-            {error}
-          </div>
-        )}
 
         <form
           action={handleResetPassword}

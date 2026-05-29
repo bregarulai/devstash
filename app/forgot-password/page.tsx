@@ -4,21 +4,19 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { handleForgotPassword } from '@/actions/forgot-password';
+import { ForgotPasswordToast } from './forgot-password-toast';
 
 export const metadata: Metadata = {
   title: 'Forgot Password',
   description: 'Reset your DevStash password',
 };
 
-export default async function ForgotPasswordPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string; success?: string }>;
-}) {
-  const { error, success } = await searchParams;
+export const dynamic = 'force-dynamic';
 
+export default function ForgotPasswordPage() {
   return (
     <div className='min-h-screen flex items-center justify-center bg-background px-4'>
+      <ForgotPasswordToast />
       <div className='w-full max-w-sm space-y-6'>
         <div className='text-center space-y-2'>
           <h1 className='text-2xl font-bold tracking-tight'>
@@ -28,18 +26,6 @@ export default async function ForgotPasswordPage({
             No worries, enter your email and we&apos;ll send you a reset link.
           </p>
         </div>
-
-        {success && (
-          <div className='rounded-md bg-green-500/15 p-3 text-sm text-green-600'>
-            {success}
-          </div>
-        )}
-
-        {error && (
-          <div className='rounded-md bg-red-500/15 p-3 text-sm text-red-600'>
-            {error}
-          </div>
-        )}
 
         <form
           action={handleForgotPassword}

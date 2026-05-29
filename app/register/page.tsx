@@ -4,21 +4,19 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { handleRegister } from '@/actions/auth';
+import { RegisterToast } from './register-toast';
 
 export const metadata: Metadata = {
   title: 'Register',
   description: 'Create a DevStash account',
 };
 
-export default async function RegisterPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>
-}) {
-  const { error } = await searchParams;
+export const dynamic = 'force-dynamic';
 
+export default function RegisterPage() {
   return (
     <div className='min-h-screen flex items-center justify-center bg-background px-4'>
+      <RegisterToast />
       <div className='w-full max-w-sm space-y-6'>
         <div className='text-center space-y-2'>
           <h1 className='text-2xl font-bold tracking-tight'>
@@ -28,12 +26,6 @@ export default async function RegisterPage({
             Sign up with your email to get started
           </p>
         </div>
-
-        {error && (
-          <div className='rounded-md bg-destructive/15 p-3 text-sm text-destructive'>
-            {error}
-          </div>
-        )}
 
         <form action={handleRegister} className='space-y-4'>
           <div className='space-y-2'>
