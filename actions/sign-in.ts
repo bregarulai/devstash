@@ -18,5 +18,9 @@ export async function handleSignIn(formData: FormData) {
     return
   }
 
-  await signIn("credentials", formData)
+  try {
+    await signIn("credentials", formData)
+  } catch {
+    redirect(`/sign-in?error=Invalid+email+or+password`)
+  }
 }

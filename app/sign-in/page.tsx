@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   description: 'Sign in to your DevStash account',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function SignInPage({
   searchParams,
 }: {
@@ -40,12 +42,6 @@ export default async function SignInPage({
           </p>
         </div>
 
-        {success === 'registered' && (
-          <div className='rounded-md bg-green-500/15 p-3 text-sm text-green-600'>
-            Account created successfully! Please sign in to verify your email.
-          </div>
-        )}
-
         {error === 'UnverifiedEmail' && email && (
           <div className='rounded-md bg-yellow-500/15 p-3 text-sm text-yellow-600'>
             Your email has not been verified yet. Please check your inbox for a verification email.{' '}
@@ -57,12 +53,6 @@ export default async function SignInPage({
                 Resend verification email
               </button>
             </form>
-          </div>
-        )}
-
-        {success === 'resent' && (
-          <div className='rounded-md bg-green-500/15 p-3 text-sm text-green-600'>
-            A new verification email has been sent to your inbox.
           </div>
         )}
 

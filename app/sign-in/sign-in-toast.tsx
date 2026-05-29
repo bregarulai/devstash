@@ -11,11 +11,24 @@ export function SignInToast() {
 
   useEffect(() => {
     const success = searchParams.get("success")
-    if (success === "registered" && !shown.current) {
+    const error = searchParams.get("error")
+    if ((success || error) && !shown.current) {
       shown.current = true
-      toast.success("Account created!", {
-        description: "You can now sign in to your account.",
-      })
+      if (success === "registered") {
+        toast.success("Account created!", {
+          description: "You can now sign in to your account.",
+        })
+      }
+      if (success === "resent") {
+        toast.success("Verification email sent", {
+          description: "A new verification email has been sent to your inbox.",
+        })
+      }
+      if (error === "Invalid email or password") {
+        toast.error("Sign in failed", {
+          description: "Invalid email or password.",
+        })
+      }
       router.replace("/sign-in")
     }
   }, [searchParams, router])
