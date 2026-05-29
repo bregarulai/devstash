@@ -1,4 +1,4 @@
-# Current Feature: Auth Pages Card Consistency
+# Current Feature
 
 ## Status
 
@@ -6,17 +6,11 @@ Not Started
 
 ## Goals
 
-- Wrap sign-in page content in shadcn Card component
-- Wrap register page content in shadcn Card component
-- Wrap forgot-password page content in shadcn Card component
-- Wrap reset-password page content in shadcn Card component
-- Maintain existing layout, spacing, and functionality
+-
 
 ## Notes
 
-- Reference: `app/(auth)/verify-email/page.tsx` uses Card with CardHeader, CardTitle, CardDescription, CardContent, CardFooter
-- All pages currently use plain div with `max-w-sm` — need Card wrapper for consistency
-- Card component already exists at `components/ui/card.tsx`
+-
 
 ## History
 
@@ -53,3 +47,5 @@ Not Started
 - **Toggle Email Verification (Completed)** - Added ENABLE_EMAIL_VERIFICATION env variable to enable/disable email verification, skip token creation and email sending when disabled, allow sign-in without verification when disabled
 
 - **Password Reset (Completed)** - Added forgot password link, created `/forgot-password` and `/reset-password` pages, implemented server actions for token generation and password update
+
+- **Email Template Improvements (Completed)** - Added dark-themed HTML email templates with branded styling and text fallbacks for verification and password reset emails
