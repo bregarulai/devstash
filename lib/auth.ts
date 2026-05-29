@@ -25,7 +25,7 @@ const overrideProviders = {
           return null
         }
 
-        if (!user.emailVerified) {
+        if (process.env.ENABLE_EMAIL_VERIFICATION !== "false" && !user.emailVerified) {
           return null
         }
 

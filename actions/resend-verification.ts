@@ -6,6 +6,12 @@ import { createVerificationToken } from "@/lib/verification-token"
 import { redirect } from "next/navigation"
 
 export async function handleResendVerification(email: string) {
+  const emailVerificationEnabled = process.env.ENABLE_EMAIL_VERIFICATION !== "false"
+
+  if (!emailVerificationEnabled) {
+    redirect("/sign-in")
+  }
+
   const user = await prisma.user.findUnique({
     where: { email },
   })

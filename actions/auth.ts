@@ -51,29 +51,37 @@ export async function handleRegister(formData: FormData) {
     },
   })
 
-  const token = await createVerificationToken(email)
+  const emailVerificationEnabled = process.env.ENABLE_EMAIL_VERIFICATION !== "false"
 
-  const verificationLink = `${process.env.AUTH_URL || "http://localhost:3000"}/verify-email?token=${token}`
+  if (emailVerificationEnabled) {
+    const token = await createVerificationToken(email)
 
-  try {
-    await resend.emails.send({
-      from: "DevStash <onboarding@resend.dev>",
-      to: email,
-      subject: "Verify your email address",
-      html: `
-        <h1>Verify your email address</h1>
-        <p>Click the link below to verify your email address:</p>
-        <a href="${verificationLink}">Verify Email</a>
-        <p>This link will expire in 24 hours.</p>
-        <p>If you didn't create an account, you can safely ignore this email.</p>
-      `,
-    })
-  } catch (error) {
-    console.error("Failed to send verification email:", error)
+    const verificationLink = `${process.env.AUTH_URL || "http://localhost:3000"}/verify-email?token=${token}`
+
+    try {
+      await resend.emails.send({
+        from: "DevStash <onboarding@resend.dev>",
+        to: email,
+        subject: "Verify your email address",
+        html: `
+          <h1>Verify your email address</h1>
+          <p>Click the link below to verify your email address:</p>
+          <a href="${verificationLink}">Verify Email</a>
+          <p>This link will expire in 24 hours.</p>
+          <p>If you didn't create an account, you can safely ignore this email.</p>
+        `,
+      })
+    } catch (error) {
+      console.error("Failed to send verification email:", error)
+    }
+
+    revalidatePath("/register")
+    redirect("/verify-email?success=registered&email=" + encodeURIComponent(email))
   }
-
-  revalidatePath("/register")
-  redirect("/verify-email?success=registered&email=" + encodeURIComponent(email))
+  else {
+    revalidatePath("/register")
+    redirect("/sign-in?success=registered&email=" + encodeURIComponent(email))
+  }
 }
 
 export async function handleSignOut() {
