@@ -2,7 +2,7 @@
 
 ## Status
 
-Not Started
+Complete
 
 ## Goals
 
@@ -31,6 +31,8 @@ Not Started
 - Existing unverified users should be prompted to verify or resend verification email
 
 ## History
+
+- **Email Verification on Register (Completed)** - Installed Resend SDK, created verification token system with SHA-256 hashing and 24h expiry, added verification email on registration via Resend, created `/api/auth/verify` route for token validation, built `/verify-email` page with success/error/expired states, blocked sign-in for unverified users, added resend verification functionality, and handled all edge cases (expired tokens, already verified, invalid tokens)
 
 - **Initial setup** - Next.js 16, Tailwind CSS V4, Typescript configured (Completed)
 

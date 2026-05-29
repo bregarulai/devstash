@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { signIn } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { AuthError } from 'next-auth';
 import { SignInToast } from './sign-in-toast';
+import { handleSignIn } from '@/actions/sign-in';
+import { handleResendVerification } from '@/actions/resend-verification';
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -17,10 +18,10 @@ export const metadata: Metadata = {
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; success?: string; email?: string }>;
 }) {
   const session = await auth();
-  const { error } = await searchParams;
+  const { error, success, email } = await searchParams;
 
   if (session?.user) {
     redirect('/dashboard');
@@ -39,25 +40,35 @@ export default async function SignInPage({
           </p>
         </div>
 
-        {error === 'InvalidCredentials' && (
-          <div className='rounded-md bg-destructive/15 p-3 text-sm text-destructive'>
-            Invalid email or password. Please try again.
+        {success === 'registered' && (
+          <div className='rounded-md bg-green-500/15 p-3 text-sm text-green-600'>
+            Account created successfully! Please sign in to verify your email.
+          </div>
+        )}
+
+        {error === 'UnverifiedEmail' && email && (
+          <div className='rounded-md bg-yellow-500/15 p-3 text-sm text-yellow-600'>
+            Your email has not been verified yet. Please check your inbox for a verification email.{' '}
+            <form action={async () => {
+              'use server';
+              await handleResendVerification(email);
+            }}>
+              <button type='submit' className='underline underline-offset-4 hover:text-yellow-700 transition-colors'>
+                Resend verification email
+              </button>
+            </form>
+          </div>
+        )}
+
+        {success === 'resent' && (
+          <div className='rounded-md bg-green-500/15 p-3 text-sm text-green-600'>
+            A new verification email has been sent to your inbox.
           </div>
         )}
 
         <div className='space-y-4'>
           <form
-            action={async (formData) => {
-              'use server';
-              try {
-                await signIn('credentials', formData);
-              } catch (error) {
-                if (error instanceof AuthError) {
-                  redirect('/sign-in?error=InvalidCredentials');
-                }
-                throw error;
-              }
-            }}
+            action={handleSignIn}
             className='space-y-4'
           >
             <div className='space-y-2'>

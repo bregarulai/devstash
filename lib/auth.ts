@@ -25,6 +25,10 @@ const overrideProviders = {
           return null
         }
 
+        if (!user.emailVerified) {
+          return null
+        }
+
         const isValid = await bcrypt.compare(
           credentials.password as string,
           user.password,
