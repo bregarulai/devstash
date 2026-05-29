@@ -1,34 +1,12 @@
-# Email Verification on Register
-
-## Status
-
-Complete
+# Current Feature
 
 ## Goals
 
-- Install and configure Resend SDK with existing RESEND_API_KEY
-- Add verification token (Using existing VerificationToken model) and expiry to user model
-- Send verification email with clickable link via Resend when user registers
-- Create `/api/auth/verify` route to validate tokens and set `emailVerified` timestamp
-- Create `/verify-email` showing verification status (success/error/expired)
-- Block sign-in for unverified email users with clear error message
-- Add resend verification functionality if token expires
-- Handle edge cases: expired tokens, already verified, invalid tokens
-- Redirect verified users to sign-in or dashboard after successful verification
-- Mark users as verified on successful token validation
+- 
 
 ## Notes
 
-- User model already has `emailVerified: DateTime?` field
-- `VerificationToken` model exist with `identifier`, `token`, `expires` fields
-- RESEND_API_KEY in `.env`
-- Github OAth users bypass email verification (already verified by provider)
-- Prisma + Neon PostgreSQL is the database layer
-- NextAuth v5 with Credentials provider is in place for email/password auth
-- Users must click the verification link in their email to complete registration
-- Verification token should be securely hashed (Using existing VerificationToken model) before storing
-- Token expiry 24 hours recomended
-- Existing unverified users should be prompted to verify or resend verification email
+- 
 
 ## History
 
