@@ -1,12 +1,26 @@
-# Current Feature
+# Current Feature: Password Reset
 
 ## Goals
 
--
+- Add "Forgot Password" link on the sign-in page
+- Create `/forgot-password` page with email input form
+- Create `/reset-password` page with new password form (token via query param)
+- Implement forgot-password server action that generates a verification token and sends reset email via Resend
+- Implement reset-password server action that validates the token and updates the user's password
+- Reuse existing `VerificationToken` model and `verification-token.ts` utilities
+- Display success/error toast messages on both pages
 
 ## Notes
 
--
+- Reuse `createVerificationToken` and `verifyToken` from `lib/verification-token.ts` — same schema (identifier/email, hashed token, 24h expiry)
+- Password reset email sent via Resend (`lib/resend.ts`)
+- Token is hashed with SHA-256 before storage, deleted after use (one-time)
+- User's `password` field in User model is nullable (GitHub-only users have `null`)
+- Follow `{ success, data, error }` return pattern from Server Actions per coding standards
+- Use Zod for input validation
+- Use shadcn/ui components (Input, Button, Label)
+- All styling via Tailwind CSS with design tokens (oklch colors)
+- Dark mode default
 
 ## History
 
