@@ -99,6 +99,15 @@ export default async function SignInPage({
               />
             </div>
 
+            <div className='flex justify-end'>
+              <Link
+                href='/forgot-password'
+                className='text-xs font-medium text-foreground underline underline-offset-4 hover:text-muted-foreground transition-colors'
+              >
+                Forgot password?
+              </Link>
+            </div>
+
             <Button type='submit' className='w-full h-10'>
               Sign in with email
             </Button>

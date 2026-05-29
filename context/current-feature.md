@@ -1,5 +1,9 @@
 # Current Feature: Password Reset
 
+## Status
+
+In Progress
+
 ## Goals
 
 - Add "Forgot Password" link on the sign-in page
@@ -55,3 +59,5 @@
 - **Email Verification on Register (Completed)** - Installed Resend SDK, created verification token system with SHA-256 hashing and 24h expiry, added verification email on registration via Resend, created `/api/auth/verify` route for token validation, built `/verify-email` page with success/error/expired states, blocked sign-in for unverified users, added resend verification functionality, and handled all edge cases (expired tokens, already verified, invalid tokens)
 
 - **Toggle Email Verification (Completed)** - Added ENABLE_EMAIL_VERIFICATION env variable to enable/disable email verification, skip token creation and email sending when disabled, allow sign-in without verification when disabled
+
+- **Password Reset (In Progress)** - Added forgot password link, created `/forgot-password` and `/reset-password` pages, implemented server actions for token generation and password update
