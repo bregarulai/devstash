@@ -16,7 +16,7 @@ export async function handleResendVerification(email: string) {
 
   const token = await createVerificationToken(email)
 
-  const verificationLink = `${process.env.AUTH_URL || "http://localhost:3000"}/api/auth/verify?token=${token}&email=${encodeURIComponent(email)}`
+  const verificationLink = `${process.env.AUTH_URL || "http://localhost:3000"}/verify-email?token=${token}`
 
   try {
     await resend.emails.send({

@@ -79,7 +79,7 @@ Example v4 configuration:
 ## Database
 
 - Use Prisma ORM for all database operations
-- Always use `prisma migrate dev` for schema changes (not `db push`)
+- ALWAYS use `prisma migrate dev` for schema changes (not `db push`)
 - Run `prisma migrate status` before committing to verify migrations are in sync
 - Production deployments must run `prisma migrate deploy` before the app starts
 

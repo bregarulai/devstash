@@ -20,15 +20,6 @@ export async function GET(request: NextRequest) {
   })
 
   if (!existingToken) {
-    const user = await prisma.user.findFirst({
-      where: { emailVerified: { not: null } },
-    })
-    if (user) {
-      return NextResponse.json(
-        { message: "Email already verified" },
-        { status: 200 }
-      )
-    }
     return NextResponse.json(
       { error: "Verification link has expired or is invalid" },
       { status: 400 }
@@ -36,14 +27,6 @@ export async function GET(request: NextRequest) {
   }
 
   if (existingToken.expires < new Date()) {
-    await prisma.verificationToken.delete({
-      where: {
-        identifier_token: {
-          identifier: existingToken.identifier,
-          token: hashedToken,
-        },
-      },
-    })
     return NextResponse.json(
       { error: "Verification link has expired or is invalid" },
       { status: 400 }
@@ -71,15 +54,6 @@ export async function GET(request: NextRequest) {
   await prisma.user.update({
     where: { id: user.id },
     data: { emailVerified: new Date() },
-  })
-
-  await prisma.verificationToken.delete({
-    where: {
-      identifier_token: {
-        identifier: existingToken.identifier,
-        token: hashedToken,
-      },
-    },
   })
 
   return NextResponse.json(
