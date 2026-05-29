@@ -4,6 +4,13 @@ import { auth } from '@/lib/auth';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { signIn } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
@@ -33,37 +40,34 @@ export default async function SignInPage({
   return (
     <div className='min-h-screen flex items-center justify-center bg-background px-4'>
       <SignInToast />
-      <div className='w-full max-w-sm space-y-6'>
-        <div className='text-center space-y-2'>
-          <h1 className='text-2xl font-bold tracking-tight'>
-            Sign in to DevStash
-          </h1>
-          <p className='text-sm text-muted-foreground'>
+      <Card className='w-full max-w-md'>
+        <CardHeader className='text-center'>
+          <CardTitle className='text-2xl'>Sign in to DevStash</CardTitle>
+          <CardDescription>
             Use your email or GitHub account to sign in
-          </p>
-        </div>
-
-        {error === 'UnverifiedEmail' && email && (
-          <div className='rounded-md bg-yellow-500/15 p-3 text-sm text-yellow-600'>
-            Your email has not been verified yet. Please check your inbox for a
-            verification email.{' '}
-            <form
-              action={async () => {
-                'use server';
-                await handleResendVerification(email);
-              }}
-            >
-              <button
-                type='submit'
-                className='underline underline-offset-4 hover:text-yellow-700 transition-colors'
+          </CardDescription>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          {error === 'UnverifiedEmail' && email && (
+            <div className='rounded-md bg-yellow-500/15 p-3 text-sm text-yellow-600'>
+              Your email has not been verified yet. Please check your inbox for a
+              verification email.{' '}
+              <form
+                action={async () => {
+                  'use server';
+                  await handleResendVerification(email);
+                }}
               >
-                Resend verification email
-              </button>
-            </form>
-          </div>
-        )}
+                <button
+                  type='submit'
+                  className='underline underline-offset-4 hover:text-yellow-700 transition-colors'
+                >
+                  Resend verification email
+                </button>
+              </form>
+            </div>
+          )}
 
-        <div className='space-y-4'>
           <form action={handleSignIn} className='space-y-4'>
             <div className='space-y-2'>
               <Label htmlFor='email' className='text-sm font-medium'>
@@ -96,7 +100,7 @@ export default async function SignInPage({
             <div className='flex justify-end'>
               <Link
                 href='/forgot-password'
-                className='text-xs font-medium text-foreground underline underline-offset-4 hover:text-muted-foreground transition-colors'
+                className='text-xs font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors'
               >
                 Forgot password?
               </Link>
@@ -135,18 +139,18 @@ export default async function SignInPage({
               Sign in with GitHub
             </Button>
           </form>
-        </div>
 
-        <p className='text-center text-sm text-muted-foreground'>
-          Don&apos;t have an account?{' '}
-          <Link
-            href='/register'
-            className='font-medium text-foreground underline underline-offset-4 hover:text-muted-foreground transition-colors'
-          >
-            Register
-          </Link>
-        </p>
-      </div>
+          <p className='text-center text-sm text-muted-foreground'>
+            Don&apos;t have an account?{' '}
+            <Link
+              href='/register'
+              className='font-medium text-foreground underline underline-offset-4 hover:text-muted-foreground transition-colors'
+            >
+              Register
+            </Link>
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }
