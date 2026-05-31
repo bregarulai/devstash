@@ -65,6 +65,7 @@ The following skill files are installed and managed by OpenCode:
 - `list-components/` — List React component files (.tsx/.ts/.jsx/.js) in the components folder
 - `cleanup/` — Clean up project housekeeping tasks (run|check) — console.log, unused imports, stale TODOs, orphaned files, env sync, @ts-ignore
 - `impeccable/` — Design quality skill with 23 commands and 27 anti-pattern rules (`/impeccable init` to set up design context, then `audit`, `critique`, `polish`, `typeset`, `colorize`, `layout`, `bolder`, `animate`, etc.)
+- `skill-creator/` — Create new skills, modify and improve existing skills, and measure skill performance (draft, test, review, iterate, optimize description)
 
 ## Quick reference
 
