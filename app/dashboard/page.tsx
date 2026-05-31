@@ -14,6 +14,9 @@ import { StatsCards } from '@/components/dashboard/statsCards/StatsCards';
 import { CollectionsSession } from '@/components/dashboard/collectionSession/CollectionsSession';
 import { PinnedItems } from '@/components/dashboard/pinnedItems/PinnedItems';
 import { RecentItems } from '@/components/dashboard/recentItems/RecentItems';
+import { DashboardDataRetry } from '@/components/dashboard/dashboardDataRetry/DashboardDataRetry';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -22,40 +25,59 @@ export default async function DashboardPage() {
     return <div className="min-h-screen flex items-center justify-center">Not signed in</div>;
   }
 
-  const user = await prisma.user.findFirst({
-    where: { id: session.user.id },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      image: true,
-      isPro: true,
-    },
-  });
+  let user: { id: string; name: string | null; email: string; image: string | null; isPro: boolean } | null = null;
+
+  try {
+    user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        isPro: true,
+      },
+    });
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+  }
 
   if (!user) {
     return (
       <div className='min-h-screen bg-background flex items-center justify-center'>
-        <div className='flex items-center justify-center h-64 text-muted-foreground'>
-          No user found. Please sign in to view the dashboard.
+        <div className='flex flex-col items-center justify-center gap-4 h-64 text-muted-foreground'>
+          <p>Unable to load dashboard. Please try again.</p>
+          <Button asChild variant='default'>
+            <Link href="/dashboard">Retry</Link>
+          </Button>
         </div>
       </div>
     );
   }
 
-  const [
-    pinnedItems,
-    recentItems,
-    systemItemTypes,
-    favoriteCollections,
-    recentCollections,
-  ] = await Promise.all([
-    getPinnedItems(user.id),
-    getRecentItems(user.id),
-    getSystemItemTypesWithCounts(),
-    getFavoriteCollections(user.id),
-    getRecentCollections(user.id, 5),
-  ]);
+  let pinnedItems: Awaited<ReturnType<typeof getPinnedItems>> = [];
+  let recentItems: Awaited<ReturnType<typeof getRecentItems>> = [];
+  let systemItemTypes: Awaited<ReturnType<typeof getSystemItemTypesWithCounts>> = [];
+  let favoriteCollections: Awaited<ReturnType<typeof getFavoriteCollections>> = [];
+  let recentCollections: Awaited<ReturnType<typeof getRecentCollections>> = [];
+
+  try {
+    [
+      pinnedItems,
+      recentItems,
+      systemItemTypes,
+      favoriteCollections,
+      recentCollections,
+    ] = await Promise.all([
+      getPinnedItems(user.id).catch(() => []),
+      getRecentItems(user.id).catch(() => []),
+      getSystemItemTypesWithCounts().catch(() => []),
+      getFavoriteCollections(user.id).catch(() => []),
+      getRecentCollections(user.id, 5).catch(() => []),
+    ]);
+  } catch (error) {
+    console.error('Failed to fetch dashboard data:', error);
+  }
 
   return (
     <DashboardWrapper
@@ -64,12 +86,14 @@ export default async function DashboardPage() {
       favoriteCollections={favoriteCollections}
       recentCollections={recentCollections}
     >
-      <div className='space-y-6'>
-        <StatsCards userId={user.id} />
-        <CollectionsSession user={user} />
-        <PinnedItems items={pinnedItems} />
-        <RecentItems items={recentItems} />
-      </div>
+      <DashboardDataRetry>
+        <div className='space-y-6'>
+          <StatsCards userId={user.id} />
+          <CollectionsSession user={user} />
+          <PinnedItems items={pinnedItems} />
+          <RecentItems items={recentItems} />
+        </div>
+      </DashboardDataRetry>
     </DashboardWrapper>
   );
 }

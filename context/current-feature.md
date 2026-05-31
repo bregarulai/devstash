@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Dashboard Hardening Phase 1 — Error Handling & Reliability
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
--
+- Wrap dashboard data fetch in `try/catch` with graceful fallback UI
+- Replace `prisma.user.findFirst` with `findUnique` or use `session.user` directly (Option C: minimal DB query)
+- Add null-safe defaults for all data fetch results (empty arrays instead of crashes)
+- Ensure the dashboard renders a usable state even when Prisma queries fail
+- No white-screen crashes under any database failure scenario
 
 ## Notes
 
--
+- **P0 Severity** — Blocking. Without this, any database failure crashes the entire dashboard with no recovery path
+- Recommend Option C for user query: query Prisma only for fields not in `session.user` (e.g., `isPro`), merge with session data
+- All components in `components/dashboard/` already accept `items={[]}` — verify empty array handling has no visual glitches
+- Fallback UI message: "Unable to load dashboard. Please try again." with Retry button using `router.refresh()`
+- Consistent error styling: use `bg-background`, `text-muted-foreground`, dark-mode-first aesthetic
+- Spec: `context/features/dashboard-hardening-phase-1-spec.md`
+- References: `app/dashboard/page.tsx`, `lib/auth.ts`, `lib/prisma.ts`
 
 ## History
 

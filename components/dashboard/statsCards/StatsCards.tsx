@@ -6,33 +6,50 @@ interface StatsCardsProps {
 }
 
 export async function StatsCards({ userId }: StatsCardsProps) {
-  const stats = await getItemStats(userId);
+  const result = {
+    success: false,
+    data: {
+      totalItems: 0,
+      totalCollections: 0,
+      favoriteItems: 0,
+      favoriteCollections: 0,
+    } as Awaited<ReturnType<typeof getItemStats>>,
+    error: null as Error | null,
+  };
+
+  try {
+    result.data = await getItemStats(userId);
+    result.success = true;
+  } catch (error) {
+    result.error = error instanceof Error ? error : new Error(String(error));
+    console.error('Failed to fetch stats:', result.error);
+  }
 
   const data = [
     {
       label: 'Total Items',
-      value: stats.totalItems,
+      value: result.data.totalItems,
       icon: Code,
       color: 'text-snippet',
       bgColor: 'bg-snippet/10',
     },
     {
       label: 'Collections',
-      value: stats.totalCollections,
+      value: result.data.totalCollections,
       icon: Folder,
       color: 'text-prompt',
       bgColor: 'bg-prompt/10',
     },
     {
       label: 'Favorite Items',
-      value: stats.favoriteItems,
+      value: result.data.favoriteItems,
       icon: Heart,
       color: 'text-image',
       bgColor: 'bg-image/10',
     },
     {
       label: 'Favorite Collections',
-      value: stats.favoriteCollections,
+      value: result.data.favoriteCollections,
       icon: Star,
       color: 'text-command',
       bgColor: 'bg-command/10',

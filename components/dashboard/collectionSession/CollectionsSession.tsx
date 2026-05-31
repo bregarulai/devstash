@@ -12,7 +12,19 @@ interface CollectionsSessionProps {
 }
 
 export async function CollectionsSession({ user }: CollectionsSessionProps) {
-  const collections = await getAllCollections(user.id);
+  const result = {
+    success: false,
+    data: [] as Awaited<ReturnType<typeof getAllCollections>>,
+    error: null as Error | null,
+  };
+
+  try {
+    result.data = await getAllCollections(user.id);
+    result.success = true;
+  } catch (error) {
+    result.error = error instanceof Error ? error : new Error(String(error));
+    console.error('Failed to fetch collections:', result.error);
+  }
 
   return (
     <section className='space-y-6'>
@@ -30,7 +42,7 @@ export async function CollectionsSession({ user }: CollectionsSessionProps) {
           </Link>
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {collections.map((collection) => (
+          {result.data.map((collection) => (
             <CollectionCard key={collection.id} collection={collection} />
           ))}
         </div>

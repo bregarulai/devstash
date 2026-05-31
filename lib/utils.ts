@@ -7,6 +7,11 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatDaysAgo(date: Date | string): string {
   const targetDate = typeof date === 'string' ? new Date(date) : date;
+  
+  if (isNaN(targetDate.getTime())) {
+    return 'Invalid date';
+  }
+  
   const now = new Date();
   
   const targetYear = targetDate.getFullYear();

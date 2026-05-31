@@ -15,7 +15,7 @@ export function ResetPasswordToast() {
     if ((success || error) && !shown.current) {
       shown.current = true
       if (success === "password-reset") {
-        const email = searchParams.get("email")
+        searchParams.get("email")
         toast.success("Password reset", {
           description: `Your password has been reset. Sign in with your new password.`,
         })
