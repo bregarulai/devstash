@@ -1,0 +1,10 @@
+{
+  "framework": "nextjs-app",
+  "files": ["app/page.tsx", "app/dashboard/page.tsx"],
+  "insertBefore": "</head>",
+  "commentSyntax": {
+    "start": "<!--",
+    "end": "-->"
+  },
+  "cspChecked": true
+}

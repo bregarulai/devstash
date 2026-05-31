@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-31T19:49:11.469Z",
+  "title": "Design System: DevStash",
+  "extensions": {
+    "colorMeta": {
+      "neutral-950": { "role": "neutral", "displayName": "Dark Background", "canonical": "oklch(0.145 0 0)", "tonalRamp": ["#09090b", "#111113", "#1a1a1c", "#232326", "#2c2c2f", "#353539", "#3e3e42", "#47474b"] },
+      "neutral-800": { "role": "neutral", "displayName": "Dark Surface", "canonical": "oklch(0.205 0 0)", "tonalRamp": ["#18181b", "#212124", "#2a2a2d", "#333337", "#3c3c40", "#454549", "#4e4e52", "#57575b"] },
+      "neutral-700": { "role": "neutral", "displayName": "Dark Border", "canonical": "oklch(0.269 0 0)", "tonalRamp": ["#27272a", "#2f2f32", "#37373a", "#3f3f43", "#47474b", "#4f4f53", "#57575b", "#5f5f63"] },
+      "neutral-600": { "role": "neutral", "displayName": "Border Gray", "canonical": "oklch(0.371 0 0)", "tonalRamp": ["#3f3f46", "#4a4a51", "#55555c", "#60606b", "#6b6b7a", "#767689", "#818198", "#8c8ca7"] },
+      "neutral-500": { "role": "neutral", "displayName": "Muted Text", "canonical": "oklch(0.556 0 0)", "tonalRamp": ["#52525b", "#5e5e67", "#6a6a74", "#767680", "#82828c", "#8e8e99", "#9a9aa5", "#a6a6b1"] },
+      "neutral-400": { "role": "neutral", "displayName": "Muted Foreground", "canonical": "oklch(0.708 0 0)", "tonalRamp": ["#a1a1aa", "#a8a8b1", "#afafba", "#b6b6c2", "#bdbdd0", "#c4c4d8", "#cbcbdfe", "#d2d2e6"] },
+      "neutral-300": { "role": "neutral", "displayName": "Light Border", "canonical": "oklch(0.87 0 0)", "tonalRamp": ["#d4d4d8", "#d8d8dc", "#dbdbdf", "#dedee2", "#e1e2e5", "#e4e4e7", "#e8e8eb", "#ebebee"] },
+      "neutral-200": { "role": "neutral", "displayName": "Light Surface", "canonical": "oklch(0.922 0 0)", "tonalRamp": ["#e4e4e7", "#e7e7ea", "#e9e9ec", "#ebebee", "#ededef", "#efeff2", "#f1f1f3", "#f3f3f5"] },
+      "neutral-100": { "role": "neutral", "displayName": "Secondary Surface", "canonical": "oklch(0.97 0 0)", "tonalRamp": ["#f4f4f5", "#f6f6f7", "#f7f7f8", "#f8f8f9", "#f9f9fa", "#fafafa", "#fbfbfc", "#fcfcfd"] },
+      "neutral-50": { "role": "neutral", "displayName": "Foreground Light", "canonical": "oklch(0.985 0 0)", "tonalRamp": ["#fafafa", "#fbfbfb", "#fcfcfc", "#fdfdfd", "#fefefe", "#ffffff", "#ffffff", "#ffffff"] },
+      "white": { "role": "neutral", "displayName": "White", "canonical": "oklch(1 0 0)", "tonalRamp": ["#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff"] },
+      "primary-ink": { "role": "primary", "displayName": "Ink", "canonical": "oklch(0.205 0 0)", "tonalRamp": ["#18181b", "#212124", "#2a2a2d", "#333337", "#3c3c40", "#454549", "#4e4e52", "#57575b"] },
+      "destructive": { "role": "destructive", "displayName": "Alert Red", "canonical": "oklch(0.627 0.265 25.733)", "tonalRamp": ["#ef4444", "#f05555", "#f16767", "#f27878", "#f38a8a", "#f49b9b", "#f5adad", "#f6bebe"] },
+      "snippet": { "role": "tertiary", "displayName": "Snippet Blue", "canonical": "oklch(0.627 0.234 264.331)", "tonalRamp": ["#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#bfdbfe", "#dbeafe", "#eff6ff"] },
+      "prompt": { "role": "tertiary", "displayName": "Prompt Purple", "canonical": "oklch(0.627 0.234 308.29)", "tonalRamp": ["#6d28d9", "#7c3aed", "#8b5cf6", "#a78bfa", "#c4b5fd", "#ddd6fe", "#ede9fe", "#f5f3ff"] },
+      "command": { "role": "tertiary", "displayName": "Command Orange", "canonical": "oklch(0.681 0.245 33.636)", "tonalRamp": ["#c2410c", "#ea580c", "#f97316", "#fb923c", "#fdba74", "#fed7aa", "#ffedd5", "#fff7ed"] },
+      "note": { "role": "tertiary", "displayName": "Note Yellow", "canonical": "oklch(0.868 0.194 91.936)", "tonalRamp": ["#a16207", "#ca8a04", "#eab308", "#facc15", "#fde047", "#fef08a", "#fef9c3", "#fefce8"] },
+      "file": { "role": "tertiary", "displayName": "File Gray", "canonical": "oklch(0.524 0.065 264.032)", "tonalRamp": ["#374151", "#4b5563", "#6b7280", "#9ca3af", "#b0b8c4", "#c5ccd6", "#dbdfe5", "#f0f1f3"] },
+      "image": { "role": "tertiary", "displayName": "Image Pink", "canonical": "oklch(0.656 0.237 354.048)", "tonalRamp": ["#be185d", "#db2777", "#ec4899", "#f472b6", "#f9a8d4", "#fbcfe8", "#fce7f3", "#fdf2f8"] },
+      "link": { "role": "tertiary", "displayName": "Link Emerald", "canonical": "oklch(0.627 0.187 149.579)", "tonalRamp": ["#047857", "#059669", "#10b981", "#34d399", "#6ee7b7", "#a7f3d0", "#d1fae5", "#ecfdf5"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page titles and dashboard heading only." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles and card titles." },
+      "body": { "displayName": "Body", "purpose": "Item content, descriptions, body text." },
+      "label": { "displayName": "Label", "purpose": "Badge text, navigation labels, type indicators." },
+      "mono": { "displayName": "Mono", "purpose": "Code blocks, terminal output, file paths." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default transition easing for state changes." },
+      { "name": "duration-fast", "value": "150ms", "purpose": "State transitions, hover responses." },
+      { "name": "duration-standard", "value": "200ms", "purpose": "Opening/closing drawers, modals." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-default",
+      "description": "Default action button. Ink background, white text.",
+      "html": "<button class=\"ds-btn-primary\">SAVE CHANGES</button>",
+      "css": ".ds-btn-primary { background: #18181b; color: #ffffff; border: none; border-radius: 8px; height: 32px; padding: 4px 10px; font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; line-height: 1; letter-spacing: normal; cursor: pointer; transition: background 150ms ease, opacity 150ms ease; } .ds-btn-primary:hover { background: #27272a; } .ds-btn-primary:focus-visible { outline: none; ring: 3px solid #b0b0b0; ring-opacity: 0.5; } .ds-btn-primary:active { background: #3f3f46; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action. Transparent background with border.",
+      "html": "<button class=\"ds-btn-outline\">CANCEL</button>",
+      "css": ".ds-btn-outline { background: transparent; color: #fafafa; border: 1px solid #27272a; border-radius: 8px; height: 32px; padding: 4px 10px; font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1; cursor: pointer; transition: background 150ms ease; } .ds-btn-outline:hover { background: #18181b; } .ds-btn-outline:focus-visible { outline: none; ring: 3px solid #b0b0b0; ring-opacity: 0.5; }"
+    },
+    {
+      "name": "Card Container",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Content container. Flat surface with subtle ring border.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-header\"><h3 class=\"ds-card-title\">React Patterns</h3></div><div class=\"ds-card-content\"><p>Collection of React component patterns and hooks.</p></div></div>",
+      "css": ".ds-card { background: #18181b; border-radius: 12px; padding: 16px; color: #fafafa; font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; line-height: 1.5; border: none; box-shadow: none; } .ds-card::before { content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; border: 1px solid rgba(250, 250, 250, 0.1); } .ds-card-header { padding-bottom: 8px; } .ds-card-title { font-size: 1rem; font-weight: 600; line-height: 1.4; margin: 0; } .ds-card-content { color: #a1a1aa; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Text input. Transparent background, subtle border.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Search items...\" />",
+      "css": ".ds-input { background: transparent; color: #fafafa; border: 1px solid #27272a; border-radius: 8px; height: 32px; padding: 4px 10px; font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; line-height: 1.5; width: 100%; min-width: 0; outline: none; transition: border-color 150ms ease; } .ds-input::placeholder { color: #a1a1aa; } .ds-input:focus-visible { border-color: #b0b0b0; box-shadow: 0 0 0 3px rgba(176, 176, 176, 0.5); } .ds-input:disabled { background: rgba(39, 39, 42, 0.5); cursor: not-allowed; opacity: 0.5; } .ds-input[aria-invalid] { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); }"
+    },
+    {
+      "name": "Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Compact label. Small radius for tight appearance.",
+      "html": "<span class=\"ds-badge\">Snippet</span>",
+      "css": ".ds-badge { background: #18181b; color: #fafafa; border-radius: 4px; font-family: Geist, system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1; padding: 2px 6px; display: inline-flex; align-items: center; white-space: nowrap; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Tertiary action. No background until hover.",
+      "html": "<button class=\"ds-btn-ghost\">DELETE</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: #fafafa; border: none; border-radius: 8px; height: 32px; padding: 4px 10px; font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1; cursor: pointer; transition: background 150ms ease; } .ds-btn-ghost:hover { background: #18181b; } .ds-btn-ghost:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(176, 176, 176, 0.5); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Developer's Workbench",
+    "overview": "DevStash is a tool interface — not a marketing page. The visual system serves the product: fast retrieval, clear organization, zero distraction. Dark-first, type-driven, restrained color. The aesthetic is the same as Linear, Raycast, and VS Code.",
+    "keyCharacteristics": ["Dark-first, monochrome base with functional color", "Geist typeface family: clean, technical, highly legible", "Flat surfaces with tonal layering (no shadows)", "Gently curved edges (8px radius)", "Item-type colors as the sole chromatic vocabulary", "Minimal borders, ring-based focus states"],
+    "rules": [
+      { "name": "The One-Color Rule", "body": "Saturated colors appear only as item-type identifiers, focus rings, or destructive states. No section, card, or decorative element may use them.", "section": "colors" },
+      { "name": "The Single-Family Rule", "body": "DevStash uses one font family (Geist) in multiple weights. No font pairing, no third typeface.", "section": "typography" },
+      { "name": "The No-Shadow Rule", "body": "Surfaces are flat. Elevation comes from background tone shifts and ring borders only.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use dark mode as the default canvas",
+      "Do use item-type colors solely for their functional purpose",
+      "Do keep surfaces flat with tonal layering and ring borders",
+      "Do use Geist for all text",
+      "Do use 8px radius as the default corner treatment",
+      "Do keep the palette restrained"
+    ],
+    "donts": [
+      "Don't add a brand accent color",
+      "Don't use neon, glow, or gradient effects",
+      "Don't add box-shadows to surfaces",
+      "Don't introduce a second font family",
+      "Don't use saturated colors on decorative elements",
+      "Don't use border-left or border-right greater than 1px as a colored stripe",
+      "Don't use gradient text",
+      "Don't use glassmorphism as a default treatment"
+    ]
+  }
+}
