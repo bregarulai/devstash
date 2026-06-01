@@ -1,9 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import { redirect } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -11,12 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { signIn } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-
-import { handleSignIn } from '@/actions/sign-in';
-import { handleResendVerification } from '@/actions/resend-verification';
+import { Button } from '@/components/ui/button';
 import { SignInToast } from '@/components/auth/signInToast/SignInToast';
+import { handleResendVerification } from '@/actions/resend-verification';
+import { SignInForm } from '@/components/signinForm/signInForm';
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -68,48 +64,16 @@ export default async function SignInPage({
             </div>
           )}
 
-          <form action={handleSignIn} className='space-y-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='email' className='text-sm font-medium'>
-                Email
-              </Label>
-              <Input
-                id='email'
-                name='email'
-                type='email'
-                required
-                placeholder='you@example.com'
-                className='h-10'
-              />
-            </div>
+          <SignInForm email={email} />
 
-            <div className='space-y-2'>
-              <Label htmlFor='password' className='text-sm font-medium'>
-                Password
-              </Label>
-              <Input
-                id='password'
-                name='password'
-                type='password'
-                required
-                placeholder='••••••••'
-                className='h-10'
-              />
-            </div>
-
-            <div className='flex justify-end'>
-              <Link
-                href='/forgot-password'
-                className='text-xs font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors'
-              >
-                Forgot password?
-              </Link>
-            </div>
-
-            <Button type='submit' className='w-full h-10'>
-              Sign in with email
-            </Button>
-          </form>
+          <div className='flex justify-end'>
+            <Link
+              href='/forgot-password'
+              className='text-xs font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors'
+            >
+              Forgot password?
+            </Link>
+          </div>
 
           <div className='relative'>
             <div className='absolute inset-0 flex items-center'>
@@ -125,7 +89,9 @@ export default async function SignInPage({
           <form
             action={async () => {
               'use server';
-              await signIn('github', { redirectTo: '/dashboard' });
+              await (await import('@/lib/auth')).signIn('github', {
+                redirectTo: '/dashboard',
+              });
             }}
           >
             <Button type='submit' variant='outline' className='w-full h-10'>

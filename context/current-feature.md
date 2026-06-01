@@ -1,14 +1,23 @@
-# Current Feature
+# Current Feature: Sign-In Form Hardening — Phase 1
 
-## Status:
+## Status: In Progress
 
 ## Goals
 
--
+- Extract sign-in form into a client component (`sign-in-form.tsx`) with `useTransition` for loading state
+- Add password visibility toggle with show/hide button inside password input
+- Add autocomplete attributes (`username`, `current-password`) to email and password inputs
+- Prevent double-submission with `disabled={isPending}` on submit button
 
 ## Notes
 
--
+- Target: `app/(auth)/sign-in/page.tsx`
+- Phase 1 of 3, Priority P1
+- Create `components/signinForm/signInForm.tsx` as new client component
+- Preserve `handleSignIn` Server Action — wrap with `useTransition`
+- Password toggle uses inline SVG (no new icon dependency)
+- All new components follow coding standards: shadcn components only, `cn()` for conditional classes
+- Dark mode first, light mode as option
 
 ## History
 
