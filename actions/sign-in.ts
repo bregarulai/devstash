@@ -3,9 +3,19 @@
 import { prisma } from "@/lib/prisma"
 import { signIn } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { signInSchema } from "@/types/signIn"
 
 export async function handleSignIn(formData: FormData) {
-  const email = formData.get("email") as string
+  const result = signInSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  })
+
+  if (!result.success) {
+    redirect(`/sign-in?error=${encodeURIComponent(result.error.issues[0]?.message || "Validation failed")}`)
+  }
+
+  const { email } = result.data
 
   const user = await prisma.user.findUnique({
     where: { email },
