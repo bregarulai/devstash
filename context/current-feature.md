@@ -1,11 +1,35 @@
-# Current Feature
+# Current Feature: Register Page Hardening
 
-## Status: Not Started
+## Status: In Progress
 
 ## Goals
 
+- Add `autocomplete` attributes to all register form fields for password manager support
+- Add loading state on form submit with disabled button and "Creating account..." text
+- Add client-side password confirmation with live match/mismatch feedback
+- Display password requirements below password field
+- Convert register page to use react-hook-form + Zod validation with `mode: 'onChange'`
+- Fix button height to use default shadcn 32px (remove `h-10` overrides)
+- Fix sign-in link hover color to increase visibility on hover
+- Move `RegisterToast` to page root level (outside flex container)
+- Remove unnecessary `dynamic = 'force-dynamic'` from static register page
+- Preserve pre-filled values on validation error redirect
+- Add `aria-invalid` on all fields with errors
+- Add inline error messages via `FieldError` below each field
+- Add password visibility toggle with Eye/EyeOff icons
 
 ## Notes
+
+- Design Health Score: 19/40 — Poor
+- Priority: P0/P1 — Blocks user activation
+- Reference implementation: `app/(auth)/sign-in/page.tsx` uses client component wrapper pattern
+- Use `Field`, `FieldLabel`, `FieldError`, `FieldContent` from `@/components/ui/field`
+- Zod schema goes in `types/register.ts` with `RegisterFormData` type export
+- Client form component goes in `components/registerForm/RegisterForm.tsx`
+- Register page at `app/(auth)/register/page.tsx` needs conversion to async server component
+- Accept searchParams: `Promise<{ error?: string; success?: string }>`
+- Password requirements should update dynamically as user types (checkmarks for each requirement met)
+- Confirm password field should show green checkmark or red X in real-time
 
 ## History
 
