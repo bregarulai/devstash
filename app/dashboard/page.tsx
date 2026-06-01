@@ -4,6 +4,7 @@ import {
   getPinnedItems,
   getRecentItems,
   getSystemItemTypesWithCounts,
+  getItemStats,
 } from '@/lib/db/items';
 import {
   getFavoriteCollections,
@@ -60,6 +61,12 @@ export default async function DashboardPage() {
   let systemItemTypes: Awaited<ReturnType<typeof getSystemItemTypesWithCounts>> = [];
   let favoriteCollections: Awaited<ReturnType<typeof getFavoriteCollections>> = [];
   let recentCollections: Awaited<ReturnType<typeof getRecentCollections>> = [];
+  let itemStats: Awaited<ReturnType<typeof getItemStats>> = {
+    totalItems: 0,
+    totalCollections: 0,
+    favoriteItems: 0,
+    favoriteCollections: 0,
+  };
 
   try {
     [
@@ -68,12 +75,19 @@ export default async function DashboardPage() {
       systemItemTypes,
       favoriteCollections,
       recentCollections,
+      itemStats,
     ] = await Promise.all([
       getPinnedItems(user.id).catch(() => []),
       getRecentItems(user.id).catch(() => []),
       getSystemItemTypesWithCounts().catch(() => []),
       getFavoriteCollections(user.id).catch(() => []),
       getRecentCollections(user.id, 5).catch(() => []),
+      getItemStats(user.id).catch(() => ({
+        totalItems: 0,
+        totalCollections: 0,
+        favoriteItems: 0,
+        favoriteCollections: 0,
+      })),
     ]);
   } catch (error) {
     console.error('Failed to fetch dashboard data:', error);
@@ -88,8 +102,8 @@ export default async function DashboardPage() {
     >
       <DashboardDataRetry>
         <div className='space-y-6'>
-          <StatsCards userId={user.id} />
-          <CollectionsSession user={user} />
+          <StatsCards userId={user.id} stats={itemStats} />
+          <CollectionsSession user={user} collections={favoriteCollections} />
           <PinnedItems items={pinnedItems} />
           <RecentItems items={recentItems} />
         </div>

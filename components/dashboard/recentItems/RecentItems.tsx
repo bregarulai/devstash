@@ -1,8 +1,12 @@
+'use client'; // Required for ClientLoader interactivity (mounted state)
+
 import { Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 import { formatDaysAgo } from '@/lib/utils';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
+import { ClientLoader } from '../ClientLoader';
+import { RecentItemsSkeleton } from '../skeletons/RecentItemsSkeleton';
 
 interface ItemWithDetails {
   id: string;
@@ -22,10 +26,7 @@ interface RecentItemsProps {
 }
 
 export function RecentItems({ items }: RecentItemsProps) {
-  if (items.length === 0) {
-    return null;
-  }
-  return (
+  const content = (
     <section>
       <div className='flex items-center gap-2 py-4'>
         <Clock className='h-4 w-4 text-muted-foreground' />
@@ -72,5 +73,15 @@ export function RecentItems({ items }: RecentItemsProps) {
         ))}
       </div>
     </section>
+  );
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <ClientLoader fallback={<RecentItemsSkeleton />}>
+      {content}
+    </ClientLoader>
   );
 }

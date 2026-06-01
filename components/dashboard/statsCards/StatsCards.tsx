@@ -1,62 +1,52 @@
+'use client'; // Required for ClientLoader interactivity (mounted state)
+
 import { Code, Folder, Heart, Star } from 'lucide-react';
-import { getItemStats } from '@/lib/db/items';
+import { ClientLoader } from '../ClientLoader';
+import { StatsCardsSkeleton } from '../skeletons/StatsCardsSkeleton';
 
 interface StatsCardsProps {
   userId: string;
+  stats: {
+    totalItems: number;
+    totalCollections: number;
+    favoriteItems: number;
+    favoriteCollections: number;
+  };
 }
 
-export async function StatsCards({ userId }: StatsCardsProps) {
-  const result = {
-    success: false,
-    data: {
-      totalItems: 0,
-      totalCollections: 0,
-      favoriteItems: 0,
-      favoriteCollections: 0,
-    } as Awaited<ReturnType<typeof getItemStats>>,
-    error: null as Error | null,
-  };
-
-  try {
-    result.data = await getItemStats(userId);
-    result.success = true;
-  } catch (error) {
-    result.error = error instanceof Error ? error : new Error(String(error));
-    console.error('Failed to fetch stats:', result.error);
-  }
-
+export function StatsCards({ userId, stats }: StatsCardsProps) {
   const data = [
     {
       label: 'Total Items',
-      value: result.data.totalItems,
+      value: stats.totalItems,
       icon: Code,
       color: 'text-snippet',
       bgColor: 'bg-snippet/10',
     },
     {
       label: 'Collections',
-      value: result.data.totalCollections,
+      value: stats.totalCollections,
       icon: Folder,
       color: 'text-prompt',
       bgColor: 'bg-prompt/10',
     },
     {
       label: 'Favorite Items',
-      value: result.data.favoriteItems,
+      value: stats.favoriteItems,
       icon: Heart,
       color: 'text-image',
       bgColor: 'bg-image/10',
     },
     {
       label: 'Favorite Collections',
-      value: result.data.favoriteCollections,
+      value: stats.favoriteCollections,
       icon: Star,
       color: 'text-command',
       bgColor: 'bg-command/10',
     },
   ];
 
-  return (
+  const content = (
     <div className='grid grid-cols-2 gap-4 lg:grid-cols-4'>
       {data.map((stat) => (
         <div
@@ -75,5 +65,11 @@ export async function StatsCards({ userId }: StatsCardsProps) {
         </div>
       ))}
     </div>
+  );
+
+  return (
+    <ClientLoader fallback={<StatsCardsSkeleton />}>
+      {content}
+    </ClientLoader>
   );
 }

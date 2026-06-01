@@ -1,8 +1,12 @@
+'use client'; // Required for ClientLoader interactivity (mounted state)
+
 import { Pin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 import { formatDaysAgo } from '@/lib/utils';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
+import { ClientLoader } from '../ClientLoader';
+import { PinnedItemsSkeleton } from '../skeletons/PinnedItemsSkeleton';
 
 interface ItemWithDetails {
   id: string;
@@ -22,11 +26,7 @@ interface PinnedItemsProps {
 }
 
 export function PinnedItems({ items }: PinnedItemsProps) {
-  if (items.length === 0) {
-    return null;
-  }
-
-  return (
+  const content = (
     <section>
       <div className='flex items-center gap-2 py-4'>
         <Pin className='h-4 w-4 text-muted-foreground' />
@@ -73,5 +73,15 @@ export function PinnedItems({ items }: PinnedItemsProps) {
         ))}
       </div>
     </section>
+  );
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <ClientLoader fallback={<PinnedItemsSkeleton />}>
+      {content}
+    </ClientLoader>
   );
 }
