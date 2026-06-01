@@ -68,6 +68,8 @@ export function Sidebar({
           <PanelLeft
             className='h-5 w-5 shrink-0 cursor-pointer'
             onClick={onToggle}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}
+            tabIndex={0}
             aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
           />
         </div>
@@ -205,6 +207,11 @@ export function Sidebar({
         <div
           className={`flex items-center justify-center gap-3 rounded-lg p-2 cursor-pointer hover:bg-accent transition-colors ${isExpanded ? '' : 'justify-center'}`}
           onClick={() => setShowUserMenu(!showUserMenu)}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowUserMenu(!showUserMenu); } }}
+          tabIndex={0}
+          role="button"
+          aria-label="User menu"
+          aria-expanded={showUserMenu}
         >
           <Avatar>
             <AvatarImage

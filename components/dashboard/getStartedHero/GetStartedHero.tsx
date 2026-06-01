@@ -46,13 +46,14 @@ export function GetStartedHero() {
         ))}
       </div>
 
-      <div className='mt-6 flex justify-center'>
+      <div className='mt-6 flex justify-center gap-3 items-center'>
         <Button size='lg' asChild>
           <a href='/collect'>
             Save your first item
             <ArrowRight className='ml-2 h-4 w-4' />
           </a>
         </Button>
+        <span className='text-xs text-muted-foreground'>or press <span className='bg-muted px-1.5 py-0.5 rounded'>Ctrl+K</span> to quick save</span>
       </div>
     </div>
   );

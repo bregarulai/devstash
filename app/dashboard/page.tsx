@@ -19,6 +19,7 @@ import { DashboardDataRetry } from '@/components/dashboard/dashboardDataRetry/Da
 import { GetStartedHero } from '@/components/dashboard/getStartedHero/GetStartedHero';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { KeyboardHint } from '@/components/dashboard/keyboardHint/KeyboardHint';
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -101,13 +102,17 @@ export default async function DashboardPage() {
       favoriteCollections={favoriteCollections}
       recentCollections={recentCollections}
     >
+      <div className='flex items-center gap-2 px-2 py-1'>
+        <span className='text-xs text-muted-foreground'>Quick commands:</span>
+        <KeyboardHint shortcut="Ctrl+K" />
+      </div>
       <DashboardDataRetry>
         <div className='space-y-6'>
           {itemStats.totalItems === 0 ? (
             <GetStartedHero />
           ) : (
             <>
-              <StatsCards userId={user.id} stats={itemStats} />
+              <StatsCards stats={itemStats} />
               <CollectionsSession user={user} collections={favoriteCollections} />
               <PinnedItems items={pinnedItems} />
               <RecentItems items={recentItems} />

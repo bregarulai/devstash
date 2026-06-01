@@ -8,18 +8,14 @@ import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import type { CollectionWithStats } from '@/lib/db/collections';
+import type { User } from '@/types/user';
 
 interface CollectionsSessionProps {
-  user: {
-    id: string;
-    name: string | null;
-    email: string;
-    image: string | null;
-  };
+  user: User;
   collections: CollectionWithStats[];
 }
 
-export function CollectionsSession({ user, collections }: CollectionsSessionProps) {
+export function CollectionsSession({ collections }: CollectionsSessionProps) {
   const content = (
     <section className='space-y-6'>
       <div>
@@ -29,9 +25,10 @@ export function CollectionsSession({ user, collections }: CollectionsSessionProp
           </div>
           <Link
             href='/collections'
-            className='text-sm text-muted-foreground hover:text-foreground transition-colors'
+            className='text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1'
           >
             View All
+            <span className='ml-1 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded'>Go</span>
           </Link>
         </div>
         {collections.length === 0 ? (

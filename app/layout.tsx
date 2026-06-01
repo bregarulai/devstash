@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { CommandPaletteClient } from "@/components/dashboard/CommandPaletteClient/CommandPaletteClient";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,6 +38,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background text-foreground antialiased`}>
         {children}
         <Toaster position="top-center" richColors />
+        <CommandPaletteClient />
       </body>
     </html>
   );

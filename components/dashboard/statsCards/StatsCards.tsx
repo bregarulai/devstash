@@ -5,7 +5,6 @@ import { ClientLoader } from '../clientLoader/ClientLoader';
 import { StatsCardsSkeleton } from '../skeletons/StatsCardsSkeleton';
 
 interface StatsCardsProps {
-  userId: string;
   stats: {
     totalItems: number;
     totalCollections: number;
@@ -14,7 +13,7 @@ interface StatsCardsProps {
   };
 }
 
-export function StatsCards({ userId, stats }: StatsCardsProps) {
+export function StatsCards({ stats }: StatsCardsProps) {
   const data = [
     {
       label: 'Total Items',
