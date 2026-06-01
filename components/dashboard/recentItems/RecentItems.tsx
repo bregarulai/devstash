@@ -7,6 +7,7 @@ import { formatDaysAgo } from '@/lib/utils';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 import { ClientLoader } from '../ClientLoader';
 import { RecentItemsSkeleton } from '../skeletons/RecentItemsSkeleton';
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty';
 
 interface ItemWithDetails {
   id: string;
@@ -76,7 +77,16 @@ export function RecentItems({ items }: RecentItemsProps) {
   );
 
   if (items.length === 0) {
-    return null;
+    return (
+      <ClientLoader fallback={<RecentItemsSkeleton />}>
+        <Empty>
+          <EmptyHeader>
+            <EmptyTitle>No recent items</EmptyTitle>
+            <EmptyDescription>Items you view or edit will appear here for quick access.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </ClientLoader>
+    );
   }
 
   return (

@@ -1,14 +1,27 @@
-# Current Feature
+# Current Feature: Dashboard Hardening Phase 3
 
 ## Status
 
+In Progress
+
 ## Goals
 
--
+- Add empty-state UI for CollectionsSession when user has zero collections — spec §2.1: heading "No collections yet", body "Collections organize your items by topic. Create one to get started.", CTA "Create collection" → /collections/new
+- Add empty-state UI for PinnedItems when user has zero pinned items — spec §2.2: heading "No pinned items", body "Pin your most important snippets, prompts, and links to find them instantly.", CTA "Browse items" → /items
+- Add empty-state UI for RecentItems when user has zero recent items — spec §2.3: heading "No recent items", body "Items you view or edit will appear here for quick access.", no CTA (informational only)
+- Add a "get started" hero section for brand-new users (zero items total) — spec §3: heading "Welcome to DevStash", body "Your knowledge hub is empty. Start by collecting your first item.", 3 numbered steps (Collect, Organize, Search), CTA "Save your first item" → /collect, persists until first item created
+- Empty states should be actionable (include a CTA or guidance text) — spec §1: use muted color tokens, 1-2 sentence max description, primary CTA button when applicable, no decorative icons/illustrations, match parent container width
+- Maintain the project's dark-mode-first, restrained aesthetic — spec §1 + design system: no decorative elements, use `text-muted-foreground` and `bg-muted`, follow EmptyState component spec (Option B) + GetStartedHero component spec (Option C)
 
 ## Notes
 
--
+- Severity: P1 — Major. New users see a blank dashboard and have no guidance on what to do next. High abandonment risk at step 1.
+- Empty state design principles: use muted color tokens, brief actionable description (1-2 sentences max), primary CTA button when applicable, no decorative icons or illustrations, match width of parent container
+- Recommended approach: Option B + C — reusable EmptyState component at `components/ui/EmptyState.tsx` + dedicated GetStartedHero component at `components/dashboard/GetStartedHero.tsx`
+- Get started hero should only show once — after user creates first item, it disappears permanently
+- CollectionsSession empty state: "No collections yet" → "Create collection" links to /collections/new
+- PinnedItems empty state: "No pinned items" → "Browse items" links to /items
+- RecentItems empty state: "No recent items" → informational only, no CTA
 
 ## History
 

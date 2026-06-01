@@ -7,6 +7,9 @@ import { formatDaysAgo } from '@/lib/utils';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 import { ClientLoader } from '../ClientLoader';
 import { PinnedItemsSkeleton } from '../skeletons/PinnedItemsSkeleton';
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 interface ItemWithDetails {
   id: string;
@@ -76,7 +79,24 @@ export function PinnedItems({ items }: PinnedItemsProps) {
   );
 
   if (items.length === 0) {
-    return null;
+    return (
+      <ClientLoader fallback={<PinnedItemsSkeleton />}>
+        <Empty>
+          <EmptyHeader>
+            <EmptyTitle>No pinned items</EmptyTitle>
+            <EmptyDescription>Pin your most important snippets, prompts, and links to find them instantly.</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button asChild>
+              <a href='/items'>
+                Browse items
+                <ArrowRight className='ml-2 h-4 w-4' />
+              </a>
+            </Button>
+          </EmptyContent>
+        </Empty>
+      </ClientLoader>
+    );
   }
 
   return (

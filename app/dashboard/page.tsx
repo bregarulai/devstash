@@ -16,6 +16,7 @@ import { CollectionsSession } from '@/components/dashboard/collectionSession/Col
 import { PinnedItems } from '@/components/dashboard/pinnedItems/PinnedItems';
 import { RecentItems } from '@/components/dashboard/recentItems/RecentItems';
 import { DashboardDataRetry } from '@/components/dashboard/dashboardDataRetry/DashboardDataRetry';
+import { GetStartedHero } from '@/components/dashboard/GetStartedHero';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -102,10 +103,16 @@ export default async function DashboardPage() {
     >
       <DashboardDataRetry>
         <div className='space-y-6'>
-          <StatsCards userId={user.id} stats={itemStats} />
-          <CollectionsSession user={user} collections={favoriteCollections} />
-          <PinnedItems items={pinnedItems} />
-          <RecentItems items={recentItems} />
+          {itemStats.totalItems === 0 ? (
+            <GetStartedHero />
+          ) : (
+            <>
+              <StatsCards userId={user.id} stats={itemStats} />
+              <CollectionsSession user={user} collections={favoriteCollections} />
+              <PinnedItems items={pinnedItems} />
+              <RecentItems items={recentItems} />
+            </>
+          )}
         </div>
       </DashboardDataRetry>
     </DashboardWrapper>

@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { CollectionCard } from '../collectionCard/CollectionCard';
 import { ClientLoader } from '../ClientLoader';
 import { CollectionSessionSkeleton } from '../skeletons/CollectionSessionSkeleton';
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 import type { CollectionWithStats } from '@/lib/db/collections';
 
 interface CollectionsSessionProps {
@@ -31,11 +34,28 @@ export function CollectionsSession({ user, collections }: CollectionsSessionProp
             View All
           </Link>
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {collections.map((collection) => (
-            <CollectionCard key={collection.id} collection={collection} />
-          ))}
-        </div>
+        {collections.length === 0 ? (
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>No collections yet</EmptyTitle>
+              <EmptyDescription>Collections organize your items by topic. Create one to get started.</EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button asChild>
+                <a href='/collections/new'>
+                  <Plus className='mr-2 h-4 w-4' />
+                  Create collection
+                </a>
+              </Button>
+            </EmptyContent>
+          </Empty>
+        ) : (
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+            {collections.map((collection) => (
+              <CollectionCard key={collection.id} collection={collection} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
