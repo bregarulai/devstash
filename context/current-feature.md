@@ -1,19 +1,11 @@
-# Current Feature: Sign-In Form Hardening Phase 3
+# Current Feature
 
-## Status: In Progress
+## Status: Not Started
 
 ## Goals
 
-- Update `CardDescription` copy to be neutral ("Sign in to your DevStash account")
-- Verify `SignInToast` mounts unconditionally, doesn't fire on every page load, and has no CSS conflicts
-- Confirm `auth()` call and `dynamic = 'force-dynamic'` settings are appropriate for auth pages
 
 ## Notes
-
-- Target file: `app/(auth)/sign-in/page.tsx`
-- P3 priority, Phase 3 of 3 in sign-in hardening series
-- No new dependencies or components — copy changes + review only
-- Follow coding standards: shadcn components only, dark mode first
 
 ## History
 
@@ -64,3 +56,5 @@
 - **Sign-In Form Hardening Phase 1 (Completed)** - Extracted sign-in form into client component with useTransition, added password visibility toggle with inline SVG, added autocomplete attributes, and prevented double-submission with disabled state on submit button
 
 - **Sign-In Form Hardening Phase 2 (Completed)** - Added Zod validation to sign-in form with react-hook-form, zodResolver, and shadcn Field components for typed form state and inline error display
+
+- **Sign-In Form Hardening Phase 3 (Completed)** - Updated CardDescription copy to neutral text "Sign in to your DevStash account", verified SignInToast mounts unconditionally without firing on every page load, and confirmed auth() call and dynamic = 'force-dynamic' settings are appropriate
