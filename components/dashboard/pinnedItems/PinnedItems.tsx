@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 import { formatDaysAgo } from '@/lib/utils';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
-import { ClientLoader } from '../ClientLoader';
+import { ClientLoader } from '../clientLoader/ClientLoader';
 import { PinnedItemsSkeleton } from '../skeletons/PinnedItemsSkeleton';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty';
 import { Button } from '@/components/ui/button';

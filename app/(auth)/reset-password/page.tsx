@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { handleResetPassword } from '@/actions/reset-password';
-import { ResetPasswordToast } from '@/components/auth/reset-password-toast';
+import { ResetPasswordToast } from '@/components/auth/resetPasswordToast/ResetPasswordToast';
 
 export const metadata: Metadata = {
   title: 'Reset Password',

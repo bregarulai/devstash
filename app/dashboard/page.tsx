@@ -16,7 +16,7 @@ import { CollectionsSession } from '@/components/dashboard/collectionSession/Col
 import { PinnedItems } from '@/components/dashboard/pinnedItems/PinnedItems';
 import { RecentItems } from '@/components/dashboard/recentItems/RecentItems';
 import { DashboardDataRetry } from '@/components/dashboard/dashboardDataRetry/DashboardDataRetry';
-import { GetStartedHero } from '@/components/dashboard/GetStartedHero';
+import { GetStartedHero } from '@/components/dashboard/getStartedHero/GetStartedHero';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 

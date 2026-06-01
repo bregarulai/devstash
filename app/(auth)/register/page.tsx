@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { handleRegister } from '@/actions/auth';
-import { RegisterToast } from '@/components/auth/register-toast';
+import { RegisterToast } from '@/components/auth/registerToast/RegisterToast';
 
 export const metadata: Metadata = {
   title: 'Register',

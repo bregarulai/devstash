@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { handleForgotPassword } from '@/actions/forgot-password';
-import { ForgotPasswordToast } from '@/components/auth/forgot-password-toast';
+import { ForgotPasswordToast } from '@/components/auth/forgotPasswordToast/ForgotPasswordToast';
 
 export const metadata: Metadata = {
   title: 'Forgot Password',

@@ -54,7 +54,7 @@ Example v4 configuration:
 
 ## File Organization
 
-- Components: `components/[feature]/ComponentName.tsx`
+- Components: `components/[feature]/[componentName]/ComponentName.tsx` — each component lives in its own folder named in PascalCase matching the component name
 - Pages: `app/[route]/page.tsx`
 - Server Actions: `actions/[feature].ts`
 - Types: `types/[feature].ts`
@@ -63,6 +63,7 @@ Example v4 configuration:
 ## Naming
 
 - Components: PascalCase (`ItemCard.tsx`)
+- Component folders: PascalCase matching the component name (`components/[feature]/ItemCard/ItemCard.tsx`)
 - Files: Match component name or kebab-case
 - Functions: camelCase
 - Constants: SCREAMING_SNAKE_CASE

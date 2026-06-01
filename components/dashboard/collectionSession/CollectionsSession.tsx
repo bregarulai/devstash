@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { CollectionCard } from '../collectionCard/CollectionCard';
-import { ClientLoader } from '../ClientLoader';
+import { ClientLoader } from '../clientLoader/ClientLoader';
 import { CollectionSessionSkeleton } from '../skeletons/CollectionSessionSkeleton';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty';
 import { Button } from '@/components/ui/button';

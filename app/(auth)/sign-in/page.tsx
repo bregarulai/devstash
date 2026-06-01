@@ -16,7 +16,7 @@ import { redirect } from 'next/navigation';
 
 import { handleSignIn } from '@/actions/sign-in';
 import { handleResendVerification } from '@/actions/resend-verification';
-import { SignInToast } from '@/components/auth/sign-in-toast';
+import { SignInToast } from '@/components/auth/signInToast/SignInToast';
 
 export const metadata: Metadata = {
   title: 'Sign In',

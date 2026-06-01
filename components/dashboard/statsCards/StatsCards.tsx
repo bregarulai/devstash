@@ -1,7 +1,7 @@
 'use client'; // Required for ClientLoader interactivity (mounted state)
 
 import { Code, Folder, Heart, Star } from 'lucide-react';
-import { ClientLoader } from '../ClientLoader';
+import { ClientLoader } from '../clientLoader/ClientLoader';
 import { StatsCardsSkeleton } from '../skeletons/StatsCardsSkeleton';
 
 interface StatsCardsProps {
