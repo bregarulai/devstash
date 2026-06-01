@@ -1,14 +1,19 @@
-# Current Feature
+# Current Feature: Sign-In Form Hardening Phase 3
 
-## Status: Not Started
+## Status: In Progress
 
 ## Goals
 
--
+- Update `CardDescription` copy to be neutral ("Sign in to your DevStash account")
+- Verify `SignInToast` mounts unconditionally, doesn't fire on every page load, and has no CSS conflicts
+- Confirm `auth()` call and `dynamic = 'force-dynamic'` settings are appropriate for auth pages
 
 ## Notes
 
--
+- Target file: `app/(auth)/sign-in/page.tsx`
+- P3 priority, Phase 3 of 3 in sign-in hardening series
+- No new dependencies or components — copy changes + review only
+- Follow coding standards: shadcn components only, dark mode first
 
 ## History
 

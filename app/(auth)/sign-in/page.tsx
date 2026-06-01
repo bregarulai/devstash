@@ -40,7 +40,7 @@ export default async function SignInPage({
         <CardHeader className='text-center'>
           <CardTitle className='text-2xl'>Sign in to DevStash</CardTitle>
           <CardDescription>
-            Use your email or GitHub account to sign in
+            Sign in to your DevStash account
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
