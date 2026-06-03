@@ -1,14 +1,15 @@
 # Current Feature
 
 ## Status
+Not Started
 
 ## Goals
 
-<!-- Define goals for the next feature -->
+<!-- Define your goals here -->
 
 ## Notes
 
-<!-- Add notes, constraints, and details -->
+<!-- Add notes and constraints here -->
 
 ## History
 
@@ -63,3 +64,5 @@
 - **Sign-In Form Hardening Phase 3 (Completed)** - Updated CardDescription copy to neutral text "Sign in to your DevStash account", verified SignInToast mounts unconditionally without firing on every page load, and confirmed auth() call and dynamic = 'force-dynamic' settings are appropriate
 
 - **Register Page Hardening (Completed)** - Converted register page to react-hook-form + Zod validation with onChange mode, added password visibility toggle with Eye/EyeOff icons, live password confirmation feedback, password requirements checklist, autocomplete attributes, loading state with disabled button, aria-invalid on fields, inline FieldError messages, fixed button height and sign-in link hover color, moved RegisterToast to page root level, removed force-dynamic, and preserved form values on validation error
+
+- **Profile Page (Completed)** - Implemented /profile route with auth protection, user info display (email, name, avatar, member since), usage stats cards (items, collections, favorites), item type breakdown, change password form for email/password users, and delete account with confirmation dialog
