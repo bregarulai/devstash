@@ -1,31 +1,14 @@
-# Current Feature: Profile Redesign
+# Current Feature
 
 ## Status
-In Progress
 
 ## Goals
 
-- Wrap `/profile` page with `DashboardWrapper` to match dashboard layout (header + sidebar)
-- Add page title and description below header, above Account Information Card
-- Move avatar and user name into the Account Information Card
-- Add Mail icon next to email field in Account Information Card
-- Remove Account Type row from Account Information Card
-- Add Change Password and Delete Account buttons in card footer (Dialog-triggered)
-- Show Change Password button only if user has a password set
-- Replace Usage Statistics session title with "Usage Overview"
-- Add two side-by-side Cards for Total Items and Collections
-- Add Item by Type section below with cards for each item type
-- Maintain dark-mode-first styling consistent with dashboard
+-
 
 ## Notes
 
-- Severity: P1 — Important improvement for layout consistency and UX
-- Reuse existing `ChangePasswordForm` logic inside Dialog
-- `DeleteAccountDialog` already uses Dialog — just reposition trigger
-- Fetch `systemItemTypes`, `favoriteCollections`, `recentCollections` alongside profile data (same as dashboard)
-- Use `grid grid-cols-1 sm:grid-cols-2 gap-4` for side-by-side cards
-- All config in `app/globals.css` via `@theme` blocks — no `tailwind.config.js`
-- Read `context/coding-standards.md` before implementation
+-
 
 ## History
 
@@ -82,3 +65,5 @@ In Progress
 - **Register Page Hardening (Completed)** - Converted register page to react-hook-form + Zod validation with onChange mode, added password visibility toggle with Eye/EyeOff icons, live password confirmation feedback, password requirements checklist, autocomplete attributes, loading state with disabled button, aria-invalid on fields, inline FieldError messages, fixed button height and sign-in link hover color, moved RegisterToast to page root level, removed force-dynamic, and preserved form values on validation error
 
 - **Profile Page (Completed)** - Implemented /profile route with auth protection, user info display (email, name, avatar, member since), usage stats cards (items, collections, favorites), item type breakdown, change password form for email/password users, and delete account with confirmation dialog
+
+- **Profile Redesign (Completed)** - Wrapped profile page with DashboardWrapper, moved avatar and name into Account Information Card, added Mail icon, replaced Usage Statistics with Usage Overview, added side-by-side Total Items and Collections cards, added Item by Type section with type cards, and added password visibility toggle
