@@ -1,15 +1,31 @@
-# Current Feature
+# Current Feature: Profile Redesign
 
 ## Status
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Define your goals here -->
+- Wrap `/profile` page with `DashboardWrapper` to match dashboard layout (header + sidebar)
+- Add page title and description below header, above Account Information Card
+- Move avatar and user name into the Account Information Card
+- Add Mail icon next to email field in Account Information Card
+- Remove Account Type row from Account Information Card
+- Add Change Password and Delete Account buttons in card footer (Dialog-triggered)
+- Show Change Password button only if user has a password set
+- Replace Usage Statistics session title with "Usage Overview"
+- Add two side-by-side Cards for Total Items and Collections
+- Add Item by Type section below with cards for each item type
+- Maintain dark-mode-first styling consistent with dashboard
 
 ## Notes
 
-<!-- Add notes and constraints here -->
+- Severity: P1 — Important improvement for layout consistency and UX
+- Reuse existing `ChangePasswordForm` logic inside Dialog
+- `DeleteAccountDialog` already uses Dialog — just reposition trigger
+- Fetch `systemItemTypes`, `favoriteCollections`, `recentCollections` alongside profile data (same as dashboard)
+- Use `grid grid-cols-1 sm:grid-cols-2 gap-4` for side-by-side cards
+- All config in `app/globals.css` via `@theme` blocks — no `tailwind.config.js`
+- Read `context/coding-standards.md` before implementation
 
 ## History
 

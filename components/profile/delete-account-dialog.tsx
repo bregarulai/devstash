@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
 export function DeleteAccountDialog() {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
   const [open, setOpen] = useState(false);
   const [confirmText, setConfirmText] = useState('');
   const [error, setError] = useState('');
@@ -27,30 +27,31 @@ export function DeleteAccountDialog() {
     }
 
     setError('');
-    startTransition(async () => {
-      try {
-        const response = await fetch('/api/profile/delete-account', {
-          method: 'DELETE',
-        });
+    setIsPending(true);
+    try {
+      const response = await fetch('/api/profile/delete-account', {
+        method: 'DELETE',
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (!response.ok) {
-          setError(data.error || 'Failed to delete account');
-          return;
-        }
-
-        toast.success('Account deleted', {
-          description: 'Your account has been permanently deleted.',
-        });
-
-        setOpen(false);
-        setConfirmText('');
-        window.location.href = '/sign-in';
-      } catch {
-        setError('An unexpected error occurred');
+      if (!response.ok) {
+        setError(data.error || 'Failed to delete account');
+        setIsPending(false);
+        return;
       }
-    });
+
+      toast.success('Account deleted', {
+        description: 'Your account has been permanently deleted.',
+      });
+
+      setOpen(false);
+      setConfirmText('');
+      window.location.href = '/sign-in';
+    } catch {
+      setError('An unexpected error occurred');
+      setIsPending(false);
+    }
   }
 
   return (
