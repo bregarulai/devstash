@@ -1,14 +1,23 @@
-# Current Feature
+# Current Feature: Profile Page Phase 1 — Layout Restructuring
 
 ## Status
 
+In Progress
+
 ## Goals
 
--
+- Replace nested cards in Usage Overview with flat grid layout using tonal backgrounds and ring borders for stat tiles
+- Move Favorites stat into the 3-column grid alongside Total Items and Total Collections
+- Fix email field to use single-column layout instead of wasted 2-column grid
+- Update PRO badge to use sidebar-primary color token instead of wrong variant
+- Tighten vertical spacing from `space-y-8` to `space-y-6`
 
 ## Notes
 
--
+- All changes are in `app/profile/ProfilePageClient.tsx` — single-file scope
+- No new components needed
+- No server component changes
+- Source: Impeccable critique from `context/features/profile-page-improvements-spec.md`
 
 ## History
 

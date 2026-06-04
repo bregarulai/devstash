@@ -67,7 +67,7 @@ export function ProfilePageClient({
     : user.email.slice(0, 2).toUpperCase();
 
   return (
-    <div className='mx-auto max-w-4xl space-y-8'>
+    <div className='mx-auto max-w-4xl space-y-6'>
       {/* Page Title */}
       <div className='space-y-1'>
         <h1 className='text-2xl font-semibold text-foreground'>Profile</h1>
@@ -101,22 +101,20 @@ export function ProfilePageClient({
                 {user.name || 'Unnamed User'}
               </h2>
               {user.isPro && (
-                <Badge variant='default' className='ml-1'>
+                <Badge className='ml-1 bg-sidebar-primary text-sidebar-primary-foreground'>
                   PRO
                 </Badge>
               )}
             </div>
           </div>
 
-          {/* Email + Name row */}
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-            <div className='space-y-1'>
-              <p className='text-sm font-medium text-muted-foreground flex items-center gap-1.5'>
-                <Mail className='size-3.5' />
-                Email
-              </p>
-              <p className='text-sm text-foreground'>{user.email}</p>
-            </div>
+          {/* Email */}
+          <div className='space-y-1'>
+            <p className='text-sm font-medium text-muted-foreground flex items-center gap-1.5'>
+              <Mail className='size-3.5' />
+              Email
+            </p>
+            <p className='text-sm text-foreground'>{user.email}</p>
           </div>
 
           {/* Member Since */}
@@ -168,45 +166,32 @@ export function ProfilePageClient({
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-6'>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-            <Card>
-              <CardHeader className='pb-2'>
-                <CardTitle className='text-sm font-medium text-muted-foreground'>
-                  Total Items
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className='text-2xl font-semibold text-foreground'>
-                  {itemStats.totalItems}
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className='pb-2'>
-                <CardTitle className='text-sm font-medium text-muted-foreground'>
-                  Total Collections
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className='text-2xl font-semibold text-foreground'>
-                  {itemStats.totalCollections}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader className='pb-2'>
-              <CardTitle className='text-sm font-medium text-muted-foreground'>
+          <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
+            <div className='bg-muted ring-1 ring-border rounded-xl p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>
+                Total Items
+              </p>
+              <p className='text-2xl font-semibold text-foreground mt-1'>
+                {itemStats.totalItems}
+              </p>
+            </div>
+            <div className='bg-muted ring-1 ring-border rounded-xl p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>
+                Total Collections
+              </p>
+              <p className='text-2xl font-semibold text-foreground mt-1'>
+                {itemStats.totalCollections}
+              </p>
+            </div>
+            <div className='bg-muted ring-1 ring-border rounded-xl p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>
                 Favorites
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className='text-2xl font-semibold text-foreground'>
+              </p>
+              <p className='text-2xl font-semibold text-foreground mt-1'>
                 {itemStats.favoriteItems}
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {itemTypeBreakdown.length > 0 && (
             <div className='space-y-1'>
