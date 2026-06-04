@@ -25,6 +25,7 @@ import {
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
 import { ChangePasswordForm } from '@/components/profile/change-password-form';
 import { DeleteAccountDialog } from '@/components/profile/delete-account-dialog';
+import { formatDaysAgo } from '@/lib/utils';
 
 interface ProfilePageClientProps {
   user: {
@@ -97,39 +98,34 @@ export function ProfilePageClient({
               </AvatarFallback>
             </Avatar>
             <div className='space-y-1'>
-              <h2 className='text-xl font-semibold text-foreground'>
-                {user.name || 'Unnamed User'}
-              </h2>
-              {user.isPro && (
-                <Badge className='ml-1 bg-sidebar-primary text-sidebar-primary-foreground'>
-                  PRO
-                </Badge>
-              )}
+              <div className='flex items-center gap-2'>
+                <h2 className='text-xl font-semibold text-foreground'>
+                  {user.name || 'Unnamed User'}
+                </h2>
+                {user.isPro && (
+                  <Badge className='ml-1 bg-sidebar-primary text-sidebar-primary-foreground'>
+                    PRO
+                  </Badge>
+                )}
+              </div>
+              <Badge variant='secondary' className='text-xs text-muted-foreground font-normal'>
+                {hasPassword ? 'Email Account' : 'Github Account'}
+              </Badge>
             </div>
           </div>
 
           {/* Email */}
-          <div className='space-y-1'>
-            <p className='text-sm font-medium text-muted-foreground flex items-center gap-1.5'>
-              <Mail className='size-3.5' />
-              Email
-            </p>
-            <p className='text-sm text-foreground'>{user.email}</p>
+          <div className='flex items-center gap-1.5 text-sm'>
+            <Mail className='size-3.5 text-muted-foreground shrink-0' />
+            <span className='text-muted-foreground'>Email</span>
+            <span className='text-foreground'>{user.email}</span>
           </div>
 
           {/* Member Since */}
-          <div className='space-y-1'>
-            <p className='text-sm font-medium text-muted-foreground'>
-              Member Since
-            </p>
-            <p className='text-sm text-foreground flex items-center gap-1.5'>
-              <Calendar className='size-3.5' />
-              {user.createdAt.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </p>
+          <div className='flex items-center gap-1.5 text-sm'>
+            <Calendar className='size-3.5 text-muted-foreground shrink-0' />
+            <span className='text-muted-foreground'>Member since</span>
+            <span className='text-foreground'>{formatDaysAgo(user.createdAt)} ago</span>
           </div>
         </CardContent>
         <CardFooter className='flex flex-col sm:flex-row gap-3 pt-4'>
