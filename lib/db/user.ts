@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { getInitials } from '@/lib/utils';
 
 export interface ItemTypeBreakdown {
   name: string;
@@ -7,16 +8,7 @@ export interface ItemTypeBreakdown {
   count: number;
 }
 
-export function getInitials(name: string | null, email: string): string {
-  if (name) {
-    const parts = name.trim().split(/\s+/);
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-    }
-    return name.trim().slice(0, 2).toUpperCase();
-  }
-  return email.slice(0, 2).toUpperCase();
-}
+export type ProfileErrorType = 'db-failure' | 'user-not-found' | null;
 
 export interface ProfileData {
   user: {
@@ -35,9 +27,10 @@ export interface ProfileData {
     favoriteCollections: number;
   };
   itemTypeBreakdown: ItemTypeBreakdown[];
+  errorType: ProfileErrorType;
 }
 
-export async function loadProfileData(userId: string): Promise<ProfileData> {
+export async function loadProfileDataAsync(userId: string): Promise<ProfileData> {
   const defaultResult: ProfileData = {
     user: null,
     itemStats: {
@@ -47,6 +40,7 @@ export async function loadProfileData(userId: string): Promise<ProfileData> {
       favoriteCollections: 0,
     },
     itemTypeBreakdown: [],
+    errorType: null,
   };
 
   try {
@@ -64,7 +58,7 @@ export async function loadProfileData(userId: string): Promise<ProfileData> {
     });
 
     if (!user) {
-      return defaultResult;
+      return { ...defaultResult, errorType: 'user-not-found' };
     }
 
     let itemStats = {
@@ -98,9 +92,10 @@ export async function loadProfileData(userId: string): Promise<ProfileData> {
       user,
       itemStats,
       itemTypeBreakdown,
+      errorType: null,
     };
   } catch {
-    return defaultResult;
+    return { ...defaultResult, errorType: 'db-failure' };
   }
 }
 

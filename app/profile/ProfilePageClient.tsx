@@ -25,7 +25,7 @@ import {
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
 import { ChangePasswordForm } from '@/components/profile/change-password-form';
 import { DeleteAccountDialog } from '@/components/profile/delete-account-dialog';
-import { formatDaysAgo } from '@/lib/utils';
+import { formatDaysAgo, getInitials } from '@/lib/utils';
 
 interface ProfilePageClientProps {
   user: {
@@ -57,15 +57,7 @@ export function ProfilePageClient({
   itemTypeBreakdown,
   hasPassword,
 }: ProfilePageClientProps) {
-  const initials = user.name
-    ? (() => {
-        const parts = user.name.trim().split(/\s+/);
-        if (parts.length >= 2) {
-          return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-        }
-        return user.name.trim().slice(0, 2).toUpperCase();
-      })()
-    : user.email.slice(0, 2).toUpperCase();
+  const initials = getInitials(user.name, user.email);
 
   return (
     <div className='mx-auto max-w-4xl space-y-6'>
@@ -190,32 +182,32 @@ export function ProfilePageClient({
           </div>
 
           {itemTypeBreakdown.length > 0 && (
-            <div className='space-y-1'>
-              <h3 className='text-sm font-semibold text-foreground'>
-                Items by Type
-              </h3>
-            </div>
-          )}
-          {itemTypeBreakdown.length > 0 && (
-            <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3'>
-              {itemTypeBreakdown.map((type) => (
-                <Card key={type.name}>
-                  <CardContent className='flex items-center justify-between'>
-                    <div className='flex items-center gap-2'>
-                      <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[color:${type.color}15]'>
-                        <ItemTypeIcon type={type.name} />
+            <>
+              <div className='space-y-1'>
+                <h3 className='text-sm font-semibold text-foreground'>
+                  Items by Type
+                </h3>
+              </div>
+              <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3'>
+                {itemTypeBreakdown.map((type) => (
+                  <Card key={type.name}>
+                    <CardContent className='flex items-center justify-between'>
+                      <div className='flex items-center gap-2'>
+                        <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-lg' style={{ backgroundColor: `${type.color}15` }}>
+                          <ItemTypeIcon type={type.name} />
+                        </div>
+                        <span className='text-xs text-foreground capitalize'>
+                          {type.name}
+                        </span>
                       </div>
-                      <span className='text-xs text-foreground capitalize'>
-                        {type.name}
-                      </span>
-                    </div>
-                    <Badge variant='secondary' className='text-xs'>
-                      {type.count}
-                    </Badge>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      <Badge variant='secondary' className='text-xs'>
+                        {type.count}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
