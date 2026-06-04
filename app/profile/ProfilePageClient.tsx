@@ -132,7 +132,7 @@ export function ProfilePageClient({
             </p>
           </div>
         </CardContent>
-        <CardFooter className='flex flex-col sm:flex-row gap-3 pt-0'>
+        <CardFooter className='flex flex-col sm:flex-row gap-3 pt-4'>
           {hasPassword && (
             <Dialog>
               <DialogTrigger asChild>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -57,7 +58,10 @@ export function DeleteAccountDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive">Delete Account</Button>
+        <Button variant="destructive">
+          <Trash2 className="mr-2 h-4 w-4" />
+          Delete Account
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
@@ -82,7 +86,7 @@ export function DeleteAccountDialog() {
                 setError('');
               }}
               placeholder="DELETE MY ACCOUNT"
-              className={error ? 'border-destructive' : ''}
+              className={`${error ? 'border-destructive' : ''} mt-2`}
             />
           </div>
         </div>
