@@ -6,6 +6,7 @@ import { getSystemItemTypesWithCounts, SystemItemType } from '@/lib/db/items';
 import { CollectionWithStats, getFavoriteCollections, getRecentCollections } from '@/lib/db/collections';
 import { ProfileRetryForm } from './ProfileRetryForm';
 import { ProfileErrorState } from './ProfileErrorState';
+import { ProfilePageLoading } from './ProfilePageLoading';
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -24,7 +25,7 @@ export default async function ProfilePage() {
   const user = profileData.user;
 
   if (!user) {
-    return <ProfileErrorState errorType={profileData.errorType} />;
+    return <ProfileErrorState errorType="user-not-found" />;
   }
 
   let systemItemTypes: SystemItemType[] = [];

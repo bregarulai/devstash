@@ -21,7 +21,7 @@ export function ProfileErrorState({ errorType }: ProfileErrorStateProps) {
       <div className='flex flex-col items-center gap-4 text-muted-foreground max-w-md text-center'>
         <p className='text-lg font-medium text-foreground'>Something went wrong loading your profile.</p>
         <p className='text-sm'>Please try again.</p>
-        <ProfileRetryForm />
+        <ProfileRetryForm errorType={errorType} />
       </div>
     </div>
   );

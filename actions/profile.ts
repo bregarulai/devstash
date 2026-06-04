@@ -23,3 +23,7 @@ export async function retryProfileData(): Promise<RetryProfileResult> {
     return { success: false, error: error instanceof Error ? error.message : 'Failed to retry' };
   }
 }
+
+export async function retryProfileDataAction(): Promise<void> {
+  await retryProfileData();
+}
