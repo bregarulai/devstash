@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { getInitials } from '@/lib/utils';
+
 
 export interface ItemTypeBreakdown {
   name: string;

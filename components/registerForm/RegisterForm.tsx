@@ -24,7 +24,7 @@ interface RegisterFormProps {
   defaultValues?: Partial<RegisterFormData>;
 }
 
-export function RegisterForm({ error, defaultValues }: RegisterFormProps) {
+export function RegisterForm({ error: _error, defaultValues }: RegisterFormProps) {
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

@@ -27,7 +27,7 @@ export default async function SignInPage({
   searchParams: Promise<{ error?: string; success?: string; email?: string }>;
 }) {
   const session = await auth();
-  const { error, success, email } = await searchParams;
+  const { error, email } = await searchParams;
 
   if (session?.user) {
     redirect('/dashboard');
