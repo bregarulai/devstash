@@ -1,14 +1,23 @@
-# Current Feature
+# Current Feature: Profile Page Phase 2 — Error Handling
 
 ## Status
 
+In Progress
+
 ## Goals
 
-<!-- Define what success looks like -->
+- Distinguish between "account not found" (404-style) and "temporary failure" (retry button) error states on `/profile`
+- Replace vague `"Unable to load profile. Please try again."` with plain-language messages and recovery paths
+- Extract `Promise.all` fetch into a named async function (`loadProfileDataAsync`) so it can be retried
+- Implement a retry mechanism for server component error path (client-side fetch helper or Server Action)
 
 ## Notes
 
-<!-- Add context, constraints, or details -->
+- Target: `app/profile/page.tsx`
+- Source: Impeccable critique from `context/features/profile-page-improvements-spec.md`
+- Server component only. No new client components unless retry requires one.
+- Retry mechanism may need a small client-side fetch helper — keep it minimal.
+- Do not add loading states (covered in Phase 3).
 
 ## History
 

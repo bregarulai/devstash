@@ -1,9 +1,11 @@
 import { auth } from '@/lib/auth';
-import { loadProfileData } from '@/lib/db/user';
+import { loadProfileDataAsync } from '@/lib/db/user';
 import { ProfilePageClient } from './ProfilePageClient';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
 import { getSystemItemTypesWithCounts, SystemItemType } from '@/lib/db/items';
 import { CollectionWithStats, getFavoriteCollections, getRecentCollections } from '@/lib/db/collections';
+import { ProfileRetryForm } from './ProfileRetryForm';
+import { ProfileErrorState } from './ProfileErrorState';
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -18,17 +20,11 @@ export default async function ProfilePage() {
     );
   }
 
-  const profileData = await loadProfileData(session.user.id);
+  const profileData = await loadProfileDataAsync(session.user.id);
   const user = profileData.user;
 
   if (!user) {
-    return (
-      <div className='min-h-screen bg-background flex items-center justify-center'>
-        <div className='flex flex-col items-center justify-center gap-4 h-64 text-muted-foreground'>
-          <p>Unable to load profile. Please try again.</p>
-        </div>
-      </div>
-    );
+    return <ProfileErrorState errorType={profileData.errorType} />;
   }
 
   let systemItemTypes: SystemItemType[] = [];
