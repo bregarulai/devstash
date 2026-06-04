@@ -63,7 +63,7 @@ Example v4 configuration:
 ## Naming
 
 - Components: PascalCase (`ItemCard.tsx`)
-- Component folders: PascalCase matching the component name (`components/[feature]/ItemCard/ItemCard.tsx`)
+- Component folders: PascalCase matching the component name (`components/[feature]/itemCard/ItemCard.tsx`)
 - Files: Match component name or kebab-case
 - Functions: camelCase
 - Constants: SCREAMING_SNAKE_CASE

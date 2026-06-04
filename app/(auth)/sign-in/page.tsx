@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { SignInToast } from '@/components/auth/signInToast/SignInToast';
 import { handleResendVerification } from '@/actions/resend-verification';
-import { SignInForm } from '@/components/signinForm/signInForm';
+import { SignInForm } from '@/components/signinForm/SigninForm';
 
 export const metadata: Metadata = {
   title: 'Sign In',

@@ -1,4 +1,4 @@
-import { ProfileRetryForm } from './ProfileRetryForm';
+import { ProfileRetryForm } from '@/components/profile/profileRetryForm/ProfileRetryForm';
 
 interface ProfileErrorStateProps {
   errorType: 'db-failure' | 'user-not-found' | null;

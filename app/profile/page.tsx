@@ -1,12 +1,12 @@
 import { auth } from '@/lib/auth';
 import { loadProfileDataAsync } from '@/lib/db/user';
-import { ProfilePageClient } from './ProfilePageClient';
+import { ProfilePageClient } from '@/components/profile/profilePageClient/ProfilePageClient';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
 import { getSystemItemTypesWithCounts, SystemItemType } from '@/lib/db/items';
 import { CollectionWithStats, getFavoriteCollections, getRecentCollections } from '@/lib/db/collections';
-import { ProfileRetryForm } from './ProfileRetryForm';
-import { ProfileErrorState } from './ProfileErrorState';
-import { ProfilePageLoading } from './ProfilePageLoading';
+import { ProfileRetryForm } from '@/components/profile/profileRetryForm/ProfileRetryForm';
+import { ProfileErrorState } from '@/components/profile/profileErrorState/ProfileErrorState';
+import { ProfilePageLoading } from '@/components/profile/profilePageLoading/ProfilePageLoading';
 
 export default async function ProfilePage() {
   const session = await auth();

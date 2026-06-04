@@ -44,8 +44,6 @@
 
 - **Email Template Improvements (Completed)** - Added dark-themed HTML email templates with branded styling and text fallbacks for verification and password reset emails
 
-- **Profile Page Phase 3 Loading States (Completed)** - Added ProfilePageLoading client component with skeleton placeholders for avatar, stats grid, and item type breakdown; updated ProfileRetryForm to conditionally hide for user-not-found errors; integrated loading state into profile page
-
 - **Dashboard Hardening Phase 1 (Completed)** - Implemented error handling and reliability hardening including try/catch for dashboard data fetch, session.user direct usage, null-safe defaults, DashboardDataRetry component, and alert UI component
 
 - **Dashboard Hardening Phase 2 (Completed)** - Implemented shared DashboardSkeleton component with skeleton loading states for StatsCards, CollectionsSession, PinnedItems, and RecentItems sections using static bg-muted placeholders without animation or shimmer
@@ -70,4 +68,4 @@
 
 - **Profile Page Phase 2 Error Handling (Completed)** - Implemented distinct error states for "account not found" vs "temporary failure" on /profile, replaced vague error messages with plain-language recovery paths, extracted fetch into named async function, and added retry mechanism with client-side fetch helper
 
-- **Profile Page Phase 3 Loading States (Not Started)** - Add loading guard with skeleton placeholders for avatar, stats grid, and item breakdown
+- **Profile Page Phase 3 Loading States (Completed)** - Added ProfilePageLoading client component with skeleton placeholders for avatar, stats grid, and item type breakdown; updated ProfileRetryForm to conditionally hide for user-not-found errors; integrated loading state into profile page

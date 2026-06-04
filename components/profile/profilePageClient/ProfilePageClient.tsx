@@ -23,8 +23,8 @@ import {
 } from '@/components/ui/dialog';
 
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
-import { ChangePasswordForm } from '@/components/profile/change-password-form';
-import { DeleteAccountDialog } from '@/components/profile/delete-account-dialog';
+import { ChangePasswordForm } from '@/components/profile/changePasswordForm/ChangePasswordForm';
+import { DeleteAccountDialog } from '@/components/profile/deleteAccountDialog/DeleteAccountDialog';
 import { formatDaysAgo, getInitials } from '@/lib/utils';
 
 interface ProfilePageClientProps {
