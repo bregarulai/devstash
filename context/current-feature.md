@@ -1,23 +1,14 @@
-# Current Feature: Profile Page Phase 1 — Layout Restructuring
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Replace nested cards in Usage Overview with flat grid layout using tonal backgrounds and ring borders for stat tiles
-- Move Favorites stat into the 3-column grid alongside Total Items and Total Collections
-- Fix email field to use single-column layout instead of wasted 2-column grid
-- Update PRO badge to use sidebar-primary color token instead of wrong variant
-- Tighten vertical spacing from `space-y-8` to `space-y-6`
+<!-- Define what success looks like -->
 
 ## Notes
 
-- All changes are in `app/profile/ProfilePageClient.tsx` — single-file scope
-- No new components needed
-- No server component changes
-- Source: Impeccable critique from `context/features/profile-page-improvements-spec.md`
+<!-- Add context, constraints, or details -->
 
 ## History
 
@@ -76,3 +67,5 @@ In Progress
 - **Profile Page (Completed)** - Implemented /profile route with auth protection, user info display (email, name, avatar, member since), usage stats cards (items, collections, favorites), item type breakdown, change password form for email/password users, and delete account with confirmation dialog
 
 - **Profile Redesign (Completed)** - Wrapped profile page with DashboardWrapper, moved avatar and name into Account Information Card, added Mail icon, replaced Usage Statistics with Usage Overview, added side-by-side Total Items and Collections cards, added Item by Type section with type cards, and added password visibility toggle
+
+- **Profile Page Phase 1 Layout Restructuring (Completed)** - Replaced nested cards in Usage Overview with flat 3-column grid using tonal backgrounds and ring borders, moved Favorites into grid, fixed email to single-column layout, updated PRO badge to use sidebar-primary token, and tightened vertical spacing
