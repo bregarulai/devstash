@@ -3,23 +3,12 @@
 import { signOut as nextAuthSignOut } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { resend } from "@/lib/resend"
 import { createVerificationToken } from "@/lib/verification-token"
 import { auth } from "@/lib/auth"
-import { changePasswordSchema, type ChangePasswordValues } from "@/types/auth"
-
-const registerSchema = z.object({
-  name: z.string().min(1),
-  email: z.email(),
-  password: z.string().min(8),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-})
+import { registerSchema, changePasswordSchema, type ChangePasswordValues } from "@/types/db"
 
 export async function handleRegister(formData: FormData) {
   const result = registerSchema.safeParse({

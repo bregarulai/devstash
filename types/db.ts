@@ -1,6 +1,47 @@
 import { z } from 'zod';
 import { ContentType } from '../generated/prisma/enums';
 
+// ── Auth / Form Schemas ──────────────────────────────────────────────────────
+
+export const registerSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
+export type RegisterFormData = z.infer<typeof registerSchema>;
+
+export const passwordRequirements = [
+  { label: "At least 8 characters", test: (p: string) => p.length >= 8 },
+  { label: "Contains uppercase letter", test: (p: string) => /[A-Z]/.test(p) },
+  { label: "Contains lowercase letter", test: (p: string) => /[a-z]/.test(p) },
+  { label: "Contains a number", test: (p: string) => /\d/.test(p) },
+] as const;
+
+export const signInSchema = z.object({
+  email: z.email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+
+export type SignInFormData = z.infer<typeof signInSchema>;
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Current password is required'),
+    newPassword: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
+
 // ── User ──────────────────────────────────────────────────────────────────────
 
 export const userInsertSchema = z.object({
