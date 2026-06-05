@@ -1,27 +1,18 @@
-# Current Feature: Zod Schema Inference from Prisma — Phase 2
+# Current Feature
 
-**Spec**: `context/features/zod-schema-inference-phase-2-spec.md`
+**Spec**: 
 
 ## Status
 
-Complete
+Not Started
 
 ## Goals
 
-- Merge `registerSchema` and `RegisterFormData` from `types/register.ts` into `types/db.ts`
-- Merge `signInSchema` and `SignInFormData` from `types/signIn.ts` into `types/db.ts`
-- Merge `changePasswordSchema` and `ChangePasswordValues` from `types/auth.ts` into `types/db.ts`
-- Delete `types/register.ts`, `types/signIn.ts`, and `types/auth.ts`
-- Remove inline `registerSchema` duplication in `actions/auth.ts` and import from `@/types/db`
-- Update all component imports to use `@/types/db` for the migrated schemas
-- Verify no build errors with `npm run build`
+- 
 
 ## Notes
 
-- This is a refactoring within the types layer — no breaking changes to runtime behavior
-- All merged schemas must be identical to originals — no field changes
-- Keep `refine()` on `changePasswordSchema` for password confirmation check
-- Keep the `message` and `path` options on the refine error
+- 
 
 ## History
 
@@ -88,5 +79,7 @@ Complete
 - **Profile Page Phase 3 Loading States (Completed)** - Added ProfilePageLoading client component with skeleton placeholders for avatar, stats grid, and item type breakdown; updated ProfileRetryForm to conditionally hide for user-not-found errors; integrated loading state into profile page
 
 - **Zod Schema Inference Phase 1 (Completed)** - Created types/db.ts with Zod schemas for all Prisma models (User, Item, Collection, ItemType, Tag, VerificationToken, Account, Session, ItemCollection), insert/select variants, computed/DTO schemas, and z.infer type aliases; build verified
+
+- **Zod Schema Inference Phase 2 (Completed)** - Merged registerSchema, signInSchema, and changePasswordSchema into types/db.ts, deleted types/register.ts, types/signIn.ts, and types/auth.ts, updated all imports to use @/types/db
 
 (End of file - total 90 lines)
