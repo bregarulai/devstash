@@ -1,26 +1,18 @@
-# Current Feature: Zod Schema Inference Phase 3
+# Current Feature
 
-**Spec**: `context/features/zod-schema-inference-phase-3-spec.md`
+**Spec**: 
 
 ## Status
 
-Complete
+Not Started
 
 ## Goals
 
-- Replace manual interfaces in `lib/db/user.ts` with `z.infer` types from `@/types/db`
-- Replace manual interfaces in `lib/db/items.ts` with `z.infer` types from `@/types/db`
-- Replace manual interface in `lib/db/collections.ts` with `z.infer` type from `@/types/db`
-- Verify zero `interface` results remain in `lib/db/` via grep
-- Confirm `npm run build` passes with no type errors
+- 
 
 ## Notes
 
-- This is the pivot point — the old type system starts being replaced
-- Do NOT change function signatures beyond type imports — behavior must stay identical
-- All replaced types must match exactly — no field additions or removals
-- Verify all downstream consumers (components, server actions, API routes) still compile
-- P1 priority, Phase 3 of 5
+-
 
 ## History
 
@@ -89,3 +81,5 @@ Complete
 - **Zod Schema Inference Phase 1 (Completed)** - Created types/db.ts with Zod schemas for all Prisma models (User, Item, Collection, ItemType, Tag, VerificationToken, Account, Session, ItemCollection), insert/select variants, computed/DTO schemas, and z.infer type aliases; build verified
 
 - **Zod Schema Inference Phase 2 (Completed)** - Merged registerSchema, signInSchema, and changePasswordSchema into types/db.ts, deleted types/register.ts, types/signIn.ts, and types/auth.ts, updated all imports to use @/types/db
+
+- **Zod Schema Inference Phase 3 (Completed)** - Replaced manual interfaces in lib/db/user.ts, lib/db/items.ts, and lib/db/collections.ts with z.infer types from @/types/db, added computed/DTO schemas and type aliases to types/db.ts
