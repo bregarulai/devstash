@@ -6,9 +6,10 @@
    - If empty: Error - "load" requires a spec filename or feature description
 
 2. Update current-feature.md:
-   - Update H1 heading to include feature name (e.g., `# Current Feature: Add Navbar`)
-   - Write goals as bullet points under ## Goals
-   - Write any additional notes/context under ## Notes
-   - Set Status to "Not Started"
+    - Update H1 heading to include feature name (e.g., `# Current Feature: Add Navbar`)
+    - If loading from `context/features/` or `context/fixes/`, add a **Spec** line under H1 with the resolved spec path (e.g., `**Spec**: \`context/features/add-navbar.md\``)
+    - Write goals as bullet points under ## Goals
+    - Write any additional notes/context under ## Notes
+    - Set Status to "Not Started"
 
 3. Confirm spec loaded and show the feature summary
