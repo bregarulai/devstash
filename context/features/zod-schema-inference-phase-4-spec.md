@@ -37,7 +37,7 @@ const result = changePasswordSchema.safeParse(body);
 
 if (!result.success) {
   return Response.json(
-    { error: result.error.errors[0].message },
+    { error: result.error.issues[0].message },
     { status: 400 }
   );
 }
@@ -81,7 +81,7 @@ const result = deleteAccountSchema.safeParse(body);
 
 if (!result.success) {
   return Response.json(
-    { error: result.error.errors[0].message },
+    { error: result.error.issues[0].message },
     { status: 400 }
   );
 }
@@ -122,7 +122,7 @@ const result = verifyTokenSchema.safeParse(body);
 
 if (!result.success) {
   return Response.json(
-    { error: result.error.errors[0].message },
+    { error: result.error.issues[0].message },
     { status: 400 }
   );
 }
@@ -157,7 +157,7 @@ const { token } = result.data;
 - Keep existing session/auth checks — Zod validates shape, not auth state
 - Keep existing token expiry checks — Zod validates input, not business logic
 - Error responses should maintain the same format as before (JSON with `error` field)
-- Use `result.error.errors[0].message` for the first validation error message
+- Use `result.error.issues[0].message` for the first validation error message
 - Do NOT change the route handler logic beyond validation
 
 ## Verification

@@ -133,6 +133,13 @@ Add Zod validation to API routes that currently use manual checks:
 6. Test profile page — data shapes match component expectations
 7. Verify no manual interface references remain in `lib/db/`
 
+## Zod 4 Notes
+
+- Zod 4 uses `result.error.issues` (not `.errors`) for validation error access
+- Zod 4 `.safeParse()` returns `ZodError` with `.issues` array
+- Use `z.coerce.string()` / `z.coerce.date()` for coercion in Zod 4
+- Zod 4 uses `z.nativeEnum()` for Prisma enum types
+
 ## References
 
 - Zod docs: https://zod.dev
