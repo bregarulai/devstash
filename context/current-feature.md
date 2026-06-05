@@ -1,18 +1,27 @@
-# Current Feature
+# Current Feature: Zod Schema Inference from Prisma — Phase 2
 
-**Spec**: 
+**Spec**: `context/features/zod-schema-inference-phase-2-spec.md`
 
 ## Status
 
-Not Started
+Complete
 
 ## Goals
 
-- 
+- Merge `registerSchema` and `RegisterFormData` from `types/register.ts` into `types/db.ts`
+- Merge `signInSchema` and `SignInFormData` from `types/signIn.ts` into `types/db.ts`
+- Merge `changePasswordSchema` and `ChangePasswordValues` from `types/auth.ts` into `types/db.ts`
+- Delete `types/register.ts`, `types/signIn.ts`, and `types/auth.ts`
+- Remove inline `registerSchema` duplication in `actions/auth.ts` and import from `@/types/db`
+- Update all component imports to use `@/types/db` for the migrated schemas
+- Verify no build errors with `npm run build`
 
 ## Notes
 
-- 
+- This is a refactoring within the types layer — no breaking changes to runtime behavior
+- All merged schemas must be identical to originals — no field changes
+- Keep `refine()` on `changePasswordSchema` for password confirmation check
+- Keep the `message` and `path` options on the refine error
 
 ## History
 

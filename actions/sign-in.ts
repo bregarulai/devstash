@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma"
 import { signIn } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { signInSchema } from "@/types/signIn"
+import { signInSchema } from "@/types/db"
 
 export async function handleSignIn(formData: FormData) {
   const result = signInSchema.safeParse({

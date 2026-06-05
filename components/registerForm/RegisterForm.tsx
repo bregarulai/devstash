@@ -17,7 +17,7 @@ import {
   registerSchema,
   type RegisterFormData,
   passwordRequirements,
-} from '@/types/register';
+} from '@/types/db';
 
 interface RegisterFormProps {
   error?: string;

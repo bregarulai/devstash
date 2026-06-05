@@ -13,7 +13,7 @@ import {
   FieldContent,
 } from '@/components/ui/field';
 import { handleSignIn } from '@/actions/sign-in';
-import { signInSchema, type SignInFormData } from '@/types/signIn';
+import { signInSchema, type SignInFormData } from '@/types/db';
 
 interface SignInFormProps {
   email?: string;
