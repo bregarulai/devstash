@@ -202,36 +202,83 @@ export const itemTypeBreakdownSchema = z.object({
 
 export type ItemTypeBreakdown = z.infer<typeof itemTypeBreakdownSchema>;
 
+export const sidebarItemTypeBreakdownSchema = z.object({
+  name: z.string(),
+  icon: z.string(),
+  color: z.string(),
+  count: z.number(),
+});
+
+export type SidebarItemTypeBreakdown = z.infer<typeof sidebarItemTypeBreakdownSchema>;
+
 export const systemItemTypeSchema = z.object({
-  itemType: itemTypeSchema,
-  count: z.number().int(),
+  name: z.string(),
+  icon: z.string(),
+  color: z.string(),
+  itemCount: z.number(),
 });
 
 export type SystemItemType = z.infer<typeof systemItemTypeSchema>;
 
-export const itemWithDetailsSchema = itemSelectSchema.extend({
-  itemType: itemTypeSchema,
-  tags: z.array(tagSchema),
+export const itemWithDetailsSchema = z.object({
+  id: z.string(),
+  title: z.string().min(1).max(255),
+  description: z.string().or(z.null()),
+  contentType: z.nativeEnum(ContentType),
+  content: z.string().or(z.null()),
+  url: z.string().url().or(z.literal('')).or(z.null()),
+  language: z.string().or(z.null()),
+  isFavorite: z.boolean(),
+  isPinned: z.boolean(),
+  itemType: z.object({
+    name: z.string(),
+    icon: z.string(),
+    color: z.string(),
+  }),
+  tags: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+  })),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
 });
 
 export type ItemWithDetails = z.infer<typeof itemWithDetailsSchema>;
 
-export const collectionWithStatsSchema = collectionSelectSchema.extend({
+export const collectionWithStatsSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().or(z.null()),
+  itemCount: z.number(),
+  isFavorite: z.boolean(),
   itemTypeNames: z.array(z.string()),
-  dominantItemTypeColor: z.string().or(z.null()),
-  contentTypeCounts: itemTypeBreakdownSchema.array(),
+  dominantItemTypeColor: z.string(),
+  contentTypeCounts: z.record(z.string(), z.number()),
+  createdAt: z.coerce.date(),
 });
 
 export type CollectionWithStats = z.infer<typeof collectionWithStatsSchema>;
 
+export const profileUserDataSchema = z.object({
+  id: z.string(),
+  name: z.string().or(z.null()),
+  email: z.string(),
+  image: z.string().or(z.null()),
+  isPro: z.boolean(),
+  createdAt: z.coerce.date(),
+  password: z.string().or(z.null()),
+});
+
 export const profileDataSchema = z.object({
-  user: userSelectSchema,
+  user: profileUserDataSchema.or(z.null()),
   itemStats: z.object({
-    totalItems: z.number().int(),
-    totalCollections: z.number().int(),
-    totalTags: z.number().int(),
+    totalItems: z.number(),
+    totalCollections: z.number(),
+    favoriteItems: z.number(),
+    favoriteCollections: z.number(),
   }),
-  itemTypeBreakdown: itemTypeBreakdownSchema.array(),
+  itemTypeBreakdown: sidebarItemTypeBreakdownSchema.array(),
+  errorType: z.union([z.literal('db-failure'), z.literal('user-not-found'), z.null()]),
 });
 
 export type ProfileData = z.infer<typeof profileDataSchema>;

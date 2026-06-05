@@ -1,45 +1,10 @@
 import { prisma } from '@/lib/prisma';
 import { DEFAULT_RECENT_LIMIT } from '@/lib/constants';
+import type { ItemWithDetails, SystemItemType } from '@/types/db';
 
-export interface ItemWithDetails {
-  id: string;
-  title: string;
-  description: string | null;
-  contentType: string;
-  content: string | null;
-  url: string | null;
-  language: string | null;
-  isFavorite: boolean;
-  isPinned: boolean;
-  itemType: {
-    name: string;
-    icon: string;
-    color: string;
-  };
-  tags: { id: string; name: string }[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type { SystemItemType };
 
-export function mapItemToDetails(item: {
-  id: string;
-  title: string;
-  description: string | null;
-  contentType: string;
-  content: string | null;
-  url: string | null;
-  language: string | null;
-  isFavorite: boolean;
-  isPinned: boolean;
-  itemType: {
-    name: string;
-    icon: string;
-    color: string;
-  };
-  tags: { id: string; name: string }[];
-  createdAt: Date;
-  updatedAt: Date;
-}): ItemWithDetails {
+export function mapItemToDetails(item: ItemWithDetails): ItemWithDetails {
   return {
     id: item.id,
     title: item.title,
@@ -277,13 +242,6 @@ export async function getItemStats(userId: string): Promise<{
     favoriteItems,
     favoriteCollections,
   };
-}
-
-export interface SystemItemType {
-  name: string;
-  icon: string;
-  color: string;
-  itemCount: number;
 }
 
 export async function getSystemItemTypesWithCounts(): Promise<SystemItemType[]> {
