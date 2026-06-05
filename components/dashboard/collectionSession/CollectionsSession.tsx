@@ -7,7 +7,7 @@ import { CollectionSessionSkeleton } from '../skeletons/CollectionSessionSkeleto
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import type { CollectionWithStats } from '@/lib/db/collections';
+import type { CollectionWithStats } from '@/types/db';
 import type { User } from '@/types/user';
 
 interface CollectionsSessionProps {

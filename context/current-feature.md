@@ -1,18 +1,28 @@
-# Current Feature
+# Current Feature: Zod Schema Inference — Phase 5
 
-**Spec**:
+**Spec**: `context/features/zod-schema-inference-phase-5-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
--
+- Update all server actions to use `z.infer` types from `@/types/db` instead of manual interfaces
+- Update all server components to consume `z.infer` types, replacing `Awaited<ReturnType<>>` patterns
+- Update all component props to import types from `@/types/db`
+- Eliminate all `interface` definitions and `from '@/lib/db/'` type imports in the codebase
+- Verify build succeeds with no type errors
 
 ## Notes
 
--
+- This is Phase 5 of 5 — the final migration step cascading `z.infer` types across the entire codebase
+- Do NOT change component behavior — only type imports and definitions
+- Do NOT change prop interfaces beyond type source
+- Keep all existing component props and their names
+- Keep all existing component functionality
+- Implementation order: server actions → server components → component props → final cleanup
+- Run `npm run build` after each sub-phase
 
 ## History
 

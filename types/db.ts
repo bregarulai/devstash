@@ -299,3 +299,38 @@ export const verifyTokenSchema = z.object({
 });
 
 export type VerifyTokenValues = z.infer<typeof verifyTokenSchema>;
+
+// ── Item Stats ────────────────────────────────────────────────────────────────
+
+export const itemStatsSchema = z.object({
+  totalItems: z.number(),
+  totalCollections: z.number(),
+  favoriteItems: z.number(),
+  favoriteCollections: z.number(),
+});
+
+export type ItemStats = z.infer<typeof itemStatsSchema>;
+
+// ── Forgot Password Schema ────────────────────────────────────────────────────
+
+export const forgotPasswordSchema = z.object({
+  email: z.email(),
+});
+
+export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
+
+// ── Reset Password Schema ─────────────────────────────────────────────────────
+
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().min(1),
+    email: z.string().min(1),
+    password: z.string().min(8),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
