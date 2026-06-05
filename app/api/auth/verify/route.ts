@@ -1,19 +1,22 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { verifyTokenSchema } from "@/types/db"
 import crypto from "crypto"
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl
   const token = searchParams.get("token")
 
-  if (!token) {
+  const result = verifyTokenSchema.safeParse({ token })
+
+  if (!result.success) {
     return NextResponse.json(
-      { error: "Missing verification token" },
+      { error: result.error.issues[0].message },
       { status: 400 }
     )
   }
 
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex")
+  const hashedToken = crypto.createHash("sha256").update(result.data.token).digest("hex")
 
   const existingToken = await prisma.verificationToken.findFirst({
     where: { token: hashedToken },

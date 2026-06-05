@@ -282,3 +282,20 @@ export const profileDataSchema = z.object({
 });
 
 export type ProfileData = z.infer<typeof profileDataSchema>;
+
+// ── Delete Account Schema ─────────────────────────────────────────────────────
+
+export const deleteAccountSchema = z.object({
+  userId: z.string(),
+  confirm: z.literal(true),
+});
+
+export type DeleteAccountValues = z.infer<typeof deleteAccountSchema>;
+
+// ── Verify Token Schema ───────────────────────────────────────────────────────
+
+export const verifyTokenSchema = z.object({
+  token: z.string().min(1, "Verification token is required"),
+});
+
+export type VerifyTokenValues = z.infer<typeof verifyTokenSchema>;
