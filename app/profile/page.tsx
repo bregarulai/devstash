@@ -5,18 +5,13 @@ import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/Dashbo
 import { getSystemItemTypesWithCounts, SystemItemType } from '@/lib/db/items';
 import { CollectionWithStats, getFavoriteCollections, getRecentCollections } from '@/lib/db/collections';
 import { ProfileErrorState } from '@/components/profile/profileErrorState/ProfileErrorState';
+import { redirect } from 'next/navigation';
 
 export default async function ProfilePage() {
   const session = await auth();
 
   if (!session?.user?.id) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4 text-muted-foreground">
-          <p className="text-lg">Sign in to view your profile</p>
-        </div>
-      </div>
-    );
+    redirect('/sign-in');
   }
 
   const profileData = await loadProfileDataAsync(session.user.id);
