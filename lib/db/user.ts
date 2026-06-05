@@ -1,34 +1,8 @@
 import { prisma } from '@/lib/prisma';
+import type { ProfileData, SidebarItemTypeBreakdown } from '@/types/db';
 
-
-export interface ItemTypeBreakdown {
-  name: string;
-  icon: string;
-  color: string;
-  count: number;
-}
 
 export type ProfileErrorType = 'db-failure' | 'user-not-found' | null;
-
-export interface ProfileData {
-  user: {
-    id: string;
-    name: string | null;
-    email: string;
-    image: string | null;
-    isPro: boolean;
-    createdAt: Date;
-    password: string | null;
-  } | null;
-  itemStats: {
-    totalItems: number;
-    totalCollections: number;
-    favoriteItems: number;
-    favoriteCollections: number;
-  };
-  itemTypeBreakdown: ItemTypeBreakdown[];
-  errorType: ProfileErrorType;
-}
 
 export async function loadProfileDataAsync(userId: string): Promise<ProfileData> {
   const defaultResult: ProfileData = {
@@ -80,7 +54,7 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
       };
     }
 
-    let itemTypeBreakdown: ItemTypeBreakdown[] = [];
+    let itemTypeBreakdown: SidebarItemTypeBreakdown[] = [];
 
     try {
       itemTypeBreakdown = await getUserItemTypeBreakdown(user.id);
@@ -99,7 +73,7 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
   }
 }
 
-export async function getUserItemTypeBreakdown(userId: string): Promise<ItemTypeBreakdown[]> {
+export async function getUserItemTypeBreakdown(userId: string): Promise<SidebarItemTypeBreakdown[]> {
   const types = await prisma.itemType.findMany({
     where: {
       isSystem: true,

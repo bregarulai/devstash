@@ -4,6 +4,9 @@ import {
   DEFAULT_SAMPLE_COUNT,
   DEFAULT_RECENT_COLLECTIONS_LIMIT,
 } from '@/lib/constants';
+import type { CollectionWithStats } from '@/types/db';
+
+export type { CollectionWithStats };
 
 function getDominantItemTypeColor(
   itemTypes: Array<{ name: string; color: string }>,
@@ -27,18 +30,6 @@ function getDominantItemTypeColor(
   return dominantColor;
 }
 
-
-export interface CollectionWithStats {
-  id: string;
-  name: string;
-  description: string | null;
-  itemCount: number;
-  isFavorite: boolean;
-  itemTypeNames: string[];
-  dominantItemTypeColor: string;
-  contentTypeCounts: Record<string, number>;
-  createdAt: Date;
-}
 
 export async function getFavoriteCollections(
   userId: string,
