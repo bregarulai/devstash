@@ -4,23 +4,22 @@ import { Input } from '@/components/ui/input';
 
 export function PasswordField({
   label,
-  name,
   show,
   toggle,
   error,
+  ...inputProps
 }: {
   label: string;
-  name: string;
   show: boolean;
   toggle: () => void;
   error?: string;
-}) {
+} & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <Field>
       <FieldLabel>{label}</FieldLabel>
       <div className="relative">
         <Input
-          name={name}
+          {...inputProps}
           type={show ? 'text' : 'password'}
           placeholder={`Enter ${label.toLowerCase()}`}
           autoComplete="new-password"

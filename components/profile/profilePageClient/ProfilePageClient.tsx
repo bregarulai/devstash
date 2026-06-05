@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Mail, Calendar, Lock } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -58,6 +59,7 @@ export function ProfilePageClient({
   hasPassword,
 }: ProfilePageClientProps) {
   const initials = getInitials(user.name, user.email);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 
   return (
     <div className='mx-auto max-w-4xl space-y-6'>
@@ -122,7 +124,7 @@ export function ProfilePageClient({
         </CardContent>
         <CardFooter className='flex flex-col sm:flex-row gap-3 pt-4'>
           {hasPassword && (
-            <Dialog>
+            <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant='outline'>
                   <Lock className='size-4 mr-2' />
@@ -137,7 +139,7 @@ export function ProfilePageClient({
                     unique password.
                   </DialogDescription>
                 </DialogHeader>
-                <ChangePasswordForm />
+                <ChangePasswordForm onSuccess={() => setPasswordDialogOpen(false)} />
               </DialogContent>
             </Dialog>
           )}

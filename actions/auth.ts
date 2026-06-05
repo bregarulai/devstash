@@ -8,6 +8,8 @@ import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { resend } from "@/lib/resend"
 import { createVerificationToken } from "@/lib/verification-token"
+import { auth } from "@/lib/auth"
+import { changePasswordSchema, type ChangePasswordValues } from "@/types/auth"
 
 const registerSchema = z.object({
   name: z.string().min(1),
@@ -116,6 +118,71 @@ This link will expire in 24 hours. If you didn't create an account, you can safe
 
 export async function handleSignOut() {
   await nextAuthSignOut({ redirectTo: "/" })
+}
+
+export async function handleDeleteAccount() {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    return { error: 'Not authenticated', data: null }
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { id: true },
+  })
+
+  if (!user) {
+    return { error: 'User not found', data: null }
+  }
+
+  try {
+    await prisma.user.delete({
+      where: { id: user.id },
+    })
+  } catch {
+    return { error: 'Failed to delete account', data: null }
+  }
+
+  await nextAuthSignOut({ redirectTo: "/sign-in" })
+
+  revalidatePath("/profile")
+
+  return { success: true, data: null }
+}
+
+export async function handleChangePassword(data: ChangePasswordValues) {
+  const { currentPassword, newPassword } = data
+
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    return { error: 'Not authenticated', data: null }
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { password: true },
+  })
+
+  if (!user?.password) {
+    return { error: 'Password change not available for OAuth accounts', data: null }
+  }
+
+  const valid = await bcrypt.compare(currentPassword, user.password)
+
+  if (!valid) {
+    return { error: 'Current password is incorrect', data: null }
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+  await prisma.user.update({
+    where: { id: session.user.id },
+    data: { password: hashedPassword },
+  })
+
+  return { success: true, data: null }
 }
 
 

@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { handleDeleteAccount } from '@/actions/auth';
 
 export function DeleteAccountDialog() {
   const [isPending, setIsPending] = useState(false);
@@ -30,14 +31,10 @@ export function DeleteAccountDialog() {
     setError('');
     setIsPending(true);
     try {
-      const response = await fetch('/api/profile/delete-account', {
-        method: 'DELETE',
-      });
+      const result = await handleDeleteAccount();
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || 'Failed to delete account');
+      if ('error' in result) {
+        setError(result.error || 'Failed to delete account');
         setIsPending(false);
         return;
       }
