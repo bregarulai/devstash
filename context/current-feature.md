@@ -1,6 +1,6 @@
 # Current Feature
 
-**Spec**: 
+**Spec**:
 
 ## Status
 
@@ -8,7 +8,7 @@ Not Started
 
 ## Goals
 
-- 
+-
 
 ## Notes
 
@@ -83,3 +83,5 @@ Not Started
 - **Zod Schema Inference Phase 2 (Completed)** - Merged registerSchema, signInSchema, and changePasswordSchema into types/db.ts, deleted types/register.ts, types/signIn.ts, and types/auth.ts, updated all imports to use @/types/db
 
 - **Zod Schema Inference Phase 3 (Completed)** - Replaced manual interfaces in lib/db/user.ts, lib/db/items.ts, and lib/db/collections.ts with z.infer types from @/types/db, added computed/DTO schemas and type aliases to types/db.ts
+
+- **Zod Schema Inference Phase 4 (Completed)** - Added deleteAccountSchema and verifyTokenSchema to types/db.ts, replaced manual validation in change-password, delete-account, and verify API routes with Zod .safeParse()
