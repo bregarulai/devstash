@@ -4,10 +4,10 @@ import { auth } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-export interface RetryProfileResult {
+export type RetryProfileResult = {
   success: boolean;
   error?: string;
-}
+};
 
 export async function retryProfileData(): Promise<RetryProfileResult> {
   const session = await auth();

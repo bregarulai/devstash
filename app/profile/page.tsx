@@ -2,8 +2,9 @@ import { auth } from '@/lib/auth';
 import { loadProfileDataAsync } from '@/lib/db/user';
 import { ProfilePageClient } from '@/components/profile/profilePageClient/ProfilePageClient';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
-import { getSystemItemTypesWithCounts, SystemItemType } from '@/lib/db/items';
-import { CollectionWithStats, getFavoriteCollections, getRecentCollections } from '@/lib/db/collections';
+import { SystemItemType, CollectionWithStats } from '@/types/db';
+import { getSystemItemTypesWithCounts } from '@/lib/db/items';
+import { getFavoriteCollections, getRecentCollections } from '@/lib/db/collections';
 import { ProfileErrorState } from '@/components/profile/profileErrorState/ProfileErrorState';
 import { redirect } from 'next/navigation';
 

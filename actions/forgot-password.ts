@@ -1,15 +1,11 @@
 "use server"
 
-import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
 import { createVerificationToken } from "@/lib/verification-token"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
-
-const forgotPasswordSchema = z.object({
-  email: z.email(),
-})
+import { forgotPasswordSchema } from "@/types/db"
 
 export async function handleForgotPassword(formData: FormData) {
   const result = forgotPasswordSchema.safeParse({

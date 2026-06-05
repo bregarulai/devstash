@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { SystemItemType } from '@/lib/db/items';
-import { CollectionWithStats } from '@/lib/db/collections';
+import { SystemItemType, CollectionWithStats } from '@/types/db';
 import { MobileSideBar } from '../mobileSideBar/MobileSideBar';
 import { Sidebar } from '../sidebar/Sidebar';
 

@@ -1,22 +1,10 @@
 'use server';
 
-import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
 import { verifyToken } from '@/lib/verification-token';
-
-const resetPasswordSchema = z
-  .object({
-    token: z.string().min(1),
-    email: z.string().min(1),
-    password: z.string().min(8),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
+import { resetPasswordSchema } from '@/types/db';
 
 export async function handleResetPassword(formData: FormData) {
   const result = resetPasswordSchema.safeParse({

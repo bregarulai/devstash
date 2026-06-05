@@ -10,6 +10,7 @@ import {
   getFavoriteCollections,
   getRecentCollections,
 } from '@/lib/db/collections';
+import type { ItemWithDetails, SystemItemType, CollectionWithStats, ItemStats } from '@/types/db';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
 import { StatsCards } from '@/components/dashboard/statsCards/StatsCards';
 import { CollectionsSession } from '@/components/dashboard/collectionSession/CollectionsSession';
@@ -58,12 +59,12 @@ export default async function DashboardPage() {
     );
   }
 
-  let pinnedItems: Awaited<ReturnType<typeof getPinnedItems>> = [];
-  let recentItems: Awaited<ReturnType<typeof getRecentItems>> = [];
-  let systemItemTypes: Awaited<ReturnType<typeof getSystemItemTypesWithCounts>> = [];
-  let favoriteCollections: Awaited<ReturnType<typeof getFavoriteCollections>> = [];
-  let recentCollections: Awaited<ReturnType<typeof getRecentCollections>> = [];
-  let itemStats: Awaited<ReturnType<typeof getItemStats>> = {
+  let pinnedItems: ItemWithDetails[] = [];
+  let recentItems: ItemWithDetails[] = [];
+  let systemItemTypes: SystemItemType[] = [];
+  let favoriteCollections: CollectionWithStats[] = [];
+  let recentCollections: CollectionWithStats[] = [];
+  let itemStats: ItemStats = {
     totalItems: 0,
     totalCollections: 0,
     favoriteItems: 0,
