@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Sign-In Page Resend Verification Success Param
+
+**Spec**: `context/features/signin-resend-verification-success-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Define your goals here -->
+- Keep the `?success=resent` query param added to `redirect("/sign-in")` in `actions/resend-verification.ts`
+- Implement sign-in page support to consume the param and display feedback to the user
 
 ## Notes
 
-<!-- Add notes and constraints here -->
+- `actions/resend-verification.ts` line 23 was changed from `redirect("/sign-in")` to `redirect("/sign-in?success=resent")`
+- This is part of **Auth Hardening Phase 1** goal: "Remove user existence disclosure in resend verification."
+- The `?success=resent` param is currently out of scope for that goal. It has no effect unless the sign-in page is updated to consume it.
+- Decision: Option A — Keep `?success=resent`
+- Requires: update sign-in page to check for `?success=resent`, display toast/inline message "Verification email resent. Check your inbox.", clear param after display
+- Files affected: `app/(auth)/sign-in/page.tsx`, `actions/resend-verification.ts` (keep as-is)
+- No sign-in page currently consumes `?success=resent` — this feature implements that support.
 
 ## History
 
