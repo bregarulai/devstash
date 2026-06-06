@@ -29,6 +29,14 @@ export const signInSchema = z.object({
 
 export type SignInFormData = z.infer<typeof signInSchema>;
 
+export const signInActionResultSchema = z.object({
+  success: z.boolean(),
+  data: z.null(),
+  error: z.string().or(z.null()),
+});
+
+export type SignInActionResult = z.infer<typeof signInActionResultSchema>;
+
 export const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(1, 'Current password is required'),

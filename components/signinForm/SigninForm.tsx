@@ -22,6 +22,7 @@ interface SignInFormProps {
 export function SignInForm({ email }: SignInFormProps) {
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -39,10 +40,12 @@ export function SignInForm({ email }: SignInFormProps) {
     const formData = new FormData();
     formData.set('email', data.email);
     formData.set('password', data.password);
-    startTransition(() => {
-      (async () => {
-        await handleSignIn(formData);
-      })();
+    setError(null);
+    startTransition(async () => {
+      const result = await handleSignIn(formData);
+      if (!result.success && result.error) {
+        setError(result.error);
+      }
     });
   });
 
@@ -105,6 +108,12 @@ export function SignInForm({ email }: SignInFormProps) {
       <Button type='submit' disabled={isPending} className='w-full h-10'>
         {isPending ? 'Signing in...' : 'Sign in with email'}
       </Button>
+
+      {error && (
+        <div className='rounded-md bg-destructive/15 p-3 text-sm text-destructive'>
+          {error}
+        </div>
+      )}
     </form>
   );
 }

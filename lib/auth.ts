@@ -3,6 +3,20 @@ import NextAuth from "next-auth"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import Credentials from "next-auth/providers/credentials"
+import type { SignInFormData } from "@/types/db"
+
+function isCredentialsInput(
+  value: unknown,
+): value is { email: string; password: string } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "email" in value &&
+    "password" in value &&
+    typeof (value as Record<string, unknown>).email === "string" &&
+    typeof (value as Record<string, unknown>).password === "string"
+  );
+}
 
 const overrideProviders = {
   providers: [
@@ -13,24 +27,26 @@ const overrideProviders = {
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        if (!credentials?.email || !credentials?.password) {
-          return null
+        if (!isCredentialsInput(credentials)) {
+          return null;
+        }
+
+        const { email, password } = credentials;
+
+        if (!email || !password) {
+          return null;
         }
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
+          where: { email },
         })
 
         if (!user || !user.password) {
           return null
         }
 
-        if (process.env.ENABLE_EMAIL_VERIFICATION !== "false" && !user.emailVerified) {
-          return null
-        }
-
         const isValid = await bcrypt.compare(
-          credentials.password as string,
+          password,
           user.password,
         )
 
