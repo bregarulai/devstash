@@ -1,27 +1,14 @@
-# Current Feature: Auth Hardening Phase 1
+# Current Feature
 
-**Spec**: `context/features/auth-hardening-phase-1-spec.md`
+**Spec**: 
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Increase bcrypt cost factor from 10 to 12 in all password hashing operations
-- Remove user existence disclosure in forgot password success message
-- Extend middleware protection to /profile routes
-- Delete verification token after successful use
-- Remove user existence disclosure in resend verification
+- 
 
 ## Notes
-
-- 5 small, independent security fixes, each touching a single file
-- No new pages or flows — safe to implement in parallel
-- Severity: P1 — Medium, low-impact individually
-- bcrypt.compare() auto-detects cost from stored hash — no change needed there
-- Always generate a dummy token in forgot password to prevent timing-based enumeration
-- Token deletion should be graceful — verification still succeeds if deletion fails
 
 ## History
 
@@ -96,3 +83,5 @@ In Progress
 - **Zod Schema Inference Phase 4 (Completed)** - Added deleteAccountSchema and verifyTokenSchema to types/db.ts, replaced manual validation in change-password, delete-account, and verify API routes with Zod .safeParse()
 
 - **Zod Schema Inference Phase 5 (Completed)** - Migrated all server actions, server components, and component props to z.infer types from @/types/db, eliminated all manual interface definitions and @/lib/db type imports, verified build passes with no type errors
+
+- **Auth Hardening Phase 1 (Completed)** - Implemented 5 security fixes: increased bcrypt cost factor to 12, removed user existence disclosure in forgot password and resend verification, extended middleware to /profile routes, and added graceful verification token deletion after successful use
