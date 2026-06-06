@@ -1,25 +1,20 @@
-# Current Feature: Sign-In Page Resend Verification Success Param
+# Current Feature
 
-**Spec**: `context/features/signin-resend-verification-success-spec.md`
+<!-- Add your feature name here -->
+
+<!-- **Spec**: path-to-spec -->
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Keep the `?success=resent` query param added to `redirect("/sign-in")` in `actions/resend-verification.ts`
-- Implement sign-in page support to consume the param and display feedback to the user
+<!-- Add your goals here -->
 
 ## Notes
 
-- `actions/resend-verification.ts` line 23 was changed from `redirect("/sign-in")` to `redirect("/sign-in?success=resent")`
-- This is part of **Auth Hardening Phase 1** goal: "Remove user existence disclosure in resend verification."
-- The `?success=resent` param is currently out of scope for that goal. It has no effect unless the sign-in page is updated to consume it.
-- Decision: Option A — Keep `?success=resent`
-- Requires: update sign-in page to check for `?success=resent`, display toast/inline message "Verification email resent. Check your inbox.", clear param after display
-- Files affected: `app/(auth)/sign-in/page.tsx`, `actions/resend-verification.ts` (keep as-is)
-- No sign-in page currently consumes `?success=resent` — this feature implements that support.
+<!-- Add your notes here -->
 
 ## History
 
@@ -98,3 +93,5 @@ In Progress
 - **Auth Hardening Phase 1 (Completed)** - Implemented 5 security fixes: increased bcrypt cost factor to 12, removed user existence disclosure in forgot password and resend verification, extended middleware to /profile routes, and added graceful verification token deletion after successful use
 
 - **Auth Hardening Phase 2 (Completed)** - Removed email verification check from pre-authentication authorize function and handleSignIn server action, unified error message on sign-in page, created /verify-required page for post-sign-in verification redirect
+
+- **Sign-In Page Resend Verification Success Param (Completed)** - Confirmed ?success=resent param support already implemented in SignInToast, verified build passes, no changes needed
