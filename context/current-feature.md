@@ -1,14 +1,26 @@
-# Current Feature
+# Current Feature: Auth Hardening Phase 2 — Email Enumeration on Sign-In
 
-**Spec**: 
+**Spec**: `context/features/auth-hardening-phase-2-spec.md`
 
 ## Status
 
+In Progress
+
 ## Goals
 
-- 
+- Remove email verification check from pre-authentication `authorize` function in `lib/auth.ts`
+- Add post-sign-in redirect callback in `lib/auth.config.ts` to redirect unverified users to `/verify-required`
+- Remove `UnverifiedEmail` conditional from sign-in page, replace with unified generic error message
+- Create new `/verify-required` page with email display, resend verification button, and back-to-sign-in link
+- Handle edge cases: user verifies before redirect, expired session on `/verify-required`, re-sign-in flow
 
 ## Notes
+
+- P0 severity — primary email enumeration vector on sign-in flow
+- Must be implemented after Auth Hardening Phase 1
+- Verification check moves from pre-auth to post-auth; unverified users sign in normally then get redirected
+- Resend verification link moves to `/verify-required` page, not sign-in page
+- Callback must check `emailVerified` at redirect time, not at session creation time
 
 ## History
 
@@ -85,3 +97,5 @@
 - **Zod Schema Inference Phase 5 (Completed)** - Migrated all server actions, server components, and component props to z.infer types from @/types/db, eliminated all manual interface definitions and @/lib/db type imports, verified build passes with no type errors
 
 - **Auth Hardening Phase 1 (Completed)** - Implemented 5 security fixes: increased bcrypt cost factor to 12, removed user existence disclosure in forgot password and resend verification, extended middleware to /profile routes, and added graceful verification token deletion after successful use
+
+- **Auth Hardening Phase 2 (In Progress)** - Removed email verification check from pre-authentication authorize function and handleSignIn server action, unified error message on sign-in page, created /verify-required page for post-sign-in verification redirect

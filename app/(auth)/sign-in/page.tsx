@@ -11,8 +11,8 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { SignInToast } from '@/components/auth/signInToast/SignInToast';
-import { handleResendVerification } from '@/actions/resend-verification';
 import { SignInForm } from '@/components/signinForm/SigninForm';
+import { handleSignInWithGitHub } from '@/actions/sign-in-github';
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -44,23 +44,9 @@ export default async function SignInPage({
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
-          {error === 'UnverifiedEmail' && email && (
-            <div className='rounded-md bg-yellow-500/15 p-3 text-sm text-yellow-600'>
-              Your email has not been verified yet. Please check your inbox for a
-              verification email.{' '}
-              <form
-                action={async () => {
-                  'use server';
-                  await handleResendVerification(email);
-                }}
-              >
-                <button
-                  type='submit'
-                  className='underline underline-offset-4 hover:text-yellow-700 transition-colors'
-                >
-                  Resend verification email
-                </button>
-              </form>
+          {error && (
+            <div className='rounded-md bg-destructive/15 p-3 text-sm text-destructive'>
+              Invalid email or password
             </div>
           )}
 
@@ -86,14 +72,7 @@ export default async function SignInPage({
             </div>
           </div>
 
-          <form
-            action={async () => {
-              'use server';
-              await (await import('@/lib/auth')).signIn('github', {
-                redirectTo: '/dashboard',
-              });
-            }}
-          >
+          <form action={handleSignInWithGitHub}>
             <Button type='submit' variant='outline' className='w-full h-10'>
               <svg
                 className='mr-2 h-4 w-4'

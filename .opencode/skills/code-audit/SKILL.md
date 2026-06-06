@@ -34,6 +34,18 @@ For each file, check compliance with the standards from `context/coding-standard
 - Interfaces defined for props, API responses, data models?
 - Proper type inference?
 
+**Zod Schema Inference Types**
+- All Zod schemas in `types/db.ts` (no inline schemas)?
+- Types exported as `z.infer<typeof schema>`?
+- Prisma models have `*InsertSchema` + `*SelectSchema` variants?
+- DateTime fields use `z.coerce.date()`?
+- Prisma enums use `z.nativeEnum()` (not `z.enum()`)?
+- Nullable fields use `z.string().or(z.null())` (not `.optional()`)?
+- No manual interfaces in `lib/db/` (replaced with `z.infer` imports)?
+- Type imports from `@/types/db` (not `lib/db/` or `generated/prisma/`)?
+- Zod 4 compatible (`result.error.issues` not `.errors`)?
+- Component props use standard TypeScript types (not `z.infer`)?
+
 **React**
 - Functional components only (no class components)?
 - Hooks used for state and side effects?
@@ -180,6 +192,11 @@ Produce a structured audit report with the following format:
 
 1. [Actionable recommendation]
 2. [Actionable recommendation]
+
+## Zod Schema Inference Issues
+
+### [File Path]
+- [Line N]: [Issue] - [Expected pattern]
 
 ## Positive Observations
 - [What's done well]

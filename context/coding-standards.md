@@ -7,6 +7,24 @@
 - Define interfaces for all props, API responses, and data models
 - Use type inference where obvious, explicit types where helpful
 
+## Zod Schema Inference Types
+
+- **Single source of truth**: All Zod schemas live in `types/db.ts`
+- **Exported types**: Use `z.infer<typeof schema>` for all data shapes at API boundaries
+- **Insert/select variants**: Every Prisma model has `*InsertSchema` + `*SelectSchema` (use `extend()` for select)
+- **DateTime fields**: Use `z.coerce.date()` or `z.coerce.date().or(z.null())`
+- **Prisma enums**: Use `z.nativeEnum()` — never `z.enum()`
+- **Nullable fields**: Use `z.string().or(z.null())` — never `z.string().optional()` for nullable
+- **Optional fields**: Use `.optional()` for truly optional (non-null) fields
+- **Nested relations**: Use `z.object()` with nested schemas — never `z.infer` on a single model
+- **Computed/DTO types**: Define explicit schemas for complex shapes (e.g., `itemWithDetailsSchema`)
+- **No manual interfaces in `lib/db/`**: Replace all interfaces with `z.infer` imports from `@/types/db`
+- **Re-export types**: `lib/db/` files should use `export type { ... }` to re-export from `@/types/db`
+- **Type imports**: Always import types from `@/types/db` — never from `lib/db/` or `generated/prisma/`
+- **Zod 4 compatible**: Use `result.error.issues` (not `.errors`) for validation error access
+- **Props**: Use standard TypeScript types for component props — not `z.infer` types
+- **Server component return types**: Use `z.infer` types from `@/types/db`
+
 ## React
 
 - Functional components only (no class components)
@@ -57,7 +75,7 @@ Example v4 configuration:
 - Components: `components/[feature]/[componentName]/ComponentName.tsx` — each component lives in its own folder named in PascalCase matching the component name
 - Pages: `app/[route]/page.tsx`
 - Server Actions: `actions/[feature].ts`
-- Types: `types/[feature].ts`
+- Types: `types/db.ts` — all Zod schemas and `z.infer` types (single file)
 - Lib/Utils: `lib/[utility].ts`
 
 ## Naming
@@ -88,7 +106,10 @@ Example v4 configuration:
 
 - Server components fetch directly with Prisma
 - Client components use Server Actions
-- Validate all inputs with Zod
+- Validate all inputs with Zod schemas from `@/types/db`
+- Use `z.infer` types from `@/types/db` for server component return types
+- Use `export type { ... }` to re-export types from `lib/db/`
+- Never define new interfaces in `lib/db/` — use `z.infer` schemas in `types/db.ts`
 
 ## Error Handling
 

@@ -17,15 +17,15 @@ export const authConfig = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id as string
+        (token as { id: string }).id = String(user.id);
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
-      if (token.id) {
-        session.user.id = token.id as string
+      if ((token as { id?: string }).id) {
+        session.user.id = String((token as { id: string }).id);
       }
-      return session
+      return session;
     },
   },
 } satisfies NextAuthConfig
