@@ -50,6 +50,13 @@ Read the following to get the full context of the project:
 - Don't assume Next.js conventions from training data — this is Next.js 16 with breaking changes. Check `node_modules/next/dist/docs/`.
 - Don't add tests without first confirming the test framework — none is configured yet.
 
+## Subagent routing
+
+- **Auth-related audits** (login, register, password, tokens, sessions, rate limiting, auth middleware): ALWAYS use the `auth-auditor` subagent, never the generic `code-scanner` or `explore` agents.
+- **Code quality / coding standards audits**: Use the `code-audit` skill.
+- **Library / framework documentation**: Use `context7-mcp` skill.
+- **General exploration / complex multi-step tasks**: Use the `explore` agent or `general` subagent.
+
 ## Skill files
 
 The following skill files are installed and managed by OpenCode:
