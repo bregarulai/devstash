@@ -28,6 +28,15 @@ export async function handleForgotPassword(formData: FormData) {
     redirect(`/forgot-password?error=Please+verify+your+email+address+first`)
   }
 
+  // Always generate a dummy token to prevent timing-based enumeration
+  // This ensures the response time is similar whether the email exists or not
+  await createVerificationToken(email).catch(() => {})
+
+  if (!user) {
+    revalidatePath("/forgot-password")
+    redirect("/forgot-password?success=A+password+reset+link+has+been+sent+if+the+email+is+registered.")
+  }
+
   const token = await createVerificationToken(email)
 
   const resetLink = `${process.env.AUTH_URL || "http://localhost:3000"}/reset-password?token=${token}&email=${encodeURIComponent(email)}`
@@ -81,5 +90,5 @@ This link will expire in 24 hours. If you didn't request a password reset, you c
   }
 
   revalidatePath("/forgot-password")
-  redirect("/forgot-password?success=If+an+account+exists+with+that+email,+a+password+reset+link+has+been+sent.")
+  redirect("/forgot-password?success=A+password+reset+link+has+been+sent+if+the+email+is+registered.")
 }

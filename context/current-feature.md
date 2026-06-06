@@ -1,18 +1,27 @@
-# Current Feature
+# Current Feature: Auth Hardening Phase 1
 
-**Spec**: 
+**Spec**: `context/features/auth-hardening-phase-1-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-- 
+- Increase bcrypt cost factor from 10 to 12 in all password hashing operations
+- Remove user existence disclosure in forgot password success message
+- Extend middleware protection to /profile routes
+- Delete verification token after successful use
+- Remove user existence disclosure in resend verification
 
 ## Notes
 
-- 
+- 5 small, independent security fixes, each touching a single file
+- No new pages or flows — safe to implement in parallel
+- Severity: P1 — Medium, low-impact individually
+- bcrypt.compare() auto-detects cost from stored hash — no change needed there
+- Always generate a dummy token in forgot password to prevent timing-based enumeration
+- Token deletion should be graceful — verification still succeeds if deletion fails
 
 ## History
 

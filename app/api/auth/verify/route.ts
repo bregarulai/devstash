@@ -48,6 +48,9 @@ export async function GET(request: NextRequest) {
   }
 
   if (user.emailVerified) {
+    await prisma.verificationToken.deleteMany({
+      where: { identifier: existingToken.identifier, token: hashedToken },
+    }).catch(() => {})
     return NextResponse.json(
       { message: "Email already verified" },
       { status: 200 }
@@ -58,6 +61,10 @@ export async function GET(request: NextRequest) {
     where: { id: user.id },
     data: { emailVerified: new Date() },
   })
+
+  await prisma.verificationToken.deleteMany({
+    where: { identifier: existingToken.identifier, token: hashedToken },
+  }).catch(() => {})
 
   return NextResponse.json(
     { message: "Email verified successfully" },

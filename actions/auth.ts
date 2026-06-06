@@ -32,7 +32,7 @@ export async function handleRegister(formData: FormData) {
     redirect("/register?error=User+with+this+email+already+exists")
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10)
+  const hashedPassword = await bcrypt.hash(password, 12)
 
   await prisma.user.create({
     data: {
@@ -164,7 +164,7 @@ export async function handleChangePassword(data: ChangePasswordValues) {
     return { error: 'Current password is incorrect', data: null }
   }
 
-  const hashedPassword = await bcrypt.hash(newPassword, 10)
+  const hashedPassword = await bcrypt.hash(newPassword, 12)
 
   await prisma.user.update({
     where: { id: session.user.id },

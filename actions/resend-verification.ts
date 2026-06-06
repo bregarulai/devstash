@@ -12,12 +12,15 @@ export async function handleResendVerification(email: string) {
     redirect("/sign-in")
   }
 
+  // Always create a dummy token to prevent timing-based enumeration
+  await createVerificationToken(email).catch(() => {})
+
   const user = await prisma.user.findUnique({
     where: { email },
   })
 
   if (!user || user.emailVerified) {
-    redirect("/sign-in")
+    redirect("/sign-in?success=resent")
   }
 
   const token = await createVerificationToken(email)
