@@ -11,13 +11,11 @@ Audit code changes against project coding standards and Next.js best practices.
 
 ### Step 1: Load Coding Standards
 
-Read the full content of `context/coding-standards.md`. This file contains all project coding standards including TypeScript, React, Next.js, Tailwind CSS v4, file organization, naming, styling, database, data fetching, error handling, and code quality rules.
-
-Keep these standards in context throughout the audit. Reference them when evaluating code.
+Read the full content of `context/coding-standards.md`. Keep these standards in context throughout the audit.
 
 ### Step 2: Identify Files to Audit
 
-Determine which files need auditing based on the user's request:
+Determine which files need auditing:
 
 - If the user specifies files, audit those files
 - If the user asks to check recent changes, use `git diff` or `git status` to identify modified/added files
@@ -26,143 +24,44 @@ Determine which files need auditing based on the user's request:
 
 ### Step 3: Audit Against Coding Standards
 
-For each file, check compliance with the standards from `context/coding-standards.md`:
+Load the relevant reference files from `reference/` based on the file types being audited:
 
-**TypeScript**
-- Strict mode enabled?
-- No `any` types (use `unknown` instead)?
-- Interfaces defined for props, API responses, data models?
-- Proper type inference?
-
-**Zod Schema Inference Types**
-- All Zod schemas in `types/db.ts` (no inline schemas)?
-- Types exported as `z.infer<typeof schema>`?
-- Prisma models have `*InsertSchema` + `*SelectSchema` variants?
-- DateTime fields use `z.coerce.date()`?
-- Prisma enums use `z.nativeEnum()` (not `z.enum()`)?
-- Nullable fields use `z.string().or(z.null())` (not `.optional()`)?
-- No manual interfaces in `lib/db/` (replaced with `z.infer` imports)?
-- Type imports from `@/types/db` (not `lib/db/` or `generated/prisma/`)?
-- Zod 4 compatible (`result.error.issues` not `.errors`)?
-- Component props use standard TypeScript types (not `z.infer`)?
-
-**React**
-- Functional components only (no class components)?
-- Hooks used for state and side effects?
-- Components focused (one job per component)?
-- Reusable logic extracted into custom hooks?
-
-**UI**
-- shadcn components used when possible (no hand-built UI components)?
-
-**Next.js**
-- Server components by default?
-- `'use client'` only when needed?
-- Server Actions for form submissions?
-- API routes used appropriately (webhooks, file uploads, long-running ops, specific status codes)?
-- Dynamic routes for item/collection pages?
-
-**Tailwind CSS v4**
-- No `tailwind.config.js` or `tailwind.config.ts`?
-- All theme config in `app/globals.css` via `@theme`?
-- CSS custom properties used for colors/spacing?
-
-**File Organization**
-- Components: `components/[feature]/ComponentName.tsx`?
-- Pages: `app/[route]/page.tsx`?
-- Server Actions: `actions/[feature].ts`?
-- Types: `types/[feature].ts`?
-- Lib/Utils: `lib/[utility].ts`?
-
-**Naming**
-- Components: PascalCase?
-- Files: match component name or kebab-case?
-- Functions: camelCase?
-- Constants: SCREAMING_SNAKE_CASE?
-- Types/Interfaces: PascalCase (no prefix)?
-
-**Styling**
-- Tailwind CSS for all styling?
-- shadcn/ui components where applicable?
-- No inline styles?
-- Dark mode first?
-- Design tokens used (no hardcoded colors/fonts/spacing)?
-
-**Database**
-- Prisma ORM used?
-- `prisma migrate dev` used (not `db push`)?
-
-**Data Fetching**
-- Server components fetch directly with Prisma?
-- Client components use Server Actions?
-- Inputs validated with Zod?
-
-**Error Handling**
-- try/catch in Server Actions?
-- `{ success, data, error }` return pattern?
-- User-friendly error messages via toast?
-
-**Code Quality**
-- No commented-out code?
-- No unused imports or variables?
-- Functions under 50 lines?
-- React components kept short?
+| Reference | Use when auditing |
+|---|---|
+| [typescript.md](./reference/typescript.md) | `.ts`, `.tsx` files |
+| [zod-schemas.md](./reference/zod-schemas.md) | `types/db.ts`, `lib/db/`, any Zod usage |
+| [react.md](./reference/react.md) | `.tsx`, `.jsx` component files |
+| [ui.md](./reference/ui.md) | Any UI/component files |
+| [nextjs.md](./reference/nextjs.md) | `app/` routes, route handlers, Server Actions |
+| [tailwind.md](./reference/tailwind.md) | `.css` files, any styling-related files |
+| [file-organization.md](./reference/file-organization.md) | Any file (check path conventions) |
+| [naming.md](./reference/naming.md) | Any file (check naming conventions) |
+| [styling.md](./reference/styling.md) | `.css`, `.tsx` with style-related code |
+| [database.md](./reference/database.md) | Prisma schema, migration files, DB queries |
+| [data-fetching.md](./reference/data-fetching.md) | Server components, route handlers, actions |
+| [error-handling.md](./reference/error-handling.md) | Server Actions, API routes, mutations |
+| [code-quality.md](./reference/code-quality.md) | Any file (general quality checks) |
 
 ### Step 4: Check Next.js Best Practices
 
-Use the Next.js skill (`agents/skills/nextjs/SKILL.md`) to verify:
-
-**File Conventions**
-- App Router file structure correct?
-- `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx` used appropriately?
-- Route groups and parallel routes correct?
-
-**Server Components**
-- Server components used by default?
-- Client components only where interactivity needed?
-- Correct data fetching patterns?
-
-**Data Patterns**
-- Server Actions used correctly?
-- API routes for appropriate use cases?
-- Caching strategies appropriate?
-
-**Async APIs**
-- Correct use of async/await?
-- Proper error boundaries?
-- Streaming patterns if needed?
-
-**Metadata**
-- Document metadata configured correctly?
-- Image/font optimization appropriate?
-
-**Error Handling**
-- Error boundaries in place?
-- Route handlers proper?
-
-**Bundling**
-- No unnecessary dependencies?
-- Correct module resolution?
+Use the Next.js skill (`agents/skills/nextjs/SKILL.md`) for App Router conventions, especially Next.js 16 async API changes.
 
 ### Step 5: Read OpenCode Docs if Needed
 
-If the audit reveals questions about:
-- shadcn/ui component usage
-- Tailwind CSS v4 configuration
-- Next.js App Router conventions (especially v16 breaking changes)
-- opencode.json or opencode.jsonc configuration
-- Skill creation or modification
-- MCP server setup
+If the audit reveals questions about shadcn/ui, Tailwind v4, Next.js v16, or opencode configuration, read docs from `node_modules/next/dist/docs/`, `app/globals.css`, or relevant skill files.
 
-Read the relevant documentation from:
-- `node_modules/next/dist/docs/` for Next.js conventions
-- `app/globals.css` for Tailwind v4 theme config
-- `.opencode/skills/` for existing skill patterns
-- `agents/skills/` for built-in skill patterns
+### Step 6: Run Lint and Type-Check
 
-### Step 6: Generate Audit Report
+Run both commands and include their output in the audit report:
 
-Produce a structured audit report with the following format:
+1. `npm run lint` — catches ESLint warnings including deprecated types, unused imports, etc.
+2. `npx tsc --noEmit` — catches TypeScript compiler warnings (deprecated APIs, type mismatches, etc.)
+
+If either command fails, note the errors but continue the audit — report them separately from standards violations.
+
+### Step 7: Generate Audit Report
+
+Produce a structured audit report:
 
 ```
 # Code Audit Report
@@ -171,13 +70,11 @@ Produce a structured audit report with the following format:
 - Total files audited: N
 - Standards violations: N
 - Next.js best practice issues: N
+- Lint issues: N
+- Type-check issues: N
 - Overall compliance: [High/Medium/Low]
 
 ## Standards Violations
-
-### [File Path]
-- [Line N]: [Violation] - [Expected standard]
-- [Line N]: [Violation] - [Expected standard]
 
 ### [File Path]
 - [Line N]: [Violation] - [Expected standard]
@@ -186,17 +83,27 @@ Produce a structured audit report with the following format:
 
 ### [File Path]
 - [Issue]: [Description]
-- [Issue]: [Description]
-
-## Recommendations
-
-1. [Actionable recommendation]
-2. [Actionable recommendation]
 
 ## Zod Schema Inference Issues
 
 ### [File Path]
 - [Line N]: [Issue] - [Expected pattern]
+
+## Lint Output
+
+```
+[lint output or "No issues found"]
+```
+
+## Type-Check Output
+
+```
+[tsc output or "No issues found"]
+```
+
+## Recommendations
+
+1. [Actionable recommendation]
 
 ## Positive Observations
 - [What's done well]

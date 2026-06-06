@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { handleResendVerification } from '@/actions/resend-verification';
 import { Loader2 } from 'lucide-react';
@@ -12,7 +12,7 @@ interface ResendVerificationFormProps {
 export function ResendVerificationForm({ email }: ResendVerificationFormProps) {
   const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     startTransition(async () => {
       await handleResendVerification(email);
@@ -21,11 +21,7 @@ export function ResendVerificationForm({ email }: ResendVerificationFormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Button
-        type='submit'
-        disabled={isPending}
-        className='w-full h-10'
-      >
+      <Button type='submit' disabled={isPending} className='w-full h-10'>
         {isPending ? (
           <>
             <Loader2 className='mr-2 h-4 w-4 animate-spin' />

@@ -2,9 +2,9 @@
 
 ## Context Files
 
-Read the following to get the full context of the project:
+> Read these files only when relevant to the task at hand.
 
-- `context/project-overview.md` — Complete project overview, vision, data model, and tech stack
+- `context/project-overview.md` — Project vision, data model, tech stack, monetization
 - `context/coding-standards.md` — TypeScript, React, Next.js, and Tailwind CSS coding standards
 - `context/ai-interaction.md` — Communication, workflow, branching, and code review guidelines
 
