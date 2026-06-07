@@ -8,9 +8,21 @@ import bcrypt from "bcryptjs"
 import { resend } from "@/lib/resend"
 import { createVerificationToken } from "@/lib/verification-token"
 import { auth } from "@/lib/auth"
-import { registerSchema, changePasswordSchema, type ChangePasswordValues } from "@/types/db"
+import { registerSchema, type ChangePasswordValues } from "@/types/db"
+import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit"
 
 export async function handleRegister(formData: FormData) {
+  // Rate limiting check
+  const ip = getClientIP(null)
+  const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.register)
+  const rateKey = `register:${ip}`
+  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.register)
+
+  if (!rateResult.success) {
+    const retryAfter = rateResult.retryAfter || 3600
+    redirect(`/register?error=${encodeURIComponent(`Too many attempts. Please try again in ${retryAfter / 3600} hour${retryAfter / 3600 > 1 ? "s" : ""}`)}&retry-after=${retryAfter}`)
+  }
+
   const result = registerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),

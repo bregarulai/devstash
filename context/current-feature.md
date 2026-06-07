@@ -1,20 +1,29 @@
-# Current Feature
+# Current Feature: Rate Limiting for Auth
 
-<!-- Add your feature name here -->
-
-<!-- **Spec**: path-to-spec -->
+**Spec**: `context/features/rate-limiting-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add your goals here -->
+- Implement rate limiting on all authentication endpoints to prevent brute force attacks and credential stuffing
+- Create reusable rate limiting utility (`lib/rate-limit.ts`) with Upstash Redis
+- Return appropriate 429 errors with user-friendly frontend messages
+- Configure rate limits per endpoint with sliding window algorithm
+- Add environment variables for Upstash Redis connection
+- Ensure rate limiting fails open if Upstash is unavailable
 
 ## Notes
 
-<!-- Add your notes here -->
+- Protect endpoints: sign-in (5/15min), register (3/1hr), forgot-password (3/1hr), reset-password (5/15min), resend-verification (3/15min), email verify (10/15min), GitHub OAuth (20/15min)
+- Keys by IP + email where applicable for tighter limits
+- API returns 429 with `{ error: "Too many attempts. Please try again in X minutes." }`
+- Include `Retry-After` header in 429 responses
+- Upstash free tier: 10k requests/day
+- Server Actions used for all auth flows
+- `GET /api/auth/verify` needs rate limiting to prevent email enumeration
 
 ## History
 

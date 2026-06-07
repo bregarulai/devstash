@@ -5,8 +5,22 @@ import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
 import { verifyToken } from '@/lib/verification-token';
 import { resetPasswordSchema } from '@/types/db';
+import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from '@/lib/rate-limit';
 
 export async function handleResetPassword(formData: FormData) {
+  // Rate limiting check
+  const ip = getClientIP(null);
+  const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.resetPassword);
+  const rateKey = `resetpwd:${ip}`;
+  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.resetPassword);
+
+  if (!rateResult.success) {
+    const retryAfter = rateResult.retryAfter || 900;
+    redirect(
+      `/reset-password?error=${encodeURIComponent(`Too many attempts. Please try again in ${retryAfter / 60} minute${retryAfter / 60 > 1 ? "s" : ""}`)}&retry-after=${retryAfter}`,
+    );
+  }
+
   const result = resetPasswordSchema.safeParse({
     token: formData.get('token'),
     email: formData.get('email'),
