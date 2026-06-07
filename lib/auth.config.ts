@@ -3,9 +3,13 @@ import { prisma } from "@/lib/prisma"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import GitHub from "next-auth/providers/github"
 
+const GitHubProvider = GitHub({
+  allowDangerousEmailAccountLinking: true,
+})
+
 export const authConfig = {
   adapter: PrismaAdapter(prisma),
-  providers: [GitHub],
+  providers: [GitHubProvider],
   session: { strategy: "jwt" },
   trustHost: true,
   callbacks: {

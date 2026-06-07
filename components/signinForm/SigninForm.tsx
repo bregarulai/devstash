@@ -37,12 +37,10 @@ export function SignInForm({ email }: SignInFormProps) {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    const formData = new FormData();
-    formData.set('email', data.email);
-    formData.set('password', data.password);
     setError(null);
     startTransition(async () => {
-      const result = await handleSignIn(formData);
+      const result = await handleSignIn(data);
+      console.log(' Results:   ', result);
       if (!result.success && result.error) {
         setError(result.error);
       }
@@ -65,9 +63,7 @@ export function SignInForm({ email }: SignInFormProps) {
             className='h-10'
             {...register('email')}
           />
-          {errors.email && (
-            <FieldError>{errors.email.message}</FieldError>
-          )}
+          {errors.email && <FieldError>{errors.email.message}</FieldError>}
         </FieldContent>
       </Field>
 
