@@ -121,7 +121,7 @@ export async function handleSignOut() {
   await nextAuthSignOut({ redirectTo: "/" })
 }
 
-export async function handleDeleteAccount() {
+export async function handleDeleteAccount(password: string) {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -130,11 +130,35 @@ export async function handleDeleteAccount() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { id: true },
+    select: { id: true, password: true },
   })
 
   if (!user) {
     return { error: 'User not found', data: null }
+  }
+
+  const result = await deleteAccountByPasswordInternal(user, password)
+
+  if (result.success) {
+    await nextAuthSignOut({ redirectTo: "/sign-in" })
+    revalidatePath("/profile")
+  }
+
+  return result
+}
+
+async function deleteAccountByPasswordInternal(
+  user: { id: string; password: string | null },
+  password: string,
+) {
+  if (!user.password) {
+    return { error: 'Password verification required', data: null }
+  }
+
+  const valid = await bcrypt.compare(password, user.password)
+
+  if (!valid) {
+    return { error: 'Password verification failed', data: null }
   }
 
   try {
@@ -144,10 +168,6 @@ export async function handleDeleteAccount() {
   } catch {
     return { error: 'Failed to delete account', data: null }
   }
-
-  await nextAuthSignOut({ redirectTo: "/sign-in" })
-
-  revalidatePath("/profile")
 
   return { success: true, data: null }
 }

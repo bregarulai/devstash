@@ -90,6 +90,10 @@ export const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
     limit: 20,
     duration: 15 * 60, // 15 minutes
   },
+  deleteAccount: {
+    limit: 3,
+    duration: 15 * 60, // 15 minutes
+  },
 };
 
 /**
