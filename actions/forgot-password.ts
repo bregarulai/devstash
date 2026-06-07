@@ -6,8 +6,20 @@ import { createVerificationToken } from "@/lib/verification-token"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { forgotPasswordSchema } from "@/types/db"
+import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit"
 
 export async function handleForgotPassword(formData: FormData) {
+  // Rate limiting check
+  const ip = getClientIP(null)
+  const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.forgotPassword)
+  const rateKey = `forgotpwd:${ip}`
+  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.forgotPassword)
+
+  if (!rateResult.success) {
+    const retryAfter = rateResult.retryAfter || 3600
+    redirect(`/forgot-password?error=${encodeURIComponent(`Too many attempts. Please try again in ${retryAfter / 3600} hour${retryAfter / 3600 > 1 ? "s" : ""}`)}&retry-after=${retryAfter}`)
+  }
+
   const result = forgotPasswordSchema.safeParse({
     email: formData.get("email"),
   })

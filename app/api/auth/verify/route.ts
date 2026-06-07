@@ -2,8 +2,28 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { verifyTokenSchema } from "@/types/db"
 import crypto from "crypto"
+import { createRateLimiter, checkRateLimit, formatRetryAfter, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit"
 
 export async function GET(request: NextRequest) {
+  // Rate limiting check
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown"
+  const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.emailVerify)
+  const rateKey = `emailverify:${ip}`
+  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.emailVerify)
+
+  if (!rateResult.success) {
+    const retryAfter = rateResult.retryAfter || 900
+    return NextResponse.json(
+      { error: `Too many attempts. Please try again in ${formatRetryAfter(retryAfter)}` },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(retryAfter),
+        },
+      },
+    )
+  }
+
   const { searchParams } = request.nextUrl
   const token = searchParams.get("token")
 

@@ -4,8 +4,20 @@ import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
 import { createVerificationToken } from "@/lib/verification-token"
 import { redirect } from "next/navigation"
+import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit"
 
 export async function handleResendVerification(email: string) {
+  // Rate limiting check
+  const ip = getClientIP(null)
+  const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.resendVerification)
+  const rateKey = `resendverif:${ip}:${email}`
+  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.resendVerification)
+
+  if (!rateResult.success) {
+    const retryAfter = rateResult.retryAfter || 900
+    redirect(`/sign-in?error=${encodeURIComponent(`Too many attempts. Please try again in ${retryAfter / 60} minute${retryAfter / 60 > 1 ? "s" : ""}`)}&retry-after=${retryAfter}`)
+  }
+
   const emailVerificationEnabled = process.env.ENABLE_EMAIL_VERIFICATION !== "false"
 
   if (!emailVerificationEnabled) {
