@@ -294,8 +294,7 @@ export type ProfileData = z.infer<typeof profileDataSchema>;
 // ── Delete Account Schema ─────────────────────────────────────────────────────
 
 export const deleteAccountSchema = z.object({
-  userId: z.string(),
-  confirm: z.literal(true),
+  password: z.string().min(1, 'Password is required'),
 });
 
 export type DeleteAccountValues = z.infer<typeof deleteAccountSchema>;

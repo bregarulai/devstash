@@ -13,44 +13,13 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
-import { handleDeleteAccount } from '@/actions/auth';
+import { useDeleteAccount } from '@/hooks/useDeleteAccount';
 
 export function DeleteAccountDialog() {
-  const [isPending, setIsPending] = useState(false);
   const [open, setOpen] = useState(false);
   const [confirmText, setConfirmText] = useState('');
-  const [error, setError] = useState('');
-
-  async function handleDelete() {
-    if (confirmText !== 'DELETE MY ACCOUNT') {
-      setError('Please type DELETE MY ACCOUNT to confirm');
-      return;
-    }
-
-    setError('');
-    setIsPending(true);
-    try {
-      const result = await handleDeleteAccount();
-
-      if ('error' in result) {
-        setError(result.error || 'Failed to delete account');
-        setIsPending(false);
-        return;
-      }
-
-      toast.success('Account deleted', {
-        description: 'Your account has been permanently deleted.',
-      });
-
-      setOpen(false);
-      setConfirmText('');
-      window.location.href = '/sign-in';
-    } catch {
-      setError('An unexpected error occurred');
-      setIsPending(false);
-    }
-  }
+  const [password, setPassword] = useState('');
+  const { isPending, error, deleteAccount, reset } = useDeleteAccount();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -80,9 +49,24 @@ export function DeleteAccountDialog() {
               value={confirmText}
               onChange={(e) => {
                 setConfirmText(e.target.value);
-                setError('');
+                reset();
               }}
               placeholder="DELETE MY ACCOUNT"
+              className={`${error ? 'border-destructive' : ''} mt-2`}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              Enter your password to confirm
+            </label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                reset();
+              }}
+              placeholder="Your password"
               className={`${error ? 'border-destructive' : ''} mt-2`}
             />
           </div>
@@ -94,8 +78,10 @@ export function DeleteAccountDialog() {
           </Button>
           <Button
             variant="destructive"
-            onClick={handleDelete}
-            disabled={isPending || confirmText !== 'DELETE MY ACCOUNT'}
+            onClick={() => {
+              deleteAccount(password);
+            }}
+            disabled={isPending || confirmText !== 'DELETE MY ACCOUNT' || !password}
           >
             {isPending ? 'Deleting...' : 'Delete Account'}
           </Button>
