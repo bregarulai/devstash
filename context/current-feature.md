@@ -1,30 +1,18 @@
-# Current Feature: Account Deletion Security Fixes
+# Current Feature
 
-**Spec**: `context/fixes/account-deletion-security-spec.md`
+**Spec**: 
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add CSRF token validation to the delete-account API endpoint to prevent cross-site request forgery attacks
-- Add password re-authentication (password confirmation) for account deletion to prevent irreversible account loss from compromised sessions
-- Align CSRF mechanism with NextAuth's approach where possible
-- Update `deleteAccountSchema` in types/db.ts to include password field
-- Update account deletion confirmation page to include password input field
-- Ensure all tests in the testing checklist pass
+- 
 
 ## Notes
 
-- **Priority**: P0 — Critical security vulnerability
-- **Target file**: `app/api/profile/delete-account/route.ts`
-- **Phase**: 1 of 2 (Rate limiting added)
-- **Finding #1**: CSRF protection — verify `x-csrf-token` header before processing deletion
-- **Finding #2**: Re-authentication — verify user password via bcrypt.compare before deletion
-- **Finding #3**: Rate limiting — 3 requests per 15 minutes per IP, returns 429 with Retry-After header
-- **Files to modify**: `route.ts`, `types/db.ts`, account deletion confirmation page
-- **Testing**: 7-item checklist includes CSRF 403, password 401, bcrypt timing safety, frontend token inclusion
+- 
 
 ## History
 
@@ -107,3 +95,5 @@ In Progress
 - **Sign-In Page Resend Verification Success Param (Completed)** - Confirmed ?success=resent param support already implemented in SignInToast, verified build passes, no changes needed
 
 - **Rate Limiting for Auth (Completed)** - Implemented rate limiting on all auth endpoints with Upstash Redis, created reusable lib/rate-limit.ts with sliding window algorithm, integrated limits into sign-in, register, forgot-password, reset-password, resend-verification, email verify, and GitHub OAuth flows, fails open if Redis unavailable
+
+- **Account Deletion Security Fixes (Completed)** - Added CSRF token validation to delete-account API endpoint, added password re-authentication via bcrypt.compare before deletion, implemented 3 requests per 15 minutes rate limiting per IP, created useDeleteAccount hook with CSRF token fetching, added password input to DeleteAccountDialog, extracted deleteAccountByPassword helper, added deleteAccountSchema to types/db.ts, added formatRetryAfter utility to rate-limit.ts
