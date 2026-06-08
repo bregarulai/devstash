@@ -92,10 +92,10 @@
 
 - **Auth Hardening Phase 2 (Completed)** - Removed email verification check from pre-authentication authorize function and handleSignIn server action, unified error message on sign-in page, created /verify-required page for post-sign-in verification redirect
 
-- **Items List View (Completed)** - Implemented dynamic route /items/[type] for type-filtered items listing with ItemCard component and database filtering
-
 - **Sign-In Page Resend Verification Success Param (Completed)** - Confirmed ?success=resent param support already implemented in SignInToast, verified build passes, no changes needed
 
 - **Rate Limiting for Auth (Completed)** - Implemented rate limiting on all auth endpoints with Upstash Redis, created reusable lib/rate-limit.ts with sliding window algorithm, integrated limits into sign-in, register, forgot-password, reset-password, resend-verification, email verify, and GitHub OAuth flows, fails open if Redis unavailable
 
 - **Account Deletion Security Fixes (Completed)** - Added CSRF token validation to delete-account API endpoint, added password re-authentication via bcrypt.compare before deletion, implemented 3 requests per 15 minutes rate limiting per IP, created useDeleteAccount hook with CSRF token fetching, added password input to DeleteAccountDialog, extracted deleteAccountByPassword helper, added deleteAccountSchema to types/db.ts, added formatRetryAfter utility to rate-limit.ts
+
+- **Items List View (Completed)** - Implemented dynamic route /items/[type] for type-filtered items listing with ItemCard component and database filtering
