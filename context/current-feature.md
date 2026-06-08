@@ -1,24 +1,18 @@
-# Current Feature: Items List View
+# Current Feature
 
-**Spec**: `context/features/item-list-view-spec.md`
+<!-- Define your feature below -->
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Create dynamic route `/items/[type]` for type-filtered items listing ✅
-- Fetch items from database filtered by type parameter ✅
-- Display responsive grid of ItemCard components (two columns on medium and up) ✅
-- Each card has left border colored by item type ✅
-- Follow existing codebase patterns (shadcn components, cn() utility, oklch CSS variables) ✅
+<!-- Define success criteria -->
 
 ## Notes
 
-- Existing sidebar already has links to `/items/[typename]` — this is the destination page
-- Uses ItemType system (system item types already seeded)
-- Follows same data fetching patterns as dashboard (lib/db/items.ts, @/types/db)
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -97,6 +91,8 @@ In Progress
 - **Auth Hardening Phase 1 (Completed)** - Implemented 5 security fixes: increased bcrypt cost factor to 12, removed user existence disclosure in forgot password and resend verification, extended middleware to /profile routes, and added graceful verification token deletion after successful use
 
 - **Auth Hardening Phase 2 (Completed)** - Removed email verification check from pre-authentication authorize function and handleSignIn server action, unified error message on sign-in page, created /verify-required page for post-sign-in verification redirect
+
+- **Items List View (Completed)** - Implemented dynamic route /items/[type] for type-filtered items listing with ItemCard component and database filtering
 
 - **Sign-In Page Resend Verification Success Param (Completed)** - Confirmed ?success=resent param support already implemented in SignInToast, verified build passes, no changes needed
 
