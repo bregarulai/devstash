@@ -277,3 +277,28 @@ export async function getSystemItemTypesWithCounts(): Promise<SystemItemType[]> 
     itemCount: countMap.get(type.id) || 0,
   }));
 }
+
+export async function getItemsByTypeWithMeta(
+  userId: string,
+  itemTypeName: string,
+): Promise<{
+  items: ItemWithDetails[];
+  types: SystemItemType[];
+  hasError: boolean;
+}> {
+  let items: ItemWithDetails[] = [];
+  let types: SystemItemType[] = [];
+  let hasError = false;
+
+  try {
+    [items, types] = await Promise.all([
+      getItemsByType(userId, itemTypeName).catch(() => []),
+      getSystemItemTypesWithCounts().catch(() => []),
+    ]);
+  } catch (error) {
+    console.error('Failed to load items by type:', error);
+    hasError = true;
+  }
+
+  return { items, types, hasError };
+}

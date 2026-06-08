@@ -1,18 +1,24 @@
-# Current Feature
+# Current Feature: Items List View
 
-**Spec**: 
+**Spec**: `context/features/item-list-view-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-- 
+- Create dynamic route `/items/[type]` for type-filtered items listing ✅
+- Fetch items from database filtered by type parameter ✅
+- Display responsive grid of ItemCard components (two columns on medium and up) ✅
+- Each card has left border colored by item type ✅
+- Follow existing codebase patterns (shadcn components, cn() utility, oklch CSS variables) ✅
 
 ## Notes
 
-- 
+- Existing sidebar already has links to `/items/[typename]` — this is the destination page
+- Uses ItemType system (system item types already seeded)
+- Follows same data fetching patterns as dashboard (lib/db/items.ts, @/types/db)
 
 ## History
 
