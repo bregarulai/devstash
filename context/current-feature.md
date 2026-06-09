@@ -1,18 +1,16 @@
 # Current Feature
 
-<!-- Define your feature below -->
-
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Define success criteria -->
+- TODO
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- TODO
 
 ## History
 
@@ -99,3 +97,5 @@
 - **Account Deletion Security Fixes (Completed)** - Added CSRF token validation to delete-account API endpoint, added password re-authentication via bcrypt.compare before deletion, implemented 3 requests per 15 minutes rate limiting per IP, created useDeleteAccount hook with CSRF token fetching, added password input to DeleteAccountDialog, extracted deleteAccountByPassword helper, added deleteAccountSchema to types/db.ts, added formatRetryAfter utility to rate-limit.ts
 
 - **Items List View (Completed)** - Implemented dynamic route /items/[type] for type-filtered items listing with ItemCard component and database filtering
+
+- **Items Listing Three Columns (Completed)** - Changed grid from `md:grid-cols-2` to `lg:grid-cols-3` for 3-column layout on larger screens, 1 column on mobile, 2 on md screens
