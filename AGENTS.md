@@ -68,7 +68,7 @@ The following skill files are installed and managed by OpenCode:
 
 ### `.opencode/skills/` (project-managed)
 
-- `feature/` — Feature workflow lifecycle (load/start/review/explain/complete) — working file: `context/current-feature.md`
+- `feature/` — Feature workflow lifecycle (load/start/review/test/explain/complete) — working file: `context/current-feature.md`
 - `list-components/` — List React component files (.tsx/.ts/.jsx/.js) in the components folder
 - `cleanup/` — Clean up project housekeeping tasks (run|check) — console.log, unused imports, stale TODOs, orphaned files, env sync, @ts-ignore
 - `impeccable/` — Design quality skill with 23 commands and 27 anti-pattern rules (`/impeccable init` to set up design context, then `audit`, `critique`, `polish`, `typeset`, `colorize`, `layout`, `bolder`, `animate`, etc.)

@@ -15,7 +15,7 @@ This is the common workflow that we will use for every single feature/fix:
 1. **Document** - Document the feature in @context/current-feature.md.
 2. **Branch** - Create new branch for feature, fix, etc
 3. **Implement** - Implement the feature/fix that I create in @context/current-feature.md
-4. **Test** - Verify it works in the browser. Implement unit testing later. Run `npm run build` and fix any errors
+4. **Test** - Write unit tests for server actions and utilities. Verify it works in the browser. Run `npm run test:run` and `npm run build`, fix any errors
 5. **Iterate** - Iterate and change things if needed
 6. **Commit** - Only after build passes and everything works
 7. **Merge** - Merge to main
@@ -48,6 +48,18 @@ We will create a new branch for every feature/fix. Name branch **feature/[featur
 - Don't refactor unrelated code unless asked
 - Don't add "nice to have" features
 - Preserve existing patterns in the codebase
+
+## Testing
+
+- **Framework**: Vitest (node environment)
+- **Scope**: Server actions (`actions/`) and utilities (`lib/`) only — NOT components
+- **File naming**: `*.test.ts` alongside the source file (e.g., `lib/utils.test.ts`)
+- **Patterns**: Use `describe` / `it` / `expect` / `vi` from vitest
+- **Mocks**: Use `vi.mock()` / `vi.fn()` for external deps (Redis, Prisma, etc.)
+- **Run tests**: `npm run test` (watch mode) or `npm run test:run` (single run)
+- **Coverage**: `npm run test:coverage` (thresholds: 80% lines, 80% functions, 70% branches)
+- **Path aliases**: `@/*` resolved automatically via `vite-tsconfig-paths`
+- **Never test components** — browser/component testing is out of scope for now
 
 ## Code Review
 

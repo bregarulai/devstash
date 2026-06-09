@@ -117,6 +117,19 @@ Example v4 configuration:
 - Return `{ success, data, error }` pattern from actions
 - Display user-friendly error messages via toast
 
+## Testing
+
+- **Framework**: Vitest (node environment)
+- **Scope**: Server actions (`actions/`) and utilities (`lib/`) only — NOT components
+- **File naming**: `*.test.ts` alongside the source file (e.g., `lib/utils.test.ts`)
+- **Config**: `vitest.config.ts` with `vite-tsconfig-paths` for `@/*` aliases
+- **Run**: `npm run test` (watch) / `npm run test:run` (CI) / `npm run test:coverage`
+- **Coverage thresholds**: 80% lines, 80% functions, 70% branches
+- **Mocks**: Use `vi.mock()` / `vi.fn()` / `vi.doMock()` for external deps
+- **Server actions**: Test the `success`/`error` return shape, validate Zod schemas
+- **Utilities**: Test pure functions with edge cases (null, empty, invalid input)
+- **Never test components** — browser/component testing is out of scope for now
+
 ## Code Quality
 
 - No commented-out code unless specified
