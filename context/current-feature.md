@@ -1,27 +1,16 @@
-# Current Feature: Testing Strategy Phase 2 - Core Auth Flows
-
-**Spec**: `context/features/testing-strategy-phase-2-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- [x] All test files created alongside source files
-- [x] `npm run test:run` passes
-- [x] Coverage for `actions/auth.ts` ≥ 80%
-- [x] Coverage for `actions/sign-in.ts` ≥ 80%
-- [x] Coverage for `lib/account-deletion.ts` ≥ 80%
-- [x] Coverage for `lib/auth.config.ts` ≥ 80%
-- [x] All error branches tested
-- [x] All redirect calls verified
+<!-- What does success look like for this feature? -->
 
 ## Notes
 
-- Tests main authentication server actions building on mocked dependencies from Phase 1
-- Functions to test: `handleRegister`, `handleDeleteAccount`, `handleChangePassword`, `handleSignIn`, `deleteAccountByPassword`, `redirect` callback
-- Dependencies to mock: Prisma, bcryptjs, next-auth, next/navigation, @upstash/ratelimit, resend, env variables
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -114,3 +103,5 @@ In Progress
 - **Item Drawer (Completed)** - Implemented right-side slide-in drawer for item detail view using shadcn Sheet component, added action bar with Favorite, Pin, Copy, Edit, and Delete actions, supports both dashboard and items list pages, created client wrapper components to manage drawer state, fetches full item detail on click via API route, shows skeleton/loading state while fetching
 
 - **Testing Strategy Phase 1 (Completed)** - Added test files for lib/rate-limit.ts, lib/verification-token.ts, lib/auth.ts, and types/db.ts with comprehensive test coverage for security-critical pure functions and validation schemas
+
+- **Testing Strategy Phase 2 (Completed)** - Added test files for actions/auth.ts, actions/sign-in.ts, lib/account-deletion.ts, and lib/auth.config.ts with comprehensive test coverage for core auth flows
