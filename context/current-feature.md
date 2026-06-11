@@ -1,4 +1,6 @@
-# Current Feature
+# Current Feature: Item Drawer
+
+**Spec**: `context/features/item-drawer-spec.md`
 
 ## Status
 
@@ -6,11 +8,20 @@ In Progress
 
 ## Goals
 
-- TODO
+- Implement right-side slide-in drawer for item detail view using shadcn Sheet component
+- Click an ItemCard to open the drawer with that item's full data
+- Add action bar with Favorite (star icon, yellow when active), Pin, Copy, Edit (pencil icon), and Delete (trash icon) — right-aligned
+- Support both dashboard and items list pages
+- Create client wrapper component to manage drawer state
+- Fetch full item detail on click via API route (`app/api/items/[id]`)
+- Show skeleton/loading state while fetching
 
 ## Notes
 
-- TODO
+- No separate item page — the drawer IS the item detail view
+- Card data fetched by server component; full item detail fetched on click
+- Visual reference: `context/screenshots/dashboard-ui-drawer.png`
+- Item-specific extras (code editor, etc.) will come later
 
 ## History
 
@@ -72,7 +83,7 @@ In Progress
 
 - **Profile Page Phase 1 Layout Restructuring (Completed)** - Replaced nested cards in Usage Overview with flat 3-column grid using tonal backgrounds and ring borders, moved Favorites into grid, fixed email to single-column layout, updated PRO badge to use sidebar-primary token, and tightened vertical spacing
 
-- **Profile Page Phase 2 Error Handling (Completed)** - Implemented distinct error states for "account not found" vs "temporary failure" on /profile, replaced vague error messages with plain-language recovery paths, extracted fetch into named async function, and added retry mechanism with client-side fetch helper
+- **Profile Page Phase 2 Error Handling (Completed)** - Implemented distinct error states for "account not found" vs "temporary failure" on /profile, replaced vague error messages with plain-language recovery paths, extracted fetch into named async function, added retry mechanism with client-side fetch helper
 
 - **Profile Page Phase 3 Loading States (Completed)** - Added ProfilePageLoading client component with skeleton placeholders for avatar, stats grid, and item type breakdown; updated ProfileRetryForm to conditionally hide for user-not-found errors; integrated loading state into profile page
 

@@ -34,8 +34,8 @@ interface ItemTypeIconProps {
 }
 
 export function ItemTypeIcon({ type, className }: ItemTypeIconProps) {
-  const Icon = iconMap[type] || null;
-  const colorClass = colorMap[type] || '';
+  const Icon = iconMap[type] || iconMap['file'];
+  const colorClass = colorMap[type] || 'text-file';
   return (
     <span className={`shrink-0 ${colorClass} ${className ?? ''}`}>
       {Icon}

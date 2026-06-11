@@ -96,8 +96,14 @@ export const itemSelectSchema = itemInsertSchema.extend({
   updatedAt: z.coerce.date(),
 });
 
+export const itemUpdateSchema = z.object({
+  isFavorite: z.boolean().optional(),
+  isPinned: z.boolean().optional(),
+});
+
 export type ItemInsert = z.infer<typeof itemInsertSchema>;
 export type ItemSelect = z.infer<typeof itemSelectSchema>;
+export type ItemUpdate = z.infer<typeof itemUpdateSchema>;
 
 // ── Collection ────────────────────────────────────────────────────────────────
 

@@ -53,6 +53,7 @@
   --color-file: var(--color-file);
   --color-image: var(--color-image);
   --color-link: var(--color-link);
+  --color-favorite: var(--color-favorite);
   --color-success: var(--success);
 }
 
@@ -97,6 +98,7 @@
   --color-file: #6b7280;
   --color-image: #ec4899;
   --color-link: #10b981;
+  --color-favorite: #eab308;
 }
 
 .dark {
@@ -139,6 +141,7 @@
   --color-file: #6b7280; /* Gray */
   --color-image: #ec4899; /* Pink */
   --color-link: #10b981; /* Emerald */
+  --color-favorite: #eab308; /* Yellow */
 }
 
 @layer base {

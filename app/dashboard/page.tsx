@@ -12,15 +12,11 @@ import {
 } from '@/lib/db/collections';
 import type { ItemWithDetails, SystemItemType, CollectionWithStats, ItemStats } from '@/types/db';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
-import { StatsCards } from '@/components/dashboard/statsCards/StatsCards';
-import { CollectionsSession } from '@/components/dashboard/collectionSession/CollectionsSession';
-import { PinnedItems } from '@/components/dashboard/pinnedItems/PinnedItems';
-import { RecentItems } from '@/components/dashboard/recentItems/RecentItems';
-import { DashboardDataRetry } from '@/components/dashboard/dashboardDataRetry/DashboardDataRetry';
-import { GetStartedHero } from '@/components/dashboard/getStartedHero/GetStartedHero';
+import { DashboardContent } from '@/components/dashboard/dashboardContent/DashboardContent';
+import { ItemDrawerProvider } from '@/components/items/itemDrawer/ItemDrawerProvider';
+import { ItemDrawer } from '@/components/items/itemDrawer/ItemDrawer';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { KeyboardHint } from '@/components/dashboard/keyboardHint/KeyboardHint';
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -103,24 +99,16 @@ export default async function DashboardPage() {
       favoriteCollections={favoriteCollections}
       recentCollections={recentCollections}
     >
-      <div className='flex items-center gap-2 px-2 py-1'>
-        <span className='text-xs text-muted-foreground'>Quick commands:</span>
-        <KeyboardHint shortcut="Ctrl+K" />
-      </div>
-      <DashboardDataRetry>
-        <div className='space-y-6'>
-          {itemStats.totalItems === 0 ? (
-            <GetStartedHero />
-          ) : (
-            <>
-              <StatsCards stats={itemStats} />
-              <CollectionsSession user={user} collections={favoriteCollections} />
-              <PinnedItems items={pinnedItems} />
-              <RecentItems items={recentItems} />
-            </>
-          )}
-        </div>
-      </DashboardDataRetry>
+      <ItemDrawerProvider>
+        <DashboardContent
+          user={user}
+          favoriteCollections={favoriteCollections}
+          itemStats={itemStats}
+          pinnedItems={pinnedItems}
+          recentItems={recentItems}
+        />
+        <ItemDrawer />
+      </ItemDrawerProvider>
     </DashboardWrapper>
   );
 }

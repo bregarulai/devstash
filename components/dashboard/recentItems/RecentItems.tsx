@@ -1,32 +1,21 @@
 'use client'; // Required for ClientLoader interactivity (mounted state)
 
 import { Clock } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 
 import { formatDaysAgo } from '@/lib/utils';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 import { ClientLoader } from '../clientLoader/ClientLoader';
 import { RecentItemsSkeleton } from '../skeletons/RecentItemsSkeleton';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty';
-
-interface ItemWithDetails {
-  id: string;
-  title: string;
-  description: string | null;
-  itemType: {
-    name: string;
-    icon: string;
-    color: string;
-  };
-  tags: { id: string; name: string }[];
-  updatedAt: Date;
-}
+import type { ItemWithDetails } from '@/types/db';
 
 interface RecentItemsProps {
   items: ItemWithDetails[];
+  onOpen?: (itemId: string) => void;
 }
 
-export function RecentItems({ items }: RecentItemsProps) {
+export function RecentItems({ items, onOpen }: RecentItemsProps) {
   const content = (
     <section>
       <div className='flex items-center gap-2 py-4'>
@@ -36,9 +25,11 @@ export function RecentItems({ items }: RecentItemsProps) {
 
       <div className='flex flex-col gap-3 py-6'>
         {items.map((item) => (
-          <Card
+          <button
             key={item.id}
-            className='h-full border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl border-l-[3px]'
+            type='button'
+            onClick={() => onOpen?.(item.id)}
+            className='h-full w-full text-left border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl border-l-[3px]'
             style={{ borderLeftColor: item.itemType.color }}
           >
             <CardContent className='flex items-center gap-4 p-4'>
@@ -70,7 +61,7 @@ export function RecentItems({ items }: RecentItemsProps) {
                 {formatDaysAgo(item.updatedAt)}
               </span>
             </CardContent>
-          </Card>
+            </button>
         ))}
       </div>
     </section>

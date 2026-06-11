@@ -1,7 +1,7 @@
 'use client'; // Required for ClientLoader interactivity (mounted state)
 
 import { Pin } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 
 import { formatDaysAgo } from '@/lib/utils';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
@@ -10,25 +10,15 @@ import { PinnedItemsSkeleton } from '../skeletons/PinnedItemsSkeleton';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-
-interface ItemWithDetails {
-  id: string;
-  title: string;
-  description: string | null;
-  itemType: {
-    name: string;
-    icon: string;
-    color: string;
-  };
-  tags: { id: string; name: string }[];
-  updatedAt: Date;
-}
+import Link from 'next/link';
+import type { ItemWithDetails } from '@/types/db';
 
 interface PinnedItemsProps {
   items: ItemWithDetails[];
+  onOpen?: (itemId: string) => void;
 }
 
-export function PinnedItems({ items }: PinnedItemsProps) {
+export function PinnedItems({ items, onOpen }: PinnedItemsProps) {
   const content = (
     <section>
       <div className='flex items-center gap-2 py-4'>
@@ -38,9 +28,11 @@ export function PinnedItems({ items }: PinnedItemsProps) {
 
       <div className='flex flex-col gap-3 py-6'>
         {items.map((item) => (
-          <Card
+          <button
             key={item.id}
-            className='h-full border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl border-l-[3px]'
+            type='button'
+            onClick={() => onOpen?.(item.id)}
+            className='h-full w-full text-left border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl border-l-[3px]'
             style={{ borderLeftColor: item.itemType.color }}
           >
             <CardContent className='flex items-center gap-4 p-4'>
@@ -72,7 +64,7 @@ export function PinnedItems({ items }: PinnedItemsProps) {
                 {formatDaysAgo(item.updatedAt)}
               </span>
             </CardContent>
-          </Card>
+            </button>
         ))}
       </div>
     </section>
@@ -88,10 +80,10 @@ export function PinnedItems({ items }: PinnedItemsProps) {
           </EmptyHeader>
           <EmptyContent>
             <Button asChild>
-              <a href='/items'>
+              <Link href='/items'>
                 Browse items
                 <ArrowRight className='ml-2 h-4 w-4' />
-              </a>
+              </Link>
             </Button>
           </EmptyContent>
         </Empty>
