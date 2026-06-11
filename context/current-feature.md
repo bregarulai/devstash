@@ -1,27 +1,16 @@
-# Current Feature: Item Drawer
-
-**Spec**: `context/features/item-drawer-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Implement right-side slide-in drawer for item detail view using shadcn Sheet component
-- Click an ItemCard to open the drawer with that item's full data
-- Add action bar with Favorite (star icon, yellow when active), Pin, Copy, Edit (pencil icon), and Delete (trash icon) — right-aligned
-- Support both dashboard and items list pages
-- Create client wrapper component to manage drawer state
-- Fetch full item detail on click via API route (`app/api/items/[id]`)
-- Show skeleton/loading state while fetching
+<!-- What does success look like? -->
 
 ## Notes
 
-- No separate item page — the drawer IS the item detail view
-- Card data fetched by server component; full item detail fetched on click
-- Visual reference: `context/screenshots/dashboard-ui-drawer.png`
-- Item-specific extras (code editor, etc.) will come later
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -110,3 +99,5 @@ In Progress
 - **Items List View (Completed)** - Implemented dynamic route /items/[type] for type-filtered items listing with ItemCard component and database filtering
 
 - **Items Listing Three Columns (Completed)** - Changed grid from `md:grid-cols-2` to `lg:grid-cols-3` for 3-column layout on larger screens, 1 column on mobile, 2 on md screens
+
+- **Item Drawer (Completed)** - Implemented right-side slide-in drawer for item detail view using shadcn Sheet component, added action bar with Favorite, Pin, Copy, Edit, and Delete actions, supports both dashboard and items list pages, created client wrapper components to manage drawer state, fetches full item detail on click via API route, shows skeleton/loading state while fetching
