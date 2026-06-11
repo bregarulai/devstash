@@ -1,16 +1,27 @@
-# Current Feature
+# Current Feature: Testing Strategy Phase 2 - Core Auth Flows
+
+**Spec**: `context/features/testing-strategy-phase-2-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+- [x] All test files created alongside source files
+- [x] `npm run test:run` passes
+- [x] Coverage for `actions/auth.ts` ≥ 80%
+- [x] Coverage for `actions/sign-in.ts` ≥ 80%
+- [x] Coverage for `lib/account-deletion.ts` ≥ 80%
+- [x] Coverage for `lib/auth.config.ts` ≥ 80%
+- [x] All error branches tested
+- [x] All redirect calls verified
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Tests main authentication server actions building on mocked dependencies from Phase 1
+- Functions to test: `handleRegister`, `handleDeleteAccount`, `handleChangePassword`, `handleSignIn`, `deleteAccountByPassword`, `redirect` callback
+- Dependencies to mock: Prisma, bcryptjs, next-auth, next/navigation, @upstash/ratelimit, resend, env variables
 
 ## History
 

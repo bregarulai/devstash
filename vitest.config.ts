@@ -18,7 +18,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
-      include: ['lib/auth.ts', 'lib/rate-limit.ts', 'lib/verification-token.ts', 'types/db.ts'],
+      include: ['lib/auth.ts', 'lib/rate-limit.ts', 'lib/verification-token.ts', 'lib/account-deletion.ts', 'lib/auth.config.ts', 'types/db.ts', 'actions/auth.ts', 'actions/sign-in.ts'],
       thresholds: {
         lines: 80,
         functions: 80,
