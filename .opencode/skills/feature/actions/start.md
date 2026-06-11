@@ -8,3 +8,4 @@
 6. List the goals, then immediately implement them one by one — do not wait for further instructions
 7. **DO NOT** set Status to "Complete" — that should only happen after /feature review confirms goals are met
 8. **DO NOT** update History session — that should only happen after /feature review confirms goals are met
+9. **DO NOT** commit any changes — commits should only happen after /feature review confirms goals are met

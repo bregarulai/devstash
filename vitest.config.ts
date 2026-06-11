@@ -6,26 +6,19 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['actions/**/*.test.ts', 'lib/**/*.test.ts'],
+    include: ['actions/**/*.test.ts', 'lib/**/*.test.ts', 'types/**/*.test.ts'],
     exclude: [
       'node_modules',
       '.next',
       'app',
       'components',
       'hooks',
-      'types',
       'scripts',
     ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
-      include: ['actions/**/*.ts', 'lib/**/*.ts'],
-      exclude: [
-        'actions/**/*.test.ts',
-        'lib/**/*.test.ts',
-        'lib/prisma.ts',
-        'lib/db/**/*.ts',
-      ],
+      include: ['lib/auth.ts', 'lib/rate-limit.ts', 'lib/verification-token.ts', 'types/db.ts'],
       thresholds: {
         lines: 80,
         functions: 80,

@@ -3,9 +3,8 @@ import NextAuth from "next-auth"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import Credentials from "next-auth/providers/credentials"
-import type { SignInFormData } from "@/types/db"
 
-function isCredentialsInput(
+export function isCredentialsInput(
   value: unknown,
 ): value is { email: string; password: string } {
   return (

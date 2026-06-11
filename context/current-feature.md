@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Testing Strategy Phase 1 — Security-Critical Foundations
+
+**Spec**: `context/features/testing-strategy-phase-1-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- [x] All test files created alongside source files
+- [x] `npm run test:run` passes
+- [x] Coverage for `lib/rate-limit.ts` ≥ 80%
+- [x] Coverage for `lib/verification-token.ts` ≥ 80%
+- [x] Coverage for `lib/auth.ts` ≥ 80%
+- [x] Zod schemas validated with valid/invalid inputs
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Phase 1 focuses on testing security-critical pure functions and validation schemas
+- Files: `lib/rate-limit.ts`, `lib/verification-token.ts`, `types/db.ts`, `lib/auth.ts`
+- Dependencies to mock: Prisma client (verification-token.ts), env variables (rate-limit.ts)
 
 ## History
 

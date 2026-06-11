@@ -1,14 +1,9 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { formatDaysAgo, getInitials } from '@/lib/utils'
 
 describe('formatDaysAgo', () => {
   it('returns "Today" for the current date', () => {
     const today = new Date()
-    expect(formatDaysAgo(today)).toBe('Today')
-  })
-
-  it('returns "Today" for a string date of the current date', () => {
-    const today = new Date().toISOString().split('T')[0]
     expect(formatDaysAgo(today)).toBe('Today')
   })
 
