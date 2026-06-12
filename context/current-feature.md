@@ -1,16 +1,24 @@
-# Current Feature
+# Current Feature: Testing Strategy Phase 3
+
+**Spec**: `context/features/testing-strategy-phase-3-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+- Test pure functions in `lib/db/collections.ts` and `lib/db/items.ts` with ≥80% coverage
+- Test `cn()` utility in `lib/utils.ts` with 100% coverage
+- Test remaining server actions (`forgot-password`, `reset-password`, `resend-verification`, `sign-in-github`, `profile`) with ≥80% coverage
+- Smoke test constants in `lib/constants.ts`
+- `npm run test:run` passes
+- `npm run test:coverage` meets overall thresholds (80% lines, 80% functions, 70% branches, 80% statements)
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- All test files created alongside source files
+- Dependencies to mock: Prisma client, bcryptjs, next-auth, next/navigation, @upstash/ratelimit, resend, env variables
 
 ## History
 

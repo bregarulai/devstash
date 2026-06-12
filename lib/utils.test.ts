@@ -1,5 +1,30 @@
 import { describe, expect, it } from 'vitest'
-import { formatDaysAgo, getInitials } from '@/lib/utils'
+import { cn, formatDaysAgo, getInitials } from '@/lib/utils'
+
+describe('cn', () => {
+  it('merges classes without conflicts', () => {
+    expect(cn('p-2', 'p-4')).toBe('p-4')
+    expect(cn('text-red-500', 'text-blue-500')).toBe('text-blue-500')
+  })
+
+  it('handles conditional classes', () => {
+    expect(cn('p-2', false && 'p-4', 'text-red-500')).toBe('p-2 text-red-500')
+    expect(cn('p-2', true && 'p-4')).toBe('p-4')
+  })
+
+  it('returns empty string for no input', () => {
+    expect(cn()).toBe('')
+  })
+
+  it('handles undefined and null', () => {
+    expect(cn(undefined, null, 'p-2')).toBe('p-2')
+  })
+
+  it('handles arrays', () => {
+    expect(cn(['p-2', 'p-4'])).toBe('p-4')
+    expect(cn(['text-red-500'], 'text-blue-500')).toBe('text-blue-500')
+  })
+})
 
 describe('formatDaysAgo', () => {
   it('returns "Today" for the current date', () => {
