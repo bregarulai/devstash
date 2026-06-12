@@ -101,9 +101,19 @@ export const itemUpdateSchema = z.object({
   isPinned: z.boolean().optional(),
 });
 
+export const itemEditSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(255).trim(),
+  description: z.string().or(z.null()).optional(),
+  content: z.string().or(z.null()).optional(),
+  url: z.string().url('Must be a valid URL').or(z.literal('')).or(z.null()).optional(),
+  language: z.string().or(z.null()).optional(),
+  tags: z.array(z.string().trim().min(1)).optional(),
+});
+
 export type ItemInsert = z.infer<typeof itemInsertSchema>;
 export type ItemSelect = z.infer<typeof itemSelectSchema>;
 export type ItemUpdate = z.infer<typeof itemUpdateSchema>;
+export type ItemEditValues = z.infer<typeof itemEditSchema>;
 
 // ── Collection ────────────────────────────────────────────────────────────────
 

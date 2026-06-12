@@ -1,0 +1,133 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+const mockAuth = vi.fn()
+const mockUpdateItem = vi.fn()
+
+vi.mock('@/lib/auth/auth/auth', () => ({
+  auth: (...args: unknown[]) => mockAuth(...args),
+}))
+
+vi.mock('@/lib/db/items/items', () => ({
+  updateItem: (...args: unknown[]) => mockUpdateItem(...args),
+}))
+
+describe('updateItemAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { updateItemAction } = await import('./items')
+    const result = await updateItemAction('item-1', { title: 'Title' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when session has no user id', async () => {
+    mockAuth.mockResolvedValue({ user: {} })
+
+    const { updateItemAction } = await import('./items')
+    const result = await updateItemAction('item-1', { title: 'Title' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns validation error for invalid data', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+
+    const { updateItemAction } = await import('./items')
+    const result = await updateItemAction('item-1', { title: '' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Title is required',
+    })
+  })
+
+  it('returns validation error for invalid url', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+
+    const { updateItemAction } = await import('./items')
+    const result = await updateItemAction('item-1', {
+      title: 'Title',
+      url: 'not-a-url',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Must be a valid URL',
+    })
+  })
+
+  it('returns success with updated item', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    const mockUpdatedItem = {
+      id: 'item-1',
+      title: 'Updated Title',
+      description: null,
+      contentType: 'text',
+      content: null,
+      url: null,
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: null,
+      tags: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockUpdateItem.mockResolvedValue(mockUpdatedItem)
+
+    const { updateItemAction } = await import('./items')
+    const result = await updateItemAction('item-1', { title: 'Updated Title' })
+
+    expect(result).toEqual({
+      success: true,
+      data: mockUpdatedItem,
+      error: null,
+    })
+    expect(mockUpdateItem).toHaveBeenCalledWith('item-1', 'user-1', {
+      title: 'Updated Title',
+    })
+  })
+
+  it('returns error when update fails', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockUpdateItem.mockRejectedValue(new Error('Database error'))
+
+    const { updateItemAction } = await import('./items')
+    const result = await updateItemAction('item-1', { title: 'Title' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Database error',
+    })
+  })
+
+  it('returns generic error for non-Error exceptions', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockUpdateItem.mockRejectedValue('Unknown error')
+
+    const { updateItemAction } = await import('./items')
+    const result = await updateItemAction('item-1', { title: 'Title' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Failed to update item',
+    })
+  })
+})

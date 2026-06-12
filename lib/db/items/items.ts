@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma/prisma';
 import { DEFAULT_RECENT_LIMIT } from '@/lib/db/constants/constants';
-import type { ItemWithDetails, SystemItemType } from '@/types/db';
+import type { ItemWithDetails, SystemItemType, ItemEditValues } from '@/types/db';
 
 export type { SystemItemType };
 
@@ -301,4 +301,61 @@ export async function getItemsByTypeWithMeta(
   }
 
   return { items, types, hasError };
+}
+
+export async function updateItem(
+  itemId: string,
+  userId: string,
+  data: ItemEditValues,
+): Promise<ItemWithDetails> {
+  const tagNames = data.tags ?? [];
+
+  const item = await prisma.item.update({
+    where: { id: itemId, userId },
+    data: {
+      title: data.title,
+      description: data.description ?? null,
+      content: data.content ?? null,
+      url: data.url === '' ? null : data.url ?? null,
+      language: data.language ?? null,
+      tags: {
+        set: [],
+        connectOrCreate: tagNames.map((name) => ({
+          where: { name },
+          create: { name },
+        })),
+      },
+    },
+    include: {
+      itemType: {
+        select: {
+          name: true,
+          icon: true,
+          color: true,
+        },
+      },
+      tags: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    contentType: item.contentType,
+    content: item.content,
+    url: item.url,
+    language: item.language,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    itemType: item.itemType,
+    tags: item.tags,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  };
 }

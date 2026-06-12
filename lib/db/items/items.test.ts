@@ -3,6 +3,7 @@ import type { ItemWithDetails } from '@/types/db'
 
 const mockPrismaItemCount = vi.fn()
 const mockPrismaItemFindMany = vi.fn()
+const mockPrismaItemUpdate = vi.fn()
 const mockPrismaCollectionCount = vi.fn()
 const mockPrismaItemTypeFindMany = vi.fn()
 const mockPrismaItemGroupBy = vi.fn()
@@ -12,6 +13,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
     item: {
       count: (...args: unknown[]) => mockPrismaItemCount(...args),
       findMany: (...args: unknown[]) => mockPrismaItemFindMany(...args),
+      update: (...args: unknown[]) => mockPrismaItemUpdate(...args),
       groupBy: (...args: unknown[]) => mockPrismaItemGroupBy(...args),
     },
     collection: {
@@ -505,5 +507,201 @@ describe('getItemsByTypeWithMeta', () => {
     expect(result.items).toEqual([])
     expect(result.types).toEqual([])
     expect(result.hasError).toBe(false)
+  })
+})
+
+describe('updateItem', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('updates item with all fields', async () => {
+    const mockUpdatedItem = {
+      id: 'item-1',
+      title: 'Updated Title',
+      description: 'Updated description',
+      contentType: 'code',
+      content: 'const x = 2',
+      url: null,
+      language: 'typescript',
+      isFavorite: false,
+      isPinned: true,
+      itemType: { name: 'File', icon: '📄', color: '#ff0000' },
+      tags: [{ id: 'tag-1', name: 'test' }],
+      createdAt: new Date('2024-01-01'),
+      updatedAt: new Date('2024-01-03'),
+    }
+    mockPrismaItemUpdate.mockResolvedValue(mockUpdatedItem)
+
+    const { updateItem } = await import('./items')
+    const result = await updateItem('item-1', 'user-1', {
+      title: 'Updated Title',
+      description: 'Updated description',
+      content: 'const x = 2',
+      language: 'typescript',
+      tags: ['test'],
+    })
+
+    expect(result).toEqual({
+      id: 'item-1',
+      title: 'Updated Title',
+      description: 'Updated description',
+      contentType: 'code',
+      content: 'const x = 2',
+      url: null,
+      language: 'typescript',
+      isFavorite: false,
+      isPinned: true,
+      itemType: { name: 'File', icon: '📄', color: '#ff0000' },
+      tags: [{ id: 'tag-1', name: 'test' }],
+      createdAt: new Date('2024-01-01'),
+      updatedAt: new Date('2024-01-03'),
+    })
+
+    expect(mockPrismaItemUpdate).toHaveBeenCalledWith({
+      where: { id: 'item-1', userId: 'user-1' },
+      data: {
+        title: 'Updated Title',
+        description: 'Updated description',
+        content: 'const x = 2',
+        url: null,
+        language: 'typescript',
+        tags: {
+          set: [],
+          connectOrCreate: [
+            { where: { name: 'test' }, create: { name: 'test' } },
+          ],
+        },
+      },
+      include: {
+        itemType: { select: { name: true, icon: true, color: true } },
+        tags: { select: { id: true, name: true } },
+      },
+    })
+  })
+
+  it('converts empty string url to null', async () => {
+    const mockUpdatedItem = {
+      id: 'item-1',
+      title: 'Updated Title',
+      description: null,
+      contentType: 'text',
+      content: null,
+      url: null,
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: null,
+      tags: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaItemUpdate.mockResolvedValue(mockUpdatedItem)
+
+    const { updateItem } = await import('./items')
+    await updateItem('item-1', 'user-1', {
+      title: 'Updated Title',
+      url: '',
+    })
+
+    expect(mockPrismaItemUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ url: null }),
+      })
+    )
+  })
+
+  it('handles multiple tags', async () => {
+    const mockUpdatedItem = {
+      id: 'item-1',
+      title: 'Updated Title',
+      description: null,
+      contentType: 'text',
+      content: null,
+      url: null,
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: null,
+      tags: [
+        { id: 'tag-1', name: 'tag1' },
+        { id: 'tag-2', name: 'tag2' },
+        { id: 'tag-3', name: 'tag3' },
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaItemUpdate.mockResolvedValue(mockUpdatedItem)
+
+    const { updateItem } = await import('./items')
+    const result = await updateItem('item-1', 'user-1', {
+      title: 'Updated Title',
+      tags: ['tag1', 'tag2', 'tag3'],
+    })
+
+    expect(result.tags).toHaveLength(3)
+    expect(mockPrismaItemUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          tags: {
+            set: [],
+            connectOrCreate: [
+              { where: { name: 'tag1' }, create: { name: 'tag1' } },
+              { where: { name: 'tag2' }, create: { name: 'tag2' } },
+              { where: { name: 'tag3' }, create: { name: 'tag3' } },
+            ],
+          },
+        }),
+      })
+    )
+  })
+
+  it('handles null optional fields', async () => {
+    const mockUpdatedItem = {
+      id: 'item-1',
+      title: 'Title',
+      description: null,
+      contentType: 'text',
+      content: null,
+      url: null,
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: null,
+      tags: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaItemUpdate.mockResolvedValue(mockUpdatedItem)
+
+    const { updateItem } = await import('./items')
+    await updateItem('item-1', 'user-1', {
+      title: 'Title',
+      description: null,
+      content: null,
+      language: null,
+    })
+
+    expect(mockPrismaItemUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          description: null,
+          content: null,
+          language: null,
+        }),
+      })
+    )
+  })
+
+  it('throws when item not found', async () => {
+    mockPrismaItemUpdate.mockRejectedValue(
+      new Error('Record to update not found')
+    )
+
+    const { updateItem } = await import('./items')
+
+    await expect(
+      updateItem('nonexistent', 'user-1', { title: 'Title' })
+    ).rejects.toThrow('Record to update not found')
   })
 })
