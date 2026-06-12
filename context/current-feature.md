@@ -1,16 +1,28 @@
-# Current Feature
+# Current Feature: Item Drawer Edit Mode
+
+**Spec**: `context/features/item-drawer-edit-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Toggle drawer between view and edit mode via the Edit (pencil) button
+- Replace action bar with Save/Cancel buttons in edit mode
+- Edit common fields: Title (required), Description, Tags
+- Edit type-specific fields: Content, Language, URL based on item type
+- Display non-editable fields (item type, collections, dates) in edit mode
+- Validate with Zod schema before server action
+- Server action `updateItem` follows `{ success, data, error }` pattern
+- Tag handling: disconnect all existing, connect-or-create new ones
+- Toast on save success/error, `router.refresh()` after save
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- Controlled inputs with local state (no form library)
+- Content textarea is plain for now — code editor comes later
+- Server-side Zod is source of truth for validation
 
 ## History
 

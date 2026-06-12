@@ -7,11 +7,50 @@ import type { ItemWithDetails } from '@/types/db';
 interface DrawerActionsProps {
   item: ItemWithDetails;
   updateItem: (data: Partial<ItemWithDetails>) => void;
+  isEditing: boolean;
+  onStartEditing: () => void;
+  onStopEditing: () => void;
+  isSaving: boolean;
+  canSave: boolean;
+  onSave: () => void;
 }
 
-export function DrawerActions({ item, updateItem }: DrawerActionsProps) {
+export function DrawerActions({
+  item,
+  updateItem,
+  isEditing,
+  onStartEditing,
+  onStopEditing,
+  isSaving,
+  canSave,
+  onSave,
+}: DrawerActionsProps) {
   const { isFavoriting, isPinning, handleFavorite, handlePin, handleCopy } =
     useItemActions(item, updateItem);
+
+  if (isEditing) {
+    return (
+      <div className='flex items-center justify-end gap-2'>
+        <Button
+          variant='ghost'
+          size='sm'
+          onClick={onStopEditing}
+          disabled={isSaving}
+          className='cursor-pointer'
+        >
+          Cancel
+        </Button>
+        <Button
+          size='sm'
+          onClick={onSave}
+          disabled={isSaving || !canSave}
+          className='cursor-pointer'
+        >
+          {isSaving ? 'Saving...' : 'Save'}
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className='flex items-center justify-between gap-2'>
@@ -71,6 +110,7 @@ export function DrawerActions({ item, updateItem }: DrawerActionsProps) {
         <Button
           variant='ghost'
           size='sm'
+          onClick={onStartEditing}
           className='cursor-pointer'
           aria-label='Edit item'
         >

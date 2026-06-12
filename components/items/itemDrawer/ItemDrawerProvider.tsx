@@ -8,9 +8,12 @@ interface ItemDrawerContextValue {
   item: ReturnType<typeof useItemDrawerHook>['item'];
   isLoading: boolean;
   error: string | null;
+  isEditing: boolean;
   openDrawer: (itemId: string) => Promise<void>;
   closeDrawer: () => void;
   updateItem: ReturnType<typeof useItemDrawerHook>['updateItem'];
+  startEditing: () => void;
+  stopEditing: () => void;
 }
 
 const ItemDrawerContext = createContext<ItemDrawerContextValue | null>(null);
