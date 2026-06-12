@@ -1,4 +1,4 @@
-# Current Feature: Item Drawer Edit Mode
+# Current Feature
 
 **Spec**: `context/features/item-drawer-edit-spec.md`
 
@@ -8,21 +8,11 @@ In Progress
 
 ## Goals
 
-- Toggle drawer between view and edit mode via the Edit (pencil) button
-- Replace action bar with Save/Cancel buttons in edit mode
-- Edit common fields: Title (required), Description, Tags
-- Edit type-specific fields: Content, Language, URL based on item type
-- Display non-editable fields (item type, collections, dates) in edit mode
-- Validate with Zod schema before server action
-- Server action `updateItem` follows `{ success, data, error }` pattern
-- Tag handling: disconnect all existing, connect-or-create new ones
-- Toast on save success/error, `router.refresh()` after save
+<!-- TODO: Define goals for next feature -->
 
 ## Notes
 
-- Controlled inputs with local state (no form library)
-- Content textarea is plain for now — code editor comes later
-- Server-side Zod is source of truth for validation
+<!-- TODO: Add notes for next feature -->
 
 ## History
 
@@ -119,3 +109,5 @@ In Progress
 - **Testing Strategy Phase 2 (Completed)** - Added test files for actions/auth.ts, actions/sign-in.ts, lib/account-deletion.ts, and lib/auth.config.ts with comprehensive test coverage for core auth flows
 
 - **Testing Strategy Phase 3 (Completed)** - Added test files for lib/db/collections.ts, lib/db/items.ts, lib/utils.ts, lib/constants.ts, and server actions (forgot-password, reset-password, resend-verification, sign-in-github, profile) with comprehensive test coverage for pure functions and utilities
+
+- **Item Drawer Edit Mode (Completed)** - Implemented inline editing in item drawer with toggle between view/edit modes, DrawerEditContent component with controlled inputs, updateItem server action with Zod validation, tag disconnect/reconnect-or-create handling, Save/Cancel buttons in edit mode, toast notifications, and router.refresh() after save
