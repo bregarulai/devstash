@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
 import { itemEditSchema, type ItemEditValues, type ItemWithDetails } from '@/types/db';
-import { updateItem } from '@/lib/db/items/items';
+import { updateItem, deleteItem } from '@/lib/db/items/items';
 
 type UpdateItemResult =
   | { success: true; data: ItemWithDetails; error: null }
@@ -35,6 +35,31 @@ export async function updateItemAction(
       success: false,
       data: null,
       error: error instanceof Error ? error.message : 'Failed to update item',
+    };
+  }
+}
+
+type DeleteItemResult =
+  | { success: true; error: null }
+  | { success: false; error: string };
+
+export async function deleteItemAction(
+  itemId: string,
+): Promise<DeleteItemResult> {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { success: false, error: 'Unauthorized' };
+  }
+
+  try {
+    await deleteItem(itemId, session.user.id);
+    revalidatePath('/dashboard');
+    return { success: true, error: null };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to delete item',
     };
   }
 }

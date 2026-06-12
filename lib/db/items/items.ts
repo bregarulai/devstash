@@ -2,6 +2,16 @@ import { prisma } from '@/lib/prisma/prisma';
 import { DEFAULT_RECENT_LIMIT } from '@/lib/db/constants/constants';
 import type { ItemWithDetails, SystemItemType, ItemEditValues } from '@/types/db';
 
+export async function deleteItem(
+  itemId: string,
+  userId: string,
+): Promise<boolean> {
+  await prisma.item.delete({
+    where: { id: itemId, userId },
+  });
+  return true;
+}
+
 export type { SystemItemType };
 
 export function mapItemToDetails(item: ItemWithDetails): ItemWithDetails {

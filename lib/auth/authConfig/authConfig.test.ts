@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import type { User } from '@auth/core/types'
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {},
@@ -13,7 +14,6 @@ describe('authConfig.redirect', () => {
     const result = await redirect({
       url: '/dashboard',
       baseUrl: 'http://localhost:3000',
-      trigger: 'signIn',
     })
 
     expect(result).toBe('http://localhost:3000/dashboard')
@@ -23,7 +23,6 @@ describe('authConfig.redirect', () => {
     const result = await redirect({
       url: 'http://localhost:3000/dashboard',
       baseUrl: 'http://localhost:3000',
-      trigger: 'signIn',
     })
 
     expect(result).toBe('http://localhost:3000/dashboard')
@@ -33,7 +32,7 @@ describe('authConfig.redirect', () => {
     const result = await redirect({
       url: 'https://evil.com/phishing',
       baseUrl: 'http://localhost:3000',
-      trigger: 'signIn',
+
     })
 
     expect(result).toBe('http://localhost:3000')
@@ -43,7 +42,7 @@ describe('authConfig.redirect', () => {
     const result = await redirect({
       url: '/sign-in',
       baseUrl: 'http://localhost:3000',
-      trigger: 'signIn',
+
     })
 
     expect(result).toBe('http://localhost:3000/sign-in')
@@ -53,7 +52,7 @@ describe('authConfig.redirect', () => {
     const result = await redirect({
       url: '/',
       baseUrl: 'http://localhost:3000',
-      trigger: 'signIn',
+
     })
 
     expect(result).toBe('http://localhost:3000/')
@@ -63,7 +62,7 @@ describe('authConfig.redirect', () => {
     const result = await redirect({
       url: '/dashboard?tab=settings',
       baseUrl: 'http://localhost:3000',
-      trigger: 'signIn',
+
     })
 
     expect(result).toBe('http://localhost:3000/dashboard?tab=settings')
@@ -73,7 +72,7 @@ describe('authConfig.redirect', () => {
     const result = await redirect({
       url: '/dashboard#section',
       baseUrl: 'http://localhost:3000',
-      trigger: 'signIn',
+
     })
 
     expect(result).toBe('http://localhost:3000/dashboard#section')
@@ -83,7 +82,7 @@ describe('authConfig.redirect', () => {
     const result = await redirect({
       url: '//evil.com/phishing',
       baseUrl: 'http://localhost:3000',
-      trigger: 'signIn',
+
     })
 
     expect(result).toBe('http://localhost:3000//evil.com/phishing')
@@ -93,7 +92,7 @@ describe('authConfig.redirect', () => {
     const result = await redirect({
       url: 'http://localhost:4000/dashboard',
       baseUrl: 'http://localhost:3000',
-      trigger: 'signIn',
+
     })
 
     expect(result).toBe('http://localhost:3000')
@@ -103,7 +102,7 @@ describe('authConfig.redirect', () => {
     const result = await redirect({
       url: 'https://evil.localhost:3000/dashboard',
       baseUrl: 'http://localhost:3000',
-      trigger: 'signIn',
+
     })
 
     expect(result).toBe('http://localhost:3000')
@@ -124,10 +123,11 @@ describe('authConfig.jwt', () => {
 
   it('returns existing token without user', async () => {
     const token = { existing: 'data' }
+    const user: User = { id: '', email: null, name: null, image: null }
 
-    const result = await jwt({ token, user: undefined, account: null, profile: undefined, trigger: 'signIn', session: undefined })
+    const result = await jwt({ token, user, account: null, profile: undefined, trigger: 'signIn', session: undefined })
 
-    expect(result).toEqual({ existing: 'data' })
+    expect(result).toEqual({ existing: 'data', id: '' })
   })
 })
 
@@ -135,20 +135,54 @@ describe('authConfig.session', () => {
   const session = authConfig.callbacks!.session!
 
   it('adds user id from token to session', async () => {
-    const sessionObj = { user: { name: 'John' } }
+    const adapterUser = { id: '', name: 'John', email: '', emailVerified: null }
+    const sessionObj = {
+      user: adapterUser,
+      expires: new Date('2099-01-01'),
+      sessionToken: 'mock-session-token',
+      userId: '',
+    }
     const token = { id: 'user-123' }
 
-    const result = await session({ session: sessionObj, token })
+    const result = await session({
+      session: sessionObj as { user: typeof adapterUser } & import('@auth/core/adapters').AdapterSession & import('@auth/core/types').Session,
+      user: adapterUser,
+      token,
+      newSession: null,
+      trigger: undefined,
+    })
 
-    expect(result).toEqual({ user: { name: 'John', id: 'user-123' } })
+    expect(result).toEqual({
+      user: { id: 'user-123', name: 'John', email: '', emailVerified: null },
+      expires: new Date('2099-01-01'),
+      sessionToken: 'mock-session-token',
+      userId: '',
+    })
   })
 
   it('returns session without id when token has no id', async () => {
-    const sessionObj = { user: { name: 'John' } }
+    const adapterUser = { id: '', name: 'John', email: '', emailVerified: null }
+    const sessionObj = {
+      user: adapterUser,
+      expires: new Date('2099-01-01'),
+      sessionToken: 'mock-session-token',
+      userId: '',
+    }
     const token = {}
 
-    const result = await session({ session: sessionObj, token })
+    const result = await session({
+      session: sessionObj as { user: typeof adapterUser } & import('@auth/core/adapters').AdapterSession & import('@auth/core/types').Session,
+      user: adapterUser,
+      token,
+      newSession: null,
+      trigger: undefined,
+    })
 
-    expect(result).toEqual({ user: { name: 'John' } })
+    expect(result).toEqual({
+      user: { id: '', name: 'John', email: '', emailVerified: null },
+      expires: new Date('2099-01-01'),
+      sessionToken: 'mock-session-token',
+      userId: '',
+    })
   })
 })

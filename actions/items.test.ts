@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const mockAuth = vi.fn()
 const mockUpdateItem = vi.fn()
+const mockDeleteItem = vi.fn()
 const mockRevalidatePath = vi.fn()
 
 vi.mock('next/cache', () => ({
@@ -14,6 +15,7 @@ vi.mock('@/lib/auth/auth/auth', () => ({
 
 vi.mock('@/lib/db/items/items', () => ({
   updateItem: (...args: unknown[]) => mockUpdateItem(...args),
+  deleteItem: (...args: unknown[]) => mockDeleteItem(...args),
 }))
 
 describe('updateItemAction', () => {
@@ -161,6 +163,96 @@ describe('updateItemAction', () => {
 
     const { updateItemAction } = await import('./items')
     await updateItemAction('item-1', { title: 'Title' })
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+})
+
+describe('deleteItemAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { deleteItemAction } = await import('./items')
+    const result = await deleteItemAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when session has no user id', async () => {
+    mockAuth.mockResolvedValue({ user: {} })
+
+    const { deleteItemAction } = await import('./items')
+    const result = await deleteItemAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns success after successful deletion', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockDeleteItem.mockResolvedValue(true)
+
+    const { deleteItemAction } = await import('./items')
+    const result = await deleteItemAction('item-1')
+
+    expect(result).toEqual({
+      success: true,
+      error: null,
+    })
+    expect(mockDeleteItem).toHaveBeenCalledWith('item-1', 'user-1')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/dashboard')
+  })
+
+  it('returns error when delete throws', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockDeleteItem.mockRejectedValue(new Error('Database error'))
+
+    const { deleteItemAction } = await import('./items')
+    const result = await deleteItemAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      error: 'Database error',
+    })
+  })
+
+  it('returns generic error for non-Error exceptions', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockDeleteItem.mockRejectedValue('Unknown error')
+
+    const { deleteItemAction } = await import('./items')
+    const result = await deleteItemAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      error: 'Failed to delete item',
+    })
+  })
+
+  it('does not call revalidatePath when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { deleteItemAction } = await import('./items')
+    await deleteItemAction('item-1')
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('does not call revalidatePath on delete failure', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockDeleteItem.mockRejectedValue(new Error('DB error'))
+
+    const { deleteItemAction } = await import('./items')
+    await deleteItemAction('item-1')
 
     expect(mockRevalidatePath).not.toHaveBeenCalled()
   })

@@ -86,6 +86,7 @@ function ItemDrawerContent() {
               canSave={canSave}
               onSave={handleSave}
               onMutate={() => router.refresh()}
+              onClose={closeDrawer}
             />
           </div>
         )}

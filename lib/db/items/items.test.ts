@@ -4,6 +4,7 @@ import type { ItemWithDetails } from '@/types/db'
 const mockPrismaItemCount = vi.fn()
 const mockPrismaItemFindMany = vi.fn()
 const mockPrismaItemUpdate = vi.fn()
+const mockPrismaItemDelete = vi.fn()
 const mockPrismaCollectionCount = vi.fn()
 const mockPrismaItemTypeFindMany = vi.fn()
 const mockPrismaItemGroupBy = vi.fn()
@@ -14,6 +15,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
       count: (...args: unknown[]) => mockPrismaItemCount(...args),
       findMany: (...args: unknown[]) => mockPrismaItemFindMany(...args),
       update: (...args: unknown[]) => mockPrismaItemUpdate(...args),
+      delete: (...args: unknown[]) => mockPrismaItemDelete(...args),
       groupBy: (...args: unknown[]) => mockPrismaItemGroupBy(...args),
     },
     collection: {
@@ -31,11 +33,11 @@ describe('mapItemToDetails', () => {
   })
 
   it('returns item data unchanged', async () => {
-    const mockItem = {
+    const mockItem: ItemWithDetails = {
       id: 'item-1',
       title: 'Test Item',
       description: 'A test item',
-      contentType: 'code',
+      contentType: 'FILE',
       content: 'const x = 1',
       url: null,
       language: 'typescript',
@@ -48,30 +50,30 @@ describe('mapItemToDetails', () => {
     }
 
     const { mapItemToDetails } = await import('./items')
-    const result = mapItemToDetails(mockItem as ItemWithDetails)
+    const result = mapItemToDetails(mockItem)
 
     expect(result).toEqual(mockItem)
   })
 
   it('handles all item properties', async () => {
-    const mockItem = {
+    const mockItem: ItemWithDetails = {
       id: 'item-2',
       title: 'Another Item',
       description: null,
-      contentType: 'text',
+      contentType: 'TEXT',
       content: null,
       url: 'https://example.com',
       language: null,
       isFavorite: true,
       isPinned: false,
-      itemType: null,
+      itemType: { name: 'File', icon: '📄', color: '#ff0000' },
       tags: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     }
 
     const { mapItemToDetails } = await import('./items')
-    const result = mapItemToDetails(mockItem as ItemWithDetails)
+    const result = mapItemToDetails(mockItem)
 
     expect(result.id).toBe('item-2')
     expect(result.title).toBe('Another Item')
@@ -79,7 +81,7 @@ describe('mapItemToDetails', () => {
     expect(result.url).toBe('https://example.com')
     expect(result.isFavorite).toBe(true)
     expect(result.isPinned).toBe(false)
-    expect(result.itemType).toBeNull()
+    expect(result.itemType).toEqual({ name: 'File', icon: '📄', color: '#ff0000' })
     expect(result.tags).toEqual([])
   })
 })
@@ -181,12 +183,12 @@ describe('getPinnedItems', () => {
   })
 
   it('returns pinned items', async () => {
-    const mockItems = [
+    const mockItems: ItemWithDetails[] = [
       {
         id: 'item-1',
         title: 'Pinned Item',
         description: 'A pinned item',
-        contentType: 'code',
+        contentType: 'FILE',
         content: 'const x = 1',
         url: null,
         language: 'typescript',
@@ -224,18 +226,18 @@ describe('getRecentItems', () => {
   })
 
   it('returns recent items', async () => {
-    const mockItems = [
+    const mockItems: ItemWithDetails[] = [
       {
         id: 'item-1',
         title: 'Recent Item',
         description: null,
-        contentType: 'text',
+        contentType: 'TEXT',
         content: null,
         url: null,
         language: null,
         isFavorite: false,
         isPinned: false,
-        itemType: null,
+        itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
         tags: [],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -279,18 +281,18 @@ describe('getAllItems', () => {
   })
 
   it('returns all items', async () => {
-    const mockItems = [
+    const mockItems: ItemWithDetails[] = [
       {
         id: 'item-1',
         title: 'All Item',
         description: null,
-        contentType: 'text',
+        contentType: 'TEXT',
         content: null,
         url: null,
         language: null,
         isFavorite: false,
         isPinned: false,
-        itemType: null,
+        itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
         tags: [],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -334,18 +336,18 @@ describe('getFavoriteItems', () => {
   })
 
   it('returns favorite items', async () => {
-    const mockItems = [
+    const mockItems: ItemWithDetails[] = [
       {
         id: 'item-1',
         title: 'Favorite Item',
         description: null,
-        contentType: 'text',
+        contentType: 'TEXT',
         content: null,
         url: null,
         language: null,
         isFavorite: true,
         isPinned: false,
-        itemType: null,
+        itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
         tags: [],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -378,12 +380,12 @@ describe('getItemsByType', () => {
   })
 
   it('returns items by type', async () => {
-    const mockItems = [
+    const mockItems: ItemWithDetails[] = [
       {
         id: 'item-1',
         title: 'Type Item',
         description: null,
-        contentType: 'text',
+        contentType: 'TEXT',
         content: null,
         url: null,
         language: null,
@@ -422,18 +424,18 @@ describe('searchItems', () => {
   })
 
   it('searches items by query', async () => {
-    const mockItems = [
+    const mockItems: ItemWithDetails[] = [
       {
         id: 'item-1',
         title: 'Search Result',
         description: null,
-        contentType: 'text',
+        contentType: 'TEXT',
         content: null,
         url: null,
         language: null,
         isFavorite: false,
         isPinned: false,
-        itemType: null,
+        itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
         tags: [],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -464,18 +466,18 @@ describe('getItemsByTypeWithMeta', () => {
   })
 
   it('returns items and types with no error', async () => {
-    const mockItems = [
+    const mockItems: ItemWithDetails[] = [
       {
         id: 'item-1',
         title: 'Type Item',
         description: null,
-        contentType: 'text',
+        contentType: 'TEXT',
         content: null,
         url: null,
         language: null,
         isFavorite: false,
         isPinned: false,
-        itemType: null,
+        itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
         tags: [],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -516,11 +518,11 @@ describe('updateItem', () => {
   })
 
   it('updates item with all fields', async () => {
-    const mockUpdatedItem = {
+    const mockUpdatedItem: ItemWithDetails = {
       id: 'item-1',
       title: 'Updated Title',
       description: 'Updated description',
-      contentType: 'code',
+      contentType: 'FILE',
       content: 'const x = 2',
       url: null,
       language: 'typescript',
@@ -546,7 +548,7 @@ describe('updateItem', () => {
       id: 'item-1',
       title: 'Updated Title',
       description: 'Updated description',
-      contentType: 'code',
+      contentType: 'FILE',
       content: 'const x = 2',
       url: null,
       language: 'typescript',
@@ -581,17 +583,17 @@ describe('updateItem', () => {
   })
 
   it('converts empty string url to null', async () => {
-    const mockUpdatedItem = {
+    const mockUpdatedItem: ItemWithDetails = {
       id: 'item-1',
       title: 'Updated Title',
       description: null,
-      contentType: 'text',
+      contentType: 'TEXT',
       content: null,
       url: null,
       language: null,
       isFavorite: false,
       isPinned: false,
-      itemType: null,
+      itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
       tags: [],
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -612,17 +614,17 @@ describe('updateItem', () => {
   })
 
   it('handles multiple tags', async () => {
-    const mockUpdatedItem = {
+    const mockUpdatedItem: ItemWithDetails = {
       id: 'item-1',
       title: 'Updated Title',
       description: null,
-      contentType: 'text',
+      contentType: 'TEXT',
       content: null,
       url: null,
       language: null,
       isFavorite: false,
       isPinned: false,
-      itemType: null,
+      itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
       tags: [
         { id: 'tag-1', name: 'tag1' },
         { id: 'tag-2', name: 'tag2' },
@@ -657,17 +659,17 @@ describe('updateItem', () => {
   })
 
   it('handles null optional fields', async () => {
-    const mockUpdatedItem = {
+    const mockUpdatedItem: ItemWithDetails = {
       id: 'item-1',
       title: 'Title',
       description: null,
-      contentType: 'text',
+      contentType: 'TEXT',
       content: null,
       url: null,
       language: null,
       isFavorite: false,
       isPinned: false,
-      itemType: null,
+      itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
       tags: [],
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -703,5 +705,57 @@ describe('updateItem', () => {
     await expect(
       updateItem('nonexistent', 'user-1', { title: 'Title' })
     ).rejects.toThrow('Record to update not found')
+  })
+})
+
+describe('deleteItem', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('deletes item and returns true', async () => {
+    mockPrismaItemDelete.mockResolvedValue({ id: 'item-1' })
+
+    const { deleteItem } = await import('./items')
+    const result = await deleteItem('item-1', 'user-1')
+
+    expect(result).toBe(true)
+    expect(mockPrismaItemDelete).toHaveBeenCalledWith({
+      where: { id: 'item-1', userId: 'user-1' },
+    })
+  })
+
+  it('throws when item not found', async () => {
+    mockPrismaItemDelete.mockRejectedValue(
+      new Error('Record to delete not found')
+    )
+
+    const { deleteItem } = await import('./items')
+
+    await expect(deleteItem('nonexistent', 'user-1')).rejects.toThrow(
+      'Record to delete not found'
+    )
+  })
+
+  it('throws when item belongs to different user', async () => {
+    mockPrismaItemDelete.mockRejectedValue(
+      new Error('Record to delete not found')
+    )
+
+    const { deleteItem } = await import('./items')
+
+    await expect(deleteItem('item-1', 'wrong-user')).rejects.toThrow(
+      'Record to delete not found'
+    )
+  })
+
+  it('throws on database connection error', async () => {
+    mockPrismaItemDelete.mockRejectedValue(new Error('Connection failed'))
+
+    const { deleteItem } = await import('./items')
+
+    await expect(deleteItem('item-1', 'user-1')).rejects.toThrow(
+      'Connection failed'
+    )
   })
 })

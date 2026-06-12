@@ -2,19 +2,27 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import crypto from 'crypto'
 import { createVerificationToken, verifyToken } from './verificationToken'
 
+const mockVerificationTokenCreate = vi.fn()
+const mockVerificationTokenFindFirst = vi.fn()
+const mockVerificationTokenDelete = vi.fn()
+
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     verificationToken: {
-      create: vi.fn(),
-      findFirst: vi.fn(),
-      delete: vi.fn(),
+      create: (...args: unknown[]) => mockVerificationTokenCreate(...args),
+      findFirst: (...args: unknown[]) => mockVerificationTokenFindFirst(...args),
+      delete: (...args: unknown[]) => mockVerificationTokenDelete(...args),
     },
   },
 }))
 
-import { prisma } from '@/lib/prisma/prisma'
-
-const mockPrisma = vi.mocked(prisma)
+const mockPrisma = {
+  verificationToken: {
+    create: mockVerificationTokenCreate,
+    findFirst: mockVerificationTokenFindFirst,
+    delete: mockVerificationTokenDelete,
+  },
+}
 
 describe('createVerificationToken', () => {
   beforeEach(() => {

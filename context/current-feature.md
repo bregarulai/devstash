@@ -1,18 +1,26 @@
-# Current Feature
+# Current Feature: Item Delete
 
-<!-- Feature name and spec path go here when active -->
+**Spec**: `context/features/item-delete-spec.md`
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Add delete functionality for items triggered from the existing Trash2 button in the item drawer's action bar
+- Implement shadcn AlertDialog for destructive action confirmation
+- Show sonner toast notifications for success/error states
+- Close drawer and refresh item list after successful deletion
+- Create deleteItemAction server action with auth and ownership validation
+- Add deleteItem function to DB layer with ownership verification
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- The existing Delete button (Trash2 icon) in DrawerActions.tsx already renders but needs an onClick handler
+- Prisma schema has onDelete: Cascade on Item → ItemCollection, so deleting an item automatically removes its collection associations
+- No file cleanup needed for file/image types in this phase
+- Keep confirm dialog simple — single click confirm is sufficient for item deletion
 
 ## History
 
