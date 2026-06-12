@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, type ReactNode } from 'react';
-import { useItemDrawer as useItemDrawerHook } from '@/hooks/useItemDrawer';
+import { useItemDrawer as useItemDrawerHook } from '@/hooks/useItemDrawer/useItemDrawer';
 
 interface ItemDrawerContextValue {
   isOpen: boolean;

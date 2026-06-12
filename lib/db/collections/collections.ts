@@ -1,9 +1,9 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma/prisma';
 import {
   DEFAULT_FAVORITE_LIMIT,
   DEFAULT_SAMPLE_COUNT,
   DEFAULT_RECENT_COLLECTIONS_LIMIT,
-} from '@/lib/constants';
+} from '@/lib/db/constants/constants';
 import type { CollectionWithStats } from '@/types/db';
 
 export type { CollectionWithStats };

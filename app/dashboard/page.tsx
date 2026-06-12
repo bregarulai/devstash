@@ -1,15 +1,15 @@
-import { prisma } from '@/lib/prisma';
-import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma/prisma';
+import { auth } from '@/lib/auth/auth/auth';
 import {
   getPinnedItems,
   getRecentItems,
   getSystemItemTypesWithCounts,
   getItemStats,
-} from '@/lib/db/items';
+} from '@/lib/db/items/items';
 import {
   getFavoriteCollections,
   getRecentCollections,
-} from '@/lib/db/collections';
+} from '@/lib/db/collections/collections';
 import type { ItemWithDetails, SystemItemType, CollectionWithStats, ItemStats } from '@/types/db';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
 import { DashboardContent } from '@/components/dashboard/dashboardContent/DashboardContent';

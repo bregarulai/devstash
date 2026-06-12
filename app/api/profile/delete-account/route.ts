@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
-import { deleteAccountByPassword } from '@/lib/account-deletion';
+import { auth } from '@/lib/auth/auth/auth';
+import { deleteAccountByPassword } from '@/lib/auth/accountDeletion/accountDeletion';
 import { deleteAccountSchema } from '@/types/db';
 import { headers } from 'next/headers';
-import { createRateLimiter, checkRateLimit, formatRetryAfter, RATE_LIMIT_CONFIGS, getClientIP } from '@/lib/rate-limit';
+import { createRateLimiter, checkRateLimit, formatRetryAfter, RATE_LIMIT_CONFIGS, getClientIP } from '@/lib/auth/rateLimit/rateLimit';
 
 export async function DELETE(request: NextRequest) {
   // Rate limiting check

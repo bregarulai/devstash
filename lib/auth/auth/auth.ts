@@ -1,7 +1,7 @@
-import { authConfig } from "./auth.config"
+import { authConfig } from "../authConfig/authConfig"
 import NextAuth from "next-auth"
 import bcrypt from "bcryptjs"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma/prisma"
 import Credentials from "next-auth/providers/credentials"
 
 export function isCredentialsInput(

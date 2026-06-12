@@ -4,7 +4,7 @@ const mockAuth = vi.fn()
 const mockRevalidatePath = vi.fn()
 const mockRedirect = vi.fn()
 
-vi.mock('@/lib/auth', () => ({
+vi.mock('@/lib/auth/auth/auth', () => ({
   auth: (...args: unknown[]) => mockAuth(...args),
 }))
 

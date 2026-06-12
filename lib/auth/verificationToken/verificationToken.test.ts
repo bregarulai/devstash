@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import crypto from 'crypto'
-import { createVerificationToken, verifyToken } from './verification-token'
+import { createVerificationToken, verifyToken } from './verificationToken'
 
-vi.mock('@/lib/prisma', () => ({
+vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     verificationToken: {
       create: vi.fn(),
@@ -12,7 +12,7 @@ vi.mock('@/lib/prisma', () => ({
   },
 }))
 
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma/prisma'
 
 const mockPrisma = vi.mocked(prisma)
 

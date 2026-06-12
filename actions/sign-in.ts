@@ -1,7 +1,7 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
-import { signIn } from '@/lib/auth';
+import { prisma } from '@/lib/prisma/prisma';
+import { signIn } from '@/lib/auth/auth/auth';
 import { redirect } from 'next/navigation';
 import {
   signInSchema,
@@ -13,7 +13,7 @@ import {
   checkRateLimit,
   getClientIP,
   RATE_LIMIT_CONFIGS,
-} from '@/lib/rate-limit';
+} from '@/lib/auth/rateLimit/rateLimit';
 
 export async function handleSignIn(
   data: SignInFormData,

@@ -1,5 +1,5 @@
-import { prisma } from '@/lib/prisma';
-import { DEFAULT_RECENT_LIMIT } from '@/lib/constants';
+import { prisma } from '@/lib/prisma/prisma';
+import { DEFAULT_RECENT_LIMIT } from '@/lib/db/constants/constants';
 import type { ItemWithDetails, SystemItemType } from '@/types/db';
 
 export type { SystemItemType };

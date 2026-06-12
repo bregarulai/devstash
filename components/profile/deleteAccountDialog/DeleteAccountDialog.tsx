@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useDeleteAccount } from '@/hooks/useDeleteAccount';
+import { useDeleteAccount } from '@/hooks/useDeleteAccount/useDeleteAccount';
 
 export function DeleteAccountDialog() {
   const [open, setOpen] = useState(false);

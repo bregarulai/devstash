@@ -26,7 +26,7 @@ import {
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
 import { ChangePasswordForm } from '@/components/profile/changePasswordForm/ChangePasswordForm';
 import { DeleteAccountDialog } from '@/components/profile/deleteAccountDialog/DeleteAccountDialog';
-import { formatDaysAgo, getInitials } from '@/lib/utils';
+import { formatDaysAgo, getInitials } from '@/lib/utils/utils';
 
 interface ProfilePageClientProps {
   user: {

@@ -1,10 +1,10 @@
-import { auth } from '@/lib/auth';
-import { loadProfileDataAsync } from '@/lib/db/user';
+import { auth } from '@/lib/auth/auth/auth';
+import { loadProfileDataAsync } from '@/lib/db/user/user';
 import { ProfilePageClient } from '@/components/profile/profilePageClient/ProfilePageClient';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
 import { SystemItemType, CollectionWithStats } from '@/types/db';
-import { getSystemItemTypesWithCounts } from '@/lib/db/items';
-import { getFavoriteCollections, getRecentCollections } from '@/lib/db/collections';
+import { getSystemItemTypesWithCounts } from '@/lib/db/items/items';
+import { getFavoriteCollections, getRecentCollections } from '@/lib/db/collections/collections';
 import { ProfileErrorState } from '@/components/profile/profileErrorState/ProfileErrorState';
 import { redirect } from 'next/navigation';
 

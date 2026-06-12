@@ -1,15 +1,15 @@
 "use server"
 
-import { signOut as nextAuthSignOut } from "@/lib/auth"
+import { signOut as nextAuthSignOut } from "@/lib/auth/auth/auth"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma/prisma"
 import bcrypt from "bcryptjs"
-import { resend } from "@/lib/resend"
-import { createVerificationToken } from "@/lib/verification-token"
-import { auth } from "@/lib/auth"
+import { resend } from "@/lib/email/resend/resend"
+import { createVerificationToken } from "@/lib/auth/verificationToken/verificationToken"
+import { auth } from "@/lib/auth/auth/auth"
 import { registerSchema, type ChangePasswordValues } from "@/types/db"
-import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit"
+import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
 
 export async function handleRegister(formData: FormData) {
   // Rate limiting check

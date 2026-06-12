@@ -1,12 +1,12 @@
 "use server"
 
-import { prisma } from "@/lib/prisma"
-import { resend } from "@/lib/resend"
-import { createVerificationToken } from "@/lib/verification-token"
+import { prisma } from "@/lib/prisma/prisma"
+import { resend } from "@/lib/email/resend/resend"
+import { createVerificationToken } from "@/lib/auth/verificationToken/verificationToken"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { forgotPasswordSchema } from "@/types/db"
-import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit"
+import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
 
 export async function handleForgotPassword(formData: FormData) {
   // Rate limiting check

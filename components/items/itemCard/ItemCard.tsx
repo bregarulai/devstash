@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
-import { cn, formatDaysAgo } from '@/lib/utils';
+import { cn, formatDaysAgo } from '@/lib/utils/utils';
 import type { ItemWithDetails } from '@/types/db';
 
 interface ItemCardProps {

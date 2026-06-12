@@ -1,11 +1,11 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma/prisma';
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
-import { verifyToken } from '@/lib/verification-token';
+import { verifyToken } from '@/lib/auth/verificationToken/verificationToken';
 import { resetPasswordSchema } from '@/types/db';
-import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from '@/lib/rate-limit';
+import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from '@/lib/auth/rateLimit/rateLimit';
 
 export async function handleResetPassword(formData: FormData) {
   // Rate limiting check

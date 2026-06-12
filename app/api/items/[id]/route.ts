@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { auth } from '@/lib/auth/auth/auth';
+import { prisma } from '@/lib/prisma/prisma';
 import { itemUpdateSchema } from '@/types/db';
 
 export async function GET(

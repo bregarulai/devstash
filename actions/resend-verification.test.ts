@@ -7,7 +7,7 @@ const mockRedirect = vi.fn()
 const mockCheckRateLimit = vi.fn()
 const mockGetClientIP = vi.fn()
 
-vi.mock('@/lib/prisma', () => ({
+vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     user: {
       findUnique: (...args: unknown[]) => mockPrismaUserFindUnique(...args),
@@ -15,11 +15,11 @@ vi.mock('@/lib/prisma', () => ({
   },
 }))
 
-vi.mock('@/lib/verification-token', () => ({
+vi.mock('@/lib/auth/verificationToken/verificationToken', () => ({
   createVerificationToken: (...args: unknown[]) => mockCreateVerificationToken(...args),
 }))
 
-vi.mock('@/lib/resend', () => ({
+vi.mock('@/lib/email/resend/resend', () => ({
   resend: { emails: { send: (...args: unknown[]) => mockResendSend(...args) } },
 }))
 
@@ -30,7 +30,7 @@ vi.mock('next/navigation', () => ({
   },
 }))
 
-vi.mock('@/lib/rate-limit', () => ({
+vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
   createRateLimiter: vi.fn(() => ({ limit: vi.fn() })),
   checkRateLimit: (...args: unknown[]) => mockCheckRateLimit(...args),
   getClientIP: (...args: unknown[]) => mockGetClientIP(...args),

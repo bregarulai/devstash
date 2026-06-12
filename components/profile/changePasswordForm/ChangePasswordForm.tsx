@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Lock, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
-import { usePasswordToggle } from '@/hooks/usePasswordToggle';
+import { usePasswordToggle } from '@/hooks/usePasswordToggle/usePasswordToggle';
 import { PasswordField } from '@/components/shared/PasswordField/PasswordField';
 import { handleChangePassword } from '@/actions/auth';
 import { changePasswordSchema, type ChangePasswordValues } from '@/types/db';

@@ -7,7 +7,7 @@ const mockDelete = vi.fn()
 const mockRevalidatePath = vi.fn()
 const mockCompare = vi.fn()
 
-vi.mock('@/lib/prisma', () => ({
+vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     user: {
       findUnique: (...args: unknown[]) => mockFindUnique(...args),
@@ -16,7 +16,7 @@ vi.mock('@/lib/prisma', () => ({
   },
 }))
 
-vi.mock('@/lib/auth', () => ({
+vi.mock('@/lib/auth/auth/auth', () => ({
   auth: (...args: unknown[]) => mockAuth(...args),
   signOut: (...args: unknown[]) => mockSignOut(...args),
 }))
@@ -29,7 +29,7 @@ vi.mock('bcryptjs', () => ({
   default: { compare: (...args: unknown[]) => mockCompare(...args) },
 }))
 
-const { deleteAccountByPassword } = await import('./account-deletion')
+const { deleteAccountByPassword } = await import('./accountDeletion')
 
 describe('deleteAccountByPassword', () => {
   beforeEach(() => {

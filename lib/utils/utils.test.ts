@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cn, formatDaysAgo, getInitials } from '@/lib/utils'
+import { cn, formatDaysAgo, getInitials } from '@/lib/utils/utils'
 
 describe('cn', () => {
   it('merges classes without conflicts', () => {

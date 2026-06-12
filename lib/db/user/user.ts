@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma/prisma';
 import type { ProfileData, SidebarItemTypeBreakdown } from '@/types/db';
 
 
@@ -43,7 +43,7 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
     };
 
     try {
-      const { getItemStats } = await import('@/lib/db/items');
+      const { getItemStats } = await import('@/lib/db/items/items');
       itemStats = await getItemStats(user.id);
     } catch {
       itemStats = {

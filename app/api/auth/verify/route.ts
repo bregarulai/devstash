@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma/prisma"
 import { verifyTokenSchema } from "@/types/db"
 import crypto from "crypto"
-import { createRateLimiter, checkRateLimit, formatRetryAfter, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit"
+import { createRateLimiter, checkRateLimit, formatRetryAfter, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
 
 export async function GET(request: NextRequest) {
   // Rate limiting check

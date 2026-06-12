@@ -4,7 +4,7 @@ import {
   DEFAULT_FAVORITE_LIMIT,
   DEFAULT_SAMPLE_COUNT,
   DEFAULT_RECENT_COLLECTIONS_LIMIT,
-} from '@/lib/constants'
+} from '@/lib/db/constants/constants'
 
 describe('constants', () => {
   it('DEFAULT_RECENT_LIMIT is 10', () => {

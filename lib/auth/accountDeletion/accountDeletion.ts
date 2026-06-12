@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma/prisma'
 import bcrypt from 'bcryptjs'
-import { auth, signOut as nextAuthSignOut } from '@/lib/auth'
+import { auth, signOut as nextAuthSignOut } from '@/lib/auth/auth/auth'
 import { revalidatePath } from 'next/cache'
 
 export async function deleteAccountByPassword(password: string) {

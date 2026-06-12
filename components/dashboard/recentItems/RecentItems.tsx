@@ -3,7 +3,7 @@
 import { Clock } from 'lucide-react';
 import { CardContent } from '@/components/ui/card';
 
-import { formatDaysAgo } from '@/lib/utils';
+import { formatDaysAgo } from '@/lib/utils/utils';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 import { ClientLoader } from '../clientLoader/ClientLoader';
 import { RecentItemsSkeleton } from '../skeletons/RecentItemsSkeleton';

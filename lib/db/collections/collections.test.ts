@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const mockPrismaCollectionFindMany = vi.fn()
 
-vi.mock('@/lib/prisma', () => ({
+vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     collection: {
       findMany: (...args: unknown[]) => mockPrismaCollectionFindMany(...args),

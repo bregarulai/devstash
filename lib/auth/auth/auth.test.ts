@@ -3,11 +3,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 const mockCompare = vi.fn()
 const mockFindUnique = vi.fn()
 
-vi.mock('@/lib/prisma', () => ({
+vi.mock('@/lib/prisma/prisma', () => ({
   prisma: { user: { findUnique: (...args: unknown[]) => mockFindUnique(...args) } },
 }))
 
-vi.mock('./auth.config', () => ({
+vi.mock('./authConfig', () => ({
   authConfig: { providers: [] },
 }))
 

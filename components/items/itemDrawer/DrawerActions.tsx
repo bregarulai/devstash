@@ -1,7 +1,7 @@
 import { Star, Pin, Copy, Pencil, Trash2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/utils';
 import { Button } from '@/components/ui/button';
-import { useItemActions } from '@/hooks/useItemActions';
+import { useItemActions } from '@/hooks/useItemActions/useItemActions';
 import type { ItemWithDetails } from '@/types/db';
 
 interface DrawerActionsProps {

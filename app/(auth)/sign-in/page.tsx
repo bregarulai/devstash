@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { auth } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth/auth';
 import { redirect } from 'next/navigation';
 import {
   Card,

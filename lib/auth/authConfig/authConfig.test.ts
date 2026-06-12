@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@/lib/prisma', () => ({
+vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {},
 }))
 
-const { authConfig } = await import('./auth.config')
+const { authConfig } = await import('./authConfig')
 
 describe('authConfig.redirect', () => {
   const redirect = authConfig.callbacks!.redirect!

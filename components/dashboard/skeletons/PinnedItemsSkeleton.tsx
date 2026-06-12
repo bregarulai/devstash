@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface PinnedItemsSkeletonProps {

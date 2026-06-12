@@ -5,7 +5,7 @@ import {
   createRateLimiter,
   checkRateLimit,
   RATE_LIMIT_CONFIGS,
-} from './rate-limit'
+} from './rateLimit'
 
 describe('getClientIP', () => {
   it('extracts IP from x-forwarded-for header', () => {

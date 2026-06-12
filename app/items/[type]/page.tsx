@@ -1,9 +1,9 @@
 import { notFound, redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth/auth';
 import {
   getItemsByTypeWithMeta,
   getSystemItemTypesWithCounts,
-} from '@/lib/db/items';
+} from '@/lib/db/items/items';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
 import { ItemDrawerProvider } from '@/components/items/itemDrawer/ItemDrawerProvider';
 import { ItemDrawer } from '@/components/items/itemDrawer/ItemDrawer';

@@ -7,7 +7,7 @@ const mockPrismaCollectionCount = vi.fn()
 const mockPrismaItemTypeFindMany = vi.fn()
 const mockPrismaItemGroupBy = vi.fn()
 
-vi.mock('@/lib/prisma', () => ({
+vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     item: {
       count: (...args: unknown[]) => mockPrismaItemCount(...args),

@@ -1,8 +1,8 @@
 "use server"
 
-import { signIn } from "@/lib/auth"
+import { signIn } from "@/lib/auth/auth/auth"
 import { redirect } from "next/navigation"
-import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit"
+import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
 
 export async function handleSignInWithGitHub() {
   // Rate limiting check

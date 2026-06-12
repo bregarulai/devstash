@@ -1,5 +1,5 @@
 import { Tag, Info, ExternalLink } from 'lucide-react';
-import { formatDaysAgo } from '@/lib/utils';
+import { formatDaysAgo } from '@/lib/utils/utils';
 import type { ItemWithDetails } from '@/types/db';
 
 interface DrawerContentProps {
