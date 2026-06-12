@@ -1,6 +1,6 @@
-# Current Feature
+# Current Feature: Item Edit Persistence Fix
 
-**Spec**: `context/features/item-drawer-edit-spec.md`
+**Spec**: `context/fixes/item-edit-persistence-spec.md`
 
 ## Status
 
@@ -8,11 +8,16 @@ In Progress
 
 ## Goals
 
-<!-- TODO: Define goals for next feature -->
+- Add `revalidatePath('/dashboard')` to `updateItemAction` in `actions/items.ts` after successful item update
+- Add `revalidatePath('/dashboard')` to PATCH endpoint in `app/api/items/[id]/route.ts` after successful favorite/pin update
+- Add unit tests for `revalidatePath` calls (called on success, not called on failure/not authenticated)
+- Verify edits persist after page refresh
 
 ## Notes
 
-<!-- TODO: Add notes for next feature -->
+- Root cause: missing cache invalidation — `router.refresh()` serves stale cached RSC payload
+- Every other mutation action already calls `revalidatePath` (e.g., `actions/profile.ts`)
+- P1 severity — core data integrity issue affecting user trust
 
 ## History
 

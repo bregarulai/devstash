@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
 import { itemEditSchema, type ItemEditValues, type ItemWithDetails } from '@/types/db';
 import { updateItem } from '@/lib/db/items/items';
@@ -27,6 +28,7 @@ export async function updateItemAction(
 
   try {
     const updated = await updateItem(itemId, session.user.id, result.data);
+    revalidatePath('/dashboard');
     return { success: true, data: updated, error: null };
   } catch (error) {
     return {

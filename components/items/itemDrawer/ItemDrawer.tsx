@@ -85,6 +85,7 @@ function ItemDrawerContent() {
               isSaving={isSaving}
               canSave={canSave}
               onSave={handleSave}
+              onMutate={() => router.refresh()}
             />
           </div>
         )}
