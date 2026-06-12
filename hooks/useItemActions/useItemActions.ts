@@ -5,6 +5,7 @@ import type { ItemWithDetails } from '@/types/db';
 export function useItemActions(
   item: ItemWithDetails | null,
   updateItem: (data: Partial<ItemWithDetails>) => void,
+  onMutate?: () => void,
 ) {
   const [isFavoriting, setIsFavoriting] = useState(false);
   const [isPinning, setIsPinning] = useState(false);
@@ -20,6 +21,7 @@ export function useItemActions(
       });
       if (!res.ok) throw new Error('Failed to update favorite');
       updateItem({ isFavorite: !item.isFavorite });
+      onMutate?.();
       toast.success(
         item.isFavorite ? 'Removed from favorites' : 'Added to favorites',
       );
@@ -28,7 +30,7 @@ export function useItemActions(
     } finally {
       setIsFavoriting(false);
     }
-  }, [item, updateItem]);
+  }, [item, updateItem, onMutate]);
 
   const handlePin = useCallback(async () => {
     if (!item) return;
@@ -41,13 +43,14 @@ export function useItemActions(
       });
       if (!res.ok) throw new Error('Failed to update pin');
       updateItem({ isPinned: !item.isPinned });
+      onMutate?.();
       toast.success(item.isPinned ? 'Unpinned item' : 'Pinned item');
     } catch {
       toast.error('Failed to update pin');
     } finally {
       setIsPinning(false);
     }
-  }, [item, updateItem]);
+  }, [item, updateItem, onMutate]);
 
   const handleCopy = useCallback(async () => {
     if (!item?.content) {

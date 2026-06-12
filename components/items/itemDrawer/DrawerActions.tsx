@@ -13,6 +13,7 @@ interface DrawerActionsProps {
   isSaving: boolean;
   canSave: boolean;
   onSave: () => void;
+  onMutate?: () => void;
 }
 
 export function DrawerActions({
@@ -24,9 +25,10 @@ export function DrawerActions({
   isSaving,
   canSave,
   onSave,
+  onMutate,
 }: DrawerActionsProps) {
   const { isFavoriting, isPinning, handleFavorite, handlePin, handleCopy } =
-    useItemActions(item, updateItem);
+    useItemActions(item, updateItem, onMutate);
 
   if (isEditing) {
     return (

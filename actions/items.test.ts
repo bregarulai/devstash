@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const mockAuth = vi.fn()
 const mockUpdateItem = vi.fn()
+const mockRevalidatePath = vi.fn()
+
+vi.mock('next/cache', () => ({
+  revalidatePath: (...args: unknown[]) => mockRevalidatePath(...args),
+}))
 
 vi.mock('@/lib/auth/auth/auth', () => ({
   auth: (...args: unknown[]) => mockAuth(...args),
@@ -129,5 +134,34 @@ describe('updateItemAction', () => {
       data: null,
       error: 'Failed to update item',
     })
+  })
+
+  it('calls revalidatePath after successful update', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockUpdateItem.mockResolvedValue({ id: 'item-1', title: 'Updated' })
+
+    const { updateItemAction } = await import('./items')
+    await updateItemAction('item-1', { title: 'Updated' })
+
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/dashboard')
+  })
+
+  it('does not call revalidatePath on update failure', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockUpdateItem.mockRejectedValue(new Error('DB error'))
+
+    const { updateItemAction } = await import('./items')
+    await updateItemAction('item-1', { title: 'Title' })
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('does not call revalidatePath when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { updateItemAction } = await import('./items')
+    await updateItemAction('item-1', { title: 'Title' })
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 })

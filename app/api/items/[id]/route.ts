@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth/auth';
 import { prisma } from '@/lib/prisma/prisma';
@@ -102,6 +103,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Item not found' }, { status: 404 });
     }
 
+    revalidatePath('/dashboard');
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(
