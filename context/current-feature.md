@@ -1,24 +1,16 @@
-# Current Feature: Testing Strategy Phase 3
-
-**Spec**: `context/features/testing-strategy-phase-3-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Test pure functions in `lib/db/collections.ts` and `lib/db/items.ts` with ≥80% coverage
-- Test `cn()` utility in `lib/utils.ts` with 100% coverage
-- Test remaining server actions (`forgot-password`, `reset-password`, `resend-verification`, `sign-in-github`, `profile`) with ≥80% coverage
-- Smoke test constants in `lib/constants.ts`
-- `npm run test:run` passes
-- `npm run test:coverage` meets overall thresholds (80% lines, 80% functions, 70% branches, 80% statements)
+<!-- What does success look like? -->
 
 ## Notes
 
-- All test files created alongside source files
-- Dependencies to mock: Prisma client, bcryptjs, next-auth, next/navigation, @upstash/ratelimit, resend, env variables
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -113,3 +105,5 @@ In Progress
 - **Testing Strategy Phase 1 (Completed)** - Added test files for lib/rate-limit.ts, lib/verification-token.ts, lib/auth.ts, and types/db.ts with comprehensive test coverage for security-critical pure functions and validation schemas
 
 - **Testing Strategy Phase 2 (Completed)** - Added test files for actions/auth.ts, actions/sign-in.ts, lib/account-deletion.ts, and lib/auth.config.ts with comprehensive test coverage for core auth flows
+
+- **Testing Strategy Phase 3 (Completed)** - Added test files for lib/db/collections.ts, lib/db/items.ts, lib/utils.ts, lib/constants.ts, and server actions (forgot-password, reset-password, resend-verification, sign-in-github, profile) with comprehensive test coverage for pure functions and utilities
