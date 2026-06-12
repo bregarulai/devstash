@@ -1,23 +1,18 @@
-# Current Feature: Item Edit Persistence Fix
+# Current Feature
 
-**Spec**: `context/fixes/item-edit-persistence-spec.md`
+<!-- Feature name and spec path go here when active -->
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Add `revalidatePath('/dashboard')` to `updateItemAction` in `actions/items.ts` after successful item update
-- Add `revalidatePath('/dashboard')` to PATCH endpoint in `app/api/items/[id]/route.ts` after successful favorite/pin update
-- Add unit tests for `revalidatePath` calls (called on success, not called on failure/not authenticated)
-- Verify edits persist after page refresh
+<!-- What does success look like? -->
 
 ## Notes
 
-- Root cause: missing cache invalidation — `router.refresh()` serves stale cached RSC payload
-- Every other mutation action already calls `revalidatePath` (e.g., `actions/profile.ts`)
-- P1 severity — core data integrity issue affecting user trust
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -116,3 +111,5 @@ In Progress
 - **Testing Strategy Phase 3 (Completed)** - Added test files for lib/db/collections.ts, lib/db/items.ts, lib/utils.ts, lib/constants.ts, and server actions (forgot-password, reset-password, resend-verification, sign-in-github, profile) with comprehensive test coverage for pure functions and utilities
 
 - **Item Drawer Edit Mode (Completed)** - Implemented inline editing in item drawer with toggle between view/edit modes, DrawerEditContent component with controlled inputs, updateItem server action with Zod validation, tag disconnect/reconnect-or-create handling, Save/Cancel buttons in edit mode, toast notifications, and router.refresh() after save
+
+- **Item Edit Persistence Fix (Completed)** - Added revalidatePath calls to updateItemAction and PATCH endpoint to fix stale cache issue where edits didn't persist after page refresh, added unit tests for revalidatePath behavior
