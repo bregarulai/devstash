@@ -12,7 +12,7 @@ import {
   FieldError,
   FieldContent,
 } from '@/components/ui/field';
-import { handleRegister } from '@/actions/auth';
+import { handleRegister } from '@/actions';
 import {
   registerSchema,
   type RegisterFormData,

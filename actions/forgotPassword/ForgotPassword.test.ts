@@ -72,7 +72,7 @@ describe('handleForgotPassword', () => {
     const formData = new FormData()
     formData.set('email', 'test@example.com')
 
-    const { handleForgotPassword } = await import('./forgot-password')
+    const { handleForgotPassword } = await import('./ForgotPassword')
     await expect(handleForgotPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockResendSend).toHaveBeenCalled()
@@ -82,7 +82,7 @@ describe('handleForgotPassword', () => {
     const formData = new FormData()
     formData.set('email', 'test@example.com')
 
-    const { handleForgotPassword } = await import('./forgot-password')
+    const { handleForgotPassword } = await import('./ForgotPassword')
     await expect(handleForgotPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -94,7 +94,7 @@ describe('handleForgotPassword', () => {
     const formData = new FormData()
     formData.set('email', 'invalid-email')
 
-    const { handleForgotPassword } = await import('./forgot-password')
+    const { handleForgotPassword } = await import('./ForgotPassword')
     await expect(handleForgotPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -108,7 +108,7 @@ describe('handleForgotPassword', () => {
     const formData = new FormData()
     formData.set('email', 'test@example.com')
 
-    const { handleForgotPassword } = await import('./forgot-password')
+    const { handleForgotPassword } = await import('./ForgotPassword')
     await expect(handleForgotPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -120,7 +120,7 @@ describe('handleForgotPassword', () => {
     const formData = new FormData()
     formData.set('email', 'test@example.com')
 
-    const { handleForgotPassword } = await import('./forgot-password')
+    const { handleForgotPassword } = await import('./ForgotPassword')
     await expect(handleForgotPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockCreateVerificationToken).toHaveBeenCalledWith('test@example.com')
@@ -137,7 +137,7 @@ describe('handleForgotPassword', () => {
     const formData = new FormData()
     formData.set('email', 'test@example.com')
 
-    const { handleForgotPassword } = await import('./forgot-password')
+    const { handleForgotPassword } = await import('./ForgotPassword')
     await expect(handleForgotPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -157,7 +157,7 @@ describe('handleForgotPassword', () => {
     const formData = new FormData()
     formData.set('email', 'test@example.com')
 
-    const { handleForgotPassword } = await import('./forgot-password')
+    const { handleForgotPassword } = await import('./ForgotPassword')
     await expect(handleForgotPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(consoleSpy).toHaveBeenCalledWith('Failed to send password reset email:', expect.any(Error))

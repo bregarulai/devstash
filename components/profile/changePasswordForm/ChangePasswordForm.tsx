@@ -10,7 +10,7 @@ import { Lock, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { usePasswordToggle } from '@/hooks/usePasswordToggle/usePasswordToggle';
 import { PasswordField } from '@/components/shared/PasswordField/PasswordField';
-import { handleChangePassword } from '@/actions/auth';
+import { handleChangePassword } from '@/actions';
 import { changePasswordSchema, type ChangePasswordValues } from '@/types/db';
 
 export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {

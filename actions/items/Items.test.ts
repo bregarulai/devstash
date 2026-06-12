@@ -26,7 +26,7 @@ describe('updateItemAction', () => {
   it('returns error when not authenticated', async () => {
     mockAuth.mockResolvedValue(null)
 
-    const { updateItemAction } = await import('./items')
+    const { updateItemAction } = await import('./Items')
     const result = await updateItemAction('item-1', { title: 'Title' })
 
     expect(result).toEqual({
@@ -39,7 +39,7 @@ describe('updateItemAction', () => {
   it('returns error when session has no user id', async () => {
     mockAuth.mockResolvedValue({ user: {} })
 
-    const { updateItemAction } = await import('./items')
+    const { updateItemAction } = await import('./Items')
     const result = await updateItemAction('item-1', { title: 'Title' })
 
     expect(result).toEqual({
@@ -52,7 +52,7 @@ describe('updateItemAction', () => {
   it('returns validation error for invalid data', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
 
-    const { updateItemAction } = await import('./items')
+    const { updateItemAction } = await import('./Items')
     const result = await updateItemAction('item-1', { title: '' })
 
     expect(result).toEqual({
@@ -65,7 +65,7 @@ describe('updateItemAction', () => {
   it('returns validation error for invalid url', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
 
-    const { updateItemAction } = await import('./items')
+    const { updateItemAction } = await import('./Items')
     const result = await updateItemAction('item-1', {
       title: 'Title',
       url: 'not-a-url',
@@ -97,7 +97,7 @@ describe('updateItemAction', () => {
     }
     mockUpdateItem.mockResolvedValue(mockUpdatedItem)
 
-    const { updateItemAction } = await import('./items')
+    const { updateItemAction } = await import('./Items')
     const result = await updateItemAction('item-1', { title: 'Updated Title' })
 
     expect(result).toEqual({
@@ -114,7 +114,7 @@ describe('updateItemAction', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockUpdateItem.mockRejectedValue(new Error('Database error'))
 
-    const { updateItemAction } = await import('./items')
+    const { updateItemAction } = await import('./Items')
     const result = await updateItemAction('item-1', { title: 'Title' })
 
     expect(result).toEqual({
@@ -128,7 +128,7 @@ describe('updateItemAction', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockUpdateItem.mockRejectedValue('Unknown error')
 
-    const { updateItemAction } = await import('./items')
+    const { updateItemAction } = await import('./Items')
     const result = await updateItemAction('item-1', { title: 'Title' })
 
     expect(result).toEqual({
@@ -142,7 +142,7 @@ describe('updateItemAction', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockUpdateItem.mockResolvedValue({ id: 'item-1', title: 'Updated' })
 
-    const { updateItemAction } = await import('./items')
+    const { updateItemAction } = await import('./Items')
     await updateItemAction('item-1', { title: 'Updated' })
 
     expect(mockRevalidatePath).toHaveBeenCalledWith('/dashboard')
@@ -152,7 +152,7 @@ describe('updateItemAction', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockUpdateItem.mockRejectedValue(new Error('DB error'))
 
-    const { updateItemAction } = await import('./items')
+    const { updateItemAction } = await import('./Items')
     await updateItemAction('item-1', { title: 'Title' })
 
     expect(mockRevalidatePath).not.toHaveBeenCalled()
@@ -161,7 +161,7 @@ describe('updateItemAction', () => {
   it('does not call revalidatePath when not authenticated', async () => {
     mockAuth.mockResolvedValue(null)
 
-    const { updateItemAction } = await import('./items')
+    const { updateItemAction } = await import('./Items')
     await updateItemAction('item-1', { title: 'Title' })
 
     expect(mockRevalidatePath).not.toHaveBeenCalled()
@@ -176,7 +176,7 @@ describe('deleteItemAction', () => {
   it('returns error when not authenticated', async () => {
     mockAuth.mockResolvedValue(null)
 
-    const { deleteItemAction } = await import('./items')
+    const { deleteItemAction } = await import('./Items')
     const result = await deleteItemAction('item-1')
 
     expect(result).toEqual({
@@ -188,7 +188,7 @@ describe('deleteItemAction', () => {
   it('returns error when session has no user id', async () => {
     mockAuth.mockResolvedValue({ user: {} })
 
-    const { deleteItemAction } = await import('./items')
+    const { deleteItemAction } = await import('./Items')
     const result = await deleteItemAction('item-1')
 
     expect(result).toEqual({
@@ -201,7 +201,7 @@ describe('deleteItemAction', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockDeleteItem.mockResolvedValue(true)
 
-    const { deleteItemAction } = await import('./items')
+    const { deleteItemAction } = await import('./Items')
     const result = await deleteItemAction('item-1')
 
     expect(result).toEqual({
@@ -216,7 +216,7 @@ describe('deleteItemAction', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockDeleteItem.mockRejectedValue(new Error('Database error'))
 
-    const { deleteItemAction } = await import('./items')
+    const { deleteItemAction } = await import('./Items')
     const result = await deleteItemAction('item-1')
 
     expect(result).toEqual({
@@ -229,7 +229,7 @@ describe('deleteItemAction', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockDeleteItem.mockRejectedValue('Unknown error')
 
-    const { deleteItemAction } = await import('./items')
+    const { deleteItemAction } = await import('./Items')
     const result = await deleteItemAction('item-1')
 
     expect(result).toEqual({
@@ -241,7 +241,7 @@ describe('deleteItemAction', () => {
   it('does not call revalidatePath when not authenticated', async () => {
     mockAuth.mockResolvedValue(null)
 
-    const { deleteItemAction } = await import('./items')
+    const { deleteItemAction } = await import('./Items')
     await deleteItemAction('item-1')
 
     expect(mockRevalidatePath).not.toHaveBeenCalled()
@@ -251,7 +251,7 @@ describe('deleteItemAction', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockDeleteItem.mockRejectedValue(new Error('DB error'))
 
-    const { deleteItemAction } = await import('./items')
+    const { deleteItemAction } = await import('./Items')
     await deleteItemAction('item-1')
 
     expect(mockRevalidatePath).not.toHaveBeenCalled()

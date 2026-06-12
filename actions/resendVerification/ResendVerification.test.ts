@@ -63,7 +63,7 @@ describe('handleResendVerification', () => {
       emailVerified: null,
     })
 
-    const { handleResendVerification } = await import('./resend-verification')
+    const { handleResendVerification } = await import('./ResendVerification')
     await expect(handleResendVerification('test@example.com')).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockResendSend).toHaveBeenCalled()
@@ -76,7 +76,7 @@ describe('handleResendVerification', () => {
       emailVerified: null,
     })
 
-    const { handleResendVerification } = await import('./resend-verification')
+    const { handleResendVerification } = await import('./ResendVerification')
     await expect(handleResendVerification('test@example.com')).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -87,7 +87,7 @@ describe('handleResendVerification', () => {
   it('returns success redirect when user not found (timing-attack prevention)', async () => {
     mockPrismaUserFindUnique.mockResolvedValue(null)
 
-    const { handleResendVerification } = await import('./resend-verification')
+    const { handleResendVerification } = await import('./ResendVerification')
     await expect(handleResendVerification('test@example.com')).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -102,7 +102,7 @@ describe('handleResendVerification', () => {
       emailVerified: new Date(),
     })
 
-    const { handleResendVerification } = await import('./resend-verification')
+    const { handleResendVerification } = await import('./ResendVerification')
     await expect(handleResendVerification('test@example.com')).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -113,7 +113,7 @@ describe('handleResendVerification', () => {
   it('returns error redirect when rate limited', async () => {
     mockCheckRateLimit.mockResolvedValue({ success: false, retryAfter: 900 })
 
-    const { handleResendVerification } = await import('./resend-verification')
+    const { handleResendVerification } = await import('./ResendVerification')
     await expect(handleResendVerification('test@example.com')).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -128,7 +128,7 @@ describe('handleResendVerification', () => {
       emailVerified: null,
     })
 
-    const { handleResendVerification } = await import('./resend-verification')
+    const { handleResendVerification } = await import('./ResendVerification')
     await expect(handleResendVerification('test@example.com')).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockCreateVerificationToken).toHaveBeenCalledWith('test@example.com')
@@ -137,7 +137,7 @@ describe('handleResendVerification', () => {
   it('redirects to sign-in when email verification disabled', async () => {
     process.env.ENABLE_EMAIL_VERIFICATION = 'false'
 
-    const { handleResendVerification } = await import('./resend-verification')
+    const { handleResendVerification } = await import('./ResendVerification')
     await expect(handleResendVerification('test@example.com')).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith('/sign-in')
@@ -152,7 +152,7 @@ describe('handleResendVerification', () => {
     mockResendSend.mockRejectedValue(new Error('Email service unavailable'))
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    const { handleResendVerification } = await import('./resend-verification')
+    const { handleResendVerification } = await import('./ResendVerification')
     await expect(handleResendVerification('test@example.com')).rejects.toThrow('NEXT_REDIRECT')
 
     expect(consoleSpy).toHaveBeenCalledWith('Failed to send verification email:', expect.any(Error))

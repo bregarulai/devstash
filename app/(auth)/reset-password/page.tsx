@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { handleResetPassword } from '@/actions/reset-password';
+import { handleResetPassword } from '@/actions';
 import { ResetPasswordToast } from '@/components/auth/resetPasswordToast/ResetPasswordToast';
 
 export const metadata: Metadata = {

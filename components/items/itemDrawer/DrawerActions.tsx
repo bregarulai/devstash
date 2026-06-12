@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useItemActions } from '@/hooks/useItemActions/useItemActions';
-import { deleteItemAction } from '@/actions/items';
+import { deleteItemAction } from '@/actions';
 import type { ItemWithDetails } from '@/types/db';
 
 interface DrawerActionsProps {

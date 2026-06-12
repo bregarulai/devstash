@@ -11,7 +11,7 @@ import { DrawerSkeleton } from './DrawerSkeleton';
 import { DrawerError } from './DrawerError';
 import { DrawerContent } from './DrawerContent';
 import { DrawerEditContent, type DrawerEditContentHandle } from './DrawerEditContent';
-import { updateItemAction } from '@/actions/items';
+import { updateItemAction } from '@/actions';
 
 function ItemDrawerContent() {
   const {

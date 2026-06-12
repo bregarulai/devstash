@@ -27,7 +27,7 @@ describe('retryProfileData', () => {
   it('calls revalidatePath and redirect when authenticated', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
 
-    const { retryProfileData } = await import('./profile')
+    const { retryProfileData } = await import('./Profile')
     const result = await retryProfileData()
 
     expect(mockRevalidatePath).toHaveBeenCalledWith('/profile')
@@ -38,7 +38,7 @@ describe('retryProfileData', () => {
   it('calls redirect to /sign-in when not authenticated', async () => {
     mockAuth.mockResolvedValue(null)
 
-    const { retryProfileData } = await import('./profile')
+    const { retryProfileData } = await import('./Profile')
     await expect(retryProfileData()).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith('/sign-in')
@@ -47,7 +47,7 @@ describe('retryProfileData', () => {
   it('calls redirect to /sign-in when session has no user id', async () => {
     mockAuth.mockResolvedValue({ user: {} })
 
-    const { retryProfileData } = await import('./profile')
+    const { retryProfileData } = await import('./Profile')
     await expect(retryProfileData()).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith('/sign-in')
@@ -62,7 +62,7 @@ describe('retryProfileDataAction', () => {
   it('calls retryProfileData', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
 
-    const { retryProfileDataAction } = await import('./profile')
+    const { retryProfileDataAction } = await import('./Profile')
     await retryProfileDataAction()
 
     expect(mockRevalidatePath).toHaveBeenCalledWith('/profile')

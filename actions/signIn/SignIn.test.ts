@@ -53,7 +53,7 @@ describe('handleSignIn', () => {
   it('signs in with valid credentials', async () => {
     process.env.ENABLE_EMAIL_VERIFICATION = 'false'
 
-    const { handleSignIn } = await import('./sign-in')
+    const { handleSignIn } = await import('./SignIn')
     await expect(handleSignIn({ email: 'test@example.com', password: 'password123' })).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockSignIn).toHaveBeenCalledWith('credentials', {
@@ -65,7 +65,7 @@ describe('handleSignIn', () => {
   it('redirects to dashboard on success', async () => {
     process.env.ENABLE_EMAIL_VERIFICATION = 'false'
 
-    const { handleSignIn } = await import('./sign-in')
+    const { handleSignIn } = await import('./SignIn')
     await expect(handleSignIn({ email: 'test@example.com', password: 'password123' })).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith('/dashboard')
@@ -75,14 +75,14 @@ describe('handleSignIn', () => {
     process.env.ENABLE_EMAIL_VERIFICATION = 'true'
     mockPrismaUserFindUnique.mockResolvedValue({ emailVerified: null })
 
-    const { handleSignIn } = await import('./sign-in')
+    const { handleSignIn } = await import('./SignIn')
     await expect(handleSignIn({ email: 'test@example.com', password: 'password123' })).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith('/verify-required')
   })
 
   it('redirects on Zod validation failure', async () => {
-    const { handleSignIn } = await import('./sign-in')
+    const { handleSignIn } = await import('./SignIn')
     await expect(handleSignIn({ email: 'invalid-email', password: 'short' })).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -93,7 +93,7 @@ describe('handleSignIn', () => {
   it('redirects when rate limited', async () => {
     mockCheckRateLimit.mockResolvedValue({ success: false, retryAfter: 900 })
 
-    const { handleSignIn } = await import('./sign-in')
+    const { handleSignIn } = await import('./SignIn')
     await expect(handleSignIn({ email: 'test@example.com', password: 'password123' })).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -104,7 +104,7 @@ describe('handleSignIn', () => {
   it('formats rate limit error with minutes', async () => {
     mockCheckRateLimit.mockResolvedValue({ success: false, retryAfter: 300 })
 
-    const { handleSignIn } = await import('./sign-in')
+    const { handleSignIn } = await import('./SignIn')
     await expect(handleSignIn({ email: 'test@example.com', password: 'password123' })).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -115,7 +115,7 @@ describe('handleSignIn', () => {
   it('uses email in rate limit key', async () => {
     process.env.ENABLE_EMAIL_VERIFICATION = 'false'
 
-    const { handleSignIn } = await import('./sign-in')
+    const { handleSignIn } = await import('./SignIn')
     await expect(handleSignIn({ email: 'test@example.com', password: 'password123' })).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockCheckRateLimit).toHaveBeenCalledWith(

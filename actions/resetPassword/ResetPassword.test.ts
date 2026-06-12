@@ -64,7 +64,7 @@ describe('handleResetPassword', () => {
     formData.set('password', 'new-password123')
     formData.set('confirmPassword', 'new-password123')
 
-    const { handleResetPassword } = await import('./reset-password')
+    const { handleResetPassword } = await import('./ResetPassword')
     await expect(handleResetPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockPrismaUserUpdate).toHaveBeenCalledWith({
@@ -80,7 +80,7 @@ describe('handleResetPassword', () => {
     formData.set('password', 'new-password123')
     formData.set('confirmPassword', 'new-password123')
 
-    const { handleResetPassword } = await import('./reset-password')
+    const { handleResetPassword } = await import('./ResetPassword')
     await expect(handleResetPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -97,7 +97,7 @@ describe('handleResetPassword', () => {
     formData.set('password', 'new-password123')
     formData.set('confirmPassword', 'new-password123')
 
-    const { handleResetPassword } = await import('./reset-password')
+    const { handleResetPassword } = await import('./ResetPassword')
     await expect(handleResetPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -112,7 +112,7 @@ describe('handleResetPassword', () => {
     formData.set('password', 'short')
     formData.set('confirmPassword', 'different')
 
-    const { handleResetPassword } = await import('./reset-password')
+    const { handleResetPassword } = await import('./ResetPassword')
     await expect(handleResetPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -129,7 +129,7 @@ describe('handleResetPassword', () => {
     formData.set('password', 'new-password123')
     formData.set('confirmPassword', 'new-password123')
 
-    const { handleResetPassword } = await import('./reset-password')
+    const { handleResetPassword } = await import('./ResetPassword')
     await expect(handleResetPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -144,7 +144,7 @@ describe('handleResetPassword', () => {
     formData.set('password', 'new-password123')
     formData.set('confirmPassword', 'new-password123')
 
-    const { handleResetPassword } = await import('./reset-password')
+    const { handleResetPassword } = await import('./ResetPassword')
     await expect(handleResetPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockBcryptHash).toHaveBeenCalledWith('new-password123', 12)
@@ -159,7 +159,7 @@ describe('handleResetPassword', () => {
     formData.set('password', 'new-password123')
     formData.set('confirmPassword', 'new-password123')
 
-    const { handleResetPassword } = await import('./reset-password')
+    const { handleResetPassword } = await import('./ResetPassword')
     await expect(handleResetPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -176,7 +176,7 @@ describe('handleResetPassword', () => {
     formData.set('password', 'new-password123')
     formData.set('confirmPassword', 'new-password123')
 
-    const { handleResetPassword } = await import('./reset-password')
+    const { handleResetPassword } = await import('./ResetPassword')
     await expect(handleResetPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(

@@ -12,7 +12,7 @@ import {
   FieldError,
   FieldContent,
 } from '@/components/ui/field';
-import { handleSignIn } from '@/actions/sign-in';
+import { handleSignIn } from '@/actions';
 import { signInSchema, type SignInFormData } from '@/types/db';
 
 interface SignInFormProps {

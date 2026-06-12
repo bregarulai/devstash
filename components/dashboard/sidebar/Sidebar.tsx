@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { SystemItemType, CollectionWithStats } from '@/types/db';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 import { Badge } from '@/components/ui/badge';
-import { handleSignOut } from '@/actions/auth';
+import { handleSignOut } from '@/actions';
 
 interface SidebarProps {
   isExpanded: boolean;

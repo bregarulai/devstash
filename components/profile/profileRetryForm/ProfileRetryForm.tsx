@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
-import { retryProfileDataAction } from '@/actions/profile';
+import { retryProfileDataAction } from '@/actions';
 
 interface ProfileRetryFormProps {
   errorType?: 'db-failure' | 'user-not-found' | null;

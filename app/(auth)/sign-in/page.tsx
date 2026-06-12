@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { SignInToast } from '@/components/auth/signInToast/SignInToast';
 import { SignInForm } from '@/components/signinForm/SigninForm';
-import { handleSignInWithGitHub } from '@/actions/sign-in-github';
+import { handleSignInWithGitHub } from '@/actions';
 
 export const metadata: Metadata = {
   title: 'Sign In',

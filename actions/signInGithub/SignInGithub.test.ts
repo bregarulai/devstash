@@ -34,7 +34,7 @@ describe('handleSignInWithGitHub', () => {
   })
 
   it('initiates GitHub OAuth flow', async () => {
-    const { handleSignInWithGitHub } = await import('./sign-in-github')
+    const { handleSignInWithGitHub } = await import('./SignInGithub')
     await handleSignInWithGitHub()
 
     expect(mockSignIn).toHaveBeenCalledWith('github', {
@@ -43,14 +43,14 @@ describe('handleSignInWithGitHub', () => {
   })
 
   it('returns success on successful sign-in', async () => {
-    const { handleSignInWithGitHub } = await import('./sign-in-github')
+    const { handleSignInWithGitHub } = await import('./SignInGithub')
     await expect(handleSignInWithGitHub()).resolves.not.toThrow()
   })
 
   it('returns error redirect when rate limited', async () => {
     mockCheckRateLimit.mockResolvedValue({ success: false, retryAfter: 900 })
 
-    const { handleSignInWithGitHub } = await import('./sign-in-github')
+    const { handleSignInWithGitHub } = await import('./SignInGithub')
     await expect(handleSignInWithGitHub()).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -61,7 +61,7 @@ describe('handleSignInWithGitHub', () => {
   it('returns error redirect with singular minute when retryAfter <= 60', async () => {
     mockCheckRateLimit.mockResolvedValue({ success: false, retryAfter: 60 })
 
-    const { handleSignInWithGitHub } = await import('./sign-in-github')
+    const { handleSignInWithGitHub } = await import('./SignInGithub')
     await expect(handleSignInWithGitHub()).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -72,7 +72,7 @@ describe('handleSignInWithGitHub', () => {
   it('returns error redirect using fallback retryAfter when undefined', async () => {
     mockCheckRateLimit.mockResolvedValue({ success: false })
 
-    const { handleSignInWithGitHub } = await import('./sign-in-github')
+    const { handleSignInWithGitHub } = await import('./SignInGithub')
     await expect(handleSignInWithGitHub()).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -81,7 +81,7 @@ describe('handleSignInWithGitHub', () => {
   })
 
   it('calls redirect on success', async () => {
-    const { handleSignInWithGitHub } = await import('./sign-in-github')
+    const { handleSignInWithGitHub } = await import('./SignInGithub')
     await expect(handleSignInWithGitHub()).resolves.not.toThrow()
   })
 })

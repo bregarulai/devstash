@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { handleForgotPassword } from '@/actions/forgot-password';
+import { handleForgotPassword } from '@/actions';
 import { ForgotPasswordToast } from '@/components/auth/forgotPasswordToast/ForgotPasswordToast';
 
 export const metadata: Metadata = {

@@ -99,7 +99,7 @@ describe('handleRegister', () => {
     formData.set('password', 'password123')
     formData.set('confirmPassword', 'password123')
 
-    const { handleRegister } = await import('./auth')
+    const { handleRegister } = await import('./Auth')
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockPrismaUserCreate).toHaveBeenCalledWith({
@@ -120,7 +120,7 @@ describe('handleRegister', () => {
     formData.set('password', 'password123')
     formData.set('confirmPassword', 'password123')
 
-    const { handleRegister } = await import('./auth')
+    const { handleRegister } = await import('./Auth')
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockBcryptHash).toHaveBeenCalledWith('password123', 12)
@@ -135,7 +135,7 @@ describe('handleRegister', () => {
     formData.set('password', 'password123')
     formData.set('confirmPassword', 'password123')
 
-    const { handleRegister } = await import('./auth')
+    const { handleRegister } = await import('./Auth')
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockCreateVerificationToken).toHaveBeenCalledWith('john@example.com')
@@ -151,7 +151,7 @@ describe('handleRegister', () => {
     formData.set('password', 'password123')
     formData.set('confirmPassword', 'password123')
 
-    const { handleRegister } = await import('./auth')
+    const { handleRegister } = await import('./Auth')
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -168,7 +168,7 @@ describe('handleRegister', () => {
     formData.set('password', 'password123')
     formData.set('confirmPassword', 'password123')
 
-    const { handleRegister } = await import('./auth')
+    const { handleRegister } = await import('./Auth')
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -186,7 +186,7 @@ describe('handleRegister', () => {
     formData.set('password', 'password123')
     formData.set('confirmPassword', 'password123')
 
-    const { handleRegister } = await import('./auth')
+    const { handleRegister } = await import('./Auth')
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -201,7 +201,7 @@ describe('handleRegister', () => {
     formData.set('password', 'short')
     formData.set('confirmPassword', 'different')
 
-    const { handleRegister } = await import('./auth')
+    const { handleRegister } = await import('./Auth')
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -218,7 +218,7 @@ describe('handleRegister', () => {
     formData.set('password', 'password123')
     formData.set('confirmPassword', 'password123')
 
-    const { handleRegister } = await import('./auth')
+    const { handleRegister } = await import('./Auth')
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRevalidatePath).toHaveBeenCalledWith('/register')
@@ -233,7 +233,7 @@ describe('handleRegister', () => {
     formData.set('password', 'password123')
     formData.set('confirmPassword', 'password123')
 
-    const { handleRegister } = await import('./auth')
+    const { handleRegister } = await import('./Auth')
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
@@ -253,7 +253,7 @@ describe('handleRegister', () => {
     formData.set('password', 'password123')
     formData.set('confirmPassword', 'password123')
 
-    const { handleRegister } = await import('./auth')
+    const { handleRegister } = await import('./Auth')
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(consoleSpy).toHaveBeenCalledWith('Failed to send verification email:', expect.any(Error))
@@ -274,7 +274,7 @@ describe('handleDeleteAccount', () => {
   it('returns error when not authenticated', async () => {
     mockAuth.mockResolvedValue(null)
 
-    const { handleDeleteAccount } = await import('./auth')
+    const { handleDeleteAccount } = await import('./Auth')
     const result = await handleDeleteAccount('password123')
 
     expect(result).toEqual({ error: 'Not authenticated', data: null })
@@ -284,7 +284,7 @@ describe('handleDeleteAccount', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockPrismaUserFindUnique.mockResolvedValue(null)
 
-    const { handleDeleteAccount } = await import('./auth')
+    const { handleDeleteAccount } = await import('./Auth')
     const result = await handleDeleteAccount('password123')
 
     expect(result).toEqual({ error: 'User not found', data: null })
@@ -294,7 +294,7 @@ describe('handleDeleteAccount', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockPrismaUserFindUnique.mockResolvedValue({ id: 'user-1', password: null })
 
-    const { handleDeleteAccount } = await import('./auth')
+    const { handleDeleteAccount } = await import('./Auth')
     const result = await handleDeleteAccount('password123')
 
     expect(result).toEqual({ error: 'Password verification required', data: null })
@@ -305,7 +305,7 @@ describe('handleDeleteAccount', () => {
     mockPrismaUserFindUnique.mockResolvedValue({ id: 'user-1', password: 'hashed' })
     mockBcryptCompare.mockResolvedValue(false)
 
-    const { handleDeleteAccount } = await import('./auth')
+    const { handleDeleteAccount } = await import('./Auth')
     const result = await handleDeleteAccount('wrong-password')
 
     expect(result).toEqual({ error: 'Password verification failed', data: null })
@@ -317,7 +317,7 @@ describe('handleDeleteAccount', () => {
     mockBcryptCompare.mockResolvedValue(true)
     mockPrismaUserDelete.mockResolvedValue({})
 
-    const { handleDeleteAccount } = await import('./auth')
+    const { handleDeleteAccount } = await import('./Auth')
     const result = await handleDeleteAccount('correct-password')
 
     expect(result).toEqual({ success: true, data: null })
@@ -332,7 +332,7 @@ describe('handleDeleteAccount', () => {
     mockBcryptCompare.mockResolvedValue(true)
     mockPrismaUserDelete.mockRejectedValue(new Error('Database error'))
 
-    const { handleDeleteAccount } = await import('./auth')
+    const { handleDeleteAccount } = await import('./Auth')
     const result = await handleDeleteAccount('correct-password')
 
     expect(result).toEqual({ error: 'Failed to delete account', data: null })
@@ -348,7 +348,7 @@ describe('handleChangePassword', () => {
   it('returns error when not authenticated', async () => {
     mockAuth.mockResolvedValue(null)
 
-    const { handleChangePassword } = await import('./auth')
+    const { handleChangePassword } = await import('./Auth')
     const result = await handleChangePassword({
       currentPassword: 'old',
       newPassword: 'new',
@@ -362,7 +362,7 @@ describe('handleChangePassword', () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
     mockPrismaUserFindUnique.mockResolvedValue({ password: null })
 
-    const { handleChangePassword } = await import('./auth')
+    const { handleChangePassword } = await import('./Auth')
     const result = await handleChangePassword({
       currentPassword: 'old',
       newPassword: 'new',
@@ -380,7 +380,7 @@ describe('handleChangePassword', () => {
     mockPrismaUserFindUnique.mockResolvedValue({ password: 'hashed' })
     mockBcryptCompare.mockResolvedValue(false)
 
-    const { handleChangePassword } = await import('./auth')
+    const { handleChangePassword } = await import('./Auth')
     const result = await handleChangePassword({
       currentPassword: 'wrong',
       newPassword: 'new',
@@ -397,7 +397,7 @@ describe('handleChangePassword', () => {
     mockBcryptHash.mockResolvedValue('new-hashed')
     mockPrismaUserUpdate.mockResolvedValue({})
 
-    const { handleChangePassword } = await import('./auth')
+    const { handleChangePassword } = await import('./Auth')
     const result = await handleChangePassword({
       currentPassword: 'correct',
       newPassword: 'new-password',
@@ -421,7 +421,7 @@ describe('handleSignOut', () => {
   it('calls signOut with redirect to home', async () => {
     mockSignOut.mockResolvedValue({})
 
-    const { handleSignOut } = await import('./auth')
+    const { handleSignOut } = await import('./Auth')
     await handleSignOut()
 
     expect(mockSignOut).toHaveBeenCalledWith({ redirectTo: '/' })

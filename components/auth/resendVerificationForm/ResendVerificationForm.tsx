@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react';
 import { Button } from '@/components/ui/button';
-import { handleResendVerification } from '@/actions/resend-verification';
+import { handleResendVerification } from '@/actions';
 import { Loader2 } from 'lucide-react';
 
 interface ResendVerificationFormProps {
