@@ -1,27 +1,16 @@
-# Current Feature: Code Editor
-
-**Spec**: `context/features/code-editor-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create CodeEditor component using Monaco Editor with dark theme
-- Replace Textarea with CodeEditor for snippets and commands only
-- Keep Textarea for notes, prompts, and other non-code types
-- Add macOS-style window dots (red/yellow/green) at top of editor
-- Add quick copy button in editor header
-- Add the language in editor header next to copy
-- Support both display (readonly) and edit modes
-- Make the height of the editor fluid but a max height of 400px with a theme-matching scrollbar
+<!-- What does success look like? -->
 
 ## Notes
 
-- Monaco Editor is a heavy dependency — may need dynamic import for client-side only
-- Only applies to "snippet" and "command" item types; other types keep Textarea
-- macOS dots should be non-interactive, purely decorative
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -126,3 +115,5 @@ In Progress
 - **Item Delete (Completed)** - Implemented item delete with AlertDialog confirmation, server action with auth/ownership validation, and toast notifications
 
 - **Item Create (Completed)** - Implemented item create dialog with type selector, dynamic fields based on type, server action with Zod validation, and database query function
+
+- **Code Editor (Completed)** - Implemented CodeEditor component using Monaco Editor with dark theme, macOS-style window dots, copy button, language display, and support for both readonly and edit modes
