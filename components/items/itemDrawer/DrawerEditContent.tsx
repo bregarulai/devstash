@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Info } from 'lucide-react';
 import { formatDaysAgo } from '@/lib/utils/utils';
 import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
+import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
 import type { ItemWithDetails } from '@/types/db';
-import { CODE_EDITOR_TYPES } from '@/lib/constants';
+import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES } from '@/lib/constants';
 
 const EDITABLE_CONTENT_TYPES = ['snippet', 'prompt', 'command', 'note'];
 const EDITABLE_LANGUAGE_TYPES = ['snippet', 'command'];
@@ -44,6 +45,7 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
     const showLanguage = EDITABLE_LANGUAGE_TYPES.includes(typeName);
     const showUrl = EDITABLE_URL_TYPES.includes(typeName);
     const showCodeEditor = CODE_EDITOR_TYPES.includes(typeName);
+    const showMarkdownEditor = MARKDOWN_EDITOR_TYPES.includes(typeName);
 
     useEffect(() => {
       onCanSaveChange(title.trim().length > 0);
@@ -107,6 +109,11 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
                 value={content}
                 onChange={setContent}
                 language={language || 'plaintext'}
+              />
+            ) : showMarkdownEditor ? (
+              <MarkdownEditor
+                value={content}
+                onChange={setContent}
               />
             ) : (
               <Textarea

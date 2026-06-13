@@ -24,9 +24,10 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
+import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
 import { itemCreateSchema, type ItemCreateValues } from '@/types/db';
 import { createItemAction } from '@/actions';
-import { CODE_EDITOR_TYPES } from '@/lib/constants';
+import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES } from '@/lib/constants';
 
 const ITEM_TYPES = [
   { value: 'snippet' as const, label: 'Snippet', icon: Code },
@@ -184,6 +185,11 @@ export function ItemCreateDialog() {
                     value={contentValue || ''}
                     onChange={(v) => setValue('content', v, { shouldValidate: true })}
                     language={languageValue || 'plaintext'}
+                  />
+                ) : MARKDOWN_EDITOR_TYPES.includes(selectedType) ? (
+                  <MarkdownEditor
+                    value={contentValue || ''}
+                    onChange={(v) => setValue('content', v, { shouldValidate: true })}
                   />
                 ) : (
                   <Textarea

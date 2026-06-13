@@ -1,8 +1,9 @@
 import { Tag, Info, ExternalLink } from 'lucide-react';
 import { formatDaysAgo } from '@/lib/utils/utils';
 import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
+import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
 import type { ItemWithDetails } from '@/types/db';
-import { CODE_EDITOR_TYPES } from '@/lib/constants';
+import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES } from '@/lib/constants';
 
 interface DrawerContentProps {
   item: ItemWithDetails;
@@ -29,6 +30,11 @@ export function DrawerContent({ item }: DrawerContentProps) {
             <CodeEditor
               value={item.content}
               language={item.language || 'plaintext'}
+              readOnly
+            />
+          ) : MARKDOWN_EDITOR_TYPES.includes(item.itemType.name.toLowerCase()) ? (
+            <MarkdownEditor
+              value={item.content}
               readOnly
             />
           ) : (
