@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Star, Pin, Copy, Pencil, Trash2, Loader2 } from 'lucide-react';
+import { Star, Pin, Copy, Pencil, Trash2, Loader2, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils/utils';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useItemActions } from '@/hooks/useItemActions/useItemActions';
 import { deleteItemAction } from '@/actions';
+import { extractR2Key } from '@/lib/r2';
 import type { ItemWithDetails } from '@/types/db';
 
 interface DrawerActionsProps {
@@ -69,6 +70,20 @@ export function DrawerActions({
       toast.error('Failed to delete item');
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const typeName = item.itemType.name.toLowerCase();
+  const isFileOrImage = typeName === 'file' || typeName === 'image';
+  const hasFile = isFileOrImage && !!item.fileUrl;
+
+  const handleDownload = () => {
+    if (!item.fileUrl) return;
+    const key = extractR2Key(item.fileUrl);
+    if (key) {
+      window.open(`/api/download?key=${encodeURIComponent(key)}`, '_blank');
+    } else {
+      window.open(item.fileUrl, '_blank');
     }
   };
 
@@ -150,6 +165,18 @@ export function DrawerActions({
             <Copy className='size-4' />
             <span className='text-xs text-muted-foreground'>Copy</span>
           </Button>
+          {isFileOrImage && hasFile && (
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={handleDownload}
+              className='cursor-pointer'
+              aria-label='Download file'
+            >
+              <Download className='size-4' />
+              <span className='text-xs text-muted-foreground'>Download</span>
+            </Button>
+          )}
         </div>
         <div className='flex items-center gap-2'>
           <Button

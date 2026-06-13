@@ -1,5 +1,5 @@
-import { Tag, Info, ExternalLink } from 'lucide-react';
-import { formatDaysAgo } from '@/lib/utils/utils';
+import { Tag, Info, ExternalLink, FileText } from 'lucide-react';
+import { formatDaysAgo, formatFileSize } from '@/lib/utils/utils';
 import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
 import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
 import type { ItemWithDetails } from '@/types/db';
@@ -10,8 +10,37 @@ interface DrawerContentProps {
 }
 
 export function DrawerContent({ item }: DrawerContentProps) {
+  const isFileOrImage = item.itemType.name.toLowerCase() === 'file' || item.itemType.name.toLowerCase() === 'image';
+  const isImage = item.itemType.name.toLowerCase() === 'image';
+
   return (
     <div className='space-y-4 py-6'>
+      {isFileOrImage && item.fileUrl && (
+        <div className='space-y-1.5'>
+          {isImage ? (
+            <div className='rounded-lg overflow-hidden border'>
+              <img
+                src={item.fileUrl}
+                alt={item.fileName || item.title}
+                className='w-full h-auto max-h-[300px] object-contain'
+              />
+            </div>
+          ) : (
+            <div className='flex items-center gap-3 rounded-lg border p-4'>
+              <FileText className='h-10 w-10 shrink-0 text-muted-foreground' />
+              <div className='flex-1 min-w-0'>
+                <p className='text-sm font-medium truncate'>{item.fileName || item.title}</p>
+                {item.fileSize != null && (
+                  <p className='text-xs text-muted-foreground'>
+                    {formatFileSize(item.fileSize)}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {item.description && (
         <div className='space-y-1.5'>
           <div className='text-xs font-medium text-muted-foreground'>

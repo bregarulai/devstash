@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma/prisma';
 import { DEFAULT_RECENT_LIMIT } from '@/lib/db/constants/constants';
+import { deleteFromR2, extractR2Key } from '@/lib/r2';
 import type { ItemWithDetails, SystemItemType, ItemEditValues, ItemCreateValues } from '@/types/db';
 
 export async function createItem(
@@ -19,9 +20,12 @@ export async function createItem(
     data: {
       title: data.title,
       description: data.description ?? null,
-      contentType: data.itemType === 'link' ? 'URL' : 'TEXT',
-      content: data.itemType !== 'link' ? (data.content ?? null) : null,
+      contentType: data.itemType === 'link' ? 'URL' : data.itemType === 'file' || data.itemType === 'image' ? 'FILE' : 'TEXT',
+      content: !['link', 'file', 'image'].includes(data.itemType) ? (data.content ?? null) : null,
       url: data.itemType === 'link' ? (data.url ?? null) : null,
+      fileUrl: (data.itemType === 'file' || data.itemType === 'image') ? (data.fileUrl ?? null) : null,
+      fileName: (data.itemType === 'file' || data.itemType === 'image') ? (data.fileName ?? null) : null,
+      fileSize: (data.itemType === 'file' || data.itemType === 'image') ? (data.fileSize ?? null) : null,
       language: data.language ?? null,
       userId,
       itemTypeId: itemType.id,
@@ -55,6 +59,9 @@ export async function createItem(
     description: item.description,
     contentType: item.contentType,
     content: item.content,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     url: item.url,
     language: item.language,
     isFavorite: item.isFavorite,
@@ -70,6 +77,18 @@ export async function deleteItem(
   itemId: string,
   userId: string,
 ): Promise<boolean> {
+  const item = await prisma.item.findUnique({
+    where: { id: itemId, userId },
+    select: { fileUrl: true },
+  });
+
+  if (item?.fileUrl) {
+    const r2Key = extractR2Key(item.fileUrl);
+    if (r2Key) {
+      await deleteFromR2(r2Key).catch(console.error);
+    }
+  }
+
   await prisma.item.delete({
     where: { id: itemId, userId },
   });
@@ -85,6 +104,9 @@ export function mapItemToDetails(item: ItemWithDetails): ItemWithDetails {
     description: item.description,
     contentType: item.contentType,
     content: item.content,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     url: item.url,
     language: item.language,
     isFavorite: item.isFavorite,
@@ -423,6 +445,9 @@ export async function updateItem(
     description: item.description,
     contentType: item.contentType,
     content: item.content,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     url: item.url,
     language: item.language,
     isFavorite: item.isFavorite,

@@ -118,10 +118,13 @@ export type ItemEditValues = z.infer<typeof itemEditSchema>;
 export const itemCreateSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255).trim(),
   description: z.string().or(z.null()).optional(),
-  itemType: z.enum(['snippet', 'prompt', 'command', 'note', 'link']),
+  itemType: z.enum(['snippet', 'prompt', 'command', 'note', 'link', 'file', 'image']),
   content: z.string().or(z.null()).optional(),
   language: z.string().or(z.null()).optional(),
   url: z.string().url('Must be a valid URL').or(z.literal('')).or(z.null()).optional(),
+  fileUrl: z.string().or(z.null()).optional(),
+  fileName: z.string().or(z.null()).optional(),
+  fileSize: z.number().int().or(z.null()).optional(),
   tags: z.array(z.string().trim().min(1)).optional(),
 }).refine(
   (data) => {
@@ -133,7 +136,15 @@ export const itemCreateSchema = z.object({
   { message: 'URL is required for link type', path: ['url'] },
 ).refine(
   (data) => {
-    if (data.itemType !== 'link') {
+    if (data.itemType === 'file' || data.itemType === 'image') {
+      return !!data.fileName && data.fileName.trim().length > 0;
+    }
+    return true;
+  },
+  { message: 'File is required for file/image type', path: ['fileUrl'] },
+).refine(
+  (data) => {
+    if (!['link', 'file', 'image'].includes(data.itemType)) {
       return !!data.content && data.content.trim().length > 0;
     }
     return true;
@@ -142,6 +153,7 @@ export const itemCreateSchema = z.object({
 );
 
 export type ItemCreateValues = z.infer<typeof itemCreateSchema>;
+export type ItemType = ItemCreateValues['itemType'];
 
 // ── Collection ────────────────────────────────────────────────────────────────
 
@@ -278,6 +290,9 @@ export const itemWithDetailsSchema = z.object({
   description: z.string().or(z.null()),
   contentType: z.nativeEnum(ContentType),
   content: z.string().or(z.null()),
+  fileUrl: z.string().or(z.null()),
+  fileName: z.string().or(z.null()),
+  fileSize: z.number().int().or(z.null()),
   url: z.string().url().or(z.literal('')).or(z.null()),
   language: z.string().or(z.null()),
   isFavorite: z.boolean(),

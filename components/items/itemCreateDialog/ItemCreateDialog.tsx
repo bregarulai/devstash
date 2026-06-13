@@ -1,11 +1,7 @@
 'use client';
 
-import { useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import { useForm, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
-import { Plus, Code, Sparkles, Terminal, StickyNote, Link } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -23,73 +19,41 @@ import {
   DialogTrigger,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
-import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
-import { itemCreateSchema, type ItemCreateValues } from '@/types/db';
-import { createItemAction } from '@/actions';
-import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES } from '@/lib/constants';
+import { FileUpload } from '@/components/fileUpload/FileUpload/FileUpload';
+import { ItemTypeSelector } from './ItemTypeSelector';
+import { ContentTypeField } from './ContentTypeField';
+import { UploadProgressIndicator } from './UploadProgressIndicator';
+import { useItemCreateForm } from '@/hooks/useItemCreateForm/useItemCreateForm';
+import {
+  SHOW_CONTENT,
+  SHOW_URL,
+  SHOW_FILE_UPLOAD,
+  SHOW_LANGUAGE,
+  IMAGE_ACCEPT,
+  FILE_ACCEPT,
+  IMAGE_MAX_SIZE,
+  FILE_MAX_SIZE,
+} from '@/lib/constants';
 
-const ITEM_TYPES = [
-  { value: 'snippet' as const, label: 'Snippet', icon: Code },
-  { value: 'prompt' as const, label: 'Prompt', icon: Sparkles },
-  { value: 'command' as const, label: 'Command', icon: Terminal },
-  { value: 'note' as const, label: 'Note', icon: StickyNote },
-  { value: 'link' as const, label: 'Link', icon: Link },
-] as const;
-
-const SHOW_CONTENT = ['snippet', 'prompt', 'command', 'note'];
-const SHOW_LANGUAGE = ['snippet', 'command'];
-const SHOW_URL = ['link'];
 export function ItemCreateDialog() {
-  const [open, setOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-
   const {
+    open,
+    setOpen,
+    isPending,
+    isUploading,
+    uploadProgress,
     register,
-    handleSubmit,
-    control,
-    reset,
+    errors,
+    selectedType,
+    contentValue,
+    languageValue,
     setValue,
-    formState: { errors },
-  } = useForm<ItemCreateValues>({
-    resolver: zodResolver(itemCreateSchema),
-    mode: 'onChange',
-    defaultValues: {
-      title: '',
-      description: '',
-      itemType: 'snippet',
-      content: '',
-      language: '',
-      url: '',
-      tags: [],
-    },
-  });
-
-  const selectedType = useWatch({ control, name: 'itemType' });
-  const contentValue = useWatch({ control, name: 'content' });
-  const languageValue = useWatch({ control, name: 'language' });
-
-  const onSubmit = handleSubmit((data) => {
-    startTransition(async () => {
-      const result = await createItemAction(data);
-      if (result.success) {
-        toast.success('Item created successfully');
-        setOpen(false);
-        reset();
-        router.refresh();
-      } else {
-        toast.error(result.error);
-      }
-    });
-  });
-
-  function handleOpenChange(nextOpen: boolean) {
-    setOpen(nextOpen);
-    if (!nextOpen) {
-      reset();
-    }
-  }
+    onSubmit,
+    handleOpenChange,
+    handleItemTypeSelect,
+    handleFileSelect,
+    handleTagsChange,
+  } = useItemCreateForm();
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -113,31 +77,10 @@ export function ItemCreateDialog() {
           <Field data-invalid={errors.itemType ? 'true' : undefined}>
             <FieldLabel htmlFor='itemType'>Type</FieldLabel>
             <FieldContent>
-              <div className='flex flex-wrap gap-2'>
-                {ITEM_TYPES.map((type) => {
-                  const Icon = type.icon;
-                  return (
-                    <button
-                      key={type.value}
-                      type='button'
-                      onClick={() => {
-                        reset((prev) => ({
-                          ...prev,
-                          itemType: type.value,
-                        }));
-                      }}
-                      className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors ${
-                        selectedType === type.value
-                          ? 'border-primary bg-primary text-primary-foreground'
-                          : 'border-border bg-background text-muted-foreground hover:bg-muted'
-                      }`}
-                    >
-                      <Icon className='h-4 w-4' />
-                      {type.label}
-                    </button>
-                  );
-                })}
-              </div>
+              <ItemTypeSelector
+                selectedType={selectedType}
+                onSelect={handleItemTypeSelect}
+              />
               {errors.itemType && (
                 <FieldError>{errors.itemType.message}</FieldError>
               )}
@@ -174,32 +117,39 @@ export function ItemCreateDialog() {
             </FieldContent>
           </Field>
 
+          {SHOW_FILE_UPLOAD.includes(selectedType) && (
+            <Field data-invalid={errors.fileUrl ? 'true' : undefined}>
+              <FieldLabel>
+                {selectedType === 'image' ? 'Image' : 'File'} <span className='text-destructive'>*</span>
+              </FieldLabel>
+              <FieldContent>
+                <FileUpload
+                  accept={selectedType === 'image' ? IMAGE_ACCEPT : FILE_ACCEPT}
+                  maxSize={selectedType === 'image' ? IMAGE_MAX_SIZE : FILE_MAX_SIZE}
+                  fileType={selectedType === 'image' ? 'image' : 'file'}
+                  onFileSelect={handleFileSelect}
+                  onError={(err) => toast.error(err)}
+                />
+                {errors.fileUrl && (
+                  <FieldError>{errors.fileUrl.message}</FieldError>
+                )}
+              </FieldContent>
+            </Field>
+          )}
+
           {SHOW_CONTENT.includes(selectedType) && (
             <Field data-invalid={errors.content ? 'true' : undefined}>
               <FieldLabel htmlFor='content'>
                 Content <span className='text-destructive'>*</span>
               </FieldLabel>
               <FieldContent>
-                {CODE_EDITOR_TYPES.includes(selectedType) ? (
-                  <CodeEditor
-                    value={contentValue || ''}
-                    onChange={(v) => setValue('content', v, { shouldValidate: true })}
-                    language={languageValue || 'plaintext'}
-                  />
-                ) : MARKDOWN_EDITOR_TYPES.includes(selectedType) ? (
-                  <MarkdownEditor
-                    value={contentValue || ''}
-                    onChange={(v) => setValue('content', v, { shouldValidate: true })}
-                  />
-                ) : (
-                  <Textarea
-                    id='content'
-                    {...register('content')}
-                    placeholder='Content'
-                    rows={4}
-                    className='resize-none font-mono text-sm'
-                  />
-                )}
+                <ContentTypeField
+                  selectedType={selectedType}
+                  contentValue={contentValue || ''}
+                  languageValue={languageValue || ''}
+                  register={register}
+                  setValue={setValue}
+                />
                 {errors.content && (
                   <FieldError>{errors.content.message}</FieldError>
                 )}
@@ -245,17 +195,15 @@ export function ItemCreateDialog() {
               <Input
                 id='tags'
                 placeholder='Comma-separated tags'
-                onChange={(e) => {
-                  const tags = e.target.value
-                    .split(',')
-                    .map((t) => t.trim())
-                    .filter(Boolean);
-                  reset((prev) => ({ ...prev, tags }));
-                }}
+                onChange={(e) => handleTagsChange(e.target.value)}
               />
               {errors.tags && <FieldError>{errors.tags.message}</FieldError>}
             </FieldContent>
           </Field>
+
+          {isUploading && (
+            <UploadProgressIndicator progress={uploadProgress} />
+          )}
 
           <div className='flex justify-end gap-2 pt-2'>
             <Button
@@ -267,7 +215,7 @@ export function ItemCreateDialog() {
               Cancel
             </Button>
             <Button type='submit' disabled={isPending}>
-              {isPending ? 'Creating...' : 'Create Item'}
+              {isUploading ? 'Uploading...' : isPending ? 'Creating...' : 'Create Item'}
             </Button>
           </div>
         </form>

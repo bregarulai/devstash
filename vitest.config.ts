@@ -28,6 +28,8 @@ export default defineConfig({
         'lib/constants.ts',
         'lib/db/collections.ts',
         'lib/db/items.ts',
+        'lib/r2.ts',
+        'lib/fileValidation.ts',
         'types/db.ts',
         'actions/auth.ts',
         'actions/sign-in.ts',

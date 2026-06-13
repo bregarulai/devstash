@@ -44,6 +44,12 @@ export function formatDaysAgo(date: Date | string): string {
   return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
 }
 
+export function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export function getInitials(name: string | null, email: string): string {
   if (name) {
     const parts = name.trim().split(/\s+/);

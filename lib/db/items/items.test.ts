@@ -3,6 +3,7 @@ import type { ItemWithDetails } from '@/types/db'
 
 const mockPrismaItemCount = vi.fn()
 const mockPrismaItemFindMany = vi.fn()
+const mockPrismaItemFindUnique = vi.fn()
 const mockPrismaItemUpdate = vi.fn()
 const mockPrismaItemDelete = vi.fn()
 const mockPrismaItemCreate = vi.fn()
@@ -16,6 +17,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
     item: {
       count: (...args: unknown[]) => mockPrismaItemCount(...args),
       findMany: (...args: unknown[]) => mockPrismaItemFindMany(...args),
+      findUnique: (...args: unknown[]) => mockPrismaItemFindUnique(...args),
       create: (...args: unknown[]) => mockPrismaItemCreate(...args),
       update: (...args: unknown[]) => mockPrismaItemUpdate(...args),
       delete: (...args: unknown[]) => mockPrismaItemDelete(...args),
@@ -718,18 +720,24 @@ describe('deleteItem', () => {
   })
 
   it('deletes item and returns true', async () => {
+    mockPrismaItemFindUnique.mockResolvedValue({ fileUrl: null })
     mockPrismaItemDelete.mockResolvedValue({ id: 'item-1' })
 
     const { deleteItem } = await import('./items')
     const result = await deleteItem('item-1', 'user-1')
 
     expect(result).toBe(true)
+    expect(mockPrismaItemFindUnique).toHaveBeenCalledWith({
+      where: { id: 'item-1', userId: 'user-1' },
+      select: { fileUrl: true },
+    })
     expect(mockPrismaItemDelete).toHaveBeenCalledWith({
       where: { id: 'item-1', userId: 'user-1' },
     })
   })
 
   it('throws when item not found', async () => {
+    mockPrismaItemFindUnique.mockResolvedValue(null)
     mockPrismaItemDelete.mockRejectedValue(
       new Error('Record to delete not found')
     )
@@ -742,6 +750,7 @@ describe('deleteItem', () => {
   })
 
   it('throws when item belongs to different user', async () => {
+    mockPrismaItemFindUnique.mockResolvedValue(null)
     mockPrismaItemDelete.mockRejectedValue(
       new Error('Record to delete not found')
     )
@@ -754,6 +763,7 @@ describe('deleteItem', () => {
   })
 
   it('throws on database connection error', async () => {
+    mockPrismaItemFindUnique.mockResolvedValue({ fileUrl: null })
     mockPrismaItemDelete.mockRejectedValue(new Error('Connection failed'))
 
     const { deleteItem } = await import('./items')
@@ -813,6 +823,9 @@ describe('createItem', () => {
         contentType: 'TEXT',
         content: 'const x = 1',
         url: null,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
         language: 'typescript',
         userId: 'user-1',
         itemTypeId: 'type-1',
