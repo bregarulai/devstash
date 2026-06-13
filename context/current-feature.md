@@ -1,31 +1,16 @@
-# Current Feature: Item Create
-
-**Spec**: `context/features/item-create-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add "New Item" button in top bar that opens a modal dialog
-- Implement type selector (snippet, prompt, command, note, link)
-- Show fields based on selected type:
-  - All types: title (required), description, tags
-  - snippet/command: content, language
-  - prompt/note: content
-  - link: URL (required)
-- Implement server action `createItem` with Zod validation
-- Implement query function `createItem` in `lib/db/items.ts`
-- Show toast on success, close modal and refresh
+<!-- What does success look like? -->
 
 ## Notes
 
-- Use shadcn Dialog component for the modal
-- Type selector determines which fields are shown
-- Title is required for all types
-- URL is required only for link type
-- Language field only shown for snippet and command types
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -128,3 +113,5 @@ In Progress
 - **Item Edit Persistence Fix (Completed)** - Added revalidatePath calls to updateItemAction and PATCH endpoint to fix stale cache issue where edits didn't persist after page refresh, added unit tests for revalidatePath behavior
 
 - **Item Delete (Completed)** - Implemented item delete with AlertDialog confirmation, server action with auth/ownership validation, and toast notifications
+
+- **Item Create (Completed)** - Implemented item create dialog with type selector, dynamic fields based on type, server action with Zod validation, and database query function
