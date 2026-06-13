@@ -2,8 +2,37 @@
 
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
-import { itemEditSchema, type ItemEditValues, type ItemWithDetails } from '@/types/db';
-import { updateItem, deleteItem } from '@/lib/db/items/items';
+import { itemEditSchema, itemCreateSchema, type ItemEditValues, type ItemCreateValues, type ItemWithDetails } from '@/types/db';
+import { updateItem, deleteItem, createItem } from '@/lib/db/items/items';
+
+type CreateItemResult =
+  | { success: true; data: ItemWithDetails; error: null }
+  | { success: false; data: null; error: string };
+
+export async function createItemAction(
+  data: ItemCreateValues,
+): Promise<CreateItemResult> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, data: null, error: 'Unauthorized' };
+  }
+  const result = itemCreateSchema.safeParse(data);
+  if (!result.success) {
+    const firstError = result.error.issues[0]?.message ?? 'Invalid input';
+    return { success: false, data: null, error: firstError };
+  }
+  try {
+    const created = await createItem(session.user.id, result.data);
+    revalidatePath('/dashboard');
+    return { success: true, data: created, error: null };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: error instanceof Error ? error.message : 'Failed to create item',
+    };
+  }
+}
 
 type UpdateItemResult =
   | { success: true; data: ItemWithDetails; error: null }

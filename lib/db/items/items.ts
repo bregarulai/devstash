@@ -1,6 +1,70 @@
 import { prisma } from '@/lib/prisma/prisma';
 import { DEFAULT_RECENT_LIMIT } from '@/lib/db/constants/constants';
-import type { ItemWithDetails, SystemItemType, ItemEditValues } from '@/types/db';
+import type { ItemWithDetails, SystemItemType, ItemEditValues, ItemCreateValues } from '@/types/db';
+
+export async function createItem(
+  userId: string,
+  data: ItemCreateValues,
+): Promise<ItemWithDetails> {
+  const itemType = await prisma.itemType.findFirst({
+    where: { name: data.itemType, isSystem: true },
+  });
+  if (!itemType) {
+    throw new Error(`Item type "${data.itemType}" not found`);
+  }
+
+  const tagNames = data.tags ?? [];
+
+  const item = await prisma.item.create({
+    data: {
+      title: data.title,
+      description: data.description ?? null,
+      contentType: data.itemType === 'link' ? 'URL' : 'TEXT',
+      content: data.itemType !== 'link' ? (data.content ?? null) : null,
+      url: data.itemType === 'link' ? (data.url ?? null) : null,
+      language: data.language ?? null,
+      userId,
+      itemTypeId: itemType.id,
+      tags: {
+        connectOrCreate: tagNames.map((name) => ({
+          where: { name },
+          create: { name },
+        })),
+      },
+    },
+    include: {
+      itemType: {
+        select: {
+          name: true,
+          icon: true,
+          color: true,
+        },
+      },
+      tags: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    contentType: item.contentType,
+    content: item.content,
+    url: item.url,
+    language: item.language,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    itemType: item.itemType,
+    tags: item.tags,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  };
+}
 
 export async function deleteItem(
   itemId: string,

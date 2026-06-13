@@ -115,6 +115,34 @@ export type ItemSelect = z.infer<typeof itemSelectSchema>;
 export type ItemUpdate = z.infer<typeof itemUpdateSchema>;
 export type ItemEditValues = z.infer<typeof itemEditSchema>;
 
+export const itemCreateSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(255).trim(),
+  description: z.string().or(z.null()).optional(),
+  itemType: z.enum(['snippet', 'prompt', 'command', 'note', 'link']),
+  content: z.string().or(z.null()).optional(),
+  language: z.string().or(z.null()).optional(),
+  url: z.string().url('Must be a valid URL').or(z.literal('')).or(z.null()).optional(),
+  tags: z.array(z.string().trim().min(1)).optional(),
+}).refine(
+  (data) => {
+    if (data.itemType === 'link') {
+      return !!data.url && data.url.trim().length > 0;
+    }
+    return true;
+  },
+  { message: 'URL is required for link type', path: ['url'] },
+).refine(
+  (data) => {
+    if (data.itemType !== 'link') {
+      return !!data.content && data.content.trim().length > 0;
+    }
+    return true;
+  },
+  { message: 'Content is required', path: ['content'] },
+);
+
+export type ItemCreateValues = z.infer<typeof itemCreateSchema>;
+
 // ── Collection ────────────────────────────────────────────────────────────────
 
 export const collectionInsertSchema = z.object({

@@ -1,7 +1,7 @@
 'use client';
 
 import { useTransition, useState, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -20,11 +20,10 @@ import {
 } from '@/types/db';
 
 interface RegisterFormProps {
-  error?: string;
   defaultValues?: Partial<RegisterFormData>;
 }
 
-export function RegisterForm({ error: _error, defaultValues }: RegisterFormProps) {
+export function RegisterForm({ defaultValues }: RegisterFormProps) {
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -32,7 +31,7 @@ export function RegisterForm({ error: _error, defaultValues }: RegisterFormProps
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -45,8 +44,8 @@ export function RegisterForm({ error: _error, defaultValues }: RegisterFormProps
     },
   });
 
-  const password = watch('password');
-  const confirmPassword = watch('confirmPassword');
+  const password = useWatch({ control, name: 'password' });
+  const confirmPassword = useWatch({ control, name: 'confirmPassword' });
 
   const passwordMet = useMemo(() => {
     return passwordRequirements.map((req) => ({

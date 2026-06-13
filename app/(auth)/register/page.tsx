@@ -39,7 +39,7 @@ export default async function RegisterPage({
             </div>
           )}
 
-          <RegisterForm error={error} defaultValues={success ? { name: '', email: '' } : undefined} />
+          <RegisterForm defaultValues={success ? { name: '', email: '' } : undefined} />
 
           <p className='text-center text-sm text-muted-foreground'>
             Already have an account?{' '}

@@ -1,16 +1,31 @@
-# Current Feature
+# Current Feature: Item Create
+
+**Spec**: `context/features/item-create-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Add "New Item" button in top bar that opens a modal dialog
+- Implement type selector (snippet, prompt, command, note, link)
+- Show fields based on selected type:
+  - All types: title (required), description, tags
+  - snippet/command: content, language
+  - prompt/note: content
+  - link: URL (required)
+- Implement server action `createItem` with Zod validation
+- Implement query function `createItem` in `lib/db/items.ts`
+- Show toast on success, close modal and refresh
 
 ## Notes
 
-<!-- Any constraints or context? -->
+- Use shadcn Dialog component for the modal
+- Type selector determines which fields are shown
+- Title is required for all types
+- URL is required only for link type
+- Language field only shown for snippet and command types
 
 ## History
 

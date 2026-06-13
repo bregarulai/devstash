@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { FolderDown, Plus } from 'lucide-react';
+import { FolderDown } from 'lucide-react';
 import { SearchBar } from '../searchBar/SearchBar';
 import { Separator } from '@/components/ui/separator';
+import { ItemCreateDialog } from '@/components/items/itemCreateDialog/ItemCreateDialog';
 
 export function MobileSideBar() {
   return (
@@ -15,10 +16,7 @@ export function MobileSideBar() {
             <FolderDown className='mr-2 h-4 w-4' />
             New Collection
           </Button>
-          <Button size='sm'>
-            <Plus className='mr-2 h-4 w-4' />
-            New Item
-          </Button>
+          <ItemCreateDialog />
         </div>
       </header>
       <Separator />

@@ -5,8 +5,10 @@ const mockPrismaItemCount = vi.fn()
 const mockPrismaItemFindMany = vi.fn()
 const mockPrismaItemUpdate = vi.fn()
 const mockPrismaItemDelete = vi.fn()
+const mockPrismaItemCreate = vi.fn()
 const mockPrismaCollectionCount = vi.fn()
 const mockPrismaItemTypeFindMany = vi.fn()
+const mockPrismaItemTypeFindFirst = vi.fn()
 const mockPrismaItemGroupBy = vi.fn()
 
 vi.mock('@/lib/prisma/prisma', () => ({
@@ -14,6 +16,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
     item: {
       count: (...args: unknown[]) => mockPrismaItemCount(...args),
       findMany: (...args: unknown[]) => mockPrismaItemFindMany(...args),
+      create: (...args: unknown[]) => mockPrismaItemCreate(...args),
       update: (...args: unknown[]) => mockPrismaItemUpdate(...args),
       delete: (...args: unknown[]) => mockPrismaItemDelete(...args),
       groupBy: (...args: unknown[]) => mockPrismaItemGroupBy(...args),
@@ -23,6 +26,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
     },
     itemType: {
       findMany: (...args: unknown[]) => mockPrismaItemTypeFindMany(...args),
+      findFirst: (...args: unknown[]) => mockPrismaItemTypeFindFirst(...args),
     },
   },
 }))
@@ -757,5 +761,273 @@ describe('deleteItem', () => {
     await expect(deleteItem('item-1', 'user-1')).rejects.toThrow(
       'Connection failed'
     )
+  })
+})
+
+describe('createItem', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('creates snippet item with content and language', async () => {
+    mockPrismaItemTypeFindFirst.mockResolvedValue({
+      id: 'type-1',
+      name: 'snippet',
+      isSystem: true,
+    })
+    mockPrismaItemCreate.mockResolvedValue({
+      id: 'item-1',
+      title: 'Test Snippet',
+      description: 'A test snippet',
+      contentType: 'TEXT',
+      content: 'const x = 1',
+      url: null,
+      language: 'typescript',
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'snippet', icon: '📝', color: '#ff0000' },
+      tags: [{ id: 'tag-1', name: 'test' }],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    const { createItem } = await import('./items')
+    const result = await createItem('user-1', {
+      title: 'Test Snippet',
+      description: 'A test snippet',
+      itemType: 'snippet',
+      content: 'const x = 1',
+      language: 'typescript',
+      tags: ['test'],
+    })
+
+    expect(result.id).toBe('item-1')
+    expect(result.title).toBe('Test Snippet')
+    expect(result.contentType).toBe('TEXT')
+    expect(result.content).toBe('const x = 1')
+    expect(result.language).toBe('typescript')
+    expect(mockPrismaItemCreate).toHaveBeenCalledWith({
+      data: {
+        title: 'Test Snippet',
+        description: 'A test snippet',
+        contentType: 'TEXT',
+        content: 'const x = 1',
+        url: null,
+        language: 'typescript',
+        userId: 'user-1',
+        itemTypeId: 'type-1',
+        tags: {
+          connectOrCreate: [
+            { where: { name: 'test' }, create: { name: 'test' } },
+          ],
+        },
+      },
+      include: {
+        itemType: { select: { name: true, icon: true, color: true } },
+        tags: { select: { id: true, name: true } },
+      },
+    })
+  })
+
+  it('creates link item with URL and no content', async () => {
+    mockPrismaItemTypeFindFirst.mockResolvedValue({
+      id: 'type-5',
+      name: 'link',
+      isSystem: true,
+    })
+    mockPrismaItemCreate.mockResolvedValue({
+      id: 'item-2',
+      title: 'Test Link',
+      description: null,
+      contentType: 'URL',
+      content: null,
+      url: 'https://example.com',
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'link', icon: '🔗', color: '#00ff00' },
+      tags: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    const { createItem } = await import('./items')
+    const result = await createItem('user-1', {
+      title: 'Test Link',
+      itemType: 'link',
+      url: 'https://example.com',
+    })
+
+    expect(result.contentType).toBe('URL')
+    expect(result.url).toBe('https://example.com')
+    expect(result.content).toBeNull()
+    expect(mockPrismaItemCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          contentType: 'URL',
+          content: null,
+          url: 'https://example.com',
+        }),
+      })
+    )
+  })
+
+  it('creates note item with content and no language', async () => {
+    mockPrismaItemTypeFindFirst.mockResolvedValue({
+      id: 'type-4',
+      name: 'note',
+      isSystem: true,
+    })
+    mockPrismaItemCreate.mockResolvedValue({
+      id: 'item-3',
+      title: 'Test Note',
+      description: null,
+      contentType: 'TEXT',
+      content: 'My note content',
+      url: null,
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'note', icon: '📋', color: '#0000ff' },
+      tags: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    const { createItem } = await import('./items')
+    const result = await createItem('user-1', {
+      title: 'Test Note',
+      itemType: 'note',
+      content: 'My note content',
+    })
+
+    expect(result.contentType).toBe('TEXT')
+    expect(result.content).toBe('My note content')
+    expect(result.language).toBeNull()
+  })
+
+  it('throws when item type not found', async () => {
+    mockPrismaItemTypeFindFirst.mockResolvedValue(null)
+
+    const { createItem } = await import('./items')
+
+    await expect(
+      createItem('user-1', {
+        title: 'Test',
+        // @ts-expect-error - testing invalid itemType for error handling
+        itemType: 'invalid',
+      })
+    ).rejects.toThrow('Item type "invalid" not found')
+  })
+
+  it('handles multiple tags', async () => {
+    mockPrismaItemTypeFindFirst.mockResolvedValue({
+      id: 'type-1',
+      name: 'snippet',
+      isSystem: true,
+    })
+    mockPrismaItemCreate.mockResolvedValue({
+      id: 'item-4',
+      title: 'Multi Tag',
+      description: null,
+      contentType: 'TEXT',
+      content: 'code',
+      url: null,
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'snippet', icon: '📝', color: '#ff0000' },
+      tags: [
+        { id: 'tag-1', name: 'tag1' },
+        { id: 'tag-2', name: 'tag2' },
+        { id: 'tag-3', name: 'tag3' },
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    const { createItem } = await import('./items')
+    const result = await createItem('user-1', {
+      title: 'Multi Tag',
+      itemType: 'snippet',
+      content: 'code',
+      tags: ['tag1', 'tag2', 'tag3'],
+    })
+
+    expect(result.tags).toHaveLength(3)
+    expect(mockPrismaItemCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          tags: {
+            connectOrCreate: [
+              { where: { name: 'tag1' }, create: { name: 'tag1' } },
+              { where: { name: 'tag2' }, create: { name: 'tag2' } },
+              { where: { name: 'tag3' }, create: { name: 'tag3' } },
+            ],
+          },
+        }),
+      })
+    )
+  })
+
+  it('handles empty tags array', async () => {
+    mockPrismaItemTypeFindFirst.mockResolvedValue({
+      id: 'type-1',
+      name: 'snippet',
+      isSystem: true,
+    })
+    mockPrismaItemCreate.mockResolvedValue({
+      id: 'item-5',
+      title: 'No Tags',
+      description: null,
+      contentType: 'TEXT',
+      content: 'code',
+      url: null,
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'snippet', icon: '📝', color: '#ff0000' },
+      tags: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    const { createItem } = await import('./items')
+    const result = await createItem('user-1', {
+      title: 'No Tags',
+      itemType: 'snippet',
+      content: 'code',
+      tags: [],
+    })
+
+    expect(result.tags).toEqual([])
+    expect(mockPrismaItemCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          tags: {
+            connectOrCreate: [],
+          },
+        }),
+      })
+    )
+  })
+
+  it('throws on database error', async () => {
+    mockPrismaItemTypeFindFirst.mockResolvedValue({
+      id: 'type-1',
+      name: 'snippet',
+      isSystem: true,
+    })
+    mockPrismaItemCreate.mockRejectedValue(new Error('Database connection failed'))
+
+    const { createItem } = await import('./items')
+
+    await expect(
+      createItem('user-1', {
+        title: 'Test',
+        itemType: 'snippet',
+        content: 'code',
+      })
+    ).rejects.toThrow('Database connection failed')
   })
 })
