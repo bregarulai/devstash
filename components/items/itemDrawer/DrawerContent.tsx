@@ -1,6 +1,8 @@
 import { Tag, Info, ExternalLink } from 'lucide-react';
 import { formatDaysAgo } from '@/lib/utils/utils';
+import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
 import type { ItemWithDetails } from '@/types/db';
+import { CODE_EDITOR_TYPES } from '@/lib/constants';
 
 interface DrawerContentProps {
   item: ItemWithDetails;
@@ -23,11 +25,19 @@ export function DrawerContent({ item }: DrawerContentProps) {
           <div className='text-xs font-medium text-muted-foreground'>
             Content
           </div>
-          <div className='rounded-lg bg-muted/50 p-4'>
-            <pre className='overflow-x-auto text-sm text-foreground'>
-              <code>{item.content}</code>
-            </pre>
-          </div>
+          {CODE_EDITOR_TYPES.includes(item.itemType.name.toLowerCase()) ? (
+            <CodeEditor
+              value={item.content}
+              language={item.language || 'plaintext'}
+              readOnly
+            />
+          ) : (
+            <div className='rounded-lg bg-muted/50 p-4'>
+              <pre className='overflow-x-auto text-sm text-foreground'>
+                <code>{item.content}</code>
+              </pre>
+            </div>
+          )}
         </div>
       )}
 

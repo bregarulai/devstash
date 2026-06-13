@@ -6,7 +6,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Info } from 'lucide-react';
 import { formatDaysAgo } from '@/lib/utils/utils';
+import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
 import type { ItemWithDetails } from '@/types/db';
+import { CODE_EDITOR_TYPES } from '@/lib/constants';
 
 const EDITABLE_CONTENT_TYPES = ['snippet', 'prompt', 'command', 'note'];
 const EDITABLE_LANGUAGE_TYPES = ['snippet', 'command'];
@@ -41,6 +43,7 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
     const showContent = EDITABLE_CONTENT_TYPES.includes(typeName);
     const showLanguage = EDITABLE_LANGUAGE_TYPES.includes(typeName);
     const showUrl = EDITABLE_URL_TYPES.includes(typeName);
+    const showCodeEditor = CODE_EDITOR_TYPES.includes(typeName);
 
     useEffect(() => {
       onCanSaveChange(title.trim().length > 0);
@@ -99,14 +102,22 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
             <Label htmlFor='edit-content' className='text-xs font-medium text-muted-foreground'>
               Content
             </Label>
-            <Textarea
-              id='edit-content'
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder='Content'
-              rows={4}
-              className='resize-none font-mono text-sm'
-            />
+            {showCodeEditor ? (
+              <CodeEditor
+                value={content}
+                onChange={setContent}
+                language={language || 'plaintext'}
+              />
+            ) : (
+              <Textarea
+                id='edit-content'
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder='Content'
+                rows={4}
+                className='resize-none font-mono text-sm'
+              />
+            )}
           </div>
         )}
 

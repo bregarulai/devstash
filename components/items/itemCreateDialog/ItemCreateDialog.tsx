@@ -23,8 +23,10 @@ import {
   DialogTrigger,
   DialogDescription,
 } from '@/components/ui/dialog';
+import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
 import { itemCreateSchema, type ItemCreateValues } from '@/types/db';
 import { createItemAction } from '@/actions';
+import { CODE_EDITOR_TYPES } from '@/lib/constants';
 
 const ITEM_TYPES = [
   { value: 'snippet' as const, label: 'Snippet', icon: Code },
@@ -37,7 +39,6 @@ const ITEM_TYPES = [
 const SHOW_CONTENT = ['snippet', 'prompt', 'command', 'note'];
 const SHOW_LANGUAGE = ['snippet', 'command'];
 const SHOW_URL = ['link'];
-
 export function ItemCreateDialog() {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -48,6 +49,7 @@ export function ItemCreateDialog() {
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<ItemCreateValues>({
     resolver: zodResolver(itemCreateSchema),
@@ -64,6 +66,8 @@ export function ItemCreateDialog() {
   });
 
   const selectedType = useWatch({ control, name: 'itemType' });
+  const contentValue = useWatch({ control, name: 'content' });
+  const languageValue = useWatch({ control, name: 'language' });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(async () => {
@@ -175,13 +179,21 @@ export function ItemCreateDialog() {
                 Content <span className='text-destructive'>*</span>
               </FieldLabel>
               <FieldContent>
-                <Textarea
-                  id='content'
-                  {...register('content')}
-                  placeholder='Content'
-                  rows={4}
-                  className='resize-none font-mono text-sm'
-                />
+                {CODE_EDITOR_TYPES.includes(selectedType) ? (
+                  <CodeEditor
+                    value={contentValue || ''}
+                    onChange={(v) => setValue('content', v, { shouldValidate: true })}
+                    language={languageValue || 'plaintext'}
+                  />
+                ) : (
+                  <Textarea
+                    id='content'
+                    {...register('content')}
+                    placeholder='Content'
+                    rows={4}
+                    className='resize-none font-mono text-sm'
+                  />
+                )}
                 {errors.content && (
                   <FieldError>{errors.content.message}</FieldError>
                 )}
