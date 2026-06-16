@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const key = searchParams.get('key');
+  const fileName = searchParams.get('fileName');
 
   if (!key) {
     return NextResponse.json({ error: 'Missing key parameter' }, { status: 400 });
@@ -25,7 +26,25 @@ export async function GET(request: NextRequest) {
 
   try {
     const presignedUrl = await getPresignedDownloadUrl(key);
-    return NextResponse.redirect(presignedUrl);
+    const response = await fetch(presignedUrl);
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { error: 'Failed to fetch file' },
+        { status: 500 },
+      );
+    }
+
+    const fallbackName = key.split('/').pop() ?? 'download';
+    const downloadName = fileName || fallbackName;
+
+    return new NextResponse(response.body, {
+      headers: {
+        'Content-Type': response.headers.get('Content-Type') ?? 'application/octet-stream',
+        'Content-Disposition': `attachment; filename="${downloadName}"`,
+        'Content-Length': response.headers.get('Content-Length') ?? '',
+      },
+    });
   } catch (error) {
     console.error('Download failed:', error);
     return NextResponse.json(

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useCallback, useState } from 'react';
+import Image from 'next/image';
 import { FileText, ImageIcon, X } from 'lucide-react';
 import { cn, formatFileSize } from '@/lib/utils/utils';
 
@@ -94,9 +95,12 @@ export function FileUpload({
     return (
       <div className='flex items-center gap-3 rounded-lg border p-3'>
         {preview ? (
-          <img
+          <Image
             src={preview}
             alt='Upload preview'
+            width={64}
+            height={64}
+            unoptimized
             className='h-16 w-16 rounded object-cover'
           />
         ) : (

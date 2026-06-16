@@ -1,15 +1,18 @@
-import { Tag, Info, ExternalLink, FileText } from 'lucide-react';
+import { Tag, Info, ExternalLink, FileText, Download } from 'lucide-react';
+import Image from 'next/image';
 import { formatDaysAgo, formatFileSize } from '@/lib/utils/utils';
 import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
 import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
+import { Button } from '@/components/ui/button';
 import type { ItemWithDetails } from '@/types/db';
 import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES } from '@/lib/constants';
 
 interface DrawerContentProps {
   item: ItemWithDetails;
+  onDownload?: () => void;
 }
 
-export function DrawerContent({ item }: DrawerContentProps) {
+export function DrawerContent({ item, onDownload }: DrawerContentProps) {
   const isFileOrImage = item.itemType.name.toLowerCase() === 'file' || item.itemType.name.toLowerCase() === 'image';
   const isImage = item.itemType.name.toLowerCase() === 'image';
 
@@ -18,12 +21,26 @@ export function DrawerContent({ item }: DrawerContentProps) {
       {isFileOrImage && item.fileUrl && (
         <div className='space-y-1.5'>
           {isImage ? (
-            <div className='rounded-lg overflow-hidden border'>
-              <img
+            <div className='relative rounded-lg overflow-hidden border'>
+              <Image
                 src={item.fileUrl}
                 alt={item.fileName || item.title}
+                width={0}
+                height={0}
+                sizes='100vw'
                 className='w-full h-auto max-h-[300px] object-contain'
               />
+              {onDownload && (
+                <Button
+                  variant='secondary'
+                  size='icon'
+                  onClick={onDownload}
+                  className='absolute top-2 right-2 cursor-pointer'
+                  aria-label='Download image'
+                >
+                  <Download className='size-4' />
+                </Button>
+              )}
             </div>
           ) : (
             <div className='flex items-center gap-3 rounded-lg border p-4'>
@@ -36,6 +53,17 @@ export function DrawerContent({ item }: DrawerContentProps) {
                   </p>
                 )}
               </div>
+              {onDownload && (
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={onDownload}
+                  className='shrink-0 cursor-pointer'
+                  aria-label='Download file'
+                >
+                  <Download className='size-4' />
+                </Button>
+              )}
             </div>
           )}
         </div>

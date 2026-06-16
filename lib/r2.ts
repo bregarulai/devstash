@@ -69,5 +69,11 @@ export function extractR2Key(url: string): string | null {
     const baseUrl = PUBLIC_URL.endsWith('/') ? PUBLIC_URL : `${PUBLIC_URL}/`;
     return url.slice(baseUrl.length);
   }
+  const r2DevMatch = url.match(
+    /https?:\/\/pub-[a-f0-9]+\.r2\.dev\/(.+)$/,
+  );
+  if (r2DevMatch) {
+    return r2DevMatch[1];
+  }
   return null;
 }

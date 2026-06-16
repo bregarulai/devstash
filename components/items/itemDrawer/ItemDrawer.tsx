@@ -12,6 +12,7 @@ import { DrawerError } from './DrawerError';
 import { DrawerContent } from './DrawerContent';
 import { DrawerEditContent, type DrawerEditContentHandle } from './DrawerEditContent';
 import { updateItemAction } from '@/actions';
+import { extractR2Key } from '@/lib/r2';
 
 function ItemDrawerContent() {
   const {
@@ -65,6 +66,18 @@ function ItemDrawerContent() {
     }
   }, [item, updateItem, handleStopEditing, router]);
 
+  const handleDownload = useCallback(() => {
+    if (!item?.fileUrl) return;
+    const key = extractR2Key(item.fileUrl);
+    if (key) {
+      const params = new URLSearchParams({ key });
+      if (item.fileName) params.set('fileName', item.fileName);
+      window.location.href = `/api/download?${params.toString()}`;
+    } else {
+      window.location.href = item.fileUrl;
+    }
+  }, [item]);
+
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && closeDrawer()}>
       <SheetContent
@@ -95,7 +108,7 @@ function ItemDrawerContent() {
           {isLoading && <DrawerSkeleton />}
           {error && <DrawerError message={error} />}
           {!isLoading && !error && item && !isEditing && (
-            <DrawerContent item={item} />
+            <DrawerContent item={item} onDownload={handleDownload} />
           )}
           {!isLoading && !error && item && isEditing && (
             <DrawerEditContent ref={editRef} item={item} onCanSaveChange={setCanSave} />

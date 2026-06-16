@@ -35,4 +35,30 @@ describe('extractR2Key', () => {
     const { extractR2Key } = await import('@/lib/r2')
     expect(extractR2Key('https://pub.example.com/uploads/file.txt')).toBe('uploads/file.txt')
   })
+
+  it('extracts key from r2.dev public URL', async () => {
+    delete process.env.R2_PUBLIC_URL
+    const { extractR2Key } = await import('@/lib/r2')
+    expect(extractR2Key('https://pub-abc123.r2.dev/uploads/user123/file.txt')).toBe(
+      'uploads/user123/file.txt'
+    )
+  })
+
+  it('extracts key from r2.dev URL with hex hash', async () => {
+    delete process.env.R2_PUBLIC_URL
+    const { extractR2Key } = await import('@/lib/r2')
+    expect(extractR2Key('https://pub-a1b2c3d4e5f6.r2.dev/image.png')).toBe('image.png')
+  })
+
+  it('returns null for r2.dev URL without path', async () => {
+    delete process.env.R2_PUBLIC_URL
+    const { extractR2Key } = await import('@/lib/r2')
+    expect(extractR2Key('https://pub-abc123.r2.dev/')).toBeNull()
+  })
+
+  it('uses PUBLIC_URL when URL matches it, ignoring r2.dev pattern', async () => {
+    process.env.R2_PUBLIC_URL = 'https://pub.example.com'
+    const { extractR2Key } = await import('@/lib/r2')
+    expect(extractR2Key('https://pub.example.com/file.txt')).toBe('file.txt')
+  })
 })
