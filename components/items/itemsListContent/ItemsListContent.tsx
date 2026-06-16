@@ -4,6 +4,7 @@ import { AlertCircle, File } from 'lucide-react';
 import { useItemDrawer } from '@/components/items/itemDrawer/ItemDrawerProvider';
 import { ItemCard } from '@/components/items/itemCard/ItemCard';
 import { ImageCard } from '@/components/items/imageCard/ImageCard';
+import { FileListRow } from '@/components/items/fileListRow/FileListRow';
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
 import {
   Empty,
@@ -77,6 +78,31 @@ export function ItemsListContent({
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
+      ) : currentTypeName === 'file' ? (
+        <div className='flex flex-col gap-1'>
+          <div className='flex items-center gap-4 px-4 py-3 text-xs font-medium text-muted-foreground'>
+            <span className='w-9 shrink-0' />
+            <span className='min-w-0 flex-1'>Name</span>
+            <span className='hidden shrink-0 sm:block'>Size</span>
+            <span className='hidden shrink-0 md:block'>Uploaded</span>
+            <span className='w-8 shrink-0' />
+          </div>
+          {items.map((item) =>
+            isImageItem(item) ? (
+              <ImageCard
+                key={item.id}
+                item={item}
+                onOpen={openDrawer}
+              />
+            ) : (
+              <FileListRow
+                key={item.id}
+                item={item}
+                onOpen={openDrawer}
+              />
+            )
+          )}
+        </div>
       ) : (
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
           {items.map((item) =>
