@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Image Gallery View
+
+**Spec**: `context/features/image-display-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Create image thumbnail card component replacing regular item card
+- Display image grid/gallery with 3 columns (mobile-first with flex)
+- Show 16:9 aspect ratio thumbnails (`aspect-video`)
+- Use `object-cover` to fill cards (may crop edges)
+- Add subtle hover zoom effect (5% scale, 300ms transition)
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- Mobile-first responsive design
+- Focus on visual presentation for image items
 
 ## History
 
