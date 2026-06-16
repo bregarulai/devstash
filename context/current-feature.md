@@ -14,8 +14,6 @@ Not Started
 
 ## History
 
-- **File Upload with Cloudflare R2 (Completed)** - Implemented file upload with Cloudflare R2 storage including upload API route, FileUpload component with drag-and-drop, file validation, download proxy API, download button in ItemDrawer, upload progress indicator, and image/file previews
-
 - **Initial setup** - Next.js 16, Tailwind CSS V4, Typescript configured (Completed)
 
 - **Phase 1 Completed** - Dashboard UI Phase 1 completed with build verification
@@ -121,3 +119,5 @@ Not Started
 - **Code Editor (Completed)** - Implemented CodeEditor component using Monaco Editor with dark theme, macOS-style window dots, copy button, language display, and support for both readonly and edit modes
 
 - **Markdown Editor (Completed)** - Implemented MarkdownEditor component with tabbed Write/Preview interface, replaced Textarea for notes and prompts, added react-markdown with remark-gfm, integrated dark theme styling, copy button, and support for both readonly and edit modes
+
+- **File Upload with Cloudflare R2 (Completed)** - Implemented file upload with Cloudflare R2 storage including upload API route, FileUpload component with drag-and-drop, file validation, download proxy API, download button in ItemDrawer, upload progress indicator, and image/file previews
