@@ -72,10 +72,19 @@ export function FileListRow({ item, onOpen }: FileListRowProps) {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
-    <button
-      type='button'
+    <div
+      role='button'
+      tabIndex={0}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       className={cn(
         'flex w-full items-center gap-4 rounded-lg border bg-muted/50 px-4 py-3 text-left transition-colors hover:bg-muted/70 cursor-pointer',
       )}
@@ -108,6 +117,6 @@ export function FileListRow({ item, onOpen }: FileListRowProps) {
           <Download className='h-4 w-4' />
         </button>
       )}
-    </button>
+    </div>
   );
 }
