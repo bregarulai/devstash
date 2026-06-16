@@ -3,14 +3,16 @@
 import { AlertCircle, File } from 'lucide-react';
 import { useItemDrawer } from '@/components/items/itemDrawer/ItemDrawerProvider';
 import { ItemCard } from '@/components/items/itemCard/ItemCard';
+import { ImageCard } from '@/components/items/imageCard/ImageCard';
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
 import {
   Empty,
-  EmptyHeader,
-  EmptyTitle,
   EmptyDescription,
+  EmptyHeader,
   EmptyMedia,
+  EmptyTitle,
 } from '@/components/ui/empty';
+import { isImageItem } from '@/lib/utils/items';
 import type { ItemWithDetails, SystemItemType } from '@/types/db';
 
 interface ItemsListContentProps {
@@ -77,13 +79,21 @@ export function ItemsListContent({
         </Empty>
       ) : (
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-          {items.map((item) => (
-            <ItemCard
-              key={item.id}
-              item={item}
-              onOpen={openDrawer}
-            />
-          ))}
+          {items.map((item) =>
+            isImageItem(item) ? (
+              <ImageCard
+                key={item.id}
+                item={item}
+                onOpen={openDrawer}
+              />
+            ) : (
+              <ItemCard
+                key={item.id}
+                item={item}
+                onOpen={openDrawer}
+              />
+            )
+          )}
         </div>
       )}
     </div>
