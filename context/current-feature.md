@@ -1,24 +1,10 @@
-# Current Feature: File List View
-
-**Spec**: `context/features/file-display-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Single-column list layout for `/items/files` (like Google Drive/Dropbox)
-- Each row shows: file icon (by extension), file name, file size, upload date, download button
-- Row hover highlight
-- Click row opens ItemDrawer
-- Download button triggers direct download (stop propagation)
-- Responsive: stack info vertically on mobile
-
 ## Notes
-
-- Replace current grid cards with list rows
-- Match Google Drive/Dropbox list view UX patterns
 
 ## History
 
@@ -131,3 +117,5 @@ In Progress
 - **File Upload with Cloudflare R2 (Completed)** - Implemented file upload with Cloudflare R2 storage including upload API route, FileUpload component with drag-and-drop, file validation, download proxy API, download button in ItemDrawer, upload progress indicator, and image/file previews
 
 - **Image Gallery View (Completed)** - Implemented ImageCard component with 16:9 aspect ratio thumbnails, hover zoom effect, isImageItem utility, and integrated into ItemsListContent for image items
+
+- **File List View (Completed)** - Implemented single-column list layout for files with FileListRow component showing file icon, name, size, upload date, and download button with row hover highlight
