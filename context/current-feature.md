@@ -1,23 +1,16 @@
-# Current Feature: Image Gallery View
-
-**Spec**: `context/features/image-display-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create image thumbnail card component replacing regular item card
-- Display image grid/gallery with 3 columns (mobile-first with flex)
-- Show 16:9 aspect ratio thumbnails (`aspect-video`)
-- Use `object-cover` to fill cards (may crop edges)
-- Add subtle hover zoom effect (5% scale, 300ms transition)
+<!-- What does success look like? -->
 
 ## Notes
 
-- Mobile-first responsive design
-- Focus on visual presentation for image items
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -128,3 +121,5 @@ In Progress
 - **Markdown Editor (Completed)** - Implemented MarkdownEditor component with tabbed Write/Preview interface, replaced Textarea for notes and prompts, added react-markdown with remark-gfm, integrated dark theme styling, copy button, and support for both readonly and edit modes
 
 - **File Upload with Cloudflare R2 (Completed)** - Implemented file upload with Cloudflare R2 storage including upload API route, FileUpload component with drag-and-drop, file validation, download proxy API, download button in ItemDrawer, upload progress indicator, and image/file previews
+
+- **Image Gallery View (Completed)** - Implemented ImageCard component with 16:9 aspect ratio thumbnails, hover zoom effect, isImageItem utility, and integrated into ItemsListContent for image items
