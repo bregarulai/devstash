@@ -1,12 +1,26 @@
-# Current Feature
+# Current Feature: Header Injection Fix
+
+**Spec**: `context/fixes/header-injection-fix-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Sanitize `fileName` query parameter in download route to prevent HTTP response splitting
+- Strip dangerous characters (`"`, `\r\n`, null bytes, control characters) from filenames
+- Implement RFC 5987 `filename*=UTF-8''` encoding for non-ASCII filenames
+- Fallback to `"download"` when sanitized filename is empty
+- Remove path traversal sequences (`../`)
+
 ## Notes
+
+- **Priority**: P0 — Critical vulnerability
+- **File**: `app/api/download/route.ts` only
+- **Vulnerability**: `fileName` interpolated directly into `Content-Disposition` header without sanitization
+- **Attack vector**: Crafted filename like `test"; malicious="` breaks out of quoted string, enables header injection
+- OWASP HTTP Response Splitting reference
 
 ## History
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth/auth';
 import { getPresignedDownloadUrl } from '@/lib/r2';
+import { buildContentDispositionHeader, sanitizeFilename } from '@/lib/sanitize-filename';
 
 export async function GET(request: NextRequest) {
   const session = await auth();
@@ -36,12 +37,13 @@ export async function GET(request: NextRequest) {
     }
 
     const fallbackName = key.split('/').pop() ?? 'download';
-    const downloadName = fileName || fallbackName;
+    const downloadName = sanitizeFilename(fileName || fallbackName);
+    const contentDisposition = buildContentDispositionHeader(downloadName);
 
     return new NextResponse(response.body, {
       headers: {
         'Content-Type': response.headers.get('Content-Type') ?? 'application/octet-stream',
-        'Content-Disposition': `attachment; filename="${downloadName}"`,
+        'Content-Disposition': contentDisposition,
         'Content-Length': response.headers.get('Content-Length') ?? '',
       },
     });
