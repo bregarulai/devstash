@@ -4,7 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import GitHub from "next-auth/providers/github"
 
 const GitHubProvider = GitHub({
-  allowDangerousEmailAccountLinking: true,
+  allowDangerousEmailAccountLinking: false,
 })
 
 export const authConfig = {
