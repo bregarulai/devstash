@@ -1,26 +1,16 @@
-# Current Feature: Header Injection Fix
-
-**Spec**: `context/fixes/header-injection-fix-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Sanitize `fileName` query parameter in download route to prevent HTTP response splitting
-- Strip dangerous characters (`"`, `\r\n`, null bytes, control characters) from filenames
-- Implement RFC 5987 `filename*=UTF-8''` encoding for non-ASCII filenames
-- Fallback to `"download"` when sanitized filename is empty
-- Remove path traversal sequences (`../`)
+<!-- What does success look like? -->
 
 ## Notes
 
-- **Priority**: P0 — Critical vulnerability
-- **File**: `app/api/download/route.ts` only
-- **Vulnerability**: `fileName` interpolated directly into `Content-Disposition` header without sanitization
-- **Attack vector**: Crafted filename like `test"; malicious="` breaks out of quoted string, enables header injection
-- OWASP HTTP Response Splitting reference
+<!-- Any context, constraints, or details from spec? -->
 
 ## History
 
@@ -139,3 +129,5 @@ In Progress
 - **Account Linking Fix (Completed)** - Disabled `allowDangerousEmailAccountLinking` to prevent account takeover via email collision, set to false in `lib/auth/authConfig/authConfig.ts`
 
 - **Debug Logging Fix (Completed)** - Removed debug `console.log` statement from sign-in form that leaked auth response data to browser console
+
+- **Header Injection Fix (Completed)** - Sanitized fileName query parameter in download route to prevent HTTP response splitting, implemented RFC 5987 encoding for non-ASCII filenames, and added comprehensive tests
