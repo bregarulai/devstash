@@ -1,12 +1,20 @@
-# Current Feature
+# Current Feature: Debug Logging Fix — Remove console.log from Sign-In Form
+
+**Spec**: `context/fixes/debug-logging-fix-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Remove debug `console.log` statement from `components/signinForm/SigninForm.tsx` (line 43) that leaks auth response data to the browser console
+- Ensure sign-in form error handling and success flow remain unchanged
+
 ## Notes
+
+- **Severity**: P0 — Data leak of auth response data to browser console
+- Only change is deleting the `console.log(' Results:   ', result)` line; no other modifications needed
 
 ## History
 

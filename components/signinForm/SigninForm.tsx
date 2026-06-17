@@ -40,7 +40,6 @@ export function SignInForm({ email }: SignInFormProps) {
     setError(null);
     startTransition(async () => {
       const result = await handleSignIn(data);
-      console.log(' Results:   ', result);
       if (!result.success && result.error) {
         setError(result.error);
       }
