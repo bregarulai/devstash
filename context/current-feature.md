@@ -1,20 +1,12 @@
-# Current Feature: Debug Logging Fix — Remove console.log from Sign-In Form
-
-**Spec**: `context/fixes/debug-logging-fix-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Remove debug `console.log` statement from `components/signinForm/SigninForm.tsx` (line 43) that leaks auth response data to the browser console
-- Ensure sign-in form error handling and success flow remain unchanged
-
 ## Notes
-
-- **Severity**: P0 — Data leak of auth response data to browser console
-- Only change is deleting the `console.log(' Results:   ', result)` line; no other modifications needed
 
 ## History
 
@@ -131,3 +123,5 @@ In Progress
 - **File List View (Completed)** - Implemented single-column list layout for files with FileListRow component showing file icon, name, size, upload date, and download button with row hover highlight
 
 - **Account Linking Fix (Completed)** - Disabled `allowDangerousEmailAccountLinking` to prevent account takeover via email collision, set to false in `lib/auth/authConfig/authConfig.ts`
+
+- **Debug Logging Fix (Completed)** - Removed debug `console.log` statement from sign-in form that leaked auth response data to browser console
