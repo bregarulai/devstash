@@ -2,6 +2,8 @@
 
 ## Status
 
+Not Started
+
 ## Goals
 
 ## Notes
@@ -119,3 +121,5 @@
 - **Image Gallery View (Completed)** - Implemented ImageCard component with 16:9 aspect ratio thumbnails, hover zoom effect, isImageItem utility, and integrated into ItemsListContent for image items
 
 - **File List View (Completed)** - Implemented single-column list layout for files with FileListRow component showing file icon, name, size, upload date, and download button with row hover highlight
+
+- **Account Linking Fix (Completed)** - Disabled `allowDangerousEmailAccountLinking` to prevent account takeover via email collision, set to false in `lib/auth/authConfig/authConfig.ts`
