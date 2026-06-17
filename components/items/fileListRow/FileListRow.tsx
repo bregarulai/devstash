@@ -10,6 +10,7 @@ import {
   FileText,
   type LucideIcon,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cn, formatDaysAgo, formatFileSize } from '@/lib/utils/utils';
 import { extractR2Key } from '@/lib/r2';
 import type { ItemWithDetails } from '@/types/db';
@@ -109,13 +110,13 @@ export function FileListRow({ item, onOpen }: FileListRowProps) {
       </span>
 
       {item.fileUrl && (
-        <button
-          type='button'
+        <Button
+          variant='ghost'
+          size='icon'
           onClick={handleDownload}
-          className='flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
         >
-          <Download className='h-4 w-4' />
-        </button>
+          <Download />
+        </Button>
       )}
     </div>
   );

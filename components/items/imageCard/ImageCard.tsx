@@ -1,6 +1,11 @@
+'use client';
+
+import { useState, useCallback } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { cn, formatDaysAgo } from '@/lib/utils/utils';
+import { Copy, Check } from 'lucide-react';
 import type { ItemWithDetails } from '@/types/db';
 
 interface ImageCardProps {
@@ -9,16 +14,40 @@ interface ImageCardProps {
 }
 
 export function ImageCard({ item, onOpen }: ImageCardProps) {
+  const [copied, setCopied] = useState(false);
   const borderColor = item.itemType.color;
 
   const handleClick = () => {
     onOpen?.(item.id);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
+  const handleCopy = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const textToCopy = item.content || item.fileUrl;
+    if (!textToCopy) return;
+    
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  }, [item.content, item.fileUrl]);
+
   return (
-    <button
-      type='button'
+    <div
+      role='button'
+      tabIndex={0}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       className={cn(
         'h-full w-full overflow-hidden rounded-xl border-l-[3px] transition-all hover:shadow-md text-left cursor-pointer',
         borderColor ? '' : 'border-l-transparent',
@@ -40,6 +69,7 @@ export function ImageCard({ item, onOpen }: ImageCardProps) {
               <span className='text-sm text-muted-foreground'>No image</span>
             </div>
           )}
+
         </div>
         <CardContent className='p-3'>
           <h3 className='truncate text-sm font-medium'>{item.title}</h3>
@@ -49,12 +79,28 @@ export function ImageCard({ item, onOpen }: ImageCardProps) {
             </p>
           )}
           <div className='mt-2 flex items-center justify-between'>
-            <time
-              dateTime={item.createdAt.toISOString()}
-              className='text-xs text-muted-foreground'
-            >
-              {formatDaysAgo(item.createdAt)}
-            </time>
+            <div className='flex items-center gap-2'>
+              <time
+                dateTime={item.createdAt.toISOString()}
+                className='text-xs text-muted-foreground'
+              >
+                {formatDaysAgo(item.createdAt)}
+              </time>
+              {(item.content || item.fileUrl) && (
+                <Button
+                  variant='ghost'
+                  size='icon-xs'
+                  onClick={handleCopy}
+                  title='Copy content'
+                >
+                  {copied ? (
+                    <Check className='text-green-500' />
+                  ) : (
+                    <Copy />
+                  )}
+                </Button>
+              )}
+            </div>
             {item.tags.length > 0 && (
               <div className='flex gap-1'>
                 {item.tags.slice(0, 2).map((tag) => (
@@ -75,6 +121,6 @@ export function ImageCard({ item, onOpen }: ImageCardProps) {
           </div>
         </CardContent>
       </Card>
-    </button>
+    </div>
   );
 }
