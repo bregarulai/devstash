@@ -4,7 +4,8 @@ const mockPrismaUserFindUnique = vi.fn()
 const mockSignIn = vi.fn()
 const mockRedirect = vi.fn()
 const mockCheckRateLimit = vi.fn()
-const mockGetClientIP = vi.fn()
+
+const mockHeaders = vi.fn().mockResolvedValue(new Map([['x-client-ip', '127.0.0.1']]))
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
@@ -25,10 +26,13 @@ vi.mock('next/navigation', () => ({
   },
 }))
 
+vi.mock('next/headers', () => ({
+  headers: (...args: unknown[]) => mockHeaders(...args),
+}))
+
 vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
   createRateLimiter: vi.fn(() => ({ limit: vi.fn() })),
   checkRateLimit: (...args: unknown[]) => mockCheckRateLimit(...args),
-  getClientIP: (...args: unknown[]) => mockGetClientIP(...args),
   RATE_LIMIT_CONFIGS: {
     signIn: { limit: 5, duration: 900 },
   },
@@ -40,7 +44,7 @@ describe('handleSignIn', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     process.env = { ...originalEnv }
-    mockGetClientIP.mockReturnValue('127.0.0.1')
+    mockHeaders.mockResolvedValue(new Map([['x-client-ip', '127.0.0.1']]))
     mockCheckRateLimit.mockResolvedValue({ success: true })
     mockSignIn.mockResolvedValue({})
     mockPrismaUserFindUnique.mockResolvedValue({ emailVerified: new Date() })

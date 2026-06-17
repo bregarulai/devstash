@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Mail } from 'lucide-react';
 import { ResendVerificationForm } from '@/components/auth/resendVerificationForm/ResendVerificationForm';
 

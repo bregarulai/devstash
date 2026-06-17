@@ -1,14 +1,16 @@
-"use server"
+'use server'
 
 import { prisma } from "@/lib/prisma/prisma"
 import { resend } from "@/lib/email/resend/resend"
 import { createVerificationToken } from "@/lib/auth/verificationToken/verificationToken"
 import { redirect } from "next/navigation"
-import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
+import { headers } from "next/headers"
+import { createRateLimiter, checkRateLimit, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
 
 export async function handleResendVerification(email: string) {
   // Rate limiting check
-  const ip = getClientIP(null)
+  const headersList = await headers()
+  const ip = headersList.get("x-client-ip") ?? "unknown"
   const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.resendVerification)
   const rateKey = `resendverif:${ip}:${email}`
   const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.resendVerification)

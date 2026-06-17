@@ -5,7 +5,8 @@ const mockCreateVerificationToken = vi.fn()
 const mockResendSend = vi.fn()
 const mockRedirect = vi.fn()
 const mockCheckRateLimit = vi.fn()
-const mockGetClientIP = vi.fn()
+
+const mockHeaders = vi.fn().mockResolvedValue(new Map([['x-client-ip', '127.0.0.1']]))
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
@@ -30,10 +31,13 @@ vi.mock('next/navigation', () => ({
   },
 }))
 
+vi.mock('next/headers', () => ({
+  headers: (...args: unknown[]) => mockHeaders(...args),
+}))
+
 vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
   createRateLimiter: vi.fn(() => ({ limit: vi.fn() })),
   checkRateLimit: (...args: unknown[]) => mockCheckRateLimit(...args),
-  getClientIP: (...args: unknown[]) => mockGetClientIP(...args),
   RATE_LIMIT_CONFIGS: {
     resendVerification: { limit: 3, duration: 900 },
   },
@@ -46,7 +50,7 @@ describe('handleResendVerification', () => {
     vi.clearAllMocks()
     process.env = { ...originalEnv }
     process.env.ENABLE_EMAIL_VERIFICATION = 'true'
-    mockGetClientIP.mockReturnValue('127.0.0.1')
+    mockHeaders.mockResolvedValue(new Map([['x-client-ip', '127.0.0.1']]))
     mockCheckRateLimit.mockResolvedValue({ success: true })
     mockCreateVerificationToken.mockResolvedValue('token-123')
     mockResendSend.mockResolvedValue({})

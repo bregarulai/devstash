@@ -1,12 +1,14 @@
-"use server"
+'use server'
 
 import { signIn } from "@/lib/auth/auth/auth"
 import { redirect } from "next/navigation"
-import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
+import { headers } from "next/headers"
+import { createRateLimiter, checkRateLimit, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
 
 export async function handleSignInWithGitHub() {
   // Rate limiting check
-  const ip = getClientIP(null)
+  const headersList = await headers()
+  const ip = headersList.get("x-client-ip") ?? "unknown"
   const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.githubOAuth)
   const rateKey = `github:${ip}`
   const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.githubOAuth)

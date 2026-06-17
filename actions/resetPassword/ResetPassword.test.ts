@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const mockPrismaUserFindUnique = vi.fn()
 const mockPrismaUserUpdate = vi.fn()
@@ -6,7 +6,8 @@ const mockBcryptHash = vi.fn()
 const mockVerifyToken = vi.fn()
 const mockRedirect = vi.fn()
 const mockCheckRateLimit = vi.fn()
-const mockGetClientIP = vi.fn()
+
+const mockHeaders = vi.fn().mockResolvedValue(new Map([['x-client-ip', '127.0.0.1']]))
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
@@ -34,10 +35,13 @@ vi.mock('@/lib/auth/verificationToken/verificationToken', () => ({
   verifyToken: (...args: unknown[]) => mockVerifyToken(...args),
 }))
 
+vi.mock('next/headers', () => ({
+  headers: (...args: unknown[]) => mockHeaders(...args),
+}))
+
 vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
   createRateLimiter: vi.fn(() => ({ limit: vi.fn() })),
   checkRateLimit: (...args: unknown[]) => mockCheckRateLimit(...args),
-  getClientIP: (...args: unknown[]) => mockGetClientIP(...args),
   RATE_LIMIT_CONFIGS: {
     resetPassword: { limit: 5, duration: 900 },
   },
@@ -46,7 +50,7 @@ vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
 describe('handleResetPassword', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockGetClientIP.mockReturnValue('127.0.0.1')
+    mockHeaders.mockResolvedValue(new Map([['x-client-ip', '127.0.0.1']]))
     mockCheckRateLimit.mockResolvedValue({ success: true })
     mockVerifyToken.mockResolvedValue('test@example.com')
     mockBcryptHash.mockResolvedValue('hashed-password')

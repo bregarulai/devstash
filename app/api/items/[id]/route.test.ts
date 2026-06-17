@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { NextResponse } from 'next/server'
 
 const mockAuth = vi.fn()
 const mockPrismaItemUpdateMany = vi.fn()

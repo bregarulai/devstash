@@ -1,16 +1,24 @@
-# Current Feature
+# Current Feature: Rate Limiting Fix — Server Actions Bypassed
+
+**Spec**: `context/fixes/rate-limiting-fix-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Server Actions receive request headers to extract the real client IP
+- Rate limit keys include the real IP so each user is rate-limited independently
+- No breaking changes to existing action signatures
+- Middleware correctly forwards `x-client-ip` header to Server Actions. Remember Next js 16 uses proxy.ts instead of middleware.ts
 
 ## Notes
 
-<!-- Any context, constraints, or details from spec? -->
+- P0 critical issue: `getClientIP(null)` always returns `"unknown"`, making rate limit keys collide across all users
+- Next.js Server Actions don't have access to `request.headers` — must use middleware-injected header
+- 6 Server Actions need updating: signIn, register, forgotPassword, resetPassword, signInGithub, resendVerification
+- Rate limiting fails open when Upstash is unavailable (existing behavior preserved)
 
 ## History
 

@@ -1,4 +1,4 @@
-"use server"
+'use server'
 
 import { signOut as nextAuthSignOut } from "@/lib/auth/auth/auth"
 import { redirect } from "next/navigation"
@@ -9,11 +9,13 @@ import { resend } from "@/lib/email/resend/resend"
 import { createVerificationToken } from "@/lib/auth/verificationToken/verificationToken"
 import { auth } from "@/lib/auth/auth/auth"
 import { registerSchema, type ChangePasswordValues } from "@/types/db"
-import { createRateLimiter, checkRateLimit, getClientIP, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
+import { headers } from "next/headers"
+import { createRateLimiter, checkRateLimit, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
 
 export async function handleRegister(formData: FormData) {
   // Rate limiting check
-  const ip = getClientIP(null)
+  const headersList = await headers()
+  const ip = headersList.get("x-client-ip") ?? "unknown"
   const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.register)
   const rateKey = `register:${ip}`
   const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.register)

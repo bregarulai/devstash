@@ -8,10 +8,10 @@ import {
   type SignInActionResult,
   type SignInFormData,
 } from '@/types/db';
+import { headers } from 'next/headers';
 import {
   createRateLimiter,
   checkRateLimit,
-  getClientIP,
   RATE_LIMIT_CONFIGS,
 } from '@/lib/auth/rateLimit/rateLimit';
 
@@ -19,7 +19,8 @@ export async function handleSignIn(
   data: SignInFormData,
 ): Promise<SignInActionResult> {
   const { email: loginEmail, password } = data;
-  const ip = getClientIP(null);
+  const headersList = await headers();
+  const ip = headersList.get('x-client-ip') ?? 'unknown';
   const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.signIn);
   const rateKey = `signin:${ip}:${loginEmail}`;
   const rateResult = await checkRateLimit(

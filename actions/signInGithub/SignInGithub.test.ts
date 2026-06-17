@@ -3,7 +3,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 const mockSignIn = vi.fn()
 const mockRedirect = vi.fn()
 const mockCheckRateLimit = vi.fn()
-const mockGetClientIP = vi.fn()
+
+const mockHeaders = vi.fn().mockResolvedValue(new Map([['x-client-ip', '127.0.0.1']]))
 
 vi.mock('@/lib/auth/auth/auth', () => ({
   signIn: (...args: unknown[]) => mockSignIn(...args),
@@ -16,10 +17,13 @@ vi.mock('next/navigation', () => ({
   },
 }))
 
+vi.mock('next/headers', () => ({
+  headers: (...args: unknown[]) => mockHeaders(...args),
+}))
+
 vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
   createRateLimiter: vi.fn(() => ({ limit: vi.fn() })),
   checkRateLimit: (...args: unknown[]) => mockCheckRateLimit(...args),
-  getClientIP: (...args: unknown[]) => mockGetClientIP(...args),
   RATE_LIMIT_CONFIGS: {
     githubOAuth: { limit: 10, duration: 900 },
   },
@@ -28,7 +32,7 @@ vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
 describe('handleSignInWithGitHub', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockGetClientIP.mockReturnValue('127.0.0.1')
+    mockHeaders.mockResolvedValue(new Map([['x-client-ip', '127.0.0.1']]))
     mockCheckRateLimit.mockResolvedValue({ success: true })
     mockSignIn.mockResolvedValue({})
   })
