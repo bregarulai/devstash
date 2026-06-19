@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const mockPrismaCollectionFindMany = vi.fn()
+const mockPrismaCollectionCreate = vi.fn()
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     collection: {
       findMany: (...args: unknown[]) => mockPrismaCollectionFindMany(...args),
+      create: (...args: unknown[]) => mockPrismaCollectionCreate(...args),
     },
   },
 }))
@@ -256,5 +258,99 @@ describe('getAllCollections', () => {
     expect(result[0].name).toBe('All Collection')
     expect(result[0].description).toBe('Description')
     expect(result[0].isFavorite).toBe(true)
+  })
+})
+
+describe('createCollection', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('creates a collection with name only', async () => {
+    const mockCreated = {
+      id: 'col-new',
+      name: 'New Collection',
+      description: null,
+      isFavorite: false,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaCollectionCreate.mockResolvedValue(mockCreated)
+
+    const { createCollection } = await import('./collections')
+    const result = await createCollection('user-1', { name: 'New Collection' })
+
+    expect(result).toEqual(mockCreated)
+    expect(mockPrismaCollectionCreate).toHaveBeenCalledWith({
+      data: {
+        name: 'New Collection',
+        description: null,
+        userId: 'user-1',
+      },
+    })
+  })
+
+  it('creates a collection with description', async () => {
+    const mockCreated = {
+      id: 'col-new',
+      name: 'New Collection',
+      description: 'A test description',
+      isFavorite: false,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaCollectionCreate.mockResolvedValue(mockCreated)
+
+    const { createCollection } = await import('./collections')
+    const result = await createCollection('user-1', {
+      name: 'New Collection',
+      description: 'A test description',
+    })
+
+    expect(result).toEqual(mockCreated)
+    expect(mockPrismaCollectionCreate).toHaveBeenCalledWith({
+      data: {
+        name: 'New Collection',
+        description: 'A test description',
+        userId: 'user-1',
+      },
+    })
+  })
+
+  it('converts undefined description to null', async () => {
+    const mockCreated = {
+      id: 'col-new',
+      name: 'New Collection',
+      description: null,
+      isFavorite: false,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaCollectionCreate.mockResolvedValue(mockCreated)
+
+    const { createCollection } = await import('./collections')
+    await createCollection('user-1', { name: 'New Collection' })
+
+    expect(mockPrismaCollectionCreate).toHaveBeenCalledWith({
+      data: {
+        name: 'New Collection',
+        description: null,
+        userId: 'user-1',
+      },
+    })
+  })
+
+  it('propagates prisma errors', async () => {
+    mockPrismaCollectionCreate.mockRejectedValue(new Error('DB error'))
+
+    const { createCollection } = await import('./collections')
+
+    await expect(createCollection('user-1', { name: 'Test' })).rejects.toThrow('DB error')
   })
 })

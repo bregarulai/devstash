@@ -159,7 +159,7 @@ export type ItemType = ItemCreateValues['itemType'];
 
 export const collectionInsertSchema = z.object({
   name: z.string().min(1).max(255),
-  description: z.string().optional(),
+  description: z.string().or(z.null()).optional(),
   isFavorite: z.boolean().optional(),
   userId: z.string(),
   defaultTypeId: z.string().or(z.null()).optional(),
@@ -173,6 +173,13 @@ export const collectionSelectSchema = collectionInsertSchema.extend({
 
 export type CollectionInsert = z.infer<typeof collectionInsertSchema>;
 export type CollectionSelect = z.infer<typeof collectionSelectSchema>;
+
+export const collectionCreateSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(255).trim(),
+  description: z.string().or(z.null()).optional(),
+});
+
+export type CollectionCreateValues = z.infer<typeof collectionCreateSchema>;
 
 // ── ItemType ──────────────────────────────────────────────────────────────────
 

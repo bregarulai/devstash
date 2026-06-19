@@ -1,8 +1,7 @@
-import { Button } from '@/components/ui/button';
-import { FolderDown } from 'lucide-react';
 import { SearchBar } from '../searchBar/SearchBar';
 import { Separator } from '@/components/ui/separator';
 import { ItemCreateDialog } from '@/components/items/itemCreateDialog/ItemCreateDialog';
+import { CollectionCreateDialog } from '@/components/collections/collectionCreateDialog/CollectionCreateDialog';
 
 export function MobileSideBar() {
   return (
@@ -12,10 +11,7 @@ export function MobileSideBar() {
           <SearchBar />
         </div>
         <div className='flex items-center gap-2'>
-          <Button size='sm' variant='outline'>
-            <FolderDown className='mr-2 h-4 w-4' />
-            New Collection
-          </Button>
+          <CollectionCreateDialog />
           <ItemCreateDialog />
         </div>
       </header>

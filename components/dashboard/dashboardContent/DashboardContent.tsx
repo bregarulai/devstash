@@ -12,7 +12,7 @@ import type { ItemWithDetails, CollectionWithStats, ItemStats } from '@/types/db
 
 interface DashboardContentProps {
   user: { id: string; name: string | null; email: string; image: string | null; isPro: boolean };
-  favoriteCollections: CollectionWithStats[];
+  recentCollections: CollectionWithStats[];
   itemStats: ItemStats;
   pinnedItems: ItemWithDetails[];
   recentItems: ItemWithDetails[];
@@ -20,7 +20,7 @@ interface DashboardContentProps {
 
 export function DashboardContent({
   user,
-  favoriteCollections,
+  recentCollections,
   itemStats,
   pinnedItems,
   recentItems,
@@ -40,7 +40,7 @@ export function DashboardContent({
           ) : (
             <>
               <StatsCards stats={itemStats} />
-              <CollectionsSession user={user} collections={favoriteCollections} />
+              <CollectionsSession user={user} collections={recentCollections} />
               <PinnedItems items={pinnedItems} onOpen={openDrawer} />
               <RecentItems items={recentItems} onOpen={openDrawer} />
             </>

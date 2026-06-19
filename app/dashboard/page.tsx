@@ -110,7 +110,7 @@ export default async function DashboardPage() {
       <ItemDrawerProvider>
         <DashboardContent
           user={user}
-          favoriteCollections={data.favoriteCollections}
+          recentCollections={data.recentCollections}
           itemStats={data.itemStats}
           pinnedItems={data.pinnedItems}
           recentItems={data.recentItems}

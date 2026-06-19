@@ -4,7 +4,7 @@ import {
   DEFAULT_SAMPLE_COUNT,
   DEFAULT_RECENT_COLLECTIONS_LIMIT,
 } from '@/lib/db/constants/constants';
-import type { CollectionWithStats } from '@/types/db';
+import type { CollectionWithStats, CollectionSelect } from '@/types/db';
 
 export type { CollectionWithStats };
 
@@ -188,4 +188,19 @@ export async function getAllCollections(
   });
 
   return collections.map(mapCollectionToStats);
+}
+
+export async function createCollection(
+  userId: string,
+  data: { name: string; description?: string | null },
+): Promise<CollectionSelect> {
+  const collection = await prisma.collection.create({
+    data: {
+      name: data.name,
+      description: data.description ?? null,
+      userId,
+    },
+  });
+
+  return collection;
 }

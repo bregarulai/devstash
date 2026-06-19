@@ -1,16 +1,28 @@
-# Current Feature
+# Current Feature: Collection Create
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+- Add a `createCollection()` DB function in `lib/db/collections/collections.ts`
+- Add a `collectionCreateSchema` form-level Zod schema in `types/db.ts` (name required, description optional)
+- Create `actions/collections/Collections.ts` with `createCollectionAction()` server action
+- Create `CollectionCreateDialog` component following the `ItemCreateDialog` pattern (react-hook-form + zodResolver + shadcn `Dialog` from `components/ui/dialog.tsx`)
+- Wire the existing "New Collection" button in `MobileSideBar.tsx` to open the dialog
+- Show sonner toast on success/failure
+- After creation: `router.refresh()` updates sidebar collections, recent collections, and stats
+- Add barrel export for collection actions in `actions/index.ts`
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- The "New Collection" button already exists in the top bar (`MobileSideBar.tsx`) but has no handler — just needs to open the dialog
+- Collections are user-scoped via `userId` (injected server-side from session)
+- Follow the exact same patterns as items: DB function → Zod schema → server action → dialog component
+- Prisma Collection model: `name` (required), `description` (optional), `isFavorite`, `userId`, `defaultTypeId` (optional)
+- No API route needed — server action is the established mutation pattern
+- `revalidatePath('/dashboard')` in the action will refresh all server-fetched data
 
 ## History
 
