@@ -1,27 +1,16 @@
-# Current Feature: Codebase Audit — Phase 3: Medium Severity Fixes
-
-**Spec**: `context/fixes/codebase-audit-phase-3-medium-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Fix inconsistent rate limit IP extraction in `app/api/auth/verify/route.ts` to use `getClientIP()`
-- Remove token from error redirect URL in `actions/resetPassword/ResetPassword.ts`
-- Remove `image/svg+xml` from allowed types or add SVG sanitization in `lib/fileValidation.ts`
-- Add database ownership check to download route in `app/api/download/route.ts`
-- Extract duplicate collection transform logic into `mapCollectionToStats()` helper
-- Remove redundant `mapItemToDetails` identity transform or simplify to type assertion
-- Parallelize sequential DB queries in profile load using `Promise.all`
-- Wire or disable the non-functional "New Collection" button in `MobileSideBar.tsx`
+<!-- What does success look like? -->
 
 ## Notes
 
-- 8 medium-severity issues to fix
-- MUST NOT break existing functionality or user flows
-- Verify affected features work as expected after each change
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -148,3 +137,5 @@ In Progress
 - **Codebase Audit — Phase 1: Critical Fixes (Completed)** - Fixed CSRF token validation to compare against server-side session, removed password hash from ProfileData type with hasPassword boolean, added userId filter to getSystemItemTypesWithCounts for per-user counts, and added missing 'use client' directive to ContentTypeField
 
 - **Codebase Audit — Phase 2: High Severity Fixes (Completed)** - Fixed handleSignIn error handling, added rate limiting to password change endpoint, changed rate limiter to fail closed on Redis outage, fixed password reset to use generic error message, removed duplicate account deletion logic, and consolidated IMAGE_EXTENSIONS constants
+
+- **Codebase Audit — Phase 3: Medium Severity Fixes (Completed)** - Fixed inconsistent rate limit IP extraction, removed token from error redirect URL, added SVG sanitization, added database ownership check to download route, extracted duplicate collection transform logic, removed redundant identity transform, parallelized DB queries in profile load, and wired New Collection button
