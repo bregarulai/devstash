@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const mockAuth = vi.fn()
 const mockCreateCollection = vi.fn()
+const mockGetUserCollectionList = vi.fn()
 const mockRevalidatePath = vi.fn()
 
 vi.mock('next/cache', () => ({
@@ -14,6 +15,7 @@ vi.mock('@/lib/auth/auth/auth', () => ({
 
 vi.mock('@/lib/db/collections/collections', () => ({
   createCollection: (...args: unknown[]) => mockCreateCollection(...args),
+  getUserCollectionList: (...args: unknown[]) => mockGetUserCollectionList(...args),
 }))
 
 describe('createCollectionAction', () => {
@@ -150,6 +152,101 @@ describe('createCollectionAction', () => {
       success: false,
       data: null,
       error: 'Failed to create collection',
+    })
+  })
+})
+
+describe('getCollectionsForPickerAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { getCollectionsForPickerAction } = await import('./Collections')
+    const result = await getCollectionsForPickerAction()
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when session has no user id', async () => {
+    mockAuth.mockResolvedValue({ user: {} })
+
+    const { getCollectionsForPickerAction } = await import('./Collections')
+    const result = await getCollectionsForPickerAction()
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns collections list on success', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockGetUserCollectionList.mockResolvedValue([
+      { id: 'col-1', name: 'Collection A' },
+      { id: 'col-2', name: 'Collection B' },
+    ])
+
+    const { getCollectionsForPickerAction } = await import('./Collections')
+    const result = await getCollectionsForPickerAction()
+
+    expect(result).toEqual({
+      success: true,
+      data: [
+        { id: 'col-1', name: 'Collection A' },
+        { id: 'col-2', name: 'Collection B' },
+      ],
+      error: null,
+    })
+    expect(mockGetUserCollectionList).toHaveBeenCalledWith('user-1')
+  })
+
+  it('returns empty array when no collections', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockGetUserCollectionList.mockResolvedValue([])
+
+    const { getCollectionsForPickerAction } = await import('./Collections')
+    const result = await getCollectionsForPickerAction()
+
+    expect(result).toEqual({
+      success: true,
+      data: [],
+      error: null,
+    })
+  })
+
+  it('returns error when getUserCollectionList throws', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockGetUserCollectionList.mockRejectedValue(new Error('DB error'))
+
+    const { getCollectionsForPickerAction } = await import('./Collections')
+    const result = await getCollectionsForPickerAction()
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'DB error',
+    })
+  })
+
+  it('returns generic error for non-Error thrown values', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockGetUserCollectionList.mockRejectedValue('unknown error')
+
+    const { getCollectionsForPickerAction } = await import('./Collections')
+    const result = await getCollectionsForPickerAction()
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Failed to fetch collections',
     })
   })
 })

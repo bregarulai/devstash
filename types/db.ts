@@ -339,6 +339,12 @@ export const collectionWithStatsSchema = z.object({
 
 export type CollectionWithStats = z.infer<typeof collectionWithStatsSchema>;
 
+export const collectionDetailSchema = collectionWithStatsSchema.extend({
+  items: z.array(itemWithDetailsSchema),
+});
+
+export type CollectionDetail = z.infer<typeof collectionDetailSchema>;
+
 export const profileUserDataSchema = z.object({
   id: z.string(),
   name: z.string().or(z.null()),

@@ -4,9 +4,9 @@ import {
   DEFAULT_SAMPLE_COUNT,
   DEFAULT_RECENT_COLLECTIONS_LIMIT,
 } from '@/lib/db/constants/constants';
-import type { CollectionWithStats, CollectionSelect } from '@/types/db';
+import type { CollectionWithStats, CollectionDetail, CollectionSelect, ItemWithDetails } from '@/types/db';
 
-export type { CollectionWithStats };
+export type { CollectionWithStats, CollectionDetail };
 
 function getDominantItemTypeColor(
   itemTypes: Array<{ name: string; color: string }>,
@@ -215,4 +215,75 @@ export async function createCollection(
   });
 
   return collection;
+}
+
+export async function getCollectionById(
+  userId: string,
+  collectionId: string,
+): Promise<CollectionDetail | null> {
+  const collection = await prisma.collection.findFirst({
+    where: {
+      id: collectionId,
+      userId,
+    },
+    include: {
+      _count: {
+        select: {
+          items: true,
+        },
+      },
+      items: {
+        include: {
+          item: {
+            include: {
+              itemType: {
+                select: {
+                  name: true,
+                  icon: true,
+                  color: true,
+                },
+              },
+              tags: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              collections: {
+                select: {
+                  collection: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!collection) {
+    return null;
+  }
+
+  const stats = mapCollectionToStats(collection);
+  const items: ItemWithDetails[] = collection.items
+    .map((ic) => ic.item)
+    .filter((item): item is NonNullable<typeof item> => item != null)
+    .map((item) => ({
+      ...item,
+      collections: item.collections.map((ic) => ({
+        id: ic.collection.id,
+        name: ic.collection.name,
+      })),
+    })) as ItemWithDetails[];
+
+  return {
+    ...stats,
+    items,
+  };
 }
