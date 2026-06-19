@@ -1,24 +1,16 @@
-# Current Feature: Code Decomposition — Phase 3: Data Layer
-
-**Spec**: `context/fixes/code-decomposition-phase-3-data-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Extract a generic `findItems` helper that consolidates the 6 nearly identical query functions in `lib/db/items/items.ts`
-- Rewrite `getPinnedItems`, `getRecentItems`, `getAllItems`, `getFavoriteItems`, `getItemsByType`, and `searchItems` as thin wrappers around the new helper
-- Remove ~85 lines of duplicated query logic
-- Maintain backward compatibility — all existing named exports remain unchanged
-- Verify build passes with no type errors
+<!-- Goals for the next feature -->
 
 ## Notes
 
-- The 6 functions share identical `prisma.item.findMany` structure with only the `where` clause varying
-- All use `orderBy: { updatedAt: 'desc' }`, `include: ITEM_INCLUDE`, and optional `take: limit`
-- This is a high-priority refactoring task that simplifies adding new query variants in the future
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -159,3 +151,5 @@ In Progress
 - **Code Decomposition — Phase 1: Component Decomposition (Completed)** - Extracted SidebarItemTypeLink, SidebarCollectionLink, and SidebarUserMenu components from Sidebar.tsx, deduplicated PRO badge logic via centralized PRO_TYPES set, reduced Sidebar.tsx by 129 lines
 
 - **Code Decomposition — Phase 2: Form & Dialog Decomposition (Completed)** - Extracted CreateFormField wrapper component, extracted getFileConfig utility, and extracted ItemCreateFormBody sub-component to reduce boilerplate in ItemCreateDialog.tsx
+
+- **Code Decomposition — Phase 3: Data Layer (Completed)** - Extracted generic findItems helper consolidating 6 query functions into thin wrappers, removed ~85 lines of duplicated query logic while maintaining backward compatibility
