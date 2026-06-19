@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import crypto from 'crypto'
 import { createVerificationToken, verifyToken } from './verificationToken'
+import { TOKEN_EXPIRY_MS } from '@/lib/constants'
 
 const mockVerificationTokenCreate = vi.fn()
 const mockVerificationTokenFindFirst = vi.fn()
@@ -69,9 +70,9 @@ describe('createVerificationToken', () => {
 
     const call = mockPrisma.verificationToken.create.mock.calls[0][0]
     const expires = call.data.expires as Date
-    const after = Date.now() + 24 * 60 * 60 * 1000
+    const after = Date.now() + TOKEN_EXPIRY_MS
 
-    expect(expires.getTime()).toBeGreaterThanOrEqual(before + 24 * 60 * 60 * 1000 - 1000)
+    expect(expires.getTime()).toBeGreaterThanOrEqual(before + TOKEN_EXPIRY_MS - 1000)
     expect(expires.getTime()).toBeLessThanOrEqual(after + 1000)
   })
 

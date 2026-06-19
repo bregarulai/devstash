@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma/prisma"
 import crypto from "crypto"
+import { TOKEN_EXPIRY_MS } from "@/lib/constants"
 
 export async function createVerificationToken(email: string): Promise<string> {
   const token = crypto.randomBytes(32).toString("hex")
@@ -9,7 +10,7 @@ export async function createVerificationToken(email: string): Promise<string> {
     data: {
       identifier: email,
       token: hashedToken,
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      expires: new Date(Date.now() + TOKEN_EXPIRY_MS),
     },
   })
 

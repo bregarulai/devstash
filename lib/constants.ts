@@ -25,3 +25,6 @@ export const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg
 
 export const IMAGE_MAX_SIZE = 5 * 1024 * 1024;
 export const FILE_MAX_SIZE = 10 * 1024 * 1024;
+
+export const EMAIL_SENDER = "DevStash <onboarding@resend.dev>";
+export const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000;

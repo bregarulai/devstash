@@ -6,6 +6,7 @@ import { createVerificationToken } from "@/lib/auth/verificationToken/verificati
 import { redirect } from "next/navigation"
 import { headers } from "next/headers"
 import { createRateLimiter, checkRateLimit, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
+import { EMAIL_SENDER } from "@/lib/constants"
 
 export async function handleResendVerification(email: string) {
   // Rate limiting check
@@ -43,7 +44,7 @@ export async function handleResendVerification(email: string) {
 
   try {
     await resend.emails.send({
-      from: "DevStash <onboarding@resend.dev>",
+      from: EMAIL_SENDER,
       to: email,
       subject: "Verify your DevStash account",
       html: `
