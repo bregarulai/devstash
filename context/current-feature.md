@@ -1,16 +1,33 @@
-# Current Feature
+# Current Feature: Audit June 2026 — Phase 3: Cleanup
+
+**Spec**: `context/fixes/audit-june-2026-phase-3-cleanup-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Add globalThis pattern to PrismaClient singleton in `lib/prisma/prisma.ts`
+- Extract shared `ITEM_INCLUDE` constant to eliminate 8 duplicate Prisma include objects in `lib/db/items/items.ts`
+- Remove manual item result mapping in `createItem` and `updateItem` (return Prisma result directly)
+- Consolidate two sequential `findUnique` queries into one in `lib/db/user/user.ts`
+- Unify `getSystemItemTypesWithCounts` and `getUserItemTypeBreakdown` into one function
+- Consolidate duplicated file size constants across `lib/constants.ts` and `lib/fileValidation.ts`
+- Extract verification email HTML template to `lib/email/templates/verification.ts`
+- Replace local EDITABLE\_\* constants with imports from `lib/constants.ts`
+- Extract download handler to `lib/utils/download.ts`
+- Replace DB query in `generateStaticParams` with static `ITEM_TYPES` import
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- Items 2-3 are related (both in `lib/db/items/items.ts`) — implement together
+- Items 5 is related to item 2 (uses the same function) — implement after item 2
+- Items 6 and 8 are simple constant deduplication — quick wins
+- Item 7 creates a new file (`lib/email/templates/verification.ts`) — follow file organization conventions
+- Item 9 creates a new file (`lib/utils/download.ts`) — follow file organization conventions
+- Item 10 is a one-line import change
+- IMPORTANT: Must NOT break any existing functionality or user flow
 
 ## History
 

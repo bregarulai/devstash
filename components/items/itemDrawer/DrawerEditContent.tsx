@@ -9,11 +9,7 @@ import { formatDaysAgo } from '@/lib/utils/utils';
 import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
 import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
 import type { ItemWithDetails } from '@/types/db';
-import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES } from '@/lib/constants';
-
-const EDITABLE_CONTENT_TYPES = ['snippet', 'prompt', 'command', 'note'];
-const EDITABLE_LANGUAGE_TYPES = ['snippet', 'command'];
-const EDITABLE_URL_TYPES = ['link'];
+import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES, SHOW_CONTENT, SHOW_LANGUAGE, SHOW_URL } from '@/lib/constants';
 
 export interface DrawerEditContentHandle {
   getFormData: () => {
@@ -41,9 +37,9 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
     const [tagInput, setTagInput] = useState(item.tags.map((t) => t.name).join(', '));
 
     const typeName = item.itemType.name.toLowerCase();
-    const showContent = EDITABLE_CONTENT_TYPES.includes(typeName);
-    const showLanguage = EDITABLE_LANGUAGE_TYPES.includes(typeName);
-    const showUrl = EDITABLE_URL_TYPES.includes(typeName);
+    const showContent = SHOW_CONTENT.includes(typeName);
+    const showLanguage = SHOW_LANGUAGE.includes(typeName);
+    const showUrl = SHOW_URL.includes(typeName);
     const showCodeEditor = CODE_EDITOR_TYPES.includes(typeName);
     const showMarkdownEditor = MARKDOWN_EDITOR_TYPES.includes(typeName);
 

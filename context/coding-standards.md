@@ -72,7 +72,7 @@ Example v4 configuration:
 
 ## File Organization
 
-- Components: `components/[feature]/[componentName]/ComponentName.tsx` — each component lives in its own folder named in PascalCase matching the component name
+- Components: `components/[feature]/[componentName]/ComponentName.tsx` — each component lives in its own folder named in camelCase
 - Pages: `app/[route]/page.tsx`
 - Server Actions: `actions/[feature].ts`
 - Types: `types/db.ts` — all Zod schemas and `z.infer` types (single file)
@@ -81,7 +81,7 @@ Example v4 configuration:
 ## Naming
 
 - Components: PascalCase (`ItemCard.tsx`)
-- Component folders: PascalCase matching the component name (`components/[feature]/itemCard/ItemCard.tsx`)
+- Component folders: camelCase (`components/[feature]/itemCard/ItemCard.tsx`)
 - Files: Match component name or kebab-case
 - Functions: camelCase
 - Constants: SCREAMING_SNAKE_CASE

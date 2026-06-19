@@ -12,7 +12,7 @@ import { DrawerError } from './DrawerError';
 import { DrawerContent } from './DrawerContent';
 import { DrawerEditContent, type DrawerEditContentHandle } from './DrawerEditContent';
 import { updateItemAction } from '@/actions';
-import { extractR2Key } from '@/lib/r2';
+import { triggerDownload } from '@/lib/utils/download';
 
 function ItemDrawerContent() {
   const {
@@ -67,15 +67,7 @@ function ItemDrawerContent() {
   }, [item, updateItem, handleStopEditing, router]);
 
   const handleDownload = useCallback(() => {
-    if (!item?.fileUrl) return;
-    const key = extractR2Key(item.fileUrl);
-    if (key) {
-      const params = new URLSearchParams({ key });
-      if (item.fileName) params.set('fileName', item.fileName);
-      window.location.href = `/api/download?${params.toString()}`;
-    } else {
-      window.location.href = item.fileUrl;
-    }
+    triggerDownload(item?.fileUrl, item?.fileName);
   }, [item]);
 
   return (

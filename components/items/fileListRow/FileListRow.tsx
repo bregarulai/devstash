@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn, formatDaysAgo, formatFileSize } from '@/lib/utils/utils';
-import { extractR2Key } from '@/lib/r2';
+import { triggerDownload } from '@/lib/utils/download';
 import type { ItemWithDetails } from '@/types/db';
 
 interface FileListRowProps {
@@ -62,15 +62,7 @@ export function FileListRow({ item, onOpen }: FileListRowProps) {
 
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!item.fileUrl) return;
-    const key = extractR2Key(item.fileUrl);
-    if (key) {
-      const params = new URLSearchParams({ key });
-      if (item.fileName) params.set('fileName', item.fileName);
-      window.location.href = `/api/download?${params.toString()}`;
-    } else {
-      window.location.href = item.fileUrl;
-    }
+    triggerDownload(item.fileUrl, item.fileName);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
