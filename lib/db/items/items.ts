@@ -3,6 +3,22 @@ import { DEFAULT_RECENT_LIMIT } from '@/lib/db/constants/constants';
 import { deleteFromR2, extractR2Key } from '@/lib/r2';
 import type { ItemWithDetails, SystemItemType, ItemEditValues, ItemCreateValues, ItemStats } from '@/types/db';
 
+const ITEM_INCLUDE = {
+  itemType: {
+    select: {
+      name: true,
+      icon: true,
+      color: true,
+    },
+  },
+  tags: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+} as const;
+
 export async function createItem(
   userId: string,
   data: ItemCreateValues,
@@ -36,41 +52,10 @@ export async function createItem(
         })),
       },
     },
-    include: {
-      itemType: {
-        select: {
-          name: true,
-          icon: true,
-          color: true,
-        },
-      },
-      tags: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
+    include: ITEM_INCLUDE,
   });
 
-  return {
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    contentType: item.contentType,
-    content: item.content,
-    fileUrl: item.fileUrl,
-    fileName: item.fileName,
-    fileSize: item.fileSize,
-    url: item.url,
-    language: item.language,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    itemType: item.itemType,
-    tags: item.tags,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  };
+  return item;
 }
 
 export async function deleteItem(
@@ -108,21 +93,7 @@ export async function getPinnedItems(
     orderBy: {
       updatedAt: 'desc',
     },
-    include: {
-      itemType: {
-        select: {
-          name: true,
-          icon: true,
-          color: true,
-        },
-      },
-      tags: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
+    include: ITEM_INCLUDE,
   });
 
   return items;
@@ -140,21 +111,7 @@ export async function getRecentItems(
       updatedAt: 'desc',
     },
     take: limit,
-    include: {
-      itemType: {
-        select: {
-          name: true,
-          icon: true,
-          color: true,
-        },
-      },
-      tags: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
+    include: ITEM_INCLUDE,
   });
 
   return items;
@@ -172,21 +129,7 @@ export async function getAllItems(
       updatedAt: 'desc',
     },
     ...(limit ? { take: limit } : {}),
-    include: {
-      itemType: {
-        select: {
-          name: true,
-          icon: true,
-          color: true,
-        },
-      },
-      tags: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
+    include: ITEM_INCLUDE,
   });
 
   return items;
@@ -205,21 +148,7 @@ export async function getFavoriteItems(
       updatedAt: 'desc',
     },
     ...(limit ? { take: limit } : {}),
-    include: {
-      itemType: {
-        select: {
-          name: true,
-          icon: true,
-          color: true,
-        },
-      },
-      tags: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
+    include: ITEM_INCLUDE,
   });
 
   return items;
@@ -241,21 +170,7 @@ export async function getItemsByType(
       updatedAt: 'desc',
     },
     ...(limit ? { take: limit } : {}),
-    include: {
-      itemType: {
-        select: {
-          name: true,
-          icon: true,
-          color: true,
-        },
-      },
-      tags: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
+    include: ITEM_INCLUDE,
   });
 
   return items;
@@ -277,21 +192,7 @@ export async function searchItems(
     orderBy: {
       updatedAt: 'desc',
     },
-    include: {
-      itemType: {
-        select: {
-          name: true,
-          icon: true,
-          color: true,
-        },
-      },
-      tags: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
+    include: ITEM_INCLUDE,
   });
 
   return items;
@@ -396,39 +297,8 @@ export async function updateItem(
         })),
       },
     },
-    include: {
-      itemType: {
-        select: {
-          name: true,
-          icon: true,
-          color: true,
-        },
-      },
-      tags: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
+    include: ITEM_INCLUDE,
   });
 
-  return {
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    contentType: item.contentType,
-    content: item.content,
-    fileUrl: item.fileUrl,
-    fileName: item.fileName,
-    fileSize: item.fileSize,
-    url: item.url,
-    language: item.language,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    itemType: item.itemType,
-    tags: item.tags,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  };
+  return item;
 }

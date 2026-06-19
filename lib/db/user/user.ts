@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma/prisma';
 import type { ProfileData, SidebarItemTypeBreakdown } from '@/types/db';
+import { getSystemItemTypesWithCounts } from '@/lib/db/items/items';
 
 
 export type ProfileErrorType = 'db-failure' | 'user-not-found' | null;
@@ -18,29 +19,24 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
   };
 
   try {
-    const [user, userWithPassword] = await Promise.all([
-      prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          image: true,
-          isPro: true,
-          createdAt: true,
-        },
-      }),
-      prisma.user.findUnique({
-        where: { id: userId },
-        select: { password: true },
-      }),
-    ]);
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        isPro: true,
+        createdAt: true,
+        password: true,
+      },
+    });
 
     if (!user) {
       return { ...defaultResult, errorType: 'user-not-found' };
     }
 
-    const hasPassword = userWithPassword?.password !== null;
+    const hasPassword = user?.password !== null;
 
     let itemStats = {
       totalItems: 0,
@@ -81,37 +77,11 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
 }
 
 export async function getUserItemTypeBreakdown(userId: string): Promise<SidebarItemTypeBreakdown[]> {
-  const types = await prisma.itemType.findMany({
-    where: {
-      isSystem: true,
-    },
-    select: {
-      id: true,
-      name: true,
-      icon: true,
-      color: true,
-    },
-  });
-
-  const counts = await prisma.item.groupBy({
-    by: ['itemTypeId'],
-    _count: {
-      id: true,
-    },
-    where: {
-      userId,
-    },
-  });
-
-  const countMap = new Map<string, number>();
-  for (const c of counts) {
-    countMap.set(c.itemTypeId, c._count.id);
-  }
-
+  const types = await getSystemItemTypesWithCounts(userId);
   return types.map((type) => ({
     name: type.name,
     icon: type.icon,
     color: type.color,
-    count: countMap.get(type.id) || 0,
+    count: type.itemCount,
   }));
 }

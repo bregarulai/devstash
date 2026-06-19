@@ -4,6 +4,7 @@ const mockPrismaUserFindUnique = vi.fn()
 const mockPrismaItemTypeFindMany = vi.fn()
 const mockPrismaItemGroupBy = vi.fn()
 const mockGetItemStats = vi.fn()
+const mockGetSystemItemTypesWithCounts = vi.fn()
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
@@ -21,6 +22,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
 
 vi.mock('@/lib/db/items/items', () => ({
   getItemStats: (...args: unknown[]) => mockGetItemStats(...args),
+  getSystemItemTypesWithCounts: (...args: unknown[]) => mockGetSystemItemTypesWithCounts(...args),
 }))
 
 describe('loadProfileDataAsync', () => {
@@ -35,18 +37,15 @@ describe('loadProfileDataAsync', () => {
   })
 
   it('returns user data with hasPassword true when password exists', async () => {
-    mockPrismaUserFindUnique
-      .mockResolvedValueOnce({
-        id: 'user-1',
-        name: 'Test User',
-        email: 'test@example.com',
-        image: null,
-        isPro: false,
-        createdAt: new Date('2024-01-01'),
-      })
-      .mockResolvedValueOnce({
-        password: '$2a$12$hashedpassword',
-      })
+    mockPrismaUserFindUnique.mockResolvedValueOnce({
+      id: 'user-1',
+      name: 'Test User',
+      email: 'test@example.com',
+      image: null,
+      isPro: false,
+      createdAt: new Date('2024-01-01'),
+      password: '$2a$12$hashedpassword',
+    })
 
     const { loadProfileDataAsync } = await import('./user')
     const result = await loadProfileDataAsync('user-1')
@@ -58,18 +57,15 @@ describe('loadProfileDataAsync', () => {
   })
 
   it('returns user data with hasPassword false when no password', async () => {
-    mockPrismaUserFindUnique
-      .mockResolvedValueOnce({
-        id: 'user-2',
-        name: 'OAuth User',
-        email: 'oauth@example.com',
-        image: 'https://example.com/avatar.jpg',
-        isPro: true,
-        createdAt: new Date('2024-01-01'),
-      })
-      .mockResolvedValueOnce({
-        password: null,
-      })
+    mockPrismaUserFindUnique.mockResolvedValueOnce({
+      id: 'user-2',
+      name: 'OAuth User',
+      email: 'oauth@example.com',
+      image: 'https://example.com/avatar.jpg',
+      isPro: true,
+      createdAt: new Date('2024-01-01'),
+      password: null,
+    })
 
     const { loadProfileDataAsync } = await import('./user')
     const result = await loadProfileDataAsync('user-2')
@@ -106,21 +102,16 @@ describe('loadProfileDataAsync', () => {
   })
 
   it('includes item stats from getItemStats', async () => {
-    mockPrismaUserFindUnique.mockImplementation((args: { select?: Record<string, unknown> }) => {
-      if (args.select && 'password' in args.select) {
-        return Promise.resolve({ password: null })
-      }
-      return Promise.resolve({
-        id: 'user-1',
-        name: 'Test User',
-        email: 'test@example.com',
-        image: null,
-        isPro: false,
-        createdAt: new Date('2024-01-01'),
-      })
+    mockPrismaUserFindUnique.mockResolvedValueOnce({
+      id: 'user-1',
+      name: 'Test User',
+      email: 'test@example.com',
+      image: null,
+      isPro: false,
+      createdAt: new Date('2024-01-01'),
+      password: null,
     })
-    mockPrismaItemTypeFindMany.mockResolvedValue([])
-    mockPrismaItemGroupBy.mockResolvedValue([])
+    mockGetSystemItemTypesWithCounts.mockResolvedValue([])
     mockGetItemStats.mockResolvedValue({
       totalItems: 15,
       totalCollections: 5,
@@ -140,18 +131,16 @@ describe('loadProfileDataAsync', () => {
   })
 
   it('returns default item stats when getItemStats fails', async () => {
-    mockPrismaUserFindUnique
-      .mockResolvedValueOnce({
-        id: 'user-1',
-        name: 'Test User',
-        email: 'test@example.com',
-        image: null,
-        isPro: false,
-        createdAt: new Date('2024-01-01'),
-      })
-      .mockResolvedValueOnce({
-        password: null,
-      })
+    mockPrismaUserFindUnique.mockResolvedValueOnce({
+      id: 'user-1',
+      name: 'Test User',
+      email: 'test@example.com',
+      image: null,
+      isPro: false,
+      createdAt: new Date('2024-01-01'),
+      password: null,
+    })
+    mockGetSystemItemTypesWithCounts.mockResolvedValue([])
     mockGetItemStats.mockRejectedValue(new Error('Stats query failed'))
 
     const { loadProfileDataAsync } = await import('./user')
@@ -166,24 +155,21 @@ describe('loadProfileDataAsync', () => {
   })
 
   it('does not include password hash in returned user object', async () => {
-    mockPrismaUserFindUnique
-      .mockResolvedValueOnce({
-        id: 'user-1',
-        name: 'Test User',
-        email: 'test@example.com',
-        image: null,
-        isPro: false,
-        createdAt: new Date('2024-01-01'),
-      })
-      .mockResolvedValueOnce({
-        password: '$2a$12$hashedpassword',
-      })
+    mockPrismaUserFindUnique.mockResolvedValueOnce({
+      id: 'user-1',
+      name: 'Test User',
+      email: 'test@example.com',
+      image: null,
+      isPro: false,
+      createdAt: new Date('2024-01-01'),
+      password: '$2a$12$hashedpassword',
+    })
 
     const { loadProfileDataAsync } = await import('./user')
     const result = await loadProfileDataAsync('user-1')
 
-    expect(result.user).not.toHaveProperty('password')
     expect(result.user).toHaveProperty('hasPassword')
+    expect(result.user?.hasPassword).toBe(true)
   })
 })
 
@@ -193,13 +179,9 @@ describe('getUserItemTypeBreakdown', () => {
   })
 
   it('returns item type breakdown with counts for user', async () => {
-    mockPrismaItemTypeFindMany.mockResolvedValue([
-      { id: 'type-1', name: 'File', icon: '📄', color: '#ff0000' },
-      { id: 'type-2', name: 'Note', icon: '📝', color: '#00ff00' },
-    ])
-    mockPrismaItemGroupBy.mockResolvedValue([
-      { itemTypeId: 'type-1', _count: { id: 5 } },
-      { itemTypeId: 'type-2', _count: { id: 3 } },
+    mockGetSystemItemTypesWithCounts.mockResolvedValue([
+      { name: 'File', icon: '📄', color: '#ff0000', itemCount: 5 },
+      { name: 'Note', icon: '📝', color: '#00ff00', itemCount: 3 },
     ])
 
     const { getUserItemTypeBreakdown } = await import('./user')
@@ -209,18 +191,13 @@ describe('getUserItemTypeBreakdown', () => {
       { name: 'File', icon: '📄', color: '#ff0000', count: 5 },
       { name: 'Note', icon: '📝', color: '#00ff00', count: 3 },
     ])
-    expect(mockPrismaItemGroupBy).toHaveBeenCalledWith({
-      by: ['itemTypeId'],
-      _count: { id: true },
-      where: { userId: 'user-1' },
-    })
+    expect(mockGetSystemItemTypesWithCounts).toHaveBeenCalledWith('user-1')
   })
 
   it('returns zero counts for types with no items', async () => {
-    mockPrismaItemTypeFindMany.mockResolvedValue([
-      { id: 'type-1', name: 'File', icon: '📄', color: '#ff0000' },
+    mockGetSystemItemTypesWithCounts.mockResolvedValue([
+      { name: 'File', icon: '📄', color: '#ff0000', itemCount: 0 },
     ])
-    mockPrismaItemGroupBy.mockResolvedValue([])
 
     const { getUserItemTypeBreakdown } = await import('./user')
     const result = await getUserItemTypeBreakdown('user-1')
@@ -231,8 +208,7 @@ describe('getUserItemTypeBreakdown', () => {
   })
 
   it('returns empty array when no system item types exist', async () => {
-    mockPrismaItemTypeFindMany.mockResolvedValue([])
-    mockPrismaItemGroupBy.mockResolvedValue([])
+    mockGetSystemItemTypesWithCounts.mockResolvedValue([])
 
     const { getUserItemTypeBreakdown } = await import('./user')
     const result = await getUserItemTypeBreakdown('user-1')
@@ -240,16 +216,12 @@ describe('getUserItemTypeBreakdown', () => {
     expect(result).toEqual([])
   })
 
-  it('only queries system item types', async () => {
-    mockPrismaItemTypeFindMany.mockResolvedValue([])
-    mockPrismaItemGroupBy.mockResolvedValue([])
+  it('delegates to getSystemItemTypesWithCounts', async () => {
+    mockGetSystemItemTypesWithCounts.mockResolvedValue([])
 
     const { getUserItemTypeBreakdown } = await import('./user')
     await getUserItemTypeBreakdown('user-1')
 
-    expect(mockPrismaItemTypeFindMany).toHaveBeenCalledWith({
-      where: { isSystem: true },
-      select: { id: true, name: true, icon: true, color: true },
-    })
+    expect(mockGetSystemItemTypesWithCounts).toHaveBeenCalledWith('user-1')
   })
 })

@@ -1,3 +1,5 @@
+import { IMAGE_MAX_SIZE, FILE_MAX_SIZE } from '@/lib/constants'
+
 export const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
 export const FILE_TYPES = [
   'application/pdf',
@@ -13,10 +15,9 @@ export const FILE_TYPES = [
 ]
 
 export { IMAGE_EXTENSIONS } from '@/lib/constants'
+export const MAX_IMAGE_SIZE = IMAGE_MAX_SIZE
+export const MAX_FILE_SIZE = FILE_MAX_SIZE
 export const FILE_EXTENSIONS = ['.pdf', '.txt', '.md', '.json', '.yaml', '.yml', '.xml', '.csv', '.toml', '.ini']
-
-export const MAX_IMAGE_SIZE = 5 * 1024 * 1024
-export const MAX_FILE_SIZE = 10 * 1024 * 1024
 
 export function getExtension(filename: string): string {
   const idx = filename.lastIndexOf('.')
