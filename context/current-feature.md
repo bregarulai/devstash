@@ -1,23 +1,18 @@
-# Current Feature: Codebase Audit — Phase 4: Low Severity Fixes
+# Current Feature
 
-**Spec**: `context/fixes/codebase-audit-phase-4-low-spec.md`
+<!-- Feature name when active -->
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Extract hardcoded email sender address to a constant in `lib/constants.ts`
-- Extract magic number token expiry (`24 * 60 * 60 * 1000`) to named constant in `lib/constants.ts`
-- Split DashboardWrapper into server component wrapper + client component for sidebar toggle
-- Fix `handleResetPassword` user not found error to use generic error message
+<!-- What does success look like? -->
 
 ## Notes
 
-- 4 low-severity issues to fix
-- Must not break any existing functionality or user flow
-- Verify affected features still work after each change
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -146,3 +141,5 @@ In Progress
 - **Codebase Audit — Phase 2: High Severity Fixes (Completed)** - Fixed handleSignIn error handling, added rate limiting to password change endpoint, changed rate limiter to fail closed on Redis outage, fixed password reset to use generic error message, removed duplicate account deletion logic, and consolidated IMAGE_EXTENSIONS constants
 
 - **Codebase Audit — Phase 3: Medium Severity Fixes (Completed)** - Fixed inconsistent rate limit IP extraction, removed token from error redirect URL, added SVG sanitization, added database ownership check to download route, extracted duplicate collection transform logic, removed redundant identity transform, parallelized DB queries in profile load, and wired New Collection button
+
+- **Codebase Audit — Phase 4: Low Severity Fixes (Completed)** - Extracted hardcoded email sender address and magic number token expiry to named constants, split DashboardWrapper into server component wrapper + client component for sidebar toggle, fixed handleResetPassword user not found error to use generic error message
