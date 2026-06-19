@@ -3,6 +3,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 const mockAuth = vi.fn()
 const mockCreateCollection = vi.fn()
 const mockGetUserCollectionList = vi.fn()
+const mockUpdateCollection = vi.fn()
+const mockDeleteCollection = vi.fn()
 const mockRevalidatePath = vi.fn()
 
 vi.mock('next/cache', () => ({
@@ -16,6 +18,8 @@ vi.mock('@/lib/auth/auth/auth', () => ({
 vi.mock('@/lib/db/collections/collections', () => ({
   createCollection: (...args: unknown[]) => mockCreateCollection(...args),
   getUserCollectionList: (...args: unknown[]) => mockGetUserCollectionList(...args),
+  updateCollection: (...args: unknown[]) => mockUpdateCollection(...args),
+  deleteCollection: (...args: unknown[]) => mockDeleteCollection(...args),
 }))
 
 describe('createCollectionAction', () => {
@@ -247,6 +251,227 @@ describe('getCollectionsForPickerAction', () => {
       success: false,
       data: null,
       error: 'Failed to fetch collections',
+    })
+  })
+})
+
+describe('updateCollectionAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { updateCollectionAction } = await import('./Collections')
+    const result = await updateCollectionAction('col-1', { name: 'Test' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when session has no user id', async () => {
+    mockAuth.mockResolvedValue({ user: {} })
+
+    const { updateCollectionAction } = await import('./Collections')
+    const result = await updateCollectionAction('col-1', { name: 'Test' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns validation error for empty name', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+
+    const { updateCollectionAction } = await import('./Collections')
+    const result = await updateCollectionAction('col-1', { name: '' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Name is required',
+    })
+  })
+
+  it('returns validation error for name exceeding 255 characters', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+
+    const { updateCollectionAction } = await import('./Collections')
+    const result = await updateCollectionAction('col-1', { name: 'a'.repeat(256) })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Too big: expected string to have <=255 characters',
+    })
+  })
+
+  it('returns error when collection not found', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockUpdateCollection.mockResolvedValue(null)
+
+    const { updateCollectionAction } = await import('./Collections')
+    const result = await updateCollectionAction('col-1', { name: 'Test' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Collection not found',
+    })
+  })
+
+  it('returns success with updated collection', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    const mockUpdated = {
+      id: 'col-1',
+      name: 'Updated Collection',
+      description: 'Updated description',
+      isFavorite: false,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockUpdateCollection.mockResolvedValue(mockUpdated)
+
+    const { updateCollectionAction } = await import('./Collections')
+    const result = await updateCollectionAction('col-1', {
+      name: 'Updated Collection',
+      description: 'Updated description',
+    })
+
+    expect(result).toEqual({
+      success: true,
+      data: mockUpdated,
+      error: null,
+    })
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/dashboard')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/collections')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/collections/col-1')
+  })
+
+  it('returns error when updateCollection throws', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockUpdateCollection.mockRejectedValue(new Error('DB failure'))
+
+    const { updateCollectionAction } = await import('./Collections')
+    const result = await updateCollectionAction('col-1', { name: 'Test' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'DB failure',
+    })
+  })
+
+  it('returns generic error for non-Error thrown values', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockUpdateCollection.mockRejectedValue('unknown error')
+
+    const { updateCollectionAction } = await import('./Collections')
+    const result = await updateCollectionAction('col-1', { name: 'Test' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Failed to update collection',
+    })
+  })
+})
+
+describe('deleteCollectionAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { deleteCollectionAction } = await import('./Collections')
+    const result = await deleteCollectionAction('col-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when session has no user id', async () => {
+    mockAuth.mockResolvedValue({ user: {} })
+
+    const { deleteCollectionAction } = await import('./Collections')
+    const result = await deleteCollectionAction('col-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when collection not found', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockDeleteCollection.mockResolvedValue(false)
+
+    const { deleteCollectionAction } = await import('./Collections')
+    const result = await deleteCollectionAction('col-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Collection not found',
+    })
+  })
+
+  it('returns success when collection deleted', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockDeleteCollection.mockResolvedValue(true)
+
+    const { deleteCollectionAction } = await import('./Collections')
+    const result = await deleteCollectionAction('col-1')
+
+    expect(result).toEqual({
+      success: true,
+      data: null,
+      error: null,
+    })
+    expect(mockDeleteCollection).toHaveBeenCalledWith('user-1', 'col-1')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/dashboard')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/collections')
+  })
+
+  it('returns error when deleteCollection throws', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockDeleteCollection.mockRejectedValue(new Error('DB failure'))
+
+    const { deleteCollectionAction } = await import('./Collections')
+    const result = await deleteCollectionAction('col-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'DB failure',
+    })
+  })
+
+  it('returns generic error for non-Error thrown values', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockDeleteCollection.mockRejectedValue('unknown error')
+
+    const { deleteCollectionAction } = await import('./Collections')
+    const result = await deleteCollectionAction('col-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Failed to delete collection',
     })
   })
 })

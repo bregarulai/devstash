@@ -3,6 +3,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 const mockPrismaCollectionFindMany = vi.fn()
 const mockPrismaCollectionFindFirst = vi.fn()
 const mockPrismaCollectionCreate = vi.fn()
+const mockPrismaCollectionUpdate = vi.fn()
+const mockPrismaCollectionDeleteMany = vi.fn()
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
@@ -10,6 +12,8 @@ vi.mock('@/lib/prisma/prisma', () => ({
       findMany: (...args: unknown[]) => mockPrismaCollectionFindMany(...args),
       findFirst: (...args: unknown[]) => mockPrismaCollectionFindFirst(...args),
       create: (...args: unknown[]) => mockPrismaCollectionCreate(...args),
+      update: (...args: unknown[]) => mockPrismaCollectionUpdate(...args),
+      deleteMany: (...args: unknown[]) => mockPrismaCollectionDeleteMany(...args),
     },
   },
 }))
@@ -563,5 +567,133 @@ describe('getCollectionById', () => {
     expect(result).not.toBeNull()
     expect(result!.items).toHaveLength(1)
     expect(result!.items[0].id).toBe('item-1')
+  })
+})
+
+describe('updateCollection', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('updates collection name and description', async () => {
+    const mockExisting = { id: 'col-1', userId: 'user-1' }
+    const mockUpdated = {
+      id: 'col-1',
+      name: 'Updated Name',
+      description: 'Updated description',
+      isFavorite: false,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaCollectionFindFirst.mockResolvedValue(mockExisting)
+    mockPrismaCollectionUpdate.mockResolvedValue(mockUpdated)
+
+    const { updateCollection } = await import('./collections')
+    const result = await updateCollection('user-1', 'col-1', {
+      name: 'Updated Name',
+      description: 'Updated description',
+    })
+
+    expect(result).toEqual(mockUpdated)
+    expect(mockPrismaCollectionFindFirst).toHaveBeenCalledWith({
+      where: { id: 'col-1', userId: 'user-1' },
+    })
+    expect(mockPrismaCollectionUpdate).toHaveBeenCalledWith({
+      where: { id: 'col-1' },
+      data: { name: 'Updated Name', description: 'Updated description' },
+    })
+  })
+
+  it('returns null when collection not found', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue(null)
+
+    const { updateCollection } = await import('./collections')
+    const result = await updateCollection('user-1', 'nonexistent', {
+      name: 'Test',
+    })
+
+    expect(result).toBeNull()
+    expect(mockPrismaCollectionUpdate).not.toHaveBeenCalled()
+  })
+
+  it('returns null when collection belongs to different user', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue(null)
+
+    const { updateCollection } = await import('./collections')
+    const result = await updateCollection('user-2', 'col-1', {
+      name: 'Test',
+    })
+
+    expect(result).toBeNull()
+  })
+
+  it('converts undefined description to null', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue({ id: 'col-1', userId: 'user-1' })
+    mockPrismaCollectionUpdate.mockResolvedValue({ id: 'col-1' })
+
+    const { updateCollection } = await import('./collections')
+    await updateCollection('user-1', 'col-1', { name: 'Test' })
+
+    expect(mockPrismaCollectionUpdate).toHaveBeenCalledWith({
+      where: { id: 'col-1' },
+      data: { name: 'Test', description: null },
+    })
+  })
+
+  it('propagates prisma errors', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue({ id: 'col-1', userId: 'user-1' })
+    mockPrismaCollectionUpdate.mockRejectedValue(new Error('DB error'))
+
+    const { updateCollection } = await import('./collections')
+
+    await expect(
+      updateCollection('user-1', 'col-1', { name: 'Test' })
+    ).rejects.toThrow('DB error')
+  })
+})
+
+describe('deleteCollection', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('deletes collection and returns true', async () => {
+    mockPrismaCollectionDeleteMany.mockResolvedValue({ count: 1 })
+
+    const { deleteCollection } = await import('./collections')
+    const result = await deleteCollection('user-1', 'col-1')
+
+    expect(result).toBe(true)
+    expect(mockPrismaCollectionDeleteMany).toHaveBeenCalledWith({
+      where: { id: 'col-1', userId: 'user-1' },
+    })
+  })
+
+  it('returns false when collection not found', async () => {
+    mockPrismaCollectionDeleteMany.mockResolvedValue({ count: 0 })
+
+    const { deleteCollection } = await import('./collections')
+    const result = await deleteCollection('user-1', 'nonexistent')
+
+    expect(result).toBe(false)
+  })
+
+  it('returns false when collection belongs to different user', async () => {
+    mockPrismaCollectionDeleteMany.mockResolvedValue({ count: 0 })
+
+    const { deleteCollection } = await import('./collections')
+    const result = await deleteCollection('user-2', 'col-1')
+
+    expect(result).toBe(false)
+  })
+
+  it('propagates prisma errors', async () => {
+    mockPrismaCollectionDeleteMany.mockRejectedValue(new Error('DB error'))
+
+    const { deleteCollection } = await import('./collections')
+
+    await expect(deleteCollection('user-1', 'col-1')).rejects.toThrow('DB error')
   })
 })

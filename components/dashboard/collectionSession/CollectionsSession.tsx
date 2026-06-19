@@ -8,10 +8,8 @@ import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import type { CollectionWithStats } from '@/types/db';
-import type { User } from '@/types/user';
 
 interface CollectionsSessionProps {
-  user: User;
   collections: CollectionWithStats[];
 }
 

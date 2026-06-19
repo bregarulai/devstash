@@ -40,7 +40,7 @@ export function DashboardContent({
           ) : (
             <>
               <StatsCards stats={itemStats} />
-              <CollectionsSession user={user} collections={recentCollections} />
+              <CollectionsSession collections={recentCollections} />
               <PinnedItems items={pinnedItems} onOpen={openDrawer} />
               <RecentItems items={recentItems} onOpen={openDrawer} />
             </>

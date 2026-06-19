@@ -183,6 +183,13 @@ export const collectionCreateSchema = z.object({
 
 export type CollectionCreateValues = z.infer<typeof collectionCreateSchema>;
 
+export const collectionUpdateSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(255).trim(),
+  description: z.string().or(z.null()).optional(),
+});
+
+export type CollectionUpdateValues = z.infer<typeof collectionUpdateSchema>;
+
 // ── ItemType ──────────────────────────────────────────────────────────────────
 
 export const itemTypeSchema = z.object({

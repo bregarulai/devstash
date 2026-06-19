@@ -1,3 +1,6 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -7,6 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
+import { CollectionCardMenu } from '@/components/collections/collectionCardMenu/CollectionCardMenu';
 
 interface CollectionCardProps {
   collection: {
@@ -22,12 +26,21 @@ interface CollectionCardProps {
 }
 
 export function CollectionCard({ collection }: CollectionCardProps) {
+  const router = useRouter();
   const borderColor = collection.dominantItemTypeColor;
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('[data-dropdown-trigger]')) {
+      return;
+    }
+    router.push(`/collections/${collection.id}`);
+  };
 
   return (
     <Card
-      className='h-full rounded-xl border-l-[3px] transition-all hover:shadow-md'
+      className='h-full cursor-pointer rounded-xl border-l-[3px] transition-all hover:shadow-md'
       style={borderColor ? { borderLeftColor: borderColor } : undefined}
+      onClick={handleCardClick}
     >
       <CardHeader className='flex flex-row items-center gap-3 space-y-0 pb-2'>
         <div className='min-w-0 flex-1'>
@@ -39,6 +52,14 @@ export function CollectionCard({ collection }: CollectionCardProps) {
               {collection.description}
             </CardDescription>
           )}
+        </div>
+        <div data-dropdown-trigger>
+          <CollectionCardMenu
+            collectionId={collection.id}
+            collectionName={collection.name}
+            collectionDescription={collection.description}
+            isFavorite={collection.isFavorite}
+          />
         </div>
       </CardHeader>
       <CardContent className='pb-2'>
