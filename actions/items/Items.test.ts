@@ -183,6 +183,7 @@ describe('deleteItemAction', () => {
 
     expect(result).toEqual({
       success: false,
+      data: null,
       error: 'Unauthorized',
     })
   })
@@ -195,6 +196,7 @@ describe('deleteItemAction', () => {
 
     expect(result).toEqual({
       success: false,
+      data: null,
       error: 'Unauthorized',
     })
   })
@@ -208,6 +210,7 @@ describe('deleteItemAction', () => {
 
     expect(result).toEqual({
       success: true,
+      data: null,
       error: null,
     })
     expect(mockDeleteItem).toHaveBeenCalledWith('item-1', 'user-1')
@@ -223,6 +226,7 @@ describe('deleteItemAction', () => {
 
     expect(result).toEqual({
       success: false,
+      data: null,
       error: 'Database error',
     })
   })
@@ -236,6 +240,7 @@ describe('deleteItemAction', () => {
 
     expect(result).toEqual({
       success: false,
+      data: null,
       error: 'Failed to delete item',
     })
   })

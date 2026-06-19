@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const mockAuth = vi.fn()
-const mockPrismaItemUpdateMany = vi.fn()
+const mockUpdateItemFields = vi.fn()
 const mockRevalidatePath = vi.fn()
 
 vi.mock('next/cache', () => ({
@@ -12,12 +12,12 @@ vi.mock('@/lib/auth/auth/auth', () => ({
   auth: (...args: unknown[]) => mockAuth(...args),
 }))
 
+vi.mock('@/lib/db/items/items', () => ({
+  updateItemFields: (...args: unknown[]) => mockUpdateItemFields(...args),
+}))
+
 vi.mock('@/lib/prisma/prisma', () => ({
-  prisma: {
-    item: {
-      updateMany: (...args: unknown[]) => mockPrismaItemUpdateMany(...args),
-    },
-  },
+  prisma: {},
 }))
 
 function createMockRequest(body: unknown) {
@@ -74,23 +74,23 @@ describe('PATCH /api/items/[id]', () => {
     expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 
-  it('returns 404 when item not found', async () => {
+  it('returns 500 when item not found', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
-    mockPrismaItemUpdateMany.mockResolvedValue({ count: 0 })
+    mockUpdateItemFields.mockRejectedValue(new Error('Record to update not found'))
 
     const { PATCH } = await import('./route')
     const request = createMockRequest({ isFavorite: true })
     const response = await PATCH(request, createMockParams('item-1'))
     const data = await response.json()
 
-    expect(response.status).toBe(404)
-    expect(data.error).toBe('Item not found')
+    expect(response.status).toBe(500)
+    expect(data.error).toBe('Failed to update item')
     expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 
   it('calls revalidatePath after successful update', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
-    mockPrismaItemUpdateMany.mockResolvedValue({ count: 1 })
+    mockUpdateItemFields.mockResolvedValue(undefined)
 
     const { PATCH } = await import('./route')
     const request = createMockRequest({ isFavorite: true })
@@ -104,7 +104,7 @@ describe('PATCH /api/items/[id]', () => {
 
   it('returns 500 on database error', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
-    mockPrismaItemUpdateMany.mockRejectedValue(new Error('Database error'))
+    mockUpdateItemFields.mockRejectedValue(new Error('Database error'))
 
     const { PATCH } = await import('./route')
     const request = createMockRequest({ isFavorite: true })

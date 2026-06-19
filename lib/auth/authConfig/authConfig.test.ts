@@ -2,7 +2,11 @@ import { describe, it, expect, vi } from 'vitest'
 import type { User } from '@auth/core/types'
 
 vi.mock('@/lib/prisma/prisma', () => ({
-  prisma: {},
+  prisma: {
+    user: {
+      findUnique: vi.fn().mockResolvedValue(null),
+    },
+  },
 }))
 
 const { authConfig } = await import('./authConfig')
@@ -118,7 +122,7 @@ describe('authConfig.jwt', () => {
 
     const result = await jwt({ token, user, account: null, profile: undefined, trigger: 'signIn', session: undefined })
 
-    expect(result).toEqual({ id: 'user-123' })
+    expect(result).toEqual({ id: 'user-123', isPro: false })
   })
 
   it('returns existing token without user', async () => {
@@ -127,7 +131,7 @@ describe('authConfig.jwt', () => {
 
     const result = await jwt({ token, user, account: null, profile: undefined, trigger: 'signIn', session: undefined })
 
-    expect(result).toEqual({ existing: 'data', id: '' })
+    expect(result).toEqual({ existing: 'data', id: '', isPro: false })
   })
 })
 

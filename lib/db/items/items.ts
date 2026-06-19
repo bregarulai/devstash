@@ -4,7 +4,7 @@ import { DEFAULT_RECENT_LIMIT } from '@/lib/db/constants/constants';
 import { deleteFromR2, extractR2Key } from '@/lib/r2';
 import type { ItemWithDetails, SystemItemType, ItemEditValues, ItemCreateValues, ItemStats } from '@/types/db';
 
-const ITEM_INCLUDE = {
+export const ITEM_INCLUDE = {
   itemType: {
     select: {
       name: true,
@@ -216,6 +216,17 @@ export async function getItemsByTypeWithMeta(
   }
 
   return { items, types, hasError };
+}
+
+export async function updateItemFields(
+  itemId: string,
+  userId: string,
+  data: Record<string, unknown>,
+): Promise<void> {
+  await prisma.item.update({
+    where: { id: itemId, userId },
+    data,
+  });
 }
 
 export async function updateItem(

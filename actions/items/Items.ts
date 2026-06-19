@@ -5,90 +5,87 @@ import { auth } from '@/lib/auth/auth/auth';
 import { itemEditSchema, itemCreateSchema, type ItemEditValues, type ItemCreateValues, type ItemWithDetails } from '@/types/db';
 import { updateItem, deleteItem, createItem } from '@/lib/db/items/items';
 
-type CreateItemResult =
-  | { success: true; data: ItemWithDetails; error: null }
+type ActionResult<T> =
+  | { success: true; data: T; error: null }
   | { success: false; data: null; error: string };
+
+async function requireAuth() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { userId: null, error: 'Unauthorized' as const };
+  }
+  return { userId: session.user.id, error: null };
+}
 
 export async function createItemAction(
   data: ItemCreateValues,
-): Promise<CreateItemResult> {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return { success: false, data: null, error: 'Unauthorized' };
-  }
+): Promise<ActionResult<ItemWithDetails>> {
+  const authResult = await requireAuth();
+  if (authResult.error) return { success: false, data: null, error: authResult.error };
+  const { userId } = authResult;
+
   const result = itemCreateSchema.safeParse(data);
   if (!result.success) {
     const firstError = result.error.issues[0]?.message ?? 'Invalid input';
     return { success: false, data: null, error: firstError };
   }
+
   try {
-    const created = await createItem(session.user.id, result.data);
+    const created = await createItem(userId, result.data);
     revalidatePath('/dashboard');
     return { success: true, data: created, error: null };
-  } catch (error) {
+  } catch (err) {
     return {
       success: false,
       data: null,
-      error: error instanceof Error ? error.message : 'Failed to create item',
+      error: err instanceof Error ? err.message : 'Failed to create item',
     };
   }
 }
 
-type UpdateItemResult =
-  | { success: true; data: ItemWithDetails; error: null }
-  | { success: false; data: null; error: string };
-
 export async function updateItemAction(
   itemId: string,
   data: ItemEditValues,
-): Promise<UpdateItemResult> {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    return { success: false, data: null, error: 'Unauthorized' };
-  }
+): Promise<ActionResult<ItemWithDetails>> {
+  const authResult = await requireAuth();
+  if (authResult.error) return { success: false, data: null, error: authResult.error };
+  const { userId } = authResult;
 
   const result = itemEditSchema.safeParse(data);
-
   if (!result.success) {
     const firstError = result.error.issues[0]?.message ?? 'Invalid input';
     return { success: false, data: null, error: firstError };
   }
 
   try {
-    const updated = await updateItem(itemId, session.user.id, result.data);
+    const updated = await updateItem(itemId, userId, result.data);
     revalidatePath('/dashboard');
     return { success: true, data: updated, error: null };
-  } catch (error) {
+  } catch (err) {
     return {
       success: false,
       data: null,
-      error: error instanceof Error ? error.message : 'Failed to update item',
+      error: err instanceof Error ? err.message : 'Failed to update item',
     };
   }
 }
 
-type DeleteItemResult =
-  | { success: true; error: null }
-  | { success: false; error: string };
-
 export async function deleteItemAction(
   itemId: string,
-): Promise<DeleteItemResult> {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    return { success: false, error: 'Unauthorized' };
-  }
+): Promise<ActionResult<null>> {
+  const authResult = await requireAuth();
+  if (authResult.error) return { success: false, data: null, error: authResult.error };
+  const { userId } = authResult;
 
   try {
-    await deleteItem(itemId, session.user.id);
+    await deleteItem(itemId, userId);
     revalidatePath('/dashboard');
-    return { success: true, error: null };
-  } catch (error) {
+    return { success: true, data: null, error: null };
+  } catch (err) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to delete item',
+      data: null,
+      error: err instanceof Error ? err.message : 'Failed to delete item',
     };
   }
 }

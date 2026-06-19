@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Code Decomposition — Phase 4: API & Actions
+
+**Spec**: `context/fixes/code-decomposition-phase-4-api-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals for the next feature -->
+- Extract `requireAuth()` helper in item API route to deduplicate identical auth checks
+- Import and reuse `ITEM_INCLUDE` from `lib/db/items/items.ts` instead of inline duplication
+- Use `updateItem()` from shared DB layer instead of direct `prisma.item.updateMany`
+- Define generic `ActionResult<T>` type in item actions to eliminate repeated result shapes
+- Extract `requireAuth()` helper in item actions to deduplicate auth guards
+- Remove ~25 lines of duplicated code across API route and server actions
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- Two files affected: `app/api/items/[id]/route.ts` and `actions/items/Items.ts`
+- Auth patterns differ slightly between API route (returns NextResponse) and actions (returns result object)
+- Both `requireAuth()` helpers are local to their respective files — no shared utility needed
+- Must not break existing functionality or user flows
 
 ## History
 

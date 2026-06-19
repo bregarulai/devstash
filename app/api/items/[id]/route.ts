@@ -3,16 +3,23 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth/auth';
 import { prisma } from '@/lib/prisma/prisma';
 import { itemUpdateSchema } from '@/types/db';
+import { ITEM_INCLUDE, updateItemFields } from '@/lib/db/items/items';
+
+async function requireAuth() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
+  }
+  return { session, error: null };
+}
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const result = await requireAuth();
+  if (result.error) return result.error;
+  const { session } = result;
 
   const { id } = await params;
 
@@ -22,21 +29,7 @@ export async function GET(
         id,
         userId: session.user.id,
       },
-      include: {
-        itemType: {
-          select: {
-            name: true,
-            icon: true,
-            color: true,
-          },
-        },
-        tags: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      include: ITEM_INCLUDE,
     });
 
     if (!item) {
@@ -73,11 +66,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const authResult = await requireAuth();
+  if (authResult.error) return authResult.error;
+  const { session } = authResult;
 
   const { id } = await params;
 
@@ -92,19 +83,7 @@ export async function PATCH(
       );
     }
 
-    const updateData = { ...result.data, userId: session.user.id };
-
-    const item = await prisma.item.updateMany({
-      where: {
-        id,
-        userId: session.user.id,
-      },
-      data: updateData,
-    });
-
-    if (item.count === 0) {
-      return NextResponse.json({ error: 'Item not found' }, { status: 404 });
-    }
+    await updateItemFields(id, session.user.id, result.data);
 
     revalidatePath('/dashboard');
     return NextResponse.json({ success: true });
