@@ -10,13 +10,43 @@ import {
   getFavoriteCollections,
   getAllCollections,
 } from '@/lib/db/collections/collections';
-import type { ItemWithDetails, SystemItemType, CollectionWithStats, ItemStats } from '@/types/db';
+import type {
+  ItemWithDetails,
+  SystemItemType,
+  CollectionWithStats,
+  ItemStats,
+  DashboardUser,
+} from '@/types/db';
+import { EMPTY_ITEM_STATS } from '@/types/db';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
 import { DashboardContent } from '@/components/dashboard/dashboardContent/DashboardContent';
 import { ItemDrawerProvider } from '@/components/items/itemDrawer/ItemDrawerProvider';
 import { ItemDrawer } from '@/components/items/itemDrawer/ItemDrawer';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+
+type DashboardData = {
+  pinnedItems: ItemWithDetails[];
+  recentItems: ItemWithDetails[];
+  systemItemTypes: SystemItemType[];
+  favoriteCollections: CollectionWithStats[];
+  allCollections: CollectionWithStats[];
+  itemStats: ItemStats;
+};
+
+async function loadDashboardData(userId: string): Promise<DashboardData> {
+  const [pinnedItems, recentItems, systemItemTypes, favoriteCollections, allCollections, itemStats] =
+    await Promise.all([
+      getPinnedItems(userId).catch(() => []),
+      getRecentItems(userId).catch(() => []),
+      getSystemItemTypesWithCounts(userId).catch(() => []),
+      getFavoriteCollections(userId).catch(() => []),
+      getAllCollections(userId).catch(() => []),
+      getItemStats(userId).catch(() => EMPTY_ITEM_STATS),
+    ]);
+
+  return { pinnedItems, recentItems, systemItemTypes, favoriteCollections, allCollections, itemStats };
+}
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -25,7 +55,7 @@ export default async function DashboardPage() {
     return <div className="min-h-screen flex items-center justify-center">Not signed in</div>;
   }
 
-  let user: { id: string; name: string | null; email: string; image: string | null; isPro: boolean } | null = null;
+  let user: DashboardUser | null = null;
 
   try {
     user = await prisma.user.findUnique({
@@ -55,39 +85,17 @@ export default async function DashboardPage() {
     );
   }
 
-  let pinnedItems: ItemWithDetails[] = [];
-  let recentItems: ItemWithDetails[] = [];
-  let systemItemTypes: SystemItemType[] = [];
-  let favoriteCollections: CollectionWithStats[] = [];
-  let allCollections: CollectionWithStats[] = [];
-  let itemStats: ItemStats = {
-    totalItems: 0,
-    totalCollections: 0,
-    favoriteItems: 0,
-    favoriteCollections: 0,
+  let data: DashboardData = {
+    pinnedItems: [],
+    recentItems: [],
+    systemItemTypes: [],
+    favoriteCollections: [],
+    allCollections: [],
+    itemStats: EMPTY_ITEM_STATS,
   };
 
   try {
-    [
-      pinnedItems,
-      recentItems,
-      systemItemTypes,
-      favoriteCollections,
-      allCollections,
-      itemStats,
-    ] = await Promise.all([
-      getPinnedItems(user.id).catch(() => []),
-      getRecentItems(user.id).catch(() => []),
-      getSystemItemTypesWithCounts(user.id).catch(() => []),
-      getFavoriteCollections(user.id).catch(() => []),
-      getAllCollections(user.id).catch(() => []),
-      getItemStats(user.id).catch(() => ({
-        totalItems: 0,
-        totalCollections: 0,
-        favoriteItems: 0,
-        favoriteCollections: 0,
-      })),
-    ]);
+    data = await loadDashboardData(user.id);
   } catch (error) {
     console.error('Failed to fetch dashboard data:', error);
   }
@@ -95,17 +103,17 @@ export default async function DashboardPage() {
   return (
     <DashboardWrapper
       user={user}
-      systemItemTypes={systemItemTypes}
-      favoriteCollections={favoriteCollections}
-      recentCollections={allCollections}
+      systemItemTypes={data.systemItemTypes}
+      favoriteCollections={data.favoriteCollections}
+      recentCollections={data.allCollections}
     >
       <ItemDrawerProvider>
         <DashboardContent
           user={user}
-          favoriteCollections={favoriteCollections}
-          itemStats={itemStats}
-          pinnedItems={pinnedItems}
-          recentItems={recentItems}
+          favoriteCollections={data.favoriteCollections}
+          itemStats={data.itemStats}
+          pinnedItems={data.pinnedItems}
+          recentItems={data.recentItems}
         />
         <ItemDrawer />
       </ItemDrawerProvider>

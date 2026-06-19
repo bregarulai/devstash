@@ -377,6 +377,21 @@ export const itemStatsSchema = z.object({
 
 export type ItemStats = z.infer<typeof itemStatsSchema>;
 
+export const EMPTY_ITEM_STATS: ItemStats = {
+  totalItems: 0,
+  totalCollections: 0,
+  favoriteItems: 0,
+  favoriteCollections: 0,
+};
+
+export type DashboardUser = {
+  id: string;
+  name: string | null;
+  email: string;
+  image: string | null;
+  isPro: boolean;
+};
+
 // ── Forgot Password Schema ────────────────────────────────────────────────────
 
 export const forgotPasswordSchema = z.object({

@@ -4,6 +4,7 @@ import {
   getItemsByTypeWithMeta,
 } from '@/lib/db/items/items';
 import { ITEM_TYPES } from '@/lib/constants';
+import type { DashboardUser } from '@/types/db';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
 import { ItemDrawerProvider } from '@/components/items/itemDrawer/ItemDrawerProvider';
 import { ItemDrawer } from '@/components/items/itemDrawer/ItemDrawer';
@@ -36,15 +37,17 @@ export default async function ItemsTypePage({
     notFound();
   }
 
+  const user: DashboardUser = {
+    id: session.user.id,
+    name: session.user.name ?? null,
+    email: session.user.email || '',
+    image: session.user.image ?? null,
+    isPro: session.user.isPro,
+  };
+
   return (
     <DashboardWrapper
-      user={{
-        id: session.user.id,
-        name: session.user.name ?? null,
-        email: session.user.email || '',
-        image: session.user.image ?? null,
-        isPro: session.user.isPro,
-      }}
+      user={user}
       systemItemTypes={types}
       favoriteCollections={[]}
       recentCollections={[]}
