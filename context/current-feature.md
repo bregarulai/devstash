@@ -1,25 +1,16 @@
-# Current Feature: Codebase Audit — Phase 2: High Severity Fixes
-
-**Spec**: `context/fixes/codebase-audit-phase-2-high-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Fix handleSignIn to catch signIn() errors and redirect with error message instead of raw 500
-- Add rate limiting to password change endpoint (handleChangePassword)
-- Change rate limiter to fail closed on Redis outage for critical auth endpoints
-- Fix password reset to use generic error message instead of leaking user existence
-- Remove duplicate account deletion logic in Auth.ts, consolidate to use accountDeletion.ts
-- Consolidate duplicate IMAGE_EXTENSIONS constants into single shared constant
+<!-- What does success look like for this feature? -->
 
 ## Notes
 
-- 6 high-severity issues identified in codebase audit
-- Must NOT break any existing functionality or user flow
-- Always verify affected features still work after each change
+<!-- Any additional context, constraints, or details from spec -->
 
 ## History
 
@@ -144,3 +135,5 @@ In Progress
 - **Rate Limiting Fix — Server Actions Bypassed (Completed)** - Fixed rate limiting bypass in Server Actions by adding x-client-ip header forwarding in proxy.ts, extracting real client IP from headers in all 6 auth server actions, and including IP in rate limit keys to prevent cross-user collision
 
 - **Codebase Audit — Phase 1: Critical Fixes (Completed)** - Fixed CSRF token validation to compare against server-side session, removed password hash from ProfileData type with hasPassword boolean, added userId filter to getSystemItemTypesWithCounts for per-user counts, and added missing 'use client' directive to ContentTypeField
+
+- **Codebase Audit — Phase 2: High Severity Fixes (Completed)** - Fixed handleSignIn error handling, added rate limiting to password change endpoint, changed rate limiter to fail closed on Redis outage, fixed password reset to use generic error message, removed duplicate account deletion logic, and consolidated IMAGE_EXTENSIONS constants
