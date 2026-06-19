@@ -44,7 +44,7 @@ export default async function ItemsTypePage({
         name: session.user.name ?? null,
         email: session.user.email || '',
         image: session.user.image ?? null,
-        isPro: false,
+        isPro: session.user.isPro,
       }}
       systemItemTypes={types}
       favoriteCollections={[]}

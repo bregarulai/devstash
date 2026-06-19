@@ -22,12 +22,20 @@ export const authConfig = {
     async jwt({ token, user }) {
       if (user) {
         (token as { id: string }).id = String(user.id);
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { isPro: true },
+        });
+        (token as { isPro: boolean }).isPro = dbUser?.isPro ?? false;
       }
       return token;
     },
     async session({ session, token }) {
       if ((token as { id?: string }).id) {
         session.user.id = String((token as { id: string }).id);
+      }
+      if ((token as { isPro?: boolean }).isPro !== undefined) {
+        session.user.isPro = (token as { isPro: boolean }).isPro;
       }
       return session;
     },

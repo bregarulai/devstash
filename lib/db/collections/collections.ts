@@ -133,7 +133,7 @@ export async function getRecentCollections(
         },
       },
       items: {
-        take: 5,
+        take: DEFAULT_SAMPLE_COUNT,
         include: {
           item: {
             include: {

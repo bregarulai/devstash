@@ -119,7 +119,7 @@ export function ProfilePageClient({
           <div className='flex items-center gap-1.5 text-sm'>
             <Calendar className='size-3.5 text-muted-foreground shrink-0' />
             <span className='text-muted-foreground'>Member since</span>
-            <span className='text-foreground'>{formatDaysAgo(user.createdAt)} ago</span>
+            <span className='text-foreground'>{formatDaysAgo(user.createdAt)}</span>
           </div>
         </CardContent>
         <CardFooter className='flex flex-col sm:flex-row gap-3 pt-4'>

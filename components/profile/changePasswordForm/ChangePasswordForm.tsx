@@ -31,28 +31,27 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
   });
 
   const onSubmit = async (data: ChangePasswordValues) => {
-    startTransition(() => {
-      setGeneralError(null);
-    });
+    setGeneralError(null);
+    startTransition(async () => {
+      try {
+        const result = await handleChangePassword(data);
 
-    try {
-      const result = await handleChangePassword(data);
+        if ('error' in result) {
+          setGeneralError(result.error ?? 'An unexpected error occurred');
+          return;
+        }
 
-      if ('error' in result) {
-        setGeneralError(result.error ?? 'An unexpected error occurred');
-        return;
+        toast.success('Password updated', {
+          description: 'Your password has been changed successfully.',
+        });
+
+        onSuccess?.();
+        reset();
+        setGeneralError(null);
+      } catch {
+        setGeneralError('An unexpected error occurred');
       }
-
-      toast.success('Password updated', {
-        description: 'Your password has been changed successfully.',
-      });
-
-      onSuccess?.();
-      reset();
-      setGeneralError(null);
-    } catch {
-      setGeneralError('An unexpected error occurred');
-    }
+    });
   };
 
   return (

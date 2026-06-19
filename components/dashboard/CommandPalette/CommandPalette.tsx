@@ -11,14 +11,10 @@ import {
   CommandShortcut,
 } from '@/components/ui/command';
 import { useState, useEffect } from 'react';
+import { ITEM_TYPES } from '@/lib/constants';
 import {
   Folder,
   Heart,
-  FileText,
-  Code,
-  Link as LinkIcon,
-  Image as ImageIcon,
-  File,
   Plus,
   Moon,
   Sun,
@@ -26,13 +22,12 @@ import {
   Home,
 } from 'lucide-react';
 
-const ITEM_TYPES = [
-  { name: 'Snippet', icon: Code, href: '/items/Snippet', color: 'text-snippet' },
-  { name: 'Prompt', icon: FileText, href: '/items/Prompt', color: 'text-prompt' },
-  { name: 'Link', icon: LinkIcon, href: '/items/Link', color: 'text-link' },
-  { name: 'File', icon: File, href: '/items/File', color: 'text-file' },
-  { name: 'Image', icon: ImageIcon, href: '/items/Image', color: 'text-image' },
-];
+const paletteTypes = ITEM_TYPES.map((type) => ({
+  name: type.label,
+  icon: type.icon,
+  href: `/items/${type.value}`,
+  color: `text-${type.value}`,
+}));
 
 interface CommandPaletteProps {
   open: boolean;
@@ -92,7 +87,7 @@ export function CommandPalette({ open, onOpenChange, isDark, onToggleTheme }: Co
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Item Types">
-          {ITEM_TYPES.map((type) => (
+          {paletteTypes.map((type) => (
             <CommandItem
               key={type.name}
               value={type.name.toLowerCase()}
