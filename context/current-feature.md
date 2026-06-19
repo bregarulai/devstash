@@ -1,26 +1,16 @@
-# Current Feature: Audit June 2026 — Phase 2: Bugs
-
-**Spec**: `context/fixes/audit-june-2026-phase-2-bugs-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Fix the "ago ago" display bug in ProfilePageClient
-- Fix isPro hardcoded to false in items/[type]/page.tsx
-- Fix CommandPalette inconsistent ITEM_TYPES (missing command and note, capitalized hrefs)
-- Fix getRecentCollections hardcoded take: 5 to use DEFAULT_SAMPLE_COUNT
-- Fix ChangePasswordForm misuse of startTransition
+<!-- What does success look like? -->
 
 ## Notes
 
-- Item 1 is a one-line fix
-- Item 2 requires a DB query or session callback change — test with both pro and non-pro users
-- Item 3 requires importing from constants — verify all item types render in the command palette
-- Item 4 is a one-line constant swap
-- Item 5 requires restructuring the form submission — verify loading state reflects actual async work
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -153,3 +143,5 @@ In Progress
 - **Codebase Audit — Phase 4: Low Severity Fixes (Completed)** - Extracted hardcoded email sender address and magic number token expiry to named constants, split DashboardWrapper into server component wrapper + client component for sidebar toggle, fixed handleResetPassword user not found error to use generic error message
 
 - **Audit June 2026 — Phase 1: Security (Completed)** - Added rate limiting and CSRF validation to change-password API route, wrapped bcrypt.hash/prisma.user.update in try-catch, replaced email enumeration message on registration with generic error
+
+- **Audit June 2026 — Phase 2: Bugs (Completed)** - Fixed "ago ago" display bug, isPro query, CommandPalette ITEM_TYPES, recent collections DEFAULT_SAMPLE_COUNT, and ChangePasswordForm startTransition misuse
