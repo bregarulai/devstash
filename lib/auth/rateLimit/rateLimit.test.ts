@@ -213,4 +213,42 @@ describe('checkRateLimit', () => {
     expect(result.success).toBe(true)
     expect(result.remaining).toBe(5)
   })
+
+  it('returns failure when Upstash fails with failClosed=true', async () => {
+    const mockLimiter = {
+      limit: vi.fn().mockRejectedValue(new Error('Connection refused')),
+    }
+
+    const result = await checkRateLimit(
+      mockLimiter,
+      'test-key',
+      { limit: 5, duration: 60 },
+      true
+    )
+
+    expect(result.success).toBe(false)
+    expect(result.remaining).toBe(0)
+    expect(result.retryAfter).toBe(60)
+  })
+
+  it('returns failure with correct retryAfter when rate limited', async () => {
+    const resetTime = Date.now() + 60000
+    const mockLimiter = {
+      limit: vi.fn().mockResolvedValue({
+        success: false,
+        remaining: 0,
+        limit: 5,
+        reset: resetTime,
+      }),
+    }
+
+    const result = await checkRateLimit(mockLimiter, 'test-key', {
+      limit: 5,
+      duration: 60,
+    })
+
+    expect(result.success).toBe(false)
+    expect(result.retryAfter).toBeGreaterThan(0)
+    expect(result.retryAfter).toBeLessThanOrEqual(60)
+  })
 })

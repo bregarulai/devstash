@@ -94,6 +94,10 @@ export const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
     limit: 3,
     duration: 15 * 60, // 15 minutes
   },
+  changePassword: {
+    limit: 5,
+    duration: 15 * 60, // 15 minutes
+  },
 };
 
 /**
@@ -111,12 +115,14 @@ export interface RateLimitResult {
  * Checks rate limit for a given key.
  * Returns success=true if the request is allowed.
  * Returns success=false with retry-after info if rate limited.
- * Returns success=true (fail open) if Upstash is unavailable.
+ * Returns success=true (fail open) if Upstash is unavailable by default.
+ * Pass failClosed=true to return success=false when Upstash is unavailable (for critical auth endpoints).
  */
 export async function checkRateLimit(
   ratelimit: ReturnType<typeof createRateLimiter>,
   key: string,
   config: RateLimitConfig,
+  failClosed = false,
 ): Promise<RateLimitResult> {
   try {
     const result = await ratelimit.limit(key);
@@ -131,7 +137,15 @@ export async function checkRateLimit(
         : Math.ceil((result.reset - Date.now()) / 1000),
     };
   } catch {
-    // Fail open: allow request if Upstash is unavailable
+    if (failClosed) {
+      return {
+        success: false,
+        remaining: 0,
+        limit: config.limit,
+        reset: Date.now() + config.duration * 1000,
+        retryAfter: config.duration,
+      };
+    }
     return {
       success: true,
       remaining: config.limit,

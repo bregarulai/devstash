@@ -15,7 +15,7 @@ export async function handleForgotPassword(formData: FormData) {
   const ip = headersList.get("x-client-ip") ?? "unknown"
   const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.forgotPassword)
   const rateKey = `forgotpwd:${ip}`
-  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.forgotPassword)
+  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.forgotPassword, true)
 
   if (!rateResult.success) {
     const retryAfter = rateResult.retryAfter || 3600

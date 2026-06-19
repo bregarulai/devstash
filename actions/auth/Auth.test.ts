@@ -72,6 +72,7 @@ vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
     signIn: { limit: 5, duration: 900 },
     forgotPassword: { limit: 3, duration: 3600 },
     deleteAccount: { limit: 3, duration: 900 },
+    changePassword: { limit: 5, duration: 900 },
   },
 }))
 
@@ -269,81 +270,6 @@ describe('handleRegister', () => {
   })
 })
 
-describe('handleDeleteAccount', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-    mockSignOut.mockResolvedValue({})
-  })
-
-  it('returns error when not authenticated', async () => {
-    mockAuth.mockResolvedValue(null)
-
-    const { handleDeleteAccount } = await import('./Auth')
-    const result = await handleDeleteAccount('password123')
-
-    expect(result).toEqual({ error: 'Not authenticated', data: null })
-  })
-
-  it('returns error when user not found', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
-    mockPrismaUserFindUnique.mockResolvedValue(null)
-
-    const { handleDeleteAccount } = await import('./Auth')
-    const result = await handleDeleteAccount('password123')
-
-    expect(result).toEqual({ error: 'User not found', data: null })
-  })
-
-  it('returns error for OAuth user without password', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
-    mockPrismaUserFindUnique.mockResolvedValue({ id: 'user-1', password: null })
-
-    const { handleDeleteAccount } = await import('./Auth')
-    const result = await handleDeleteAccount('password123')
-
-    expect(result).toEqual({ error: 'Password verification required', data: null })
-  })
-
-  it('returns error on wrong password', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
-    mockPrismaUserFindUnique.mockResolvedValue({ id: 'user-1', password: 'hashed' })
-    mockBcryptCompare.mockResolvedValue(false)
-
-    const { handleDeleteAccount } = await import('./Auth')
-    const result = await handleDeleteAccount('wrong-password')
-
-    expect(result).toEqual({ error: 'Password verification failed', data: null })
-  })
-
-  it('deletes account and signs out on success', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
-    mockPrismaUserFindUnique.mockResolvedValue({ id: 'user-1', password: 'hashed' })
-    mockBcryptCompare.mockResolvedValue(true)
-    mockPrismaUserDelete.mockResolvedValue({})
-
-    const { handleDeleteAccount } = await import('./Auth')
-    const result = await handleDeleteAccount('correct-password')
-
-    expect(result).toEqual({ success: true, data: null })
-    expect(mockPrismaUserDelete).toHaveBeenCalledWith({ where: { id: 'user-1' } })
-    expect(mockSignOut).toHaveBeenCalledWith({ redirectTo: '/sign-in' })
-    expect(mockRevalidatePath).toHaveBeenCalledWith('/profile')
-  })
-
-  it('returns error when deletion fails', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
-    mockPrismaUserFindUnique.mockResolvedValue({ id: 'user-1', password: 'hashed' })
-    mockBcryptCompare.mockResolvedValue(true)
-    mockPrismaUserDelete.mockRejectedValue(new Error('Database error'))
-
-    const { handleDeleteAccount } = await import('./Auth')
-    const result = await handleDeleteAccount('correct-password')
-
-    expect(result).toEqual({ error: 'Failed to delete account', data: null })
-    expect(mockSignOut).not.toHaveBeenCalled()
-  })
-})
-
 describe('handleChangePassword', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -414,6 +340,55 @@ describe('handleChangePassword', () => {
       where: { id: 'user-1' },
       data: { password: 'new-hashed' },
     })
+  })
+
+  it('returns error when database update fails', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ password: 'hashed' })
+    mockBcryptCompare.mockResolvedValue(true)
+    mockBcryptHash.mockResolvedValue('new-hashed')
+    mockPrismaUserUpdate.mockRejectedValue(new Error('Database error'))
+
+    const { handleChangePassword } = await import('./Auth')
+    const result = await handleChangePassword({
+      currentPassword: 'correct',
+      newPassword: 'new-password',
+      confirmPassword: 'new-password',
+    })
+
+    expect(result).toEqual({ error: 'Failed to update password', data: null })
+  })
+
+  it('returns error when rate limited', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockCheckRateLimit.mockResolvedValue({ success: false, retryAfter: 900 })
+
+    const { handleChangePassword } = await import('./Auth')
+    const result = await handleChangePassword({
+      currentPassword: 'old',
+      newPassword: 'new',
+      confirmPassword: 'new',
+    })
+
+    expect(result.error).toContain('Too many attempts')
+    expect(result.data).toBeNull()
+  })
+
+  it('uses correct rate limit key with user id', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-123' } })
+    mockCheckRateLimit.mockResolvedValue({ success: true })
+    mockPrismaUserFindUnique.mockResolvedValue({ password: 'hashed' })
+    mockBcryptCompare.mockResolvedValue(false)
+
+    const { handleChangePassword } = await import('./Auth')
+    await handleChangePassword({
+      currentPassword: 'wrong',
+      newPassword: 'new',
+      confirmPassword: 'new',
+    })
+
+    const callArgs = mockCheckRateLimit.mock.calls[0]
+    expect(callArgs[1]).toBe('changepwd:127.0.0.1:user-123')
   })
 })
 

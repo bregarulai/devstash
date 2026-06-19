@@ -1,6 +1,5 @@
 import type { ItemWithDetails } from '@/types/db';
-
-const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.ico'];
+import { IMAGE_EXTENSIONS } from '@/lib/constants';
 
 export function isImageItem(item: ItemWithDetails): boolean {
   if (item.contentType !== 'FILE' || !item.fileUrl) return false;

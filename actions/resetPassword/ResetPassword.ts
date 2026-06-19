@@ -14,7 +14,7 @@ export async function handleResetPassword(formData: FormData) {
   const ip = headersList.get('x-client-ip') ?? 'unknown';
   const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.resetPassword);
   const rateKey = `resetpwd:${ip}`;
-  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.resetPassword);
+  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.resetPassword, true);
 
   if (!rateResult.success) {
     const retryAfter = rateResult.retryAfter || 900;
@@ -50,7 +50,7 @@ export async function handleResetPassword(formData: FormData) {
   });
 
   if (!user) {
-    redirect('/reset-password?error=User+not+found');
+    redirect('/reset-password?error=Reset+link+is+invalid+or+has+expired');
   }
 
   const hashedPassword = await bcrypt.hash(password, 12);

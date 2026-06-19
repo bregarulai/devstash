@@ -125,7 +125,8 @@ describe('handleSignIn', () => {
     expect(mockCheckRateLimit).toHaveBeenCalledWith(
       expect.anything(),
       'signin:127.0.0.1:test@example.com',
-      expect.anything()
+      expect.anything(),
+      true
     )
   })
 })

@@ -18,7 +18,7 @@ export async function handleRegister(formData: FormData) {
   const ip = headersList.get("x-client-ip") ?? "unknown"
   const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.register)
   const rateKey = `register:${ip}`
-  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.register)
+  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.register, true)
 
   if (!rateResult.success) {
     const retryAfter = rateResult.retryAfter || 3600
@@ -123,57 +123,6 @@ export async function handleSignOut() {
   await nextAuthSignOut({ redirectTo: "/" })
 }
 
-export async function handleDeleteAccount(password: string) {
-  const session = await auth()
-
-  if (!session?.user?.id) {
-    return { error: 'Not authenticated', data: null }
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { id: true, password: true },
-  })
-
-  if (!user) {
-    return { error: 'User not found', data: null }
-  }
-
-  const result = await deleteAccountByPasswordInternal(user, password)
-
-  if (result.success) {
-    await nextAuthSignOut({ redirectTo: "/sign-in" })
-    revalidatePath("/profile")
-  }
-
-  return result
-}
-
-async function deleteAccountByPasswordInternal(
-  user: { id: string; password: string | null },
-  password: string,
-) {
-  if (!user.password) {
-    return { error: 'Password verification required', data: null }
-  }
-
-  const valid = await bcrypt.compare(password, user.password)
-
-  if (!valid) {
-    return { error: 'Password verification failed', data: null }
-  }
-
-  try {
-    await prisma.user.delete({
-      where: { id: user.id },
-    })
-  } catch {
-    return { error: 'Failed to delete account', data: null }
-  }
-
-  return { success: true, data: null }
-}
-
 export async function handleChangePassword(data: ChangePasswordValues) {
   const { currentPassword, newPassword } = data
 
@@ -181,6 +130,17 @@ export async function handleChangePassword(data: ChangePasswordValues) {
 
   if (!session?.user?.id) {
     return { error: 'Not authenticated', data: null }
+  }
+
+  const headersList = await headers()
+  const ip = headersList.get('x-client-ip') ?? 'unknown'
+  const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.changePassword)
+  const rateKey = `changepwd:${ip}:${session.user.id}`
+  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.changePassword)
+
+  if (!rateResult.success) {
+    const retryAfter = rateResult.retryAfter || 900
+    return { error: `Too many attempts. Please try again in ${Math.ceil(retryAfter / 60)} minute${Math.ceil(retryAfter / 60) > 1 ? 's' : ''}`, data: null }
   }
 
   const user = await prisma.user.findUnique({
@@ -200,10 +160,14 @@ export async function handleChangePassword(data: ChangePasswordValues) {
 
   const hashedPassword = await bcrypt.hash(newPassword, 12)
 
-  await prisma.user.update({
-    where: { id: session.user.id },
-    data: { password: hashedPassword },
-  })
+  try {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { password: hashedPassword },
+    })
+  } catch {
+    return { error: 'Failed to update password', data: null }
+  }
 
   return { success: true, data: null }
 }

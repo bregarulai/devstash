@@ -167,7 +167,7 @@ describe('handleResetPassword', () => {
     await expect(handleResetPassword(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
-      expect.stringContaining('/reset-password?error=User+not+found')
+      expect.stringContaining('/reset-password?error=Reset+link+is+invalid+or+has+expired')
     )
   })
 

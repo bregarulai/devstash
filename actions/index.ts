@@ -1,4 +1,4 @@
-export { handleRegister, handleSignOut, handleDeleteAccount, handleChangePassword } from './auth/Auth'
+export { handleRegister, handleSignOut, handleChangePassword } from './auth/Auth'
 export { handleForgotPassword } from './forgotPassword/ForgotPassword'
 export { updateItemAction, deleteItemAction, createItemAction } from './items/Items'
 export { retryProfileDataAction } from './profile/Profile'

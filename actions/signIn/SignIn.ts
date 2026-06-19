@@ -27,6 +27,7 @@ export async function handleSignIn(
     rateLimiter,
     rateKey,
     RATE_LIMIT_CONFIGS.signIn,
+    true,
   );
 
   if (!rateResult.success) {
@@ -56,9 +57,13 @@ export async function handleSignIn(
   const shouldRedirect =
     emailVerificationEnabled && user && !user.emailVerified;
 
-  await signIn('credentials', {
-    email,
-    password,
-  });
+  try {
+    await signIn('credentials', {
+      email,
+      password,
+    });
+  } catch {
+    redirect('/sign-in?error=Invalid+email+or+password');
+  }
   redirect(shouldRedirect ? '/verify-required' : '/dashboard');
 }

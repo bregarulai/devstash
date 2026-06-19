@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Codebase Audit — Phase 2: High Severity Fixes
+
+**Spec**: `context/fixes/codebase-audit-phase-2-high-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Fix handleSignIn to catch signIn() errors and redirect with error message instead of raw 500
+- Add rate limiting to password change endpoint (handleChangePassword)
+- Change rate limiter to fail closed on Redis outage for critical auth endpoints
+- Fix password reset to use generic error message instead of leaking user existence
+- Remove duplicate account deletion logic in Auth.ts, consolidate to use accountDeletion.ts
+- Consolidate duplicate IMAGE_EXTENSIONS constants into single shared constant
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- 6 high-severity issues identified in codebase audit
+- Must NOT break any existing functionality or user flow
+- Always verify affected features still work after each change
 
 ## History
 

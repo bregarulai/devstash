@@ -12,7 +12,7 @@ export const FILE_TYPES = [
   'application/toml',
 ]
 
-export const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg']
+export { IMAGE_EXTENSIONS } from '@/lib/constants'
 export const FILE_EXTENSIONS = ['.pdf', '.txt', '.md', '.json', '.yaml', '.yml', '.xml', '.csv', '.toml', '.ini']
 
 export const MAX_IMAGE_SIZE = 5 * 1024 * 1024

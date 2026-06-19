@@ -18,8 +18,10 @@ export const SHOW_LANGUAGE = ['snippet', 'command'];
 export const SHOW_URL = ['link'];
 export const SHOW_FILE_UPLOAD = ['file', 'image'];
 
-export const IMAGE_ACCEPT = '.png,.jpg,.jpeg,.gif,.webp,.svg';
+export const IMAGE_ACCEPT = '.png,.jpg,.jpeg,.gif,.webp,.svg,.bmp,.ico';
 export const FILE_ACCEPT = '.pdf,.txt,.md,.json,.yaml,.yml,.xml,.csv,.toml,.ini';
+
+export const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.ico'];
 
 export const IMAGE_MAX_SIZE = 5 * 1024 * 1024;
 export const FILE_MAX_SIZE = 10 * 1024 * 1024;
