@@ -1,16 +1,24 @@
-# Current Feature
+# Current Feature: Code Decomposition — Phase 3: Data Layer
+
+**Spec**: `context/fixes/code-decomposition-phase-3-data-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Extract a generic `findItems` helper that consolidates the 6 nearly identical query functions in `lib/db/items/items.ts`
+- Rewrite `getPinnedItems`, `getRecentItems`, `getAllItems`, `getFavoriteItems`, `getItemsByType`, and `searchItems` as thin wrappers around the new helper
+- Remove ~85 lines of duplicated query logic
+- Maintain backward compatibility — all existing named exports remain unchanged
+- Verify build passes with no type errors
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- The 6 functions share identical `prisma.item.findMany` structure with only the `where` clause varying
+- All use `orderBy: { updatedAt: 'desc' }`, `include: ITEM_INCLUDE`, and optional `take: limit`
+- This is a high-priority refactoring task that simplifies adding new query variants in the future
 
 ## History
 
