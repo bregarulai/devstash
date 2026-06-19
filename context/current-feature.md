@@ -1,23 +1,16 @@
-# Current Feature: Code Decomposition — Phase 1: Component Decomposition
-
-**Spec**: `context/fixes/code-decomposition-phase-1-components-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Extract `SidebarItemTypeLink` component with icon, label, expand/collapse chevron, and PRO badge
-- Extract `SidebarCollectionLink` component for Favorites and Recent collection links
-- Extract `SidebarUserMenu` component for avatar, user info, and dropdown menu
-- Deduplicate PRO badge blocks for file/image types
+<!-- What does success look like for this feature? -->
 
 ## Notes
 
-- Extract 4 focused sub-components from `Sidebar.tsx` to improve readability and reusability
-- MUST NOT break any existing functionality or user flow
-- Verify affected features still work after each change
+<!-- Any additional context, constraints, or details -->
 
 ## History
 
@@ -154,3 +147,5 @@ In Progress
 - **Audit June 2026 — Phase 2: Bugs (Completed)** - Fixed "ago ago" display bug, isPro query, CommandPalette ITEM_TYPES, recent collections DEFAULT_SAMPLE_COUNT, and ChangePasswordForm startTransition misuse
 
 - **Audit June 2026 — Phase 3: Cleanup (Completed)** - Added globalThis PrismaClient singleton, extracted shared ITEM_INCLUDE, removed manual item mapping, consolidated duplicate queries, unified item type breakdown functions, consolidated file size constants, extracted email template and download handler, replaced local constants with imports, replaced DB query with static import in generateStaticParams
+
+- **Code Decomposition — Phase 1: Component Decomposition (Completed)** - Extracted SidebarItemTypeLink, SidebarCollectionLink, and SidebarUserMenu components from Sidebar.tsx, deduplicated PRO badge logic via centralized PRO_TYPES set, reduced Sidebar.tsx by 129 lines
