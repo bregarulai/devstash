@@ -1,23 +1,16 @@
-# Current Feature: Collections Pages
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create `/collections` page showing all user collections with existing CollectionCard
-- Create `/collections/[id]` page showing items in a specific collection
-- Link "View all collections" in sidebar to `/collections`
-- Link each collection card to its detail page `/collections/[id]`
-- Use existing item cards (ItemCard, ImageCard, FileListRow) for items in collection view
+<!-- Goals for the next feature -->
 
 ## Notes
 
-- Reuse existing `getAllCollections` DB function for `/collections` page
-- Add new DB function `getCollectionById` for `/collections/[id]` page
-- Follow existing patterns from `/items/[type]` page structure
-- Use DashboardWrapper for consistent layout
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -168,3 +161,5 @@ In Progress
 - **Collection Create (Completed)** - Added createCollection DB function, collectionCreateSchema, createCollectionAction server action, CollectionCreateDialog component, wired MobileSideBar button, and comprehensive tests
 
 - **Add Item to Collections (Completed)** - Created CollectionPicker component with popover and checkbox multi-select, added collectionIds to createItem/updateItem schemas, wired into create and edit forms, updated server actions and DB functions for collection linking via ItemCollection junction table, and added comprehensive tests
+
+- **Collections Pages (Completed)** - Created /collections page with all user collections, /collections/[id] detail page with items grouped by type, added getCollectionsForPickerAction, getUserCollectionList and getCollectionById DB functions, color-coded type headers, comprehensive tests
