@@ -32,7 +32,8 @@ export async function DELETE(request: NextRequest) {
   }
 
   const csrfToken = (await headers()).get('x-csrf-token');
-  if (!csrfToken) {
+  const csrfCookie = (await headers()).get('cookie')?.match(/__Host-next-auth\.csrf-token=([^;]+)/)?.[1];
+  if (!csrfToken || !csrfCookie || csrfToken !== csrfCookie) {
     return NextResponse.json({ error: 'CSRF validation failed' }, { status: 403 });
   }
 

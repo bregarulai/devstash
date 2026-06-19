@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma/prisma';
 import { DEFAULT_RECENT_LIMIT } from '@/lib/db/constants/constants';
 import { deleteFromR2, extractR2Key } from '@/lib/r2';
-import type { ItemWithDetails, SystemItemType, ItemEditValues, ItemCreateValues } from '@/types/db';
+import type { ItemWithDetails, SystemItemType, ItemEditValues, ItemCreateValues, ItemStats } from '@/types/db';
 
 export async function createItem(
   userId: string,
@@ -318,12 +318,7 @@ export async function searchItems(
   return items.map(mapItemToDetails);
 }
 
-export async function getItemStats(userId: string): Promise<{
-  totalItems: number;
-  totalCollections: number;
-  favoriteItems: number;
-  favoriteCollections: number;
-}> {
+export async function getItemStats(userId: string): Promise<ItemStats> {
   const [totalItems, totalCollections, favoriteItems, favoriteCollections] =
     await Promise.all([
       prisma.item.count({ where: { userId } }),
@@ -340,7 +335,7 @@ export async function getItemStats(userId: string): Promise<{
   };
 }
 
-export async function getSystemItemTypesWithCounts(): Promise<SystemItemType[]> {
+export async function getSystemItemTypesWithCounts(userId?: string): Promise<SystemItemType[]> {
   const types = await prisma.itemType.findMany({
     where: {
       isSystem: true,
@@ -358,7 +353,7 @@ export async function getSystemItemTypesWithCounts(): Promise<SystemItemType[]> 
     _count: {
       id: true,
     },
-    where: {},
+    where: userId ? { userId } : {},
   });
 
   const countMap = new Map<string, number>();
@@ -389,7 +384,7 @@ export async function getItemsByTypeWithMeta(
   try {
     [items, types] = await Promise.all([
       getItemsByType(userId, itemTypeName).catch(() => []),
-      getSystemItemTypesWithCounts().catch(() => []),
+      getSystemItemTypesWithCounts(userId).catch(() => []),
     ]);
   } catch (error) {
     console.error('Failed to load items by type:', error);

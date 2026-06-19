@@ -27,13 +27,18 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
         image: true,
         isPro: true,
         createdAt: true,
-        password: true,
       },
     });
 
     if (!user) {
       return { ...defaultResult, errorType: 'user-not-found' };
     }
+
+    const userWithPassword = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { password: true },
+    });
+    const hasPassword = userWithPassword?.password !== null;
 
     let itemStats = {
       totalItems: 0,
@@ -63,7 +68,7 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
     }
 
     return {
-      user,
+      user: { ...user, hasPassword },
       itemStats,
       itemTypeBreakdown,
       errorType: null,

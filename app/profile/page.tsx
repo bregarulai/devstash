@@ -28,7 +28,7 @@ export default async function ProfilePage() {
 
   try {
     const [types, favs, recents] = await Promise.all([
-      getSystemItemTypesWithCounts(),
+      getSystemItemTypesWithCounts(user.id),
       getFavoriteCollections(user.id),
       getRecentCollections(user.id, 5),
     ]);
@@ -39,7 +39,7 @@ export default async function ProfilePage() {
     console.error('Failed to load profile data:', error);
   }
 
-  const hasPassword = user.password !== null;
+  const hasPassword = user.hasPassword;
 
   return (
     <DashboardWrapper

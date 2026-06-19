@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Codebase Audit — Phase 1: Critical Fixes
+
+**Spec**: `context/fixes/codebase-audit-phase-1-critical-spec.md`
 
 ## Status
 
-Complete
+In Progress
 
 ## Goals
 
-<!-- Goals for next feature -->
+- Fix CSRF token validation in `app/api/profile/delete-account/route.ts` to validate against server-side session instead of just checking presence
+- Remove password hash from `ProfileData` type by replacing `password` field with `hasPassword: boolean` computed server-side
+- Add `userId` filter to `getSystemItemTypesWithCounts` in `lib/db/items/items.ts` so counts are per-user, not global
+- Add missing `'use client'` directive to `components/items/itemCreateDialog/ContentTypeField.tsx`
 
 ## Notes
 
-<!-- Notes for next feature -->
+- All 4 fixes are critical security vulnerabilities
+- Must not break existing functionality or user flows
+- Each change should be verified independently
 
 ## History
 

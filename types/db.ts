@@ -333,7 +333,7 @@ export const profileUserDataSchema = z.object({
   image: z.string().or(z.null()),
   isPro: z.boolean(),
   createdAt: z.coerce.date(),
-  password: z.string().or(z.null()),
+  hasPassword: z.boolean(),
 });
 
 export const profileDataSchema = z.object({

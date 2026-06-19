@@ -187,6 +187,45 @@ describe('getSystemItemTypesWithCounts', () => {
       { name: 'File', icon: '📄', color: '#ff0000', itemCount: 0 },
     ])
   })
+
+  it('filters counts by userId when provided', async () => {
+    mockPrismaItemTypeFindMany.mockResolvedValue([
+      { id: 'type-1', name: 'File', icon: '📄', color: '#ff0000' },
+    ])
+    mockPrismaItemGroupBy.mockResolvedValue([
+      { itemTypeId: 'type-1', _count: { id: 3 } },
+    ])
+
+    const { getSystemItemTypesWithCounts } = await import('./items')
+    const result = await getSystemItemTypesWithCounts('user-1')
+
+    expect(result).toEqual([
+      { name: 'File', icon: '📄', color: '#ff0000', itemCount: 3 },
+    ])
+    expect(mockPrismaItemGroupBy).toHaveBeenCalledWith({
+      by: ['itemTypeId'],
+      _count: { id: true },
+      where: { userId: 'user-1' },
+    })
+  })
+
+  it('counts all items when no userId provided', async () => {
+    mockPrismaItemTypeFindMany.mockResolvedValue([
+      { id: 'type-1', name: 'File', icon: '📄', color: '#ff0000' },
+    ])
+    mockPrismaItemGroupBy.mockResolvedValue([
+      { itemTypeId: 'type-1', _count: { id: 10 } },
+    ])
+
+    const { getSystemItemTypesWithCounts } = await import('./items')
+    await getSystemItemTypesWithCounts()
+
+    expect(mockPrismaItemGroupBy).toHaveBeenCalledWith({
+      by: ['itemTypeId'],
+      _count: { id: true },
+      where: {},
+    })
+  })
 })
 
 describe('getPinnedItems', () => {

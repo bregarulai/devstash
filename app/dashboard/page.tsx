@@ -78,7 +78,7 @@ export default async function DashboardPage() {
     ] = await Promise.all([
       getPinnedItems(user.id).catch(() => []),
       getRecentItems(user.id).catch(() => []),
-      getSystemItemTypesWithCounts().catch(() => []),
+      getSystemItemTypesWithCounts(user.id).catch(() => []),
       getFavoriteCollections(user.id).catch(() => []),
       getRecentCollections(user.id, 5).catch(() => []),
       getItemStats(user.id).catch(() => ({

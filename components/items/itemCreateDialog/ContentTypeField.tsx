@@ -1,3 +1,5 @@
+'use client';
+
 import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
 import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
 import { Textarea } from '@/components/ui/textarea';
