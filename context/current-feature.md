@@ -1,28 +1,16 @@
-# Current Feature: Collection Create
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a `createCollection()` DB function in `lib/db/collections/collections.ts`
-- Add a `collectionCreateSchema` form-level Zod schema in `types/db.ts` (name required, description optional)
-- Create `actions/collections/Collections.ts` with `createCollectionAction()` server action
-- Create `CollectionCreateDialog` component following the `ItemCreateDialog` pattern (react-hook-form + zodResolver + shadcn `Dialog` from `components/ui/dialog.tsx`)
-- Wire the existing "New Collection" button in `MobileSideBar.tsx` to open the dialog
-- Show sonner toast on success/failure
-- After creation: `router.refresh()` updates sidebar collections, recent collections, and stats
-- Add barrel export for collection actions in `actions/index.ts`
+<!-- What does success look like for this feature? -->
 
 ## Notes
 
-- The "New Collection" button already exists in the top bar (`MobileSideBar.tsx`) but has no handler — just needs to open the dialog
-- Collections are user-scoped via `userId` (injected server-side from session)
-- Follow the exact same patterns as items: DB function → Zod schema → server action → dialog component
-- Prisma Collection model: `name` (required), `description` (optional), `isFavorite`, `userId`, `defaultTypeId` (optional)
-- No API route needed — server action is the established mutation pattern
-- `revalidatePath('/dashboard')` in the action will refresh all server-fetched data
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -169,3 +157,5 @@ In Progress
 - **Code Decomposition — Phase 4: API & Actions (Completed)** - Extracted requireAuth() helper in item API route and server actions, imported shared ITEM_INCLUDE and updateItemFields(), defined generic ActionResult<T> type, fixed pre-existing authConfig test failures, removed ~25 lines of duplicated code
 
 - **Code Decomposition — Phase 5: Page Decomposition (Completed)** - Extracted EMPTY_ITEM_STATS constant, DashboardUser type, and loadDashboardData helper to separate data-fetching from rendering in dashboard page
+
+- **Collection Create (Completed)** - Added createCollection DB function, collectionCreateSchema, createCollectionAction server action, CollectionCreateDialog component, wired MobileSideBar button, and comprehensive tests
