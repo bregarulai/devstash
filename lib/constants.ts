@@ -28,3 +28,12 @@ export const FILE_MAX_SIZE = 10 * 1024 * 1024;
 
 export const EMAIL_SENDER = "DevStash <onboarding@resend.dev>";
 export const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000;
+
+export function getFileConfig(selectedType: string) {
+  const isImage = selectedType === 'image';
+  return {
+    accept: isImage ? IMAGE_ACCEPT : FILE_ACCEPT,
+    maxSize: isImage ? IMAGE_MAX_SIZE : FILE_MAX_SIZE,
+    fileType: isImage ? 'image' as const : 'file' as const,
+  };
+}

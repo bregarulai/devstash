@@ -13,14 +13,7 @@ export function useItemCreateForm() {
   const router = useRouter();
   const fileUpload = useFileUpload();
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm<ItemCreateValues>({
+  const useFormReturn = useForm<ItemCreateValues>({
     resolver: zodResolver(itemCreateSchema),
     mode: 'onChange',
     defaultValues: {
@@ -37,7 +30,16 @@ export function useItemCreateForm() {
     },
   });
 
-  const selectedType = useWatch({ control, name: 'itemType' });
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useFormReturn;
+
+  const selectedType = useWatch({ control, name: 'itemType' }) as ItemType;
   const contentValue = useWatch({ control, name: 'content' });
   const languageValue = useWatch({ control, name: 'language' });
 
@@ -111,7 +113,7 @@ export function useItemCreateForm() {
     reset((prev) => ({ ...prev, tags }));
   }
 
-  const isUploading = isPending && fileUpload.pendingFile;
+  const isUploading = isPending && !!fileUpload.pendingFile;
 
   return {
     open,
@@ -119,14 +121,11 @@ export function useItemCreateForm() {
     isPending,
     isUploading,
     uploadProgress: fileUpload.uploadProgress,
-    register,
-    control,
-    errors,
+    form: useFormReturn,
+    onSubmit,
     selectedType,
     contentValue,
     languageValue,
-    setValue,
-    onSubmit,
     handleOpenChange,
     handleItemTypeSelect,
     handleFileSelect,

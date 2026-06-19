@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Code Decomposition — Phase 2: Form & Dialog Decomposition
+
+**Spec**: `context/fixes/code-decomposition-phase-2-forms-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+- Extract `CreateFormField` wrapper component to eliminate 7 nearly identical `<Field>` blocks
+- Extract `fileConfig` variable to compute file upload config once instead of 3 ternaries
+- Extract `ItemCreateFormBody` sub-component to separate form rendering from dialog state
 
 ## Notes
 
-<!-- Any additional context, constraints, or details -->
+- Priority: 3 High items
+- All changes are in `components/items/itemCreateDialog/`
+- MUST NOT break existing functionality or user flow
+- Verify affected features still work after each change
 
 ## History
 
