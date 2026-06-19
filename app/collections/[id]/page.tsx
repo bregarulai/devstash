@@ -29,8 +29,7 @@ export default async function CollectionDetailPage({
       getCollectionById(session.user.id, id),
       getSystemItemTypesWithCounts(session.user.id),
     ]);
-  } catch (error) {
-    console.error('Failed to load collection:', error);
+  } catch {
     hasError = true;
   }
 

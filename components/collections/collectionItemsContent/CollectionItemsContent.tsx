@@ -7,6 +7,7 @@ import { ItemCard } from '@/components/items/itemCard/ItemCard';
 import { ImageCard } from '@/components/items/imageCard/ImageCard';
 import { FileListRow } from '@/components/items/fileListRow/FileListRow';
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
+import { CollectionActions } from '@/components/collections/collectionActions/CollectionActions';
 import {
   Empty,
   EmptyDescription,
@@ -67,18 +68,26 @@ export function CollectionItemsContent({
           <p className='text-sm'>Failed to load collection items. Please try again.</p>
         </div>
       )}
-      <div className='flex items-center gap-3'>
-        <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-muted/50'>
-          <FolderOpen className='h-5 w-5 text-muted-foreground' />
+      <div className='flex items-center justify-between'>
+        <div className='flex items-center gap-3'>
+          <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-muted/50'>
+            <FolderOpen className='h-5 w-5 text-muted-foreground' />
+          </div>
+          <div>
+            <h1 className='text-2xl font-semibold tracking-tight'>
+              {collection.name}
+            </h1>
+            <p className='text-sm text-muted-foreground'>
+              {items.length} {items.length === 1 ? 'item' : 'items'}
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 className='text-2xl font-semibold tracking-tight'>
-            {collection.name}
-          </h1>
-          <p className='text-sm text-muted-foreground'>
-            {items.length} {items.length === 1 ? 'item' : 'items'}
-          </p>
-        </div>
+        <CollectionActions
+          collectionId={collection.id}
+          collectionName={collection.name}
+          collectionDescription={collection.description}
+          isFavorite={collection.isFavorite}
+        />
       </div>
 
       {collection.description && (

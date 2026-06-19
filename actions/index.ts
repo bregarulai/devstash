@@ -6,4 +6,4 @@ export { handleResendVerification } from './resendVerification/ResendVerificatio
 export { handleResetPassword } from './resetPassword/ResetPassword'
 export { handleSignIn } from './signIn/SignIn'
 export { handleSignInWithGitHub } from './signInGithub/SignInGithub'
-export { createCollectionAction, getCollectionsForPickerAction } from './collections/Collections'
+export { createCollectionAction, getCollectionsForPickerAction, updateCollectionAction, deleteCollectionAction } from './collections/Collections'

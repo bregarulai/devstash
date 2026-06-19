@@ -1,8 +1,8 @@
 import { prisma } from '@/lib/prisma/prisma';
 import {
   DEFAULT_FAVORITE_LIMIT,
-  DEFAULT_SAMPLE_COUNT,
   DEFAULT_RECENT_COLLECTIONS_LIMIT,
+  DEFAULT_SAMPLE_COUNT,
 } from '@/lib/db/constants/constants';
 import type { CollectionWithStats, CollectionDetail, CollectionSelect, ItemWithDetails } from '@/types/db';
 
@@ -170,7 +170,7 @@ export async function getAllCollections(
         },
       },
       items: {
-        take: 5,
+        take: DEFAULT_SAMPLE_COUNT,
         include: {
           item: {
             include: {
@@ -215,6 +215,41 @@ export async function createCollection(
   });
 
   return collection;
+}
+
+export async function updateCollection(
+  userId: string,
+  collectionId: string,
+  data: { name: string; description?: string | null },
+): Promise<CollectionSelect | null> {
+  const existing = await prisma.collection.findFirst({
+    where: { id: collectionId, userId },
+  });
+
+  if (!existing) {
+    return null;
+  }
+
+  const collection = await prisma.collection.update({
+    where: { id: collectionId },
+    data: {
+      name: data.name,
+      description: data.description ?? null,
+    },
+  });
+
+  return collection;
+}
+
+export async function deleteCollection(
+  userId: string,
+  collectionId: string,
+): Promise<boolean> {
+  const { count } = await prisma.collection.deleteMany({
+    where: { id: collectionId, userId },
+  });
+
+  return count > 0;
 }
 
 export async function getCollectionById(

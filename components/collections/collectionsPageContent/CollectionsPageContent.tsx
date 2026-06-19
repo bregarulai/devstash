@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { AlertCircle, FolderOpen } from 'lucide-react';
 import { CollectionCard } from '@/components/dashboard/collectionCard/CollectionCard';
 import {
@@ -56,13 +55,7 @@ export function CollectionsPageContent({
       ) : (
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
           {collections.map((collection) => (
-            <Link
-              key={collection.id}
-              href={`/collections/${collection.id}`}
-              className='focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl'
-            >
-              <CollectionCard collection={collection} />
-            </Link>
+            <CollectionCard key={collection.id} collection={collection} />
           ))}
         </div>
       )}
