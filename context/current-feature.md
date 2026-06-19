@@ -1,23 +1,16 @@
-# Current Feature: Code Decomposition — Phase 2: Form & Dialog Decomposition
-
-**Spec**: `context/fixes/code-decomposition-phase-2-forms-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Extract `CreateFormField` wrapper component to eliminate 7 nearly identical `<Field>` blocks
-- Extract `fileConfig` variable to compute file upload config once instead of 3 ternaries
-- Extract `ItemCreateFormBody` sub-component to separate form rendering from dialog state
+<!-- What does success look like? -->
 
 ## Notes
 
-- Priority: 3 High items
-- All changes are in `components/items/itemCreateDialog/`
-- MUST NOT break existing functionality or user flow
-- Verify affected features still work after each change
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -156,3 +149,5 @@ In Progress
 - **Audit June 2026 — Phase 3: Cleanup (Completed)** - Added globalThis PrismaClient singleton, extracted shared ITEM_INCLUDE, removed manual item mapping, consolidated duplicate queries, unified item type breakdown functions, consolidated file size constants, extracted email template and download handler, replaced local constants with imports, replaced DB query with static import in generateStaticParams
 
 - **Code Decomposition — Phase 1: Component Decomposition (Completed)** - Extracted SidebarItemTypeLink, SidebarCollectionLink, and SidebarUserMenu components from Sidebar.tsx, deduplicated PRO badge logic via centralized PRO_TYPES set, reduced Sidebar.tsx by 129 lines
+
+- **Code Decomposition — Phase 2: Form & Dialog Decomposition (Completed)** - Extracted CreateFormField wrapper component, extracted getFileConfig utility, and extracted ItemCreateFormBody sub-component to reduce boilerplate in ItemCreateDialog.tsx
