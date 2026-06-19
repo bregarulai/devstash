@@ -1,47 +1,16 @@
-# Current Feature: Collection Management Actions
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add Edit, Delete, and Favorite action buttons to `/collections/[id]` page header
-- Edit opens a modal (Dialog) to edit collection metadata (name, description)
-- Delete shows an AlertDialog confirmation; on confirm, the collection is deleted but items remain in the system
-- Favorite is a Star icon/button only — no backend logic yet (wire later)
-- On collection cards (dashboard + `/collections` page), the existing 3-dots icon opens a DropdownMenu with Edit, Delete, and Favorite options
-- Clicking anywhere else on the card navigates to the collections page
+<!-- What does success look like? -->
 
 ## Notes
 
-- No `dropdown-menu` shadcn component exists yet — must install via `npx shadcn@latest add dropdown-menu`
-- No `updateCollection` or `deleteCollection` DB functions exist — must create them
-- No `collectionUpdateSchema` exists in `types/db.ts` — must create it
-- Delete = remove the collection row. Items are NOT deleted — they simply lose their association via the ItemCollection junction table (cascade or explicit disconnect). Items remain in the system.
-- Existing pattern: `DrawerActions` in item drawer shows the Star/Pin/Copy/Edit icon pattern — follow this for the collection detail page action bar
-- Existing pattern: `CollectionCard` is a pure presentational component with no interactivity — need to add the dropdown and card click handler
-- CollectionsSession (dashboard) wraps cards in no Link; CollectionsPageContent wraps each card in a Link. The card click-to-navigate and dropdown need to work in both contexts.
-- Server actions follow `ActionResult<T>` pattern with `requireAuth()` helper
-- Follow coding-standards.md before implementation
-
-## Files to Create/Modify
-
-**New files:**
-- `components/collections/collectionEditDialog/CollectionEditDialog.tsx` — Modal for editing collection metadata
-- `components/collections/collectionActions/CollectionActions.tsx` — Action bar for `/collections/[id]` (Favorite, Edit, Delete buttons)
-- `components/collections/collectionCardMenu/CollectionCardMenu.tsx` — DropdownMenu wrapper for the 3-dots icon on cards
-
-**Modified files:**
-- `lib/db/collections/collections.ts` — Add `updateCollection()` and `deleteCollection()` DB functions
-- `actions/collections/Collections.ts` — Add `updateCollectionAction` and `deleteCollectionAction` server actions
-- `actions/index.ts` — Re-export new actions
-- `types/db.ts` — Add `collectionUpdateSchema` and `CollectionUpdateValues` type
-- `components/collectionCard/CollectionCard.tsx` — Add 3-dots dropdown + card click handler
-- `components/collections/collectionsPageContent/CollectionsPageContent.tsx` — Remove Link wrapper (card handles navigation)
-- `components/dashboard/collectionSession/CollectionsSession.tsx` — Pass navigate callback or let card handle it
-- `app/collections/[id]/page.tsx` — Pass collection data to action bar component
-- `components/collections/collectionItemsContent/CollectionItemsContent.tsx` — Add action bar to page header
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -194,3 +163,5 @@ In Progress
 - **Add Item to Collections (Completed)** - Created CollectionPicker component with popover and checkbox multi-select, added collectionIds to createItem/updateItem schemas, wired into create and edit forms, updated server actions and DB functions for collection linking via ItemCollection junction table, and added comprehensive tests
 
 - **Collections Pages (Completed)** - Created /collections page with all user collections, /collections/[id] detail page with items grouped by type, added getCollectionsForPickerAction, getUserCollectionList and getCollectionById DB functions, color-coded type headers, comprehensive tests
+
+- **Collection Management Actions (Completed)** - Added Edit, Delete, and Favorite action buttons to collection detail page header, 3-dots DropdownMenu on collection cards with Edit/Delete/Favorite options, card click navigates to collection page, created updateCollection/deleteCollection DB functions and server actions, added collectionUpdateSchema, installed shadcn dropdown-menu component, added useDeleteCollection hook
