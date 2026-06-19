@@ -1,23 +1,16 @@
-# Current Feature: Codebase Audit — Phase 1: Critical Fixes
-
-**Spec**: `context/fixes/codebase-audit-phase-1-critical-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Fix CSRF token validation in `app/api/profile/delete-account/route.ts` to validate against server-side session instead of just checking presence
-- Remove password hash from `ProfileData` type by replacing `password` field with `hasPassword: boolean` computed server-side
-- Add `userId` filter to `getSystemItemTypesWithCounts` in `lib/db/items/items.ts` so counts are per-user, not global
-- Add missing `'use client'` directive to `components/items/itemCreateDialog/ContentTypeField.tsx`
+<!-- What does success look like? -->
 
 ## Notes
 
-- All 4 fixes are critical security vulnerabilities
-- Must not break existing functionality or user flows
-- Each change should be verified independently
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -140,3 +133,5 @@ In Progress
 - **Header Injection Fix (Completed)** - Sanitized fileName query parameter in download route to prevent HTTP response splitting, implemented RFC 5987 encoding for non-ASCII filenames, and added comprehensive tests
 
 - **Rate Limiting Fix — Server Actions Bypassed (Completed)** - Fixed rate limiting bypass in Server Actions by adding x-client-ip header forwarding in proxy.ts, extracting real client IP from headers in all 6 auth server actions, and including IP in rate limit keys to prevent cross-user collision
+
+- **Codebase Audit — Phase 1: Critical Fixes (Completed)** - Fixed CSRF token validation to compare against server-side session, removed password hash from ProfileData type with hasPassword boolean, added userId filter to getSystemItemTypesWithCounts for per-user counts, and added missing 'use client' directive to ContentTypeField
