@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma/prisma';
+import { Prisma } from '@/generated/prisma/client';
 import { DEFAULT_RECENT_LIMIT } from '@/lib/db/constants/constants';
 import { deleteFromR2, extractR2Key } from '@/lib/r2';
 import type { ItemWithDetails, SystemItemType, ItemEditValues, ItemCreateValues, ItemStats } from '@/types/db';
@@ -82,120 +83,63 @@ export async function deleteItem(
 
 export type { SystemItemType };
 
-export async function getPinnedItems(
+async function findItems(
   userId: string,
+  where?: Prisma.ItemWhereInput,
+  limit?: number,
 ): Promise<ItemWithDetails[]> {
-  const items = await prisma.item.findMany({
-    where: {
-      userId,
-      isPinned: true,
-    },
-    orderBy: {
-      updatedAt: 'desc',
-    },
+  return prisma.item.findMany({
+    where: { userId, ...where },
+    orderBy: { updatedAt: 'desc' },
+    ...(limit ? { take: limit } : {}),
     include: ITEM_INCLUDE,
   });
-
-  return items;
 }
 
-export async function getRecentItems(
+export function getPinnedItems(userId: string): Promise<ItemWithDetails[]> {
+  return findItems(userId, { isPinned: true });
+}
+
+export function getRecentItems(
   userId: string,
   limit: number = DEFAULT_RECENT_LIMIT,
 ): Promise<ItemWithDetails[]> {
-  const items = await prisma.item.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      updatedAt: 'desc',
-    },
-    take: limit,
-    include: ITEM_INCLUDE,
-  });
-
-  return items;
+  return findItems(userId, undefined, limit);
 }
 
-export async function getAllItems(
+export function getAllItems(
   userId: string,
   limit?: number,
 ): Promise<ItemWithDetails[]> {
-  const items = await prisma.item.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      updatedAt: 'desc',
-    },
-    ...(limit ? { take: limit } : {}),
-    include: ITEM_INCLUDE,
-  });
-
-  return items;
+  return findItems(userId, undefined, limit);
 }
 
-export async function getFavoriteItems(
+export function getFavoriteItems(
   userId: string,
   limit?: number,
 ): Promise<ItemWithDetails[]> {
-  const items = await prisma.item.findMany({
-    where: {
-      userId,
-      isFavorite: true,
-    },
-    orderBy: {
-      updatedAt: 'desc',
-    },
-    ...(limit ? { take: limit } : {}),
-    include: ITEM_INCLUDE,
-  });
-
-  return items;
+  return findItems(userId, { isFavorite: true }, limit);
 }
 
-export async function getItemsByType(
+export function getItemsByType(
   userId: string,
   itemTypeName: string,
   limit?: number,
 ): Promise<ItemWithDetails[]> {
-  const items = await prisma.item.findMany({
-    where: {
-      userId,
-      itemType: {
-        name: itemTypeName,
-      },
-    },
-    orderBy: {
-      updatedAt: 'desc',
-    },
-    ...(limit ? { take: limit } : {}),
-    include: ITEM_INCLUDE,
-  });
-
-  return items;
+  return findItems(userId, { itemType: { name: itemTypeName } }, limit);
 }
 
-export async function searchItems(
+export function searchItems(
   userId: string,
   query: string,
 ): Promise<ItemWithDetails[]> {
-  const items = await prisma.item.findMany({
-    where: {
-      userId,
-      OR: [
-        { title: { contains: query, mode: 'insensitive' } },
-        { description: { contains: query, mode: 'insensitive' } },
-        { content: { contains: query, mode: 'insensitive' } },
-      ],
-    },
-    orderBy: {
-      updatedAt: 'desc',
-    },
-    include: ITEM_INCLUDE,
+  return findItems(userId, {
+    OR: [
+      { title: { contains: query, mode: 'insensitive' } },
+      { description: { contains: query, mode: 'insensitive' } },
+      { content: { contains: query, mode: 'insensitive' } },
+    ],
   });
-
-  return items;
 }
 
 export async function getItemStats(userId: string): Promise<ItemStats> {
