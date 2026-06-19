@@ -1,4 +1,4 @@
-import { Tag, Info, ExternalLink, FileText, Download } from 'lucide-react';
+import { Tag, Info, ExternalLink, FileText, Download, FolderOpen } from 'lucide-react';
 import Image from 'next/image';
 import { formatDaysAgo, formatFileSize } from '@/lib/utils/utils';
 import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
@@ -117,6 +117,25 @@ export function DrawerContent({ item, onDownload }: DrawerContentProps) {
                 className='rounded-md bg-muted/50 px-2.5 py-1 text-xs text-muted-foreground'
               >
                 {tag.name}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {item.collections.length > 0 && (
+        <div className='space-y-1.5'>
+          <div className='flex items-center gap-1.5 text-xs font-medium text-muted-foreground'>
+            <FolderOpen className='h-3 w-3' />
+            Collections
+          </div>
+          <div className='flex flex-wrap gap-1.5'>
+            {item.collections.map((collection) => (
+              <span
+                key={collection.id}
+                className='rounded-md bg-muted/50 px-2.5 py-1 text-xs text-muted-foreground'
+              >
+                {collection.name}
               </span>
             ))}
           </div>
