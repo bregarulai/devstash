@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Audit June 2026 — Phase 2: Bugs
+
+**Spec**: `context/fixes/audit-june-2026-phase-2-bugs-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Fix the "ago ago" display bug in ProfilePageClient
+- Fix isPro hardcoded to false in items/[type]/page.tsx
+- Fix CommandPalette inconsistent ITEM_TYPES (missing command and note, capitalized hrefs)
+- Fix getRecentCollections hardcoded take: 5 to use DEFAULT_SAMPLE_COUNT
+- Fix ChangePasswordForm misuse of startTransition
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- Item 1 is a one-line fix
+- Item 2 requires a DB query or session callback change — test with both pro and non-pro users
+- Item 3 requires importing from constants — verify all item types render in the command palette
+- Item 4 is a one-line constant swap
+- Item 5 requires restructuring the form submission — verify loading state reflects actual async work
 
 ## History
 

@@ -3,7 +3,7 @@
 ## TypeScript
 
 - Strict mode enabled
-- No `any` types - use proper typing or `unknown`
+- No `any` types - use proper typing only
 - Define interfaces for all props, API responses, and data models
 - Use type inference where obvious, explicit types where helpful
 
