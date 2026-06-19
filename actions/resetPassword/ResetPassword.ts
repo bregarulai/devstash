@@ -33,7 +33,7 @@ export async function handleResetPassword(formData: FormData) {
   if (!result.success) {
     const errorMessage = result.error.issues[0]?.message || 'Validation failed';
     redirect(
-      `/reset-password?error=${encodeURIComponent(errorMessage)}&token=${encodeURIComponent(formData.get('token') as string)}&email=${encodeURIComponent(formData.get('email') as string)}`,
+      `/reset-password?error=${encodeURIComponent(errorMessage)}`,
     );
   }
 

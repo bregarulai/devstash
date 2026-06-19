@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth/auth';
 import { getPresignedDownloadUrl } from '@/lib/r2';
 import { buildContentDispositionHeader, sanitizeFilename } from '@/lib/sanitize-filename';
+import { prisma } from '@/lib/prisma/prisma';
 
 export async function GET(request: NextRequest) {
   const session = await auth();
@@ -23,6 +24,18 @@ export async function GET(request: NextRequest) {
 
   if (!key.includes(`/${session.user.id}/`)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
+  const item = await prisma.item.findFirst({
+    where: {
+      userId: session.user.id,
+      fileUrl: { endsWith: `/${key}` },
+    },
+    select: { id: true },
+  });
+
+  if (!item) {
+    return NextResponse.json({ error: 'File not found' }, { status: 404 });
   }
 
   try {

@@ -97,27 +97,6 @@ export async function deleteItem(
 
 export type { SystemItemType };
 
-export function mapItemToDetails(item: ItemWithDetails): ItemWithDetails {
-  return {
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    contentType: item.contentType,
-    content: item.content,
-    fileUrl: item.fileUrl,
-    fileName: item.fileName,
-    fileSize: item.fileSize,
-    url: item.url,
-    language: item.language,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    itemType: item.itemType,
-    tags: item.tags,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  };
-}
-
 export async function getPinnedItems(
   userId: string,
 ): Promise<ItemWithDetails[]> {
@@ -146,7 +125,7 @@ export async function getPinnedItems(
     },
   });
 
-  return items.map(mapItemToDetails);
+  return items;
 }
 
 export async function getRecentItems(
@@ -178,7 +157,7 @@ export async function getRecentItems(
     },
   });
 
-  return items.map(mapItemToDetails);
+  return items;
 }
 
 export async function getAllItems(
@@ -210,7 +189,7 @@ export async function getAllItems(
     },
   });
 
-  return items.map(mapItemToDetails);
+  return items;
 }
 
 export async function getFavoriteItems(
@@ -243,7 +222,7 @@ export async function getFavoriteItems(
     },
   });
 
-  return items.map(mapItemToDetails);
+  return items;
 }
 
 export async function getItemsByType(
@@ -279,7 +258,7 @@ export async function getItemsByType(
     },
   });
 
-  return items.map(mapItemToDetails);
+  return items;
 }
 
 export async function searchItems(
@@ -315,7 +294,7 @@ export async function searchItems(
     },
   });
 
-  return items.map(mapItemToDetails);
+  return items;
 }
 
 export async function getItemStats(userId: string): Promise<ItemStats> {

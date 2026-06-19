@@ -18,26 +18,28 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
   };
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        isPro: true,
-        createdAt: true,
-      },
-    });
+    const [user, userWithPassword] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          isPro: true,
+          createdAt: true,
+        },
+      }),
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { password: true },
+      }),
+    ]);
 
     if (!user) {
       return { ...defaultResult, errorType: 'user-not-found' };
     }
 
-    const userWithPassword = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { password: true },
-    });
     const hasPassword = userWithPassword?.password !== null;
 
     let itemStats = {
@@ -47,9 +49,16 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
       favoriteCollections: 0,
     };
 
+    let itemTypeBreakdown: SidebarItemTypeBreakdown[] = [];
+
     try {
       const { getItemStats } = await import('@/lib/db/items/items');
-      itemStats = await getItemStats(user.id);
+      const [stats, breakdown] = await Promise.all([
+        getItemStats(user.id),
+        getUserItemTypeBreakdown(user.id),
+      ]);
+      itemStats = stats;
+      itemTypeBreakdown = breakdown;
     } catch {
       itemStats = {
         totalItems: 0,
@@ -57,13 +66,6 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
         favoriteItems: 0,
         favoriteCollections: 0,
       };
-    }
-
-    let itemTypeBreakdown: SidebarItemTypeBreakdown[] = [];
-
-    try {
-      itemTypeBreakdown = await getUserItemTypeBreakdown(user.id);
-    } catch {
       itemTypeBreakdown = [];
     }
 

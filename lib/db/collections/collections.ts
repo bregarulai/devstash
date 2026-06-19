@@ -30,6 +30,50 @@ function getDominantItemTypeColor(
   return dominantColor;
 }
 
+function mapCollectionToStats(collection: {
+  id: string;
+  name: string;
+  description: string | null;
+  isFavorite: boolean;
+  createdAt: Date;
+  _count: { items: number };
+  items: Array<{
+    item: {
+      contentType: string | null;
+      itemType: { name: string; color: string } | null;
+    } | null;
+  }>;
+}): CollectionWithStats {
+  const itemTypes = collection.items
+    .map((ic) => ic.item?.itemType)
+    .filter((type): type is { name: string; color: string } => type != null);
+  const distinctNames = Array.from(
+    new Set(itemTypes.map((type) => type.name)),
+  );
+
+  const dominantColor = getDominantItemTypeColor(itemTypes);
+
+  const contentTypes = collection.items
+    .map((ic) => ic.item?.contentType)
+    .filter(Boolean) as string[];
+  const contentTypeCounts: Record<string, number> = {};
+  for (const ct of contentTypes) {
+    contentTypeCounts[ct] = (contentTypeCounts[ct] || 0) + 1;
+  }
+
+  return {
+    id: collection.id,
+    name: collection.name,
+    description: collection.description,
+    itemCount: collection._count.items,
+    isFavorite: collection.isFavorite,
+    itemTypeNames: distinctNames,
+    dominantItemTypeColor: dominantColor,
+    contentTypeCounts,
+    createdAt: collection.createdAt,
+  };
+}
+
 
 export async function getFavoriteCollections(
   userId: string,
@@ -67,36 +111,7 @@ export async function getFavoriteCollections(
     },
   });
 
-  return collections.map((collection) => {
-    const itemTypes = collection.items
-      .map((ic) => ic.item?.itemType)
-      .filter((type): type is { name: string; color: string } => type != null);
-    const distinctNames = Array.from(
-      new Set(itemTypes.map((type) => type.name)),
-    );
-
-    const dominantColor = getDominantItemTypeColor(itemTypes);
-
-    const contentTypes = collection.items
-      .map((ic) => ic.item?.contentType)
-      .filter(Boolean) as string[];
-    const contentTypeCounts: Record<string, number> = {};
-    for (const ct of contentTypes) {
-      contentTypeCounts[ct] = (contentTypeCounts[ct] || 0) + 1;
-    }
-
-    return {
-      id: collection.id,
-      name: collection.name,
-      description: collection.description,
-      itemCount: collection._count.items,
-      isFavorite: collection.isFavorite,
-      itemTypeNames: distinctNames,
-      dominantItemTypeColor: dominantColor,
-      contentTypeCounts,
-      createdAt: collection.createdAt,
-    };
-  });
+  return collections.map(mapCollectionToStats);
 }
 
 export async function getRecentCollections(
@@ -135,36 +150,7 @@ export async function getRecentCollections(
     },
   });
 
-  return collections.map((collection) => {
-    const itemTypes = collection.items
-      .map((ic) => ic.item?.itemType)
-      .filter((type): type is { name: string; color: string } => type != null);
-    const distinctNames = Array.from(
-      new Set(itemTypes.map((type) => type.name)),
-    );
-
-    const dominantColor = getDominantItemTypeColor(itemTypes);
-
-    const contentTypes = collection.items
-      .map((ic) => ic.item?.contentType)
-      .filter(Boolean) as string[];
-    const contentTypeCounts: Record<string, number> = {};
-    for (const ct of contentTypes) {
-      contentTypeCounts[ct] = (contentTypeCounts[ct] || 0) + 1;
-    }
-
-    return {
-      id: collection.id,
-      name: collection.name,
-      description: collection.description,
-      itemCount: collection._count.items,
-      isFavorite: collection.isFavorite,
-      itemTypeNames: distinctNames,
-      dominantItemTypeColor: dominantColor,
-      contentTypeCounts,
-      createdAt: collection.createdAt,
-    };
-  });
+  return collections.map(mapCollectionToStats);
 }
 
 export async function getAllCollections(
@@ -201,34 +187,5 @@ export async function getAllCollections(
     },
   });
 
-  return collections.map((collection) => {
-    const itemTypes = collection.items
-      .map((ic) => ic.item?.itemType)
-      .filter((type): type is { name: string; color: string } => type != null);
-    const distinctNames = Array.from(
-      new Set(itemTypes.map((type) => type.name)),
-    );
-
-    const dominantColor = getDominantItemTypeColor(itemTypes);
-
-    const contentTypes = collection.items
-      .map((ic) => ic.item?.contentType)
-      .filter(Boolean) as string[];
-    const contentTypeCounts: Record<string, number> = {};
-    for (const ct of contentTypes) {
-      contentTypeCounts[ct] = (contentTypeCounts[ct] || 0) + 1;
-    }
-
-    return {
-      id: collection.id,
-      name: collection.name,
-      description: collection.description,
-      itemCount: collection._count.items,
-      isFavorite: collection.isFavorite,
-      itemTypeNames: distinctNames,
-      dominantItemTypeColor: dominantColor,
-      contentTypeCounts,
-      createdAt: collection.createdAt,
-    };
-  });
+  return collections.map(mapCollectionToStats);
 }

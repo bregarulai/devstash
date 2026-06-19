@@ -1,16 +1,27 @@
-# Current Feature
+# Current Feature: Codebase Audit — Phase 3: Medium Severity Fixes
+
+**Spec**: `context/fixes/codebase-audit-phase-3-medium-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+- Fix inconsistent rate limit IP extraction in `app/api/auth/verify/route.ts` to use `getClientIP()`
+- Remove token from error redirect URL in `actions/resetPassword/ResetPassword.ts`
+- Remove `image/svg+xml` from allowed types or add SVG sanitization in `lib/fileValidation.ts`
+- Add database ownership check to download route in `app/api/download/route.ts`
+- Extract duplicate collection transform logic into `mapCollectionToStats()` helper
+- Remove redundant `mapItemToDetails` identity transform or simplify to type assertion
+- Parallelize sequential DB queries in profile load using `Promise.all`
+- Wire or disable the non-functional "New Collection" button in `MobileSideBar.tsx`
 
 ## Notes
 
-<!-- Any additional context, constraints, or details from spec -->
+- 8 medium-severity issues to fix
+- MUST NOT break existing functionality or user flows
+- Verify affected features work as expected after each change
 
 ## History
 

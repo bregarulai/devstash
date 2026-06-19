@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getExtension, IMAGE_EXTENSIONS, FILE_EXTENSIONS, MAX_IMAGE_SIZE, MAX_FILE_SIZE } from '@/lib/fileValidation'
+import { getExtension, IMAGE_TYPES, IMAGE_EXTENSIONS, FILE_EXTENSIONS, MAX_IMAGE_SIZE, MAX_FILE_SIZE } from '@/lib/fileValidation'
 
 describe('getExtension', () => {
   it('returns extension for files with extensions', () => {
@@ -21,6 +21,19 @@ describe('getExtension', () => {
   it('lowercases extensions', () => {
     expect(getExtension('FILE.TXT')).toBe('.txt')
     expect(getExtension('image.JPEG')).toBe('.jpeg')
+  })
+})
+
+describe('IMAGE_TYPES', () => {
+  it('does not include image/svg+xml', () => {
+    expect(IMAGE_TYPES).not.toContain('image/svg+xml')
+  })
+
+  it('includes common image MIME types', () => {
+    expect(IMAGE_TYPES).toContain('image/png')
+    expect(IMAGE_TYPES).toContain('image/jpeg')
+    expect(IMAGE_TYPES).toContain('image/gif')
+    expect(IMAGE_TYPES).toContain('image/webp')
   })
 })
 

@@ -106,8 +106,11 @@ describe('loadProfileDataAsync', () => {
   })
 
   it('includes item stats from getItemStats', async () => {
-    mockPrismaUserFindUnique
-      .mockResolvedValueOnce({
+    mockPrismaUserFindUnique.mockImplementation((args: { select?: Record<string, unknown> }) => {
+      if (args.select && 'password' in args.select) {
+        return Promise.resolve({ password: null })
+      }
+      return Promise.resolve({
         id: 'user-1',
         name: 'Test User',
         email: 'test@example.com',
@@ -115,9 +118,9 @@ describe('loadProfileDataAsync', () => {
         isPro: false,
         createdAt: new Date('2024-01-01'),
       })
-      .mockResolvedValueOnce({
-        password: null,
-      })
+    })
+    mockPrismaItemTypeFindMany.mockResolvedValue([])
+    mockPrismaItemGroupBy.mockResolvedValue([])
     mockGetItemStats.mockResolvedValue({
       totalItems: 15,
       totalCollections: 5,

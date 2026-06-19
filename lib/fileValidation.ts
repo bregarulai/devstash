@@ -1,4 +1,4 @@
-export const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml']
+export const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
 export const FILE_TYPES = [
   'application/pdf',
   'text/plain',
