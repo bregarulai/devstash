@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Code Decomposition — Phase 1: Component Decomposition
+
+**Spec**: `context/fixes/code-decomposition-phase-1-components-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Extract `SidebarItemTypeLink` component with icon, label, expand/collapse chevron, and PRO badge
+- Extract `SidebarCollectionLink` component for Favorites and Recent collection links
+- Extract `SidebarUserMenu` component for avatar, user info, and dropdown menu
+- Deduplicate PRO badge blocks for file/image types
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Extract 4 focused sub-components from `Sidebar.tsx` to improve readability and reusability
+- MUST NOT break any existing functionality or user flow
+- Verify affected features still work after each change
 
 ## History
 

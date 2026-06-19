@@ -1,9 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronDown, PanelLeft, Star } from 'lucide-react';
+import { ChevronDown, PanelLeft } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -11,9 +10,9 @@ import {
 } from '@/components/ui/collapsible';
 import { useState } from 'react';
 import { SystemItemType, CollectionWithStats } from '@/types/db';
-import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
-import { Badge } from '@/components/ui/badge';
-import { handleSignOut } from '@/actions';
+import { SidebarItemTypeLink } from './SidebarItemTypeLink';
+import { SidebarCollectionLink } from './SidebarCollectionLink';
+import { SidebarUserMenu } from './SidebarUserMenu';
 
 interface SidebarProps {
   isExpanded: boolean;
@@ -39,11 +38,6 @@ export function Sidebar({
   user,
 }: SidebarProps) {
   const [collectionsOpen, setCollectionsOpen] = useState(true);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-
-  const displayName = user.name || user.email || 'User';
-  const displayImage = user.image || undefined;
-  const fallbackName = (user.name || user.email || 'U').charAt(0).toUpperCase();
 
   return (
     <div className='relative flex h-screen flex-col bg-background'>
@@ -82,40 +76,11 @@ export function Sidebar({
           )}
           <div className='space-y-0.5'>
             {systemItemTypes.map((type) => (
-              <Link
+              <SidebarItemTypeLink
                 key={type.name}
-                href={`/items/${type.name}`}
-                className={`group flex items-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground ${isExpanded ? 'gap-3 px-2 py-1.5 text-sm' : 'justify-center px-1 py-2'}`}
-                title={
-                  isExpanded
-                    ? undefined
-                    : type.name.charAt(0).toUpperCase() + type.name.slice(1)
-                }
-              >
-                <span className='flex h-5 w-5 shrink-0 items-center justify-center'>
-                  <ItemTypeIcon type={type.name} className='h-4 w-4' />
-                </span>
-                {isExpanded && (
-                  <span className='truncate font-medium'>
-                    {type.name.charAt(0).toUpperCase() + type.name.slice(1)}
-                  </span>
-                )}
-                {isExpanded && type.name === 'file' && (
-                  <Badge variant='outline' className='ml-2 h-4 w-fit rounded-full px-1 text-[10px] font-semibold uppercase'>
-                    PRO
-                  </Badge>
-                )}
-                {isExpanded && type.name === 'image' && (
-                  <Badge variant='outline' className='ml-2 h-4 w-fit rounded-full px-1 text-[10px] font-semibold uppercase'>
-                    PRO
-                  </Badge>
-                )}
-                {isExpanded && (
-                  <span className='ml-auto text-xs text-muted-foreground'>
-                    {type.itemCount}
-                  </span>
-                )}
-              </Link>
+                type={type}
+                isExpanded={isExpanded}
+              />
             ))}
           </div>
         </div>
@@ -139,20 +104,13 @@ export function Sidebar({
                     <h3 className='mb-1 px-2 text-xs tracking-wider text-muted-foreground'>
                       Favorites
                     </h3>
-
                     <div className='space-y-0.5'>
                       {favoriteCollections.map((collection) => (
-                        <Link
+                        <SidebarCollectionLink
                           key={collection.id}
-                          href={`/collections/${collection.id}`}
-                          className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground text-sm'
-                        >
-                          <Star className='h-4 w-4 fill-note text-note' />
-                          <span className='truncate'>{collection.name}</span>
-                          <span className='ml-auto text-xs text-muted-foreground'>
-                            {collection.itemCount}
-                          </span>
-                        </Link>
+                          collection={collection}
+                          variant='favorite'
+                        />
                       ))}
                     </div>
                   </div>
@@ -160,27 +118,15 @@ export function Sidebar({
                 {recentCollections.length > 0 && (
                   <div className='mb-1 ml-2 pl-2'>
                     <h3 className='mb-1 px-2 text-xs tracking-wider text-muted-foreground'>
-                      Recent
+                      ALL COLLECTIONS
                     </h3>
-
                     <div className='space-y-0.5 ml-6'>
                       {recentCollections.map((collection) => (
-                        <Link
+                        <SidebarCollectionLink
                           key={collection.id}
-                          href={`/collections/${collection.id}`}
-                          className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground text-sm'
-                        >
-                          <span
-                            className='h-3 w-3 shrink-0 rounded-full'
-                            style={{
-                              backgroundColor: collection.dominantItemTypeColor,
-                            }}
-                          />
-                          <span className='truncate'>{collection.name}</span>
-                          <span className='ml-auto text-xs text-muted-foreground'>
-                            {collection.itemCount}
-                          </span>
-                        </Link>
+                          collection={collection}
+                          variant='recent'
+                        />
                       ))}
                     </div>
                   </div>
@@ -203,55 +149,7 @@ export function Sidebar({
 
       {/* User Avatar */}
       <div className='border-t border-r border-border p-3 relative'>
-        <div
-          className={`flex items-center justify-center gap-3 rounded-lg p-2 cursor-pointer hover:bg-accent transition-colors ${isExpanded ? '' : 'justify-center'}`}
-          onClick={() => setShowUserMenu(!showUserMenu)}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowUserMenu(!showUserMenu); } }}
-          tabIndex={0}
-          role="button"
-          aria-label="User menu"
-          aria-expanded={showUserMenu}
-        >
-          <Avatar>
-            <AvatarImage
-              src={displayImage || ''}
-              alt={displayName}
-            />
-            <AvatarFallback>{fallbackName}</AvatarFallback>
-          </Avatar>
-
-          {isExpanded && (
-            <>
-              <div className='flex-1 min-w-0'>
-                <p className='truncate text-sm font-medium'>{displayName}</p>
-                <p className='truncate text-xs text-muted-foreground'>{user.email}</p>
-              </div>
-              <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
-            </>
-          )}
-        </div>
-
-        {showUserMenu && (
-          <div className={`absolute bottom-full ${isExpanded ? 'left-0 right-0' : 'left-1/2 -translate-x-1/2'} mb-2 bg-background border border-border rounded-lg shadow-lg z-50 py-1`}>
-            <Link
-              href='/profile'
-              className={`block px-3 py-2 text-sm hover:bg-accent transition-colors ${!isExpanded ? 'text-center' : ''}`}
-              onClick={() => setShowUserMenu(false)}
-            >
-              View Profile
-            </Link>
-            <form
-              action={handleSignOut}
-            >
-              <button
-                type='submit'
-                className={`w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-accent transition-colors ${!isExpanded ? 'text-center' : ''}`}
-              >
-                Sign out
-              </button>
-            </form>
-          </div>
-        )}
+        <SidebarUserMenu user={user} isExpanded={isExpanded} />
       </div>
     </div>
   );
