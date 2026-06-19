@@ -118,7 +118,7 @@ export function Sidebar({
                 {recentCollections.length > 0 && (
                   <div className='mb-1 ml-2 pl-2'>
                     <h3 className='mb-1 px-2 text-xs tracking-wider text-muted-foreground'>
-                      ALL COLLECTIONS
+                      Recent
                     </h3>
                     <div className='space-y-0.5 ml-6'>
                       {recentCollections.map((collection) => (

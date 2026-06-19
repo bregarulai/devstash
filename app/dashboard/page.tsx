@@ -8,7 +8,7 @@ import {
 } from '@/lib/db/items/items';
 import {
   getFavoriteCollections,
-  getAllCollections,
+  getRecentCollections,
 } from '@/lib/db/collections/collections';
 import type {
   ItemWithDetails,
@@ -30,22 +30,22 @@ type DashboardData = {
   recentItems: ItemWithDetails[];
   systemItemTypes: SystemItemType[];
   favoriteCollections: CollectionWithStats[];
-  allCollections: CollectionWithStats[];
+  recentCollections: CollectionWithStats[];
   itemStats: ItemStats;
 };
 
 async function loadDashboardData(userId: string): Promise<DashboardData> {
-  const [pinnedItems, recentItems, systemItemTypes, favoriteCollections, allCollections, itemStats] =
+  const [pinnedItems, recentItems, systemItemTypes, favoriteCollections, recentCollections, itemStats] =
     await Promise.all([
       getPinnedItems(userId).catch(() => []),
       getRecentItems(userId).catch(() => []),
       getSystemItemTypesWithCounts(userId).catch(() => []),
       getFavoriteCollections(userId).catch(() => []),
-      getAllCollections(userId).catch(() => []),
+      getRecentCollections(userId).catch(() => []),
       getItemStats(userId).catch(() => EMPTY_ITEM_STATS),
     ]);
 
-  return { pinnedItems, recentItems, systemItemTypes, favoriteCollections, allCollections, itemStats };
+  return { pinnedItems, recentItems, systemItemTypes, favoriteCollections, recentCollections, itemStats };
 }
 
 export default async function DashboardPage() {
@@ -90,7 +90,7 @@ export default async function DashboardPage() {
     recentItems: [],
     systemItemTypes: [],
     favoriteCollections: [],
-    allCollections: [],
+    recentCollections: [],
     itemStats: EMPTY_ITEM_STATS,
   };
 
@@ -105,7 +105,7 @@ export default async function DashboardPage() {
       user={user}
       systemItemTypes={data.systemItemTypes}
       favoriteCollections={data.favoriteCollections}
-      recentCollections={data.allCollections}
+      recentCollections={data.recentCollections}
     >
       <ItemDrawerProvider>
         <DashboardContent
