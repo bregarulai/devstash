@@ -190,6 +190,18 @@ export async function getAllCollections(
   return collections.map(mapCollectionToStats);
 }
 
+export async function getUserCollectionList(
+  userId: string,
+): Promise<{ id: string; name: string }[]> {
+  const collections = await prisma.collection.findMany({
+    where: { userId },
+    select: { id: true, name: true },
+    orderBy: { name: 'asc' },
+  });
+
+  return collections;
+}
+
 export async function createCollection(
   userId: string,
   data: { name: string; description?: string | null },

@@ -25,10 +25,12 @@ export function ItemCreateDialog() {
     selectedType,
     contentValue,
     languageValue,
+    collectionIds,
     handleOpenChange,
     handleItemTypeSelect,
     handleFileSelect,
     handleTagsChange,
+    handleCollectionChange,
   } = useItemCreateForm();
 
   return (
@@ -55,12 +57,14 @@ export function ItemCreateDialog() {
           selectedType={selectedType}
           contentValue={contentValue}
           languageValue={languageValue}
+          collectionIds={collectionIds}
           isPending={isPending}
           isUploading={isUploading}
           uploadProgress={uploadProgress}
           handleItemTypeSelect={handleItemTypeSelect}
           handleFileSelect={handleFileSelect}
           handleTagsChange={handleTagsChange}
+          handleCollectionChange={handleCollectionChange}
           setOpen={setOpen}
         />
       </DialogContent>

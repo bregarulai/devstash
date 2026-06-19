@@ -8,6 +8,7 @@ import { Info } from 'lucide-react';
 import { formatDaysAgo } from '@/lib/utils/utils';
 import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
 import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
+import { CollectionPicker } from '@/components/collections/collectionPicker/CollectionPicker';
 import type { ItemWithDetails } from '@/types/db';
 import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES, SHOW_CONTENT, SHOW_LANGUAGE, SHOW_URL } from '@/lib/constants';
 
@@ -19,6 +20,7 @@ export interface DrawerEditContentHandle {
     url: string | null | undefined;
     language: string | null | undefined;
     tags: string[];
+    collectionIds: string[];
   };
 }
 
@@ -35,6 +37,9 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
     const [url, setUrl] = useState(item.url ?? '');
     const [language, setLanguage] = useState(item.language ?? '');
     const [tagInput, setTagInput] = useState(item.tags.map((t) => t.name).join(', '));
+    const [collectionIds, setCollectionIds] = useState<string[]>(
+      item.collections?.map((c) => c.id) ?? [],
+    );
 
     const typeName = item.itemType.name.toLowerCase();
     const showContent = SHOW_CONTENT.includes(typeName);
@@ -58,8 +63,9 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
           .split(',')
           .map((t) => t.trim())
           .filter(Boolean),
+        collectionIds,
       }),
-      [title, description, content, url, language, tagInput, showContent, showUrl, showLanguage],
+      [title, description, content, url, language, tagInput, collectionIds, showContent, showUrl, showLanguage],
     );
 
     useImperativeHandle(ref, () => ({
@@ -164,6 +170,16 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
             onChange={(e) => setTagInput(e.target.value)}
             placeholder='Comma-separated tags'
             className='h-9'
+          />
+        </div>
+
+        <div className='space-y-2'>
+          <Label className='text-xs font-medium text-muted-foreground'>
+            Collections
+          </Label>
+          <CollectionPicker
+            value={collectionIds}
+            onChange={setCollectionIds}
           />
         </div>
 

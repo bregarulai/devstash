@@ -60,6 +60,7 @@ export async function updateItemAction(
   try {
     const updated = await updateItem(itemId, userId, result.data);
     revalidatePath('/dashboard');
+    revalidatePath(`/items/${updated.itemType.name.toLowerCase()}`);
     return { success: true, data: updated, error: null };
   } catch (err) {
     return {

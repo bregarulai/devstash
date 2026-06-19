@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
 import { collectionCreateSchema, type CollectionCreateValues, type CollectionSelect } from '@/types/db';
-import { createCollection } from '@/lib/db/collections/collections';
+import { createCollection, getUserCollectionList } from '@/lib/db/collections/collections';
 
 type ActionResult<T> =
   | { success: true; data: T; error: null }
@@ -39,6 +39,25 @@ export async function createCollectionAction(
       success: false,
       data: null,
       error: err instanceof Error ? err.message : 'Failed to create collection',
+    };
+  }
+}
+
+export async function getCollectionsForPickerAction(): Promise<
+  ActionResult<{ id: string; name: string }[]>
+> {
+  const authResult = await requireAuth();
+  if (authResult.error) return { success: false, data: null, error: authResult.error };
+  const { userId } = authResult;
+
+  try {
+    const collections = await getUserCollectionList(userId);
+    return { success: true, data: collections, error: null };
+  } catch (err) {
+    return {
+      success: false,
+      data: null,
+      error: err instanceof Error ? err.message : 'Failed to fetch collections',
     };
   }
 }

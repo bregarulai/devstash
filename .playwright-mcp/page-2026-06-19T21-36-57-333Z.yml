@@ -1,0 +1,544 @@
+- generic:
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - link:
+              - /url: /
+              - text: DevStash
+          - generic:
+            - generic:
+              - paragraph: Navigation
+              - img
+            - generic:
+              - heading [level=3]: Types
+              - generic:
+                - link:
+                  - /url: /items/snippet
+                  - generic:
+                    - generic:
+                      - img
+                  - generic: Snippet
+                  - generic: "4"
+                - link:
+                  - /url: /items/prompt
+                  - generic:
+                    - generic:
+                      - img
+                  - generic: Prompt
+                  - generic: "3"
+                - link:
+                  - /url: /items/command
+                  - generic:
+                    - generic:
+                      - img
+                  - generic: Command
+                  - generic: "4"
+                - link:
+                  - /url: /items/note
+                  - generic:
+                    - generic:
+                      - img
+                  - generic: Note
+                  - generic: "1"
+                - link:
+                  - /url: /items/file
+                  - generic:
+                    - generic:
+                      - img
+                  - generic: File
+                  - generic: PRO
+                  - generic: "2"
+                - link:
+                  - /url: /items/image
+                  - generic:
+                    - generic:
+                      - img
+                  - generic: Image
+                  - generic: PRO
+                  - generic: "2"
+                - link:
+                  - /url: /items/link
+                  - generic:
+                    - generic:
+                      - img
+                  - generic: Link
+                  - generic: "6"
+            - generic:
+              - generic:
+                - button [expanded]:
+                  - img
+                  - text: COLLECTIONS
+                - generic:
+                  - generic:
+                    - heading [level=3]: Favorites
+                    - generic:
+                      - link:
+                        - /url: /collections/cmq478frq000d6cfdqu65qynf
+                        - img
+                        - generic: DevOps Essentials
+                        - generic: "3"
+                      - link:
+                        - /url: /collections/cmq478ehj00086cfd23s3wz3e
+                        - img
+                        - generic: AI Workflows
+                        - generic: "3"
+                      - link:
+                        - /url: /collections/cmq478dhf00046cfdcc8oe30m
+                        - img
+                        - generic: React Patterns
+                        - generic: "3"
+                  - generic:
+                    - heading [level=3]: Recent
+                    - generic:
+                      - link:
+                        - /url: /collections/cmqlesciz0003ggfdn1w5v1ir
+                        - generic: React js prompts
+                        - generic: "0"
+                      - link:
+                        - /url: /collections/cmqlel4ep0002ggfdr8y2bq4c
+                        - generic: Next js
+                        - generic: "0"
+                      - link:
+                        - /url: /collections/cmq478ifc000n6cfdfeqcrg8p
+                        - generic: Design Resources
+                        - generic: "4"
+                      - link:
+                        - /url: /collections/cmq478h62000i6cfd7roohgmk
+                        - generic: Terminal Commands
+                        - generic: "4"
+                      - link:
+                        - /url: /collections/cmq478frq000d6cfdqu65qynf
+                        - generic: DevOps Essentials
+                        - generic: "3"
+            - generic:
+              - link:
+                - /url: /collections
+                - text: View all collections
+          - generic:
+            - button:
+              - generic:
+                - generic: D
+              - generic:
+                - paragraph: Demo User
+                - paragraph: demo@devstash.io
+              - img
+      - generic:
+        - banner:
+          - generic:
+            - group:
+              - group:
+                - group:
+                  - img
+                - textbox:
+                  - /placeholder: Search...
+          - generic:
+            - button:
+              - img
+              - text: New Collection
+            - button [expanded]:
+              - img
+              - text: New Item
+        - main:
+          - generic:
+            - generic: "Quick commands:"
+            - generic: Ctrl+K
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - paragraph: Total Items
+                    - paragraph: "22"
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - paragraph: Collections
+                    - paragraph: "7"
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - paragraph: Favorite Items
+                    - paragraph: "0"
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - paragraph: Favorite Collections
+                    - paragraph: "3"
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - heading [level=2]: Collections
+                  - link:
+                    - /url: /collections
+                    - text: View All
+                    - generic: Go
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: React js prompts
+                        - generic: testing the collections creation refresh ui
+                    - generic:
+                      - generic:
+                        - generic: No items
+                    - generic:
+                      - generic: 0 items
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Next js
+                        - generic: Testing creating a collection
+                    - generic:
+                      - generic:
+                        - generic: No items
+                    - generic:
+                      - generic: 0 items
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Design Resources
+                        - generic: Curated links for UI design, CSS, and component libraries
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                    - generic:
+                      - generic: 4 items
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Terminal Commands
+                        - generic: Essential terminal commands for daily development
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                    - generic:
+                      - generic: 4 items
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: DevOps Essentials
+                        - generic: Docker, CI/CD configurations, and deployment scripts
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                        - generic:
+                          - generic:
+                            - img
+                    - generic:
+                      - generic: 3 items
+            - generic:
+              - generic:
+                - img
+                - heading [level=2]: Pinned Items
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: useDebounce Hooks
+                      - paragraph: A React hook that delays updating a value until after a specified delay, useful for search inputs and API calls
+                    - generic: snippet
+                    - generic: 7 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Process Management
+                      - paragraph: Commands for finding and killing processes by port, monitoring memory, and checking disk usage
+                    - generic: command
+                    - generic: 12 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Git Reset & Undo Operations
+                      - paragraph: Guide to git reset modes (soft, mixed, hard) and using git bisect for debugging
+                    - generic: command
+                    - generic: 12 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Next.js Deployment Guide
+                      - paragraph: Official Next.js documentation covering deployment strategies and best practices
+                    - generic: link
+                    - generic: 12 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Docker Compose for Next.js
+                      - paragraph: A Docker Compose configuration for running Next.js with PostgreSQL in development
+                    - generic: snippet
+                    - generic: 12 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Refactoring Assistance Prompt
+                      - paragraph: An AI prompt for analyzing code and suggesting design patterns, abstractions, and testable splits
+                    - generic: prompt
+                    - generic: 12 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Code Review Prompt
+                      - paragraph: A structured AI prompt for reviewing code quality, performance, security, and style consistency
+                    - generic: prompt
+                    - generic: 12 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: useLocalStorage Hook
+                      - paragraph: A React hook that synchronizes a value with localStorage, persisting data across browser sessions
+                    - generic: snippet
+                    - generic: 12 days ago
+            - generic:
+              - generic:
+                - img
+                - heading [level=2]: Recent Items
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: another vscode
+                      - paragraph: another vscode shortcuts file
+                    - generic: file
+                    - generic: 3 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: vscode
+                      - paragraph: vscode shortcuts
+                    - generic: file
+                    - generic: 3 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Bird
+                      - paragraph: Bird chilling
+                    - generic: image
+                    - generic: 3 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Nba2k build
+                      - paragraph: a build for nbk2k
+                    - generic: image
+                    - generic: 3 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Test Markdown Note
+                    - generic: note
+                    - generic: 6 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: useDebounce Hooks
+                      - paragraph: A React hook that delays updating a value until after a specified delay, useful for search inputs and API calls
+                    - generic: snippet
+                    - generic: 7 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: useSessionStorage Hooks
+                      - paragraph: A React hook that synchronizes a value with sessionStorage, clearing data when the browser tab closes
+                    - generic: snippet
+                    - generic: 7 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Lucide Icon Library
+                    - generic: link
+                    - generic: 12 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: Radix UI Primitives
+                    - generic: link
+                    - generic: 12 days ago
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                    - generic:
+                      - paragraph: shadcn/ui Component Library
+                    - generic: link
+                    - generic: 12 days ago
+          - alert:
+            - img
+            - generic:
+              - generic: Dashboard data may not have loaded correctly.
+              - button: Refresh
+  - region "Notifications alt+T"
+  - alert
+  - generic:
+    - heading [level=2]: Command Palette
+    - paragraph: Search for a command to run...
+  - dialog "Create New Item" [ref=e494]:
+    - generic [ref=e495]:
+      - heading "Create New Item" [level=2] [ref=e496]
+      - paragraph [ref=e497]: Add a new item to your collection.
+    - generic [ref=e498]:
+      - group [ref=e499]:
+        - generic [ref=e500]: Type
+        - generic [ref=e502]:
+          - button "Snippet" [active] [ref=e503]:
+            - img [ref=e504]
+            - text: Snippet
+          - button "Prompt" [ref=e507]:
+            - img [ref=e508]
+            - text: Prompt
+          - button "Command" [ref=e511]:
+            - img [ref=e512]
+            - text: Command
+          - button "Note" [ref=e514]:
+            - img [ref=e515]
+            - text: Note
+          - button "Link" [ref=e518]:
+            - img [ref=e519]
+            - text: Link
+          - button "File" [ref=e522]:
+            - img [ref=e523]
+            - text: File
+          - button "Image" [ref=e526]:
+            - img [ref=e527]
+            - text: Image
+      - group [ref=e531]:
+        - generic [ref=e532]:
+          - text: Title
+          - generic [ref=e533]: "*"
+        - textbox "Title *" [ref=e535]:
+          - /placeholder: Item title
+      - group [ref=e536]:
+        - generic [ref=e537]: Description
+        - textbox "Description" [ref=e539]:
+          - /placeholder: Optional description
+      - group [ref=e540]:
+        - generic [ref=e541]:
+          - text: Content
+          - generic [ref=e542]: "*"
+        - generic [ref=e544]:
+          - generic [ref=e545]:
+            - generic [ref=e551]: plaintext
+            - button "Copy" [ref=e552]:
+              - img [ref=e553]
+              - text: Copy
+          - code [ref=e559]:
+            - generic [ref=e560]:
+              - textbox "Editor content" [ref=e561]
+              - textbox [ref=e562]
+              - generic [ref=e567]: "1"
+      - group [ref=e572]:
+        - generic [ref=e573]: Language
+        - textbox "Language" [ref=e575]:
+          - /placeholder: e.g. typescript, python
+      - group [ref=e576]:
+        - generic [ref=e577]: Tags
+        - textbox "Tags" [ref=e579]:
+          - /placeholder: Comma-separated tags
+      - group [ref=e580]:
+        - generic [ref=e581]: Collections
+        - generic [ref=e583]:
+          - generic [ref=e584]:
+            - img [ref=e585]
+            - textbox "Filter collections..." [ref=e588]
+          - generic [ref=e589]:
+            - generic [ref=e590] [cursor=pointer]:
+              - checkbox "AI Workflows" [ref=e591]
+              - checkbox
+              - generic [ref=e592]: AI Workflows
+            - generic [ref=e593] [cursor=pointer]:
+              - checkbox "Design Resources" [ref=e594]
+              - checkbox
+              - generic [ref=e595]: Design Resources
+            - generic [ref=e596] [cursor=pointer]:
+              - checkbox "DevOps Essentials" [ref=e597]
+              - checkbox
+              - generic [ref=e598]: DevOps Essentials
+            - generic [ref=e599] [cursor=pointer]:
+              - checkbox "Next js" [ref=e600]
+              - checkbox
+              - generic [ref=e601]: Next js
+            - generic [ref=e602] [cursor=pointer]:
+              - checkbox "React Patterns" [ref=e603]
+              - checkbox
+              - generic [ref=e604]: React Patterns
+            - generic [ref=e605] [cursor=pointer]:
+              - checkbox "React js prompts" [ref=e606]
+              - checkbox
+              - generic [ref=e607]: React js prompts
+            - generic [ref=e608] [cursor=pointer]:
+              - checkbox "Terminal Commands" [ref=e609]
+              - checkbox
+              - generic [ref=e610]: Terminal Commands
+      - generic [ref=e611]:
+        - button "Cancel" [ref=e612]
+        - button "Create Item" [ref=e613]
+  - generic:
+    - alert
+    - alert

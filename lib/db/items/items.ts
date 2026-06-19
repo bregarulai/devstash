@@ -18,7 +18,47 @@ export const ITEM_INCLUDE = {
       name: true,
     },
   },
+  collections: {
+    select: {
+      collection: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  },
 } as const;
+
+type RawItem = Prisma.ItemGetPayload<{ include: typeof ITEM_INCLUDE }>;
+
+function mapItemResponse(item: RawItem): ItemWithDetails {
+  return {
+    ...item,
+    collections: item.collections.map((ic) => ({
+      id: ic.collection.id,
+      name: ic.collection.name,
+    })),
+  } as unknown as ItemWithDetails;
+}
+
+async function validateCollectionOwnership(
+  userId: string,
+  collectionIds: string[],
+): Promise<void> {
+  if (collectionIds.length === 0) return;
+
+  const owned = await prisma.collection.findMany({
+    where: { id: { in: collectionIds }, userId },
+    select: { id: true },
+  });
+
+  if (owned.length !== collectionIds.length) {
+    const ownedIds = new Set(owned.map((c) => c.id));
+    const invalid = collectionIds.filter((id) => !ownedIds.has(id));
+    throw new Error(`Unauthorized access to collection(s): ${invalid.join(', ')}`);
+  }
+}
 
 export async function createItem(
   userId: string,
@@ -32,6 +72,9 @@ export async function createItem(
   }
 
   const tagNames = data.tags ?? [];
+  const collectionIds = data.collectionIds ?? [];
+
+  await validateCollectionOwnership(userId, collectionIds);
 
   const item = await prisma.item.create({
     data: {
@@ -52,11 +95,16 @@ export async function createItem(
           create: { name },
         })),
       },
+      collections: {
+        create: collectionIds.map((collectionId) => ({
+          collection: { connect: { id: collectionId } },
+        })),
+      },
     },
     include: ITEM_INCLUDE,
   });
 
-  return item;
+  return mapItemResponse(item);
 }
 
 export async function deleteItem(
@@ -88,12 +136,14 @@ async function findItems(
   where?: Prisma.ItemWhereInput,
   limit?: number,
 ): Promise<ItemWithDetails[]> {
-  return prisma.item.findMany({
+  const items = await prisma.item.findMany({
     where: { userId, ...where },
     orderBy: { updatedAt: 'desc' },
     ...(limit ? { take: limit } : {}),
     include: ITEM_INCLUDE,
   });
+
+  return items.map(mapItemResponse);
 }
 
 export function getPinnedItems(userId: string): Promise<ItemWithDetails[]> {
@@ -235,25 +285,41 @@ export async function updateItem(
   data: ItemEditValues,
 ): Promise<ItemWithDetails> {
   const tagNames = data.tags ?? [];
+  const collectionIds = data.collectionIds;
+
+  if (collectionIds !== undefined) {
+    await validateCollectionOwnership(userId, collectionIds);
+  }
+
+  const updateData: Prisma.ItemUpdateInput = {
+    title: data.title,
+    description: data.description ?? null,
+    content: data.content ?? null,
+    url: data.url === '' ? null : data.url ?? null,
+    language: data.language ?? null,
+    tags: {
+      set: [],
+      connectOrCreate: tagNames.map((name) => ({
+        where: { name },
+        create: { name },
+      })),
+    },
+  };
+
+  if (collectionIds !== undefined) {
+    updateData.collections = {
+      deleteMany: {},
+      create: collectionIds.map((collectionId) => ({
+        collection: { connect: { id: collectionId } },
+      })),
+    };
+  }
 
   const item = await prisma.item.update({
     where: { id: itemId, userId },
-    data: {
-      title: data.title,
-      description: data.description ?? null,
-      content: data.content ?? null,
-      url: data.url === '' ? null : data.url ?? null,
-      language: data.language ?? null,
-      tags: {
-        set: [],
-        connectOrCreate: tagNames.map((name) => ({
-          where: { name },
-          create: { name },
-        })),
-      },
-    },
+    data: updateData,
     include: ITEM_INCLUDE,
   });
 
-  return item;
+  return mapItemResponse(item);
 }

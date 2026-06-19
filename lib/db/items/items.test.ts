@@ -8,6 +8,7 @@ const mockPrismaItemUpdate = vi.fn()
 const mockPrismaItemDelete = vi.fn()
 const mockPrismaItemCreate = vi.fn()
 const mockPrismaCollectionCount = vi.fn()
+const mockPrismaCollectionFindMany = vi.fn()
 const mockPrismaItemTypeFindMany = vi.fn()
 const mockPrismaItemTypeFindFirst = vi.fn()
 const mockPrismaItemGroupBy = vi.fn()
@@ -25,6 +26,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
     },
     collection: {
       count: (...args: unknown[]) => mockPrismaCollectionCount(...args),
+      findMany: (...args: unknown[]) => mockPrismaCollectionFindMany(...args),
     },
     itemType: {
       findMany: (...args: unknown[]) => mockPrismaItemTypeFindMany(...args),
@@ -185,6 +187,7 @@ describe('getPinnedItems', () => {
         isPinned: true,
         itemType: { name: 'File', icon: '📄', color: '#ff0000' },
         tags: [{ id: 'tag-1', name: 'test' }],
+        collections: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -231,6 +234,7 @@ describe('getRecentItems', () => {
         isPinned: false,
         itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
         tags: [],
+        collections: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -289,6 +293,7 @@ describe('getAllItems', () => {
         isPinned: false,
         itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
         tags: [],
+        collections: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -347,6 +352,7 @@ describe('getFavoriteItems', () => {
         isPinned: false,
         itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
         tags: [],
+        collections: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -394,6 +400,7 @@ describe('getItemsByType', () => {
         isPinned: false,
         itemType: { name: 'File', icon: '📄', color: '#ff0000' },
         tags: [],
+        collections: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -441,6 +448,7 @@ describe('searchItems', () => {
         isPinned: false,
         itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
         tags: [],
+        collections: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -486,6 +494,7 @@ describe('getItemsByTypeWithMeta', () => {
         isPinned: false,
         itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
         tags: [],
+        collections: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -540,6 +549,7 @@ describe('updateItem', () => {
       isPinned: true,
       itemType: { name: 'File', icon: '📄', color: '#ff0000' },
       tags: [{ id: 'tag-1', name: 'test' }],
+      collections: [],
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-03'),
     }
@@ -569,6 +579,7 @@ describe('updateItem', () => {
       isPinned: true,
       itemType: { name: 'File', icon: '📄', color: '#ff0000' },
       tags: [{ id: 'tag-1', name: 'test' }],
+      collections: [],
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-03'),
     })
@@ -589,6 +600,11 @@ describe('updateItem', () => {
         },
       },
       include: {
+        collections: {
+          select: {
+            collection: { select: { id: true, name: true } },
+          },
+        },
         itemType: { select: { name: true, icon: true, color: true } },
         tags: { select: { id: true, name: true } },
       },
@@ -611,6 +627,7 @@ describe('updateItem', () => {
       isPinned: false,
       itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
       tags: [],
+      collections: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     }
@@ -649,6 +666,7 @@ describe('updateItem', () => {
         { id: 'tag-2', name: 'tag2' },
         { id: 'tag-3', name: 'tag3' },
       ],
+      collections: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     }
@@ -693,6 +711,7 @@ describe('updateItem', () => {
       isPinned: false,
       itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
       tags: [],
+      collections: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     }
@@ -727,6 +746,56 @@ describe('updateItem', () => {
     await expect(
       updateItem('nonexistent', 'user-1', { title: 'Title' })
     ).rejects.toThrow('Record to update not found')
+  })
+
+  it('validates collection ownership when updating collections', async () => {
+    mockPrismaCollectionFindMany.mockResolvedValue([
+      { id: 'col-1' },
+    ])
+    const mockUpdatedItem = {
+      id: 'item-1',
+      title: 'Updated Title',
+      description: null,
+      contentType: 'TEXT',
+      content: null,
+      fileUrl: null,
+      fileName: null,
+      fileSize: null,
+      url: null,
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
+      tags: [],
+      collections: [{ collection: { id: 'col-1', name: 'Collection 1' } }],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaItemUpdate.mockResolvedValue(mockUpdatedItem)
+
+    const { updateItem } = await import('./items')
+    await updateItem('item-1', 'user-1', {
+      title: 'Updated Title',
+      collectionIds: ['col-1'],
+    })
+
+    expect(mockPrismaCollectionFindMany).toHaveBeenCalledWith({
+      where: { id: { in: ['col-1'] }, userId: 'user-1' },
+      select: { id: true },
+    })
+  })
+
+  it('throws when user does not own collections during update', async () => {
+    mockPrismaCollectionFindMany.mockResolvedValue([])
+
+    const { updateItem } = await import('./items')
+
+    await expect(
+      updateItem('item-1', 'user-1', {
+        title: 'Title',
+        collectionIds: ['col-1'],
+      })
+    ).rejects.toThrow('Unauthorized access to collection(s): col-1')
   })
 })
 
@@ -813,6 +882,7 @@ describe('createItem', () => {
       isPinned: false,
       itemType: { name: 'snippet', icon: '📝', color: '#ff0000' },
       tags: [{ id: 'tag-1', name: 'test' }],
+      collections: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     })
@@ -845,6 +915,9 @@ describe('createItem', () => {
         language: 'typescript',
         userId: 'user-1',
         itemTypeId: 'type-1',
+        collections: {
+          create: [],
+        },
         tags: {
           connectOrCreate: [
             { where: { name: 'test' }, create: { name: 'test' } },
@@ -852,6 +925,11 @@ describe('createItem', () => {
         },
       },
       include: {
+        collections: {
+          select: {
+            collection: { select: { id: true, name: true } },
+          },
+        },
         itemType: { select: { name: true, icon: true, color: true } },
         tags: { select: { id: true, name: true } },
       },
@@ -876,6 +954,7 @@ describe('createItem', () => {
       isPinned: false,
       itemType: { name: 'link', icon: '🔗', color: '#00ff00' },
       tags: [],
+      collections: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     })
@@ -919,6 +998,7 @@ describe('createItem', () => {
       isPinned: false,
       itemType: { name: 'note', icon: '📋', color: '#0000ff' },
       tags: [],
+      collections: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     })
@@ -971,6 +1051,7 @@ describe('createItem', () => {
         { id: 'tag-2', name: 'tag2' },
         { id: 'tag-3', name: 'tag3' },
       ],
+      collections: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     })
@@ -1017,6 +1098,7 @@ describe('createItem', () => {
       isPinned: false,
       itemType: { name: 'snippet', icon: '📝', color: '#ff0000' },
       tags: [],
+      collections: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     })
@@ -1058,5 +1140,72 @@ describe('createItem', () => {
         content: 'code',
       })
     ).rejects.toThrow('Database connection failed')
+  })
+
+  it('creates item with collections when user owns them', async () => {
+    mockPrismaItemTypeFindFirst.mockResolvedValue({
+      id: 'type-1',
+      name: 'snippet',
+      isSystem: true,
+    })
+    mockPrismaCollectionFindMany.mockResolvedValue([
+      { id: 'col-1' },
+      { id: 'col-2' },
+    ])
+    mockPrismaItemCreate.mockResolvedValue({
+      id: 'item-1',
+      title: 'Test with Collections',
+      description: null,
+      contentType: 'TEXT',
+      content: 'code',
+      url: null,
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'snippet', icon: '📝', color: '#ff0000' },
+      tags: [],
+      collections: [
+        { collection: { id: 'col-1', name: 'Collection 1' } },
+        { collection: { id: 'col-2', name: 'Collection 2' } },
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    const { createItem } = await import('./items')
+    const result = await createItem('user-1', {
+      title: 'Test with Collections',
+      itemType: 'snippet',
+      content: 'code',
+      collectionIds: ['col-1', 'col-2'],
+    })
+
+    expect(result.id).toBe('item-1')
+    expect(mockPrismaCollectionFindMany).toHaveBeenCalledWith({
+      where: { id: { in: ['col-1', 'col-2'] }, userId: 'user-1' },
+      select: { id: true },
+    })
+  })
+
+  it('throws when user does not own collections', async () => {
+    mockPrismaItemTypeFindFirst.mockResolvedValue({
+      id: 'type-1',
+      name: 'snippet',
+      isSystem: true,
+    })
+    mockPrismaCollectionFindMany.mockResolvedValue([
+      { id: 'col-1' },
+    ])
+
+    const { createItem } = await import('./items')
+
+    await expect(
+      createItem('user-1', {
+        title: 'Test',
+        itemType: 'snippet',
+        content: 'code',
+        collectionIds: ['col-1', 'col-2'],
+      })
+    ).rejects.toThrow('Unauthorized access to collection(s): col-2')
   })
 })

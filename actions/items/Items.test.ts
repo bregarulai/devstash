@@ -92,8 +92,9 @@ describe('updateItemAction', () => {
       language: null,
       isFavorite: false,
       isPinned: false,
-      itemType: null,
+      itemType: { name: 'snippet', icon: 'code', color: '#3b82f6' },
       tags: [],
+      collections: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     }
@@ -167,6 +168,47 @@ describe('updateItemAction', () => {
     await updateItemAction('item-1', { title: 'Title' })
 
     expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('passes collectionIds to updateItem', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    const mockUpdatedItem = {
+      id: 'item-1',
+      title: 'Updated Title',
+      itemType: { name: 'snippet', icon: 'code', color: '#3b82f6' },
+      tags: [],
+      collections: [{ id: 'col-1', name: 'Collection 1' }],
+    }
+    mockUpdateItem.mockResolvedValue(mockUpdatedItem)
+
+    const { updateItemAction } = await import('./Items')
+    const result = await updateItemAction('item-1', {
+      title: 'Updated Title',
+      collectionIds: ['col-1'],
+    })
+
+    expect(result.success).toBe(true)
+    expect(mockUpdateItem).toHaveBeenCalledWith('item-1', 'user-1', {
+      title: 'Updated Title',
+      collectionIds: ['col-1'],
+    })
+  })
+
+  it('returns error when collectionIds validation fails', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockUpdateItem.mockRejectedValue(new Error('Unauthorized access to collection(s): invalid-col'))
+
+    const { updateItemAction } = await import('./Items')
+    const result = await updateItemAction('item-1', {
+      title: 'Title',
+      collectionIds: ['invalid-col'],
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized access to collection(s): invalid-col',
+    })
   })
 })
 
@@ -483,5 +525,52 @@ describe('createItemAction', () => {
     })
 
     expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('passes collectionIds to createItem', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    const mockCreatedItem = {
+      id: 'item-1',
+      title: 'Test with Collections',
+      itemType: { name: 'snippet', icon: 'code', color: '#3b82f6' },
+      tags: [],
+      collections: [{ id: 'col-1', name: 'Collection 1' }],
+    }
+    mockCreateItem.mockResolvedValue(mockCreatedItem)
+
+    const { createItemAction } = await import('./Items')
+    const result = await createItemAction({
+      title: 'Test with Collections',
+      itemType: 'snippet',
+      content: 'code',
+      collectionIds: ['col-1'],
+    })
+
+    expect(result.success).toBe(true)
+    expect(mockCreateItem).toHaveBeenCalledWith('user-1', {
+      title: 'Test with Collections',
+      itemType: 'snippet',
+      content: 'code',
+      collectionIds: ['col-1'],
+    })
+  })
+
+  it('returns error when collectionIds validation fails during creation', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockCreateItem.mockRejectedValue(new Error('Unauthorized access to collection(s): invalid-col'))
+
+    const { createItemAction } = await import('./Items')
+    const result = await createItemAction({
+      title: 'Test',
+      itemType: 'snippet',
+      content: 'code',
+      collectionIds: ['invalid-col'],
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized access to collection(s): invalid-col',
+    })
   })
 })

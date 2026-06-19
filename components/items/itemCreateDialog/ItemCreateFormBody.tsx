@@ -9,6 +9,7 @@ import { ItemTypeSelector } from './ItemTypeSelector';
 import { ContentTypeField } from './ContentTypeField';
 import { UploadProgressIndicator } from './UploadProgressIndicator';
 import { CreateFormField } from './CreateFormField';
+import { CollectionPicker } from '@/components/collections/collectionPicker/CollectionPicker';
 import {
   SHOW_CONTENT,
   SHOW_URL,
@@ -25,12 +26,14 @@ interface ItemCreateFormBodyProps {
   selectedType: ItemType;
   contentValue: string | null | undefined;
   languageValue: string | null | undefined;
+  collectionIds: string[];
   isPending: boolean;
   isUploading: boolean;
   uploadProgress: number;
   handleItemTypeSelect: (type: ItemType) => void;
   handleFileSelect: (file: File) => void;
   handleTagsChange: (value: string) => void;
+  handleCollectionChange: (ids: string[]) => void;
   setOpen: (open: boolean) => void;
 }
 
@@ -40,12 +43,14 @@ export function ItemCreateFormBody({
   selectedType,
   contentValue,
   languageValue,
+  collectionIds,
   isPending,
   isUploading,
   uploadProgress,
   handleItemTypeSelect,
   handleFileSelect,
   handleTagsChange,
+  handleCollectionChange,
   setOpen,
 }: ItemCreateFormBodyProps) {
   const { register, formState } = form;
@@ -162,6 +167,16 @@ export function ItemCreateFormBody({
           id='tags'
           placeholder='Comma-separated tags'
           onChange={(e) => handleTagsChange(e.target.value)}
+        />
+      </CreateFormField>
+
+      <CreateFormField
+        label='Collections'
+        error={errors.collectionIds?.message}
+      >
+        <CollectionPicker
+          value={collectionIds}
+          onChange={handleCollectionChange}
         />
       </CreateFormField>
 

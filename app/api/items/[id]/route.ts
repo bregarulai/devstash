@@ -51,6 +51,10 @@ export async function GET(
       isPinned: item.isPinned,
       itemType: item.itemType,
       tags: item.tags,
+      collections: item.collections.map((ic) => ({
+        id: ic.collection.id,
+        name: ic.collection.name,
+      })),
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
     });

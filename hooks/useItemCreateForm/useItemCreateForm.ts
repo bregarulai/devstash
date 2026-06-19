@@ -27,21 +27,21 @@ export function useItemCreateForm() {
       fileName: '',
       fileSize: undefined,
       tags: [],
+      collectionIds: [],
     },
   });
 
   const {
-    register,
     handleSubmit,
     control,
     reset,
     setValue,
-    formState: { errors },
   } = useFormReturn;
 
   const selectedType = useWatch({ control, name: 'itemType' }) as ItemType;
   const contentValue = useWatch({ control, name: 'content' });
   const languageValue = useWatch({ control, name: 'language' });
+  const collectionIds = (useWatch({ control, name: 'collectionIds' }) ?? []) as string[];
 
   const onSubmit = handleSubmit((data) => {
     startTransition(async () => {
@@ -113,6 +113,10 @@ export function useItemCreateForm() {
     reset((prev) => ({ ...prev, tags }));
   }
 
+  function handleCollectionChange(ids: string[]) {
+    reset((prev) => ({ ...prev, collectionIds: ids }));
+  }
+
   const isUploading = isPending && !!fileUpload.pendingFile;
 
   return {
@@ -126,9 +130,11 @@ export function useItemCreateForm() {
     selectedType,
     contentValue,
     languageValue,
+    collectionIds,
     handleOpenChange,
     handleItemTypeSelect,
     handleFileSelect,
     handleTagsChange,
+    handleCollectionChange,
   };
 }

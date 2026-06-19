@@ -108,6 +108,7 @@ export const itemEditSchema = z.object({
   url: z.string().url('Must be a valid URL').or(z.literal('')).or(z.null()).optional(),
   language: z.string().or(z.null()).optional(),
   tags: z.array(z.string().trim().min(1)).optional(),
+  collectionIds: z.array(z.string()).optional(),
 });
 
 export type ItemInsert = z.infer<typeof itemInsertSchema>;
@@ -126,6 +127,7 @@ export const itemCreateSchema = z.object({
   fileName: z.string().or(z.null()).optional(),
   fileSize: z.number().int().or(z.null()).optional(),
   tags: z.array(z.string().trim().min(1)).optional(),
+  collectionIds: z.array(z.string()).optional(),
 }).refine(
   (data) => {
     if (data.itemType === 'link') {
@@ -310,6 +312,10 @@ export const itemWithDetailsSchema = z.object({
     color: z.string(),
   }),
   tags: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+  })),
+  collections: z.array(z.object({
     id: z.string(),
     name: z.string(),
   })),
