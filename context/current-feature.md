@@ -1,18 +1,25 @@
-# Current Feature
+# Current Feature: Audit June 2026 — Phase 1: Security
 
-<!-- Feature name when active -->
+**Spec**: `context/fixes/audit-june-2026-phase-1-security-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Add rate limiting to change-password API route matching the pattern in handleChangePassword
+- Add CSRF token validation to change-password API route matching delete-account pattern
+- Wrap bcrypt.hash() and prisma.user.update() in try-catch on change-password route
+- Replace email enumeration message on registration with generic error
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Items 1-3 all target the same file (`app/api/profile/change-password/route.ts`) — implement together
+- Item 4 is isolated to `actions/auth/Auth.ts`
+- Must not break existing functionality or user flows
+- Verify change-password flow still works after items 1-3
+- Verify registration still works after item 4
 
 ## History
 

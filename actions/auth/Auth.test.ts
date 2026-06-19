@@ -181,7 +181,7 @@ describe('handleRegister', () => {
     )
   })
 
-  it('returns error for duplicate email', async () => {
+  it('returns generic error for duplicate email to prevent enumeration', async () => {
     process.env.ENABLE_EMAIL_VERIFICATION = 'false'
     mockPrismaUserFindUnique.mockResolvedValue({ id: 'existing-user' })
 
@@ -195,7 +195,7 @@ describe('handleRegister', () => {
     await expect(handleRegister(formData)).rejects.toThrow('NEXT_REDIRECT')
 
     expect(mockRedirect).toHaveBeenCalledWith(
-      '/register?error=User+with+this+email+already+exists'
+      '/register?error=Unable+to+create+account.+Please+try+again.'
     )
   })
 

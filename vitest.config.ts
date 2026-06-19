@@ -6,11 +6,14 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['actions/**/*.test.ts', 'lib/**/*.test.ts', 'types/**/*.test.ts'],
+    include: ['actions/**/*.test.ts', 'lib/**/*.test.ts', 'types/**/*.test.ts', 'app/api/**/route.test.ts'],
     exclude: [
       'node_modules',
       '.next',
-      'app',
+      'app/**/page.tsx',
+      'app/**/layout.tsx',
+      'app/**/loading.tsx',
+      'app/**/error.tsx',
       'components',
       'hooks',
       'scripts',

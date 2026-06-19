@@ -44,7 +44,7 @@ export async function handleRegister(formData: FormData) {
   })
 
   if (existingUser) {
-    redirect("/register?error=User+with+this+email+already+exists")
+    redirect("/register?error=Unable+to+create+account.+Please+try+again.")
   }
 
   const hashedPassword = await bcrypt.hash(password, 12)

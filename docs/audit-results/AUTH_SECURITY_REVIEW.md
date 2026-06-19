@@ -1,291 +1,252 @@
-# DevStash — Auth Security Audit Report
+Last audited: 2026-06-19
 
-Last audited: 2026-06-16
+# DevStash Authentication Security Audit
+
+## Scope
+
+Full audit of authentication, authorization, and session management across the DevStash codebase, including:
+- All API routes (`app/api/**/route.ts`)
+- Server actions (`actions/`)
+- Auth library configuration (`lib/auth/`)
+- Database queries and input validation
+- Proxy/middleware configuration
 
 ---
 
 ## Passed Checks
 
-The following security practices are correctly implemented and verified:
+These areas were reviewed and found to be correctly implemented:
 
 ### Password Hashing
-- **Algorithm**: `bcryptjs` (bcrypt) — industry-standard password hashing
-- **Cost factor**: 12 — meets OWASP 2026 recommendation of 12+ for cloud VMs
-- **Applied consistently** across all password creation/reset flows:
-  - `actions/auth/Auth.ts:49` (registration — `bcrypt.hash(password, 12)`)
-  - `actions/auth/Auth.ts:201` (password change — `bcrypt.hash(newPassword, 12)`)
-  - `actions/resetPassword/ResetPassword.ts:56` (password reset — `bcrypt.hash(password, 12)`)
-  - `app/api/profile/change-password/route.ts:44` (API password change — `bcrypt.hash(newPassword, 12)`)
-- **No plaintext passwords** logged, returned in API responses, or stored
-- **Source**: [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html); [bcryptjs cost factor guide (2026)](https://codetools.run/blog/bcrypt-cost-factor-guide/)
+- **bcrypt with cost factor 12** used consistently across all password hashing (register, reset password, change password, seed). Cost 12 is the OWASP-recommended default for 2026 production servers, yielding ~250ms per hash on modern hardware. Verified in:
+  - `actions/auth/Auth.ts:50` — `bcrypt.hash(password, 12)`
+  - `actions/resetPassword/ResetPassword.ts:56` — `bcrypt.hash(password, 12)`
+  - `app/api/profile/change-password/route.ts:44` — `bcrypt.hash(newPassword, 12)`
+  - `prisma/seed.ts:439` — `bcrypt.hash(demoUser.password, 12)`
+- **bcrypt.compare** used for all password verification (no plaintext comparison).
+- No plaintext passwords logged, stored, or returned in API responses.
 
-### Token Security
-- **Entropy**: `crypto.randomBytes(32)` — 256 bits of cryptographic randomness (adequate)
-- **Hashed before storage**: SHA-256 hash stored in DB, raw token returned to user
-- **Expiration**: 24 hours — standard for verification tokens
-- **Single-use enforcement**: Token deleted after verification in `lib/auth/verificationToken/verificationToken.ts:44-51`
-- **Token comparison**: Uses hashed token lookup via Prisma — no timing attack risk since hash output is compared
-
-### Session Management
-- **Strategy**: JWT (configured in `lib/auth/authConfig/authConfig.ts:13`)
-- **Session validation**: `auth()` called consistently on all protected pages and API routes
-- **User ID from session**: All DB queries use `session.user.id`, never user-supplied IDs
+### Verification Token Security
+- **256-bit entropy** via `crypto.randomBytes(32)` (sufficient for token security).
+- **SHA-256 hashed before storage** — raw token never stored in database (`lib/auth/verificationToken/verificationToken.ts:7`).
+- **24-hour expiry** configured via `TOKEN_EXPIRY_MS` constant.
+- **Single-use enforcement** — tokens deleted after verification (`verificationToken.ts:45-52`) and after expiry (`verificationToken.ts:34-42`).
 
 ### Input Validation
-- **Zod schemas** on all auth forms:
-  - `types/db.ts:6-14` — `registerSchema` (name, email, password min 8, confirmPassword match)
-  - `types/db.ts:25-28` — `signInSchema` (email, password min 1)
-  - `types/db.ts:40-49` — `changePasswordSchema` (currentPassword, newPassword min 8, confirmPassword match)
-  - `types/db.ts:390-400` — `resetPasswordSchema` (token, email, password min 8, confirmPassword match)
-  - `types/db.ts:382-384` — `forgotPasswordSchema` (email)
-  - `types/db.ts:355-357` — `deleteAccountSchema` (password min 1)
-- **Server-side validation**: All server actions and API routes validate input with Zod before processing
+- **Zod schemas** applied to all server inputs before processing:
+  - `signInSchema` on sign-in
+  - `registerSchema` on registration
+  - `changePasswordSchema` on password change
+  - `forgotPasswordSchema` on forgot password
+  - `resetPasswordSchema` on reset password
+  - `itemCreateSchema` / `itemEditSchema` / `itemUpdateSchema` on item operations
+  - `deleteAccountSchema` on account deletion
+  - `verifyTokenSchema` on email verification
 
-### Rate Limiting Coverage
-- **All major auth endpoints have rate limiting** via Upstash Redis (`lib/auth/rateLimit/rateLimit.ts:64-97`):
-  - Sign-in: 5 requests / 15 minutes (per IP + email)
-  - Register: 3 requests / 1 hour (per IP)
-  - Forgot password: 3 requests / 1 hour (per IP)
-  - Reset password: 5 requests / 15 minutes (per IP)
-  - Resend verification: 3 requests / 15 minutes (per IP + email)
-  - Email verify: 10 requests / 15 minutes (per IP)
-  - GitHub OAuth: 20 requests / 15 minutes (per IP)
-  - Delete account: 3 requests / 15 minutes (per IP)
+### SQL Injection Prevention
+- **Prisma ORM** used exclusively — all database queries use parameterized queries.
+- No raw SQL queries (`$queryRaw` / `$executeRaw`) found anywhere in the codebase.
 
-### Email Enumeration Prevention
-- **Forgot password**: Dummy token created before checking user existence (`actions/forgotPassword/ForgotPassword.ts:47`) — equalizes response timing
-- **Resend verification**: Dummy token created before checking user (`actions/resendVerification/ResendVerification.ts:30`) — equalizes response timing
-- **Sign-in**: Returns null for both invalid credentials and non-existent users in NextAuth (`lib/auth/auth/auth.ts:43-44,52-53`)
-- **Forgot password**: Generic success message regardless of email existence (`actions/forgotPassword/ForgotPassword.ts:51,107`)
+### XSS Prevention
+- **React rendering** used throughout — no `dangerouslySetInnerHTML` or `innerHTML` found.
+- **No `eval()` or `Function()` calls** found.
 
-### OAuth Security
-- **NextAuth v5 handles**: CSRF protection (state parameter), PKCE, nonce, token signing, cookie security flags (httpOnly, secure, sameSite)
-- **GitHub OAuth**: `allowDangerousEmailAccountLinking: false` (`lib/auth/authConfig/authConfig.ts:7`) — prevents auto-linking
-- **Source**: [NextAuth v5 docs](https://authjs.dev)
+### Session Management
+- **NextAuth v5** handles JWT session strategy, cookie security flags, CSRF protection, and OAuth state/nonce parameters automatically.
+- **Prisma adapter** configured for NextAuth for database-backed session management.
 
-### Authorization
-- **All DB queries scoped to user**: Every item, collection, and file query includes `userId: session.user.id`
-- **IDOR protection**: Download route validates key ownership (`app/api/download/route.ts:24` — `key.includes(/${session.user.id}/`)
-- **Account deletion**: Requires password re-verification (`lib/auth/accountDeletion/accountDeletion.ts:26`)
+### Proxy / Auth Gate
+- **`proxy.ts`** correctly configured as Next.js 16's middleware replacement at project root.
+- Unauthenticated users redirected to `/sign-in` before reaching protected pages (dashboard, profile, items).
+- **All API routes** that handle user data independently verify `auth()` session — not relying solely on proxy.
 
-### Proxy (Middleware) Configuration
-- **Correctly named `proxy.ts`** for Next.js 16 (renamed from `middleware.ts`)
-- **Correct function name**: Exports named `proxy` function
-- **Correct matcher**: Excludes API routes, static files, and images
-- **Source**: [Next.js 16 Proxy docs](https://nextjs.org/docs/app/api-reference/file-conventions/proxy)
+### API Route Auth Checks
+- `app/api/upload/route.ts` — `auth()` check ✓
+- `app/api/download/route.ts` — `auth()` check + ownership verification ✓
+- `app/api/items/[id]/route.ts` — `auth()` check + `userId` scoping on all queries ✓
+- `app/api/profile/change-password/route.ts` — `auth()` check ✓
+- `app/api/profile/delete-account/route.ts` — `auth()` check + CSRF token validation ✓
+- `app/api/auth/verify/route.ts` — Public endpoint (email verification) with rate limiting ✓
+
+### Data Ownership Enforcement
+- All item queries filter by `userId` from session, preventing cross-user data access.
+- Download route verifies key contains user's ID path and that an item record exists for the user.
+- Account deletion requires password verification against the authenticated user's stored hash.
+
+### Error Handling
+- Generic error messages returned to clients (e.g., "Invalid email or password" rather than "User not found").
+- Database errors caught and generic messages returned — no stack traces leaked to clients.
 
 ---
 
 ## Findings
 
-### 🔴 Critical
+### 🟡 HIGH: Email Enumeration on Registration
 
-#### 1. CSRF Token Validation is Non-Existent in Account Deletion
-- **File:** `app/api/profile/delete-account/route.ts:34-37`
-- **Issue:** The CSRF token check only verifies the `x-csrf-token` header is **present** (`!csrfToken`), but never validates the token **value** against the NextAuth CSRF endpoint or any stored value. Any non-empty string passes this check. The frontend fetches a real CSRF token from `/api/auth/csrf` (`hooks/useDeleteAccount/useDeleteAccount.ts:12-14`), but the server never verifies it.
-- **Proof:**
+- **File:** `actions/auth/Auth.ts:46-48`
+- **Code:**
   ```typescript
-  // route.ts:34-37 — only checks presence, not value
-  const csrfToken = (await headers()).get('x-csrf-token');
-  if (!csrfToken) {  // ← only checks !null/!undefined/!empty
-    return NextResponse.json({ error: 'CSRF validation failed' }, { status: 403 });
-  }
-  // No validation of csrfToken value against anything
-  ```
-- **Impact:** An attacker can bypass the CSRF protection by sending any non-empty `x-csrf-token` header. Combined with the session cookie (which could be obtained via XSS or session fixation), this allows account deletion without a valid CSRF token.
-- **Fix:** Validate the CSRF token against the NextAuth CSRF endpoint:
-  ```typescript
-  // After extracting csrfToken from header
-  const csrfResponse = await fetch(`${process.env.AUTH_URL || 'http://localhost:3000'}/api/auth/csrf`, {
-    headers: { cookie: request.headers.get('cookie') || '' },
-  });
-  const { csrfToken: expectedToken } = await csrfResponse.json();
-  if (!csrfToken || csrfToken !== expectedToken) {
-    return NextResponse.json({ error: 'CSRF validation failed' }, { status: 403 });
+  if (existingUser) {
+    redirect("/register?error=User+with+this+email+already+exists")
   }
   ```
-  Or use NextAuth's built-in CSRF validation by switching to a form-based submission.
-
-### 🟡 High
-
-#### 2. Rate Limiter Fails Open When Upstash Redis Is Unavailable
-- **File:** `lib/auth/rateLimit/rateLimit.ts:17-31, 133-142`
-- **Issue:** If Upstash Redis credentials are not configured or the service is unavailable, the rate limiter returns `success: true` for all requests. This means **all rate limiting is silently bypassed** during Redis outages.
-- **Proof:**
+- **Issue:** The registration endpoint returns a distinct, specific error message when an email is already registered. This allows an attacker to enumerate valid email addresses by attempting registration with each one.
+- **Impact:** An attacker can build a list of registered email addresses, which can be used for targeted phishing, credential stuffing, or social engineering.
+- **Fix:** Use a generic success message regardless of whether the email exists:
   ```typescript
-  // rateLimit.ts:21-31 — fail open when no credentials
-  if (!url || !token) {
-    return {
-      limit: async () => ({
-        success: true,  // ← always allows request
-        // ...
-      }),
-    };
-  }
-  // rateLimit.ts:133-142 — fail open on catch
-  } catch {
-    return {
-      success: true,  // ← always allows request
-      // ...
-    };
-  }
+  // After registration (or if user exists), always show the same message
+  revalidatePath("/register")
+  redirect("/verify-email?success=registered&email=" + encodeURIComponent(email))
   ```
-- **Impact:** During a Redis outage, all auth endpoints (sign-in, register, password reset) become vulnerable to brute-force attacks with no rate limiting.
-- **Fix:** Either fail closed (block requests) or implement an in-memory fallback rate limiter:
-  ```typescript
-  // Option 1: Fail closed (stricter)
-  return { limit: async () => ({ success: false, remaining: 0, ... }) };
-  
-  // Option 2: In-memory fallback
-  const memoryStore = new Map<string, { count: number; reset: number }>();
-  // Implement sliding window with memory store
-  ```
+  If the email already exists and the account is already verified, silently succeed. If unverified, resend the verification email. Never reveal whether an email is registered.
 
-#### 3. No Rate Limiting on Password Change Endpoint
+---
+
+### 🟡 HIGH: Missing Rate Limiting on `change-password` API Route
+
 - **File:** `app/api/profile/change-password/route.ts` (entire file)
-- **Issue:** The password change API endpoint has **no rate limiting**. While it requires authentication and current password verification, an attacker with a valid session could brute-force the current password to change it.
-- **Proof:** The `change-password/route.ts` file has no imports from `rateLimit.ts` and no rate limit check.
-- **Impact:** An attacker with a stolen session cookie can attempt unlimited current password guesses to change the password and take over the account.
-- **Fix:** Add rate limiting to the password change endpoint:
+- **Issue:** The API route handler for changing passwords has no rate limiting. While the server action version (`actions/auth/Auth.ts:127-174`) includes rate limiting via Upstash Redis, the direct API route does not. An attacker can call this endpoint directly to brute-force the current password without any rate-limit protection.
+- **Impact:** An attacker with a valid session (e.g., from a stolen session cookie) can attempt unlimited password guesses against the current password.
+- **Fix:** Add rate limiting to the API route, matching the configuration used in the server action:
   ```typescript
-  import { createRateLimiter, checkRateLimit, RATE_LIMIT_CONFIGS, getClientIP } from '@/lib/auth/rateLimit/rateLimit';
-  
-  // At the start of POST handler:
+  import { createRateLimiter, checkRateLimit, RATE_LIMIT_CONFIGS, getClientIP } from "@/lib/auth/rateLimit/rateLimit";
+
+  // After auth check, before password processing:
   const ip = getClientIP(request.headers);
-  const rateLimiter = createRateLimiter({ limit: 5, duration: 15 * 60 }); // 5 attempts / 15 min
-  const rateResult = await checkRateLimit(rateLimiter, `changepwd:${ip}`, { limit: 5, duration: 15 * 60 });
+  const rateLimiter = createRateLimiter(RATE_LIMIT_CONFIGS.changePassword);
+  const rateKey = `changepwd:${ip}:${session.user.id}`;
+  const rateResult = await checkRateLimit(rateLimiter, rateKey, RATE_LIMIT_CONFIGS.changePassword, true);
+
   if (!rateResult.success) {
-    return NextResponse.json({ error: 'Too many attempts' }, { status: 429 });
+    const retryAfter = rateResult.retryAfter || 900;
+    return NextResponse.json(
+      { error: `Too many attempts. Please try again in ${Math.ceil(retryAfter / 60)} minutes` },
+      { status: 429, headers: { "Retry-After": String(retryAfter) } }
+    );
   }
   ```
 
-#### 4. Password Reset Reveals User Existence After Token Verification
-- **File:** `actions/resetPassword/ResetPassword.ts:48-54`
-- **Issue:** After the reset token is verified, the code queries the user by email and redirects with `User+not+found` if the user doesn't exist. This reveals whether a user with that email exists in the system.
-- **Proof:**
+---
+
+### 🟡 MEDIUM: Forgot Password Timing Side-Channel
+
+- **File:** `actions/forgotPassword/ForgotPassword.ts:46-55`
+- **Code:**
   ```typescript
-  // ResetPassword.ts:48-54
-  const user = await prisma.user.findUnique({ where: { email } });
+  // Line 48: Always create a dummy token
+  await createVerificationToken(email).catch(() => {})
+
   if (!user) {
-    redirect('/reset-password?error=User+not+found');  // ← reveals user existence
+    revalidatePath("/forgot-password")
+    redirect("/forgot-password?success=...")  // Returns after 1 DB write + 1 DB read
   }
+
+  // Line 55: Create another real token for existing users
+  const token = await createVerificationToken(email)  // Additional DB write
   ```
-- **Impact:** An attacker who intercepts or guesses a valid reset token can enumerate registered email addresses.
-- **Fix:** Use a generic error message:
+- **Issue:** The code attempts to prevent timing-based enumeration by creating a "dummy" token for non-existent users, but then creates a *second* token for existing users. This means existing users trigger 2 database writes + 1 read, while non-existent users trigger 1 write + 1 read. The additional write operation creates a measurable timing difference.
+- **Impact:** A sophisticated attacker can distinguish between existing and non-existent emails by measuring response times with enough samples.
+- **Fix:** Make the code paths identical for both cases. Either always create the real token (and don't send the email if the user doesn't exist), or restructure the logic so both paths perform the same operations:
   ```typescript
+  const token = await createVerificationToken(email);
+  
   if (!user) {
-    redirect('/reset-password?error=Reset+link+is+invalid+or+has+expired');
-  }
-  ```
-
-### 🟡 Medium
-
-#### 5. Password Hash Exposed in ProfileData Type
-- **File:** `lib/db/user/user.ts:30`, `types/db.ts:336`
-- **Issue:** The `loadProfileDataAsync` function selects `password: true` from the database, and the `profileUserDataSchema` type includes `password: z.string().or(z.null())`. While the password hash is not directly passed to client components (only a `hasPassword` boolean is derived at `app/profile/page.tsx:42`), the hash is included in the server-side `ProfileData` type and could inadvertently leak if the data shape changes.
-- **Proof:**
-  ```typescript
-  // lib/db/user/user.ts:23-32
-  select: {
-    // ...
-    password: true,  // ← selects password hash
+    revalidatePath("/forgot-password");
+    redirect("/forgot-password?success=...");
   }
   
-  // types/db.ts:329-337
-  export const profileUserDataSchema = z.object({
-    // ...
-    password: z.string().or(z.null()),  // ← includes hash in type
-  });
+  // Send email only for existing users
+  const resetLink = `${process.env.AUTH_URL}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+  await resend.emails.send({ ... });
   ```
-- **Impact:** If any code change inadvertently passes the full `profileData.user` object to a client component or API response, the bcrypt hash would be exposed.
-- **Fix:** Remove `password` from the select and use a computed boolean:
+
+---
+
+### 🟡 MEDIUM: Resend Verification Timing Side-Channel
+
+- **File:** `actions/resendVerification/ResendVerification.ts:30-41`
+- **Code:**
   ```typescript
-  // lib/db/user/user.ts
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      image: true,
-      isPro: true,
-      createdAt: true,
-      // Don't select password — use a separate query if needed
+  // Line 31: Always create a dummy token
+  await createVerificationToken(email).catch(() => {})
+
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user || user.emailVerified) {
+    redirect("/sign-in?success=resent")  // Returns after 1 DB write + 1 DB read
+  }
+
+  // Line 41: Create another token for existing unverified users
+  const token = await createVerificationToken(email)  // Additional DB write
+  ```
+- **Issue:** Same pattern as the forgot password flow — existing unverified users trigger an additional database write compared to non-existent users, creating a timing difference.
+- **Fix:** Same approach — restructure so both code paths perform identical database operations.
+
+---
+
+### 🟡 MEDIUM: Password Reset Token Not Invalidated for All Tokens
+
+- **File:** `lib/auth/verificationToken/verificationToken.ts:45-52`
+- **Code:**
+  ```typescript
+  await prisma.verificationToken.delete({
+    where: {
+      identifier_token: {
+        identifier: existingToken.identifier,
+        token: hashedToken,
+      },
     },
   });
-  const hasPassword = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { password: true },
-  }).then(u => u?.password !== null);
   ```
-
-#### 6. Redirect Callback Does Not Validate `baseUrl` Origin Consistently
-- **File:** `lib/auth/authConfig/authConfig.ts:16-21`
-- **Issue:** The redirect callback compares `urlObj.origin === baseUrl`, but `baseUrl` is provided by NextAuth and may include a trailing slash in some configurations. If `baseUrl` is `"http://localhost:3000/"` (with trailing slash), `new URL("http://localhost:3000").origin` returns `"http://localhost:3000"` (without trailing slash), causing the comparison to fail and redirecting to `baseUrl` instead of the intended URL.
-- **Proof:**
+- **Issue:** When a password reset token is used, only that specific token is deleted. If an attacker intercepted multiple reset links (or if a user requested multiple resets), previous unused tokens remain valid until they expire. An old token could be used to reset the password even after a newer reset was completed.
+- **Fix:** After successful verification, delete ALL tokens for the same identifier (email):
   ```typescript
-  // authConfig.ts:16-21
-  async redirect({ url, baseUrl }) {
-    if (url.startsWith("/")) return `${baseUrl}${url}`
-    const urlObj = new URL(url)
-    if (urlObj.origin === baseUrl) return url  // ← may fail if baseUrl has trailing slash
-    return baseUrl
-  }
-  ```
-- **Impact:** Minor — could cause unexpected redirects after OAuth sign-in if `baseUrl` has a trailing slash.
-- **Fix:** Normalize `baseUrl` before comparison:
-  ```typescript
-  async redirect({ url, baseUrl }) {
-    const normalizedBase = baseUrl.replace(/\/$/, '');
-    if (url.startsWith("/")) return `${normalizedBase}${url}`
-    const urlObj = new URL(url)
-    if (urlObj.origin === normalizedBase) return url
-    return normalizedBase
-  }
-  ```
-
-### 🟢 Low
-
-#### 7. Sign-In Pre-Checks Email Existence Before Authentication
-- **File:** `actions/signIn/SignIn.ts:49-57`
-- **Issue:** The sign-in action queries the database for `emailVerified` status before calling `signIn()`. While the actual authentication happens in NextAuth (which doesn't leak), this pre-query could theoretically enable timing-based enumeration (DB query + bcrypt comparison vs. just bcrypt comparison).
-- **Proof:**
-  ```typescript
-  // SignIn.ts:49-57
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: { emailVerified: true },
+  await prisma.verificationToken.deleteMany({
+    where: {
+      identifier: existingToken.identifier,
+    },
   });
-  const shouldRedirect = emailVerificationEnabled && user && !user.emailVerified;
-  // ...
-  await signIn('credentials', { email, password });  // ← actual auth
-  ```
-- **Impact:** Very low — the timing difference is minimal (both paths involve DB + bcrypt), and rate limiting further mitigates this.
-- **Fix:** Move the email verification check after `signIn()` succeeds:
-  ```typescript
-  await signIn('credentials', { email, password });
-  // Only check emailVerified after successful authentication
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: { emailVerified: true },
-  });
-  const shouldRedirect = emailVerificationEnabled && user && !user.emailVerified;
-  redirect(shouldRedirect ? '/verify-required' : '/dashboard');
   ```
 
-#### 8. Dashboard Page Shows "Not signed in" Instead of Redirecting
+---
+
+### 🟡 MEDIUM: `changePasswordSchema` Missing Password Complexity Requirements
+
+- **File:** `types/db.ts:40-49`
+- **Code:**
+  ```typescript
+  export const changePasswordSchema = z
+    .object({
+      currentPassword: z.string().min(1, 'Current password is required'),
+      newPassword: z.string().min(8, 'Password must be at least 8 characters'),
+      confirmPassword: z.string().min(1, 'Please confirm your password'),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, { ... });
+  ```
+- **Issue:** The `newPassword` field only validates minimum length (8 characters). The `passwordRequirements` constant in the same file defines that passwords should also contain uppercase letters, lowercase letters, and numbers, but these are not enforced in the schema. A user can change their password to `aaaaaaaa` which passes validation.
+- **Note:** The `registerSchema` has the same limitation — only `min(8)` is enforced. The `passwordRequirements` array appears to be used only for client-side UI hints.
+- **Fix:** Add password complexity validation to the Zod schemas:
+  ```typescript
+  newPassword: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain an uppercase letter')
+    .regex(/[a-z]/, 'Password must contain a lowercase letter')
+    .regex(/\d/, 'Password must contain a number'),
+  ```
+
+---
+
+### 🟢 LOW: Dashboard Page Shows "Not Signed In" Instead of Redirecting
+
 - **File:** `app/dashboard/page.tsx:24-26`
-- **Issue:** When the session is missing, the dashboard page renders a "Not signed in" div instead of redirecting to `/sign-in`. While the proxy middleware should catch this, the fallback behavior is inconsistent with other pages (profile, items) which redirect.
-- **Proof:**
+- **Code:**
   ```typescript
-  // dashboard/page.tsx:24-26
   if (!session?.user?.id) {
     return <div className="min-h-screen flex items-center justify-center">Not signed in</div>;
-    // ← should redirect, not render
   }
   ```
-- **Impact:** Low — the proxy middleware should prevent this, but inconsistent fallback behavior could confuse users.
-- **Fix:** Redirect instead of rendering:
+- **Issue:** The dashboard page renders a static "Not signed in" message instead of redirecting to `/sign-in` like other protected pages (`app/profile/page.tsx:14-16` uses `redirect('/sign-in')`). While the proxy handles unauthenticated requests before they reach this page, the secondary auth check is inconsistent with the rest of the codebase.
+- **Fix:** Replace with a redirect for consistency:
   ```typescript
   if (!session?.user?.id) {
     redirect('/sign-in');
@@ -294,29 +255,42 @@ The following security practices are correctly implemented and verified:
 
 ---
 
+### 🟢 LOW: Rate Limiter Fails Open When Upstash Is Unavailable
+
+- **File:** `lib/auth/rateLimit/rateLimit.ts:21-31`
+- **Code:**
+  ```typescript
+  if (!url || !token) {
+    // Fail open: no rate limiting if credentials are not configured
+    return {
+      limit: async () => ({
+        success: true,
+        remaining: config.limit,
+        ...
+      }),
+    };
+  }
+  ```
+- **Issue:** When Upstash Redis credentials are not configured or the service is unavailable, the rate limiter silently allows all requests through. While critical endpoints use `failClosed=true`, the default behavior is fail-open. If Upstash experiences an outage in production, rate limiting is completely disabled.
+- **Note:** The `checkRateLimit` function does support `failClosed` parameter for critical endpoints, and it's used correctly for sign-in, register, forgot-password, and reset-password. However, the `resendVerification`, `emailVerify`, `githubOAuth`, and `deleteAccount` endpoints do NOT use `failClosed=true`.
+- **Fix:** Consider adding `failClosed=true` for `resendVerification`, `deleteAccount`, and `githubOAuth` rate limit checks as well, or add a health check / alerting for when Upstash is unreachable.
+
+---
+
 ## Summary
 
-| Severity | Count |
-|----------|-------|
-| 🔴 Critical | 1 |
-| 🟡 High | 3 |
-| 🟡 Medium | 2 |
-| 🟢 Low | 2 |
-| **Total** | **8** |
+| Severity | Count | Description |
+|----------|-------|-------------|
+| 🔴 Critical | 0 | None |
+| 🟡 High | 2 | Email enumeration on registration; missing rate limiting on change-password API route |
+| 🟡 Medium | 4 | Forgot password timing leak; resend verification timing leak; stale tokens not invalidated; weak password complexity validation |
+| 🟢 Low | 2 | Dashboard redirect inconsistency; rate limiter fail-open default |
+| **Total** | **8** | |
 
-### Key Strengths
-- Password hashing with bcrypt cost factor 12 (OWASP-compliant for 2026)
-- Comprehensive rate limiting on 8 auth endpoints via Upstash Redis
-- Token security with 256-bit entropy, SHA-256 hashing, 24-hour expiration, single-use enforcement
-- Session validation on all protected pages and API routes
-- Input validation with Zod schemas on all forms and API routes
-- Email enumeration prevention via dummy token generation in forgot-password and resend-verification flows
-- OAuth security handled by NextAuth v5 (CSRF, PKCE, nonce, cookie flags)
-- IDOR protection on file download route (key ownership validation)
-- Proxy correctly configured for Next.js 16
+---
 
-### Priority Recommendations
-1. **Fix CSRF token validation** in account deletion — validate token value, not just presence
-2. **Add rate limiting** to password change endpoint — prevent brute-force current password
-3. **Use generic error message** in password reset — prevent user enumeration after token verification
-4. **Consider fail-closed rate limiting** or in-memory fallback for Redis outages
+## Recommendations Priority
+
+1. **Immediate (High):** Fix email enumeration on registration and add rate limiting to the change-password API route.
+2. **Short-term (Medium):** Fix timing side-channels in forgot-password and resend-verification flows, invalidate all tokens on password reset, and enforce password complexity in Zod schemas.
+3. **Medium-term (Low):** Standardize redirect behavior on dashboard, consider `failClosed` for additional endpoints.
