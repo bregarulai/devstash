@@ -6,7 +6,7 @@ Not Started
 
 ## Goals
 
-<!-- Goals for the next feature -->
+<!-- What does success look like for this feature? -->
 
 ## Notes
 
@@ -155,3 +155,5 @@ Not Started
 - **Code Decomposition — Phase 3: Data Layer (Completed)** - Extracted generic findItems helper consolidating 6 query functions into thin wrappers, removed ~85 lines of duplicated query logic while maintaining backward compatibility
 
 - **Code Decomposition — Phase 4: API & Actions (Completed)** - Extracted requireAuth() helper in item API route and server actions, imported shared ITEM_INCLUDE and updateItemFields(), defined generic ActionResult<T> type, fixed pre-existing authConfig test failures, removed ~25 lines of duplicated code
+
+- **Code Decomposition — Phase 5: Page Decomposition (Completed)** - Extracted EMPTY_ITEM_STATS constant, DashboardUser type, and loadDashboardData helper to separate data-fetching from rendering in dashboard page
