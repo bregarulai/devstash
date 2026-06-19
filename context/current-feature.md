@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Codebase Audit — Phase 4: Low Severity Fixes
+
+**Spec**: `context/fixes/codebase-audit-phase-4-low-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Extract hardcoded email sender address to a constant in `lib/constants.ts`
+- Extract magic number token expiry (`24 * 60 * 60 * 1000`) to named constant in `lib/constants.ts`
+- Split DashboardWrapper into server component wrapper + client component for sidebar toggle
+- Fix `handleResetPassword` user not found error to use generic error message
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- 4 low-severity issues to fix
+- Must not break any existing functionality or user flow
+- Verify affected features still work after each change
 
 ## History
 

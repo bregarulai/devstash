@@ -11,6 +11,7 @@ import { auth } from "@/lib/auth/auth/auth"
 import { registerSchema, type ChangePasswordValues } from "@/types/db"
 import { headers } from "next/headers"
 import { createRateLimiter, checkRateLimit, RATE_LIMIT_CONFIGS } from "@/lib/auth/rateLimit/rateLimit"
+import { EMAIL_SENDER } from "@/lib/constants"
 
 export async function handleRegister(formData: FormData) {
   // Rate limiting check
@@ -65,7 +66,7 @@ export async function handleRegister(formData: FormData) {
 
     try {
       await resend.emails.send({
-        from: "DevStash <onboarding@resend.dev>",
+        from: EMAIL_SENDER,
         to: email,
         subject: "Verify your DevStash account",
         html: `

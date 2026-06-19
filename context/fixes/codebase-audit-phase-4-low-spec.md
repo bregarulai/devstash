@@ -2,11 +2,11 @@
 
 ## Overview
 
-Fix 5 low-severity issues identified in the codebase audit.
+Fix 4 low-severity issues identified in the codebase audit.
 
 | Severity | Count |
 |----------|-------|
-| Low | 5 |
+| Low | 4 |
 
 > **IMPORTANT**: When implementing these fixes, you MUST NOT break any existing functionality or user flow. Always double-check your work by verifying that affected features still work as expected after each change.
 
@@ -14,17 +14,7 @@ Fix 5 low-severity issues identified in the codebase audit.
 
 ---
 
-## 19. Non-Functional SearchBar Component
-
-**File:** `components/dashboard/searchBar/SearchBar.tsx`
-
-Renders an input with no `onChange`, `onSubmit`, or state management. Purely visual.
-
-**Fix:** Implement search functionality or remove the component.
-
----
-
-## 20. Hardcoded Email Sender Address
+## 19. Hardcoded Email Sender Address
 
 **Files:** `actions/auth/Auth.ts:68`, `actions/forgotPassword/ForgotPassword.ts:60`, `actions/resendVerification/ResendVerification.ts:46`
 
@@ -34,7 +24,7 @@ Renders an input with no `onChange`, `onSubmit`, or state management. Purely vis
 
 ---
 
-## 21. Magic Number Token Expiry
+## 20. Magic Number Token Expiry
 
 **File:** `lib/auth/verificationToken/verificationToken.ts:12`
 
@@ -44,7 +34,7 @@ Renders an input with no `onChange`, `onSubmit`, or state management. Purely vis
 
 ---
 
-## 22. DashboardWrapper is a Client Component Unnecessarily
+## 21. DashboardWrapper is a Client Component Unnecessarily
 
 **File:** `components/dashboard/dashboardWrapper/DashboardWrapper.tsx:1`
 
@@ -54,7 +44,7 @@ Has `'use client'` but only uses `useState` for sidebar toggle. This prevents se
 
 ---
 
-## 23. `handleResetPassword` User Not Found Error
+## 22. `handleResetPassword` User Not Found Error
 
 **File:** `actions/resetPassword/ResetPassword.ts:53`
 
