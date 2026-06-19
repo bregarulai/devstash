@@ -1,26 +1,16 @@
-# Current Feature: Add Item to Collections
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add collection multi-select input to the item create form (`ItemCreateFormBody`)
-- Add collection multi-select input to the item edit form (`DrawerEditContent`)
-- Update `createItem()` and `updateItem()` DB functions to link/unlink collections
-- Add `collectionIds` field to item Zod schemas
-- Build a `CollectionPicker` component for selecting one or more collections
-- Update server actions (`createItemAction`, `updateItemAction`) to handle collectionIds
-- Show currently linked collections on edit forms (load existing item-collection relationships)
+<!-- What does success look like for this feature? -->
 
 ## Notes
 
-- Collection pages/views are out of scope — only the item form inputs need to work
-- Use existing `ItemCollection` junction table in Prisma
-- Collections are per-user — validate ownership server-side
-- Multi-select: user can select 0 or more collections per item
-- Revalidate dashboard and item detail paths after linking
+<!-- Any constraints, context, or details from the spec -->
 
 ## History
 
@@ -169,3 +159,5 @@ In Progress
 - **Code Decomposition — Phase 5: Page Decomposition (Completed)** - Extracted EMPTY_ITEM_STATS constant, DashboardUser type, and loadDashboardData helper to separate data-fetching from rendering in dashboard page
 
 - **Collection Create (Completed)** - Added createCollection DB function, collectionCreateSchema, createCollectionAction server action, CollectionCreateDialog component, wired MobileSideBar button, and comprehensive tests
+
+- **Add Item to Collections (Completed)** - Created CollectionPicker component with popover and checkbox multi-select, added collectionIds to createItem/updateItem schemas, wired into create and edit forms, updated server actions and DB functions for collection linking via ItemCollection junction table, and added comprehensive tests
