@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
 import { itemEditSchema, itemCreateSchema, itemUpdateSchema, type ItemEditValues, type ItemCreateValues, type ItemWithDetails } from '@/types/db';
-import { updateItem, deleteItem, createItem, updateItemFields } from '@/lib/db/items/items';
+import { updateItem, deleteItem, createItem, updateItemFields, getItemById } from '@/lib/db/items/items';
 import { prisma } from '@/lib/prisma/prisma';
 
 type ActionResult<T> =
@@ -164,6 +164,30 @@ export async function deleteItemAction(
       success: false,
       data: null,
       error: err instanceof Error ? err.message : 'Failed to delete item',
+    };
+  }
+}
+
+export async function getItemAction(
+  itemId: string,
+): Promise<ActionResult<ItemWithDetails>> {
+  const authResult = await requireAuth();
+  if (authResult.error) return { success: false, data: null, error: authResult.error };
+  const { userId } = authResult;
+
+  try {
+    const item = await getItemById(itemId, userId);
+
+    if (!item) {
+      return { success: false, data: null, error: 'Item not found' };
+    }
+
+    return { success: true, data: item, error: null };
+  } catch (err) {
+    return {
+      success: false,
+      data: null,
+      error: err instanceof Error ? err.message : 'Failed to fetch item',
     };
   }
 }

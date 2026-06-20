@@ -181,6 +181,20 @@ export function getItemsByType(
   return findItems(userId, { itemType: { name: itemTypeName } }, limit);
 }
 
+export async function getItemById(
+  itemId: string,
+  userId: string,
+): Promise<ItemWithDetails | null> {
+  const item = await prisma.item.findUnique({
+    where: { id: itemId, userId },
+    include: ITEM_INCLUDE,
+  });
+
+  if (!item) return null;
+
+  return mapItemResponse(item);
+}
+
 export async function getItemStats(userId: string): Promise<ItemStats> {
   const [totalItems, totalCollections, favoriteItems, favoriteCollections] =
     await Promise.all([

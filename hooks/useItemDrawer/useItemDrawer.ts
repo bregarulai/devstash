@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { ItemWithDetails } from '@/types/db';
+import { getItemAction } from '@/actions';
 
 export function useItemDrawer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,14 +17,13 @@ export function useItemDrawer() {
     setIsEditing(false);
 
     try {
-      const res = await fetch(`/api/items/${itemId}`);
+      const result = await getItemAction(itemId);
 
-      if (!res.ok) {
-        throw new Error('Failed to fetch item');
+      if (!result.success) {
+        throw new Error(result.error);
       }
 
-      const data = await res.json();
-      setItem(data);
+      setItem(result.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {

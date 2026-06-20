@@ -5,6 +5,7 @@ const mockCreateItem = vi.fn()
 const mockUpdateItem = vi.fn()
 const mockDeleteItem = vi.fn()
 const mockUpdateItemFields = vi.fn()
+const mockGetItemById = vi.fn()
 const mockRevalidatePath = vi.fn()
 const mockPrismaItemFindUnique = vi.fn()
 const mockPrismaItemUpdate = vi.fn()
@@ -31,6 +32,7 @@ vi.mock('@/lib/db/items/items', () => ({
   updateItem: (...args: unknown[]) => mockUpdateItem(...args),
   deleteItem: (...args: unknown[]) => mockDeleteItem(...args),
   updateItemFields: (...args: unknown[]) => mockUpdateItemFields(...args),
+  getItemById: (...args: unknown[]) => mockGetItemById(...args),
 }))
 
 describe('updateItemAction', () => {
@@ -929,6 +931,124 @@ describe('toggleItemFavoriteAction', () => {
 
     const { toggleItemFavoriteAction } = await import('./Items')
     await toggleItemFavoriteAction('item-1')
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+})
+
+describe('getItemAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { getItemAction } = await import('./Items')
+    const result = await getItemAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when session has no user id', async () => {
+    mockAuth.mockResolvedValue({ user: {} })
+
+    const { getItemAction } = await import('./Items')
+    const result = await getItemAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns success with item when found', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    const mockItem = {
+      id: 'item-1',
+      title: 'Test Item',
+      description: 'A test item',
+      contentType: 'TEXT',
+      content: 'code',
+      url: null,
+      fileUrl: null,
+      fileName: null,
+      fileSize: null,
+      language: 'typescript',
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'snippet', icon: '📝', color: '#ff0000' },
+      tags: [{ id: 'tag-1', name: 'test' }],
+      collections: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockGetItemById.mockResolvedValue(mockItem)
+
+    const { getItemAction } = await import('./Items')
+    const result = await getItemAction('item-1')
+
+    expect(result).toEqual({
+      success: true,
+      data: mockItem,
+      error: null,
+    })
+    expect(mockGetItemById).toHaveBeenCalledWith('item-1', 'user-1')
+  })
+
+  it('returns error when item not found', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockGetItemById.mockResolvedValue(null)
+
+    const { getItemAction } = await import('./Items')
+    const result = await getItemAction('nonexistent')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Item not found',
+    })
+  })
+
+  it('returns error when getItemById throws', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockGetItemById.mockRejectedValue(new Error('Database error'))
+
+    const { getItemAction } = await import('./Items')
+    const result = await getItemAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Database error',
+    })
+  })
+
+  it('returns generic error for non-Error exceptions', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockGetItemById.mockRejectedValue('Unknown error')
+
+    const { getItemAction } = await import('./Items')
+    const result = await getItemAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Failed to fetch item',
+    })
+  })
+
+  it('does not call revalidatePath', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockGetItemById.mockResolvedValue({ id: 'item-1', title: 'Item' })
+
+    const { getItemAction } = await import('./Items')
+    await getItemAction('item-1')
 
     expect(mockRevalidatePath).not.toHaveBeenCalled()
   })

@@ -35,6 +35,103 @@ vi.mock('@/lib/prisma/prisma', () => ({
   },
 }))
 
+describe('getItemById', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns item when found', async () => {
+    const mockItem = {
+      id: 'item-1',
+      title: 'Test Item',
+      description: 'A test item',
+      contentType: 'TEXT',
+      content: 'code',
+      url: null,
+      fileUrl: null,
+      fileName: null,
+      fileSize: null,
+      language: 'typescript',
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'snippet', icon: '📝', color: '#ff0000' },
+      tags: [{ id: 'tag-1', name: 'test' }],
+      collections: [{ collection: { id: 'col-1', name: 'Collection 1' } }],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaItemFindUnique.mockResolvedValue(mockItem)
+
+    const { getItemById } = await import('./items')
+    const result = await getItemById('item-1', 'user-1')
+
+    expect(result).not.toBeNull()
+    expect(result?.id).toBe('item-1')
+    expect(result?.title).toBe('Test Item')
+    expect(result?.collections).toEqual([{ id: 'col-1', name: 'Collection 1' }])
+    expect(mockPrismaItemFindUnique).toHaveBeenCalledWith({
+      where: { id: 'item-1', userId: 'user-1' },
+      include: {
+        itemType: { select: { name: true, icon: true, color: true } },
+        tags: { select: { id: true, name: true } },
+        collections: { select: { collection: { select: { id: true, name: true } } } },
+      },
+    })
+  })
+
+  it('returns null when item not found', async () => {
+    mockPrismaItemFindUnique.mockResolvedValue(null)
+
+    const { getItemById } = await import('./items')
+    const result = await getItemById('nonexistent', 'user-1')
+
+    expect(result).toBeNull()
+  })
+
+  it('returns null when item belongs to different user', async () => {
+    mockPrismaItemFindUnique.mockResolvedValue(null)
+
+    const { getItemById } = await import('./items')
+    const result = await getItemById('item-1', 'wrong-user')
+
+    expect(result).toBeNull()
+  })
+
+  it('maps collections correctly', async () => {
+    const mockItem = {
+      id: 'item-1',
+      title: 'Item',
+      description: null,
+      contentType: 'TEXT',
+      content: null,
+      url: null,
+      fileUrl: null,
+      fileName: null,
+      fileSize: null,
+      language: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
+      tags: [],
+      collections: [
+        { collection: { id: 'c1', name: 'Col 1' } },
+        { collection: { id: 'c2', name: 'Col 2' } },
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaItemFindUnique.mockResolvedValue(mockItem)
+
+    const { getItemById } = await import('./items')
+    const result = await getItemById('item-1', 'user-1')
+
+    expect(result?.collections).toEqual([
+      { id: 'c1', name: 'Col 1' },
+      { id: 'c2', name: 'Col 2' },
+    ])
+  })
+})
+
 describe('getItemStats', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
