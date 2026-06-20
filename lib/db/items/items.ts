@@ -179,19 +179,6 @@ export function getItemsByType(
   return findItems(userId, { itemType: { name: itemTypeName } }, limit);
 }
 
-export function searchItems(
-  userId: string,
-  query: string,
-): Promise<ItemWithDetails[]> {
-  return findItems(userId, {
-    OR: [
-      { title: { contains: query, mode: 'insensitive' } },
-      { description: { contains: query, mode: 'insensitive' } },
-      { content: { contains: query, mode: 'insensitive' } },
-    ],
-  });
-}
-
 export async function getItemStats(userId: string): Promise<ItemStats> {
   const [totalItems, totalCollections, favoriteItems, favoriteCollections] =
     await Promise.all([

@@ -426,52 +426,6 @@ describe('getItemsByType', () => {
   })
 })
 
-describe('searchItems', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
-  it('searches items by query', async () => {
-    const mockItems: ItemWithDetails[] = [
-      {
-        id: 'item-1',
-        title: 'Search Result',
-        description: null,
-        contentType: 'TEXT',
-        content: null,
-        fileUrl: null,
-        fileName: null,
-        fileSize: null,
-        url: null,
-        language: null,
-        isFavorite: false,
-        isPinned: false,
-        itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
-        tags: [],
-        collections: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ]
-    mockPrismaItemFindMany.mockResolvedValue(mockItems)
-
-    const { searchItems } = await import('./items')
-    const result = await searchItems('user-1', 'search')
-
-    expect(result).toHaveLength(1)
-    expect(result[0].title).toBe('Search Result')
-  })
-
-  it('returns empty array when no results', async () => {
-    mockPrismaItemFindMany.mockResolvedValue([])
-
-    const { searchItems } = await import('./items')
-    const result = await searchItems('user-1', 'nonexistent')
-
-    expect(result).toEqual([])
-  })
-})
-
 describe('getItemsByTypeWithMeta', () => {
   beforeEach(() => {
     vi.clearAllMocks()

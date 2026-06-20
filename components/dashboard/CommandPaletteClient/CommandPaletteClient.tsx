@@ -1,22 +1,47 @@
 'use client';
 
 import { CommandPalette } from '../CommandPalette/CommandPalette';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { getSearchData, type SearchData } from '@/actions/search';
+import { useCommandPalette } from '@/hooks/useCommandPalette/useCommandPalette';
 
 export function CommandPaletteClient() {
-  const [open, setOpen] = useState(false);
-  const [isDark, setIsDark] = useState(() => typeof document !== 'undefined' && document.documentElement.classList.contains('dark'));
+  const { open, openPalette, closePalette } = useCommandPalette();
+  const [isDark, setIsDark] = useState(
+    () => typeof document !== 'undefined' && document.documentElement.classList.contains('dark'),
+  );
+  const [searchData, setSearchData] = useState<SearchData>({ items: [], collections: [] });
+  const openRef = useRef(open);
 
   useEffect(() => {
-    const down = (e: KeyboardEvent) => {
+    openRef.current = open;
+  }, [open]);
+
+  useEffect(() => {
+    function down(e: KeyboardEvent) {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((current) => !current);
+        if (openRef.current) {
+          closePalette();
+        } else {
+          openPalette();
+        }
       }
-    };
+    }
     document.addEventListener('keydown', down);
     return () => document.removeEventListener('keydown', down);
-  }, []);
+  }, [openPalette, closePalette]);
+
+  useEffect(() => {
+    if (open) {
+      getSearchData()
+        .then(setSearchData)
+        .catch((error) => {
+          console.error('Failed to load search data:', error);
+          setSearchData({ items: [], collections: [] });
+        });
+    }
+  }, [open]);
 
   const toggleTheme = useCallback(() => {
     const html = document.documentElement;
@@ -29,7 +54,12 @@ export function CommandPaletteClient() {
   return (
     <CommandPalette
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(isOpen) => {
+        if (isOpen) openPalette();
+        else closePalette();
+      }}
+      items={searchData.items}
+      collections={searchData.collections}
       isDark={isDark}
       onToggleTheme={toggleTheme}
     />
