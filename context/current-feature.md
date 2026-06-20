@@ -10,7 +10,7 @@ Not Started
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+<!-- Any constraints, context, or details -->
 
 ## History
 
@@ -105,3 +105,4 @@ Not Started
 - **Dashboard Design Critique Fixes (Completed)** - Removed border-left colored stripes from PinnedItems, RecentItems, and CollectionCard; restyled StatsCards to inline stat row; differentiated PinnedItems as horizontal scrollable strip; replaced numbered steps in GetStartedHero with lucide icons; surfaced silent errors with non-blocking Alert banner; replaced <a> with Next.js Link
 - **Dashboard Critique Fixes (Completed)** - Improved visual hierarchy with dense stats strip and section separation, enforced design system consistency with ring-1 borders, removed pipe dividers from StatsCards, removed keyboard shortcut bar, fixed collectionSession folder naming, and added consistent background to not-signed-in state
 - **Items Type Page Critique Fixes (Completed)** - Removed banned border-l-[3px] side-stripe and hover:shadow-md from ImageCard, replaced hardcoded text-green-500 with theme success token, added unsaved-changes guard in drawer edit mode with navigation blocker, fixed sidebar uppercase tracked labels to sentence case
+- **Favorites Page Design Fixes (Completed)** - Removed font-mono from list rows, removed redundant star icons, added focus-visible rings for keyboard accessibility, added retry button to error state, removed duplicate empty-state text
