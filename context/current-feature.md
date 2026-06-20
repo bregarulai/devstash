@@ -1,19 +1,12 @@
-# Current Feature: Pagination
-
-**Spec**: `context/features/pagination-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add pagination to /items/[type] and /collections/[id] pages using shadcn Pagination component
-- Pagination controls at bottom with page numbers and prev/next links
-- Disable (grey out) prev/next when not available
-- Use constants: ITEMS_PER_PAGE = 21, COLLECTIONS_PER_PAGE = 21
-- Dashboard limits: DASHBOARD_COLLECTIONS_LIMIT = 6, DASHBOARD_RECENT_ITEMS_LIMIT = 10
-- Do not fetch all resources at once. Only fetch the amount that a page requires
+<!-- goals -->
 
 ## Notes
 
@@ -174,3 +167,5 @@ In Progress
 - **Collection Management Actions (Completed)** - Added Edit, Delete, and Favorite action buttons to collection detail page header, 3-dots DropdownMenu on collection cards with Edit/Delete/Favorite options, card click navigates to collection page, created updateCollection/deleteCollection DB functions and server actions, added collectionUpdateSchema, installed shadcn dropdown-menu component, added useDeleteCollection hook
 
 - **Global Search / Command Palette (Completed)** - Implemented Cmd+K/Ctrl+K command palette with fuzzy search across items and collections, grouped results with type icons and collection counts, keyboard navigation, item drawer and collection page navigation on select, and TopBar search input integration
+
+- **Pagination (Completed)** - Added pagination to /items/[type], /collections, and /collections/[id] pages using shadcn Pagination component with page numbers and prev/next links, server-side pagination with offset/limit queries, and constants for items per page
