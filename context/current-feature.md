@@ -1,16 +1,24 @@
-# Current Feature
+# Current Feature: API Routes Cleanup — Phase 1: Remove Unused Change Password Route
+
+**Spec**: `context/fixes/api-routes-cleanup-phase-1-remove-change-password-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Remove the unused `/api/profile/change-password` API route
+- Delete `app/api/profile/change-password/route.ts` (unused file with zero consumers)
+- Delete `app/api/profile/change-password/route.test.ts` (tests for unused route)
+- Verify lint, build, and tests pass after deletion
+- Confirm Change Password form still works via the server action
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- The server action `handleChangePassword` in `actions/auth/Auth.ts:93-141` is the actual implementation used by `ChangePasswordForm.tsx`
+- The API route duplicates functionality and is less secure (manual CSRF validation vs built-in Next.js protection)
+- Risk: Low, Complexity: Low
 
 ## History
 
