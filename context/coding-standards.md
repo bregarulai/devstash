@@ -43,11 +43,15 @@
 - Use Server Actions for form submissions and simple mutations
 - Use API routes when you need:
   - Webhooks (Stripe, GitHub, etc.)
-  - File uploads with progress tracking
-  - Long-running operations
-  - Specific HTTP status codes or headers
+  - File uploads with progress tracking (requires XMLHttpRequest for progress events)
+  - Streaming responses (file downloads, SSE)
+  - Specific HTTP status codes or custom headers
   - Endpoints for future mobile/CLI clients
-  - Third-party integrations
+  - Third-party integrations requiring HTTP endpoints
+- Decision rules:
+  - If the operation is triggered by a user form or button click and doesn't need HTTP-specific features, use a Server Action
+  - If the operation is triggered by client-side code that needs progress tracking or streaming, use an API Route
+  - Never duplicate the same mutation as both a server action and an API route — pick one
 - Otherwise, fetch data directly in server components
 - Dynamic routes for item/collection pages
 
