@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { ProtectedLink } from '@/components/shared/protectedLink/ProtectedLink';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 import { Badge } from '@/components/ui/badge';
 import { SystemItemType } from '@/types/db';
@@ -12,7 +12,7 @@ interface SidebarItemTypeLinkProps {
 
 export function SidebarItemTypeLink({ type, isExpanded }: SidebarItemTypeLinkProps) {
   return (
-    <Link
+    <ProtectedLink
       href={`/items/${type.name}`}
       className={`group flex items-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground ${isExpanded ? 'gap-3 px-2 py-1.5 text-sm' : 'justify-center px-1 py-2'}`}
       title={
@@ -39,6 +39,6 @@ export function SidebarItemTypeLink({ type, isExpanded }: SidebarItemTypeLinkPro
           {type.itemCount}
         </span>
       )}
-    </Link>
+    </ProtectedLink>
   );
 }

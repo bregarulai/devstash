@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Items Type Page Critique Fixes
+
+**Spec**: `context/fixes/items-type-page-critique-fixes-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Remove 3px colored left border from ImageCard (P1)
+- Replace hover:shadow-md with tonal shift hover pattern in ImageCard (P1)
+- Replace hardcoded text-green-500 with theme success token in ItemCard and ImageCard (P2)
+- Add unsaved-changes guard in drawer edit mode with navigation blocker (P2)
+- Fix sidebar uppercase tracked labels to sentence case (P3)
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Source from /impeccable critique of app/items/[type]/page.tsx
+- Score: 35/40 (Good)
+- Scope: Design system violations, data safety, minor polish
+- Drawer architecture: Keep as Sheet (user decision)
+- No browser injection was performed for this critique
 
 ## History
 

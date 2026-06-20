@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { ProtectedLink } from '@/components/shared/protectedLink/ProtectedLink';
 import { ChevronDown } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -64,10 +64,10 @@ export function SidebarUserMenu({ user, isExpanded }: SidebarUserMenuProps) {
         className={isExpanded ? 'w-[--radix-dropdown-menu-trigger-width]' : ''}
       >
         <DropdownMenuItem asChild>
-          <Link href='/profile'>View Profile</Link>
+          <ProtectedLink href='/profile'>View Profile</ProtectedLink>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href='/settings'>Settings</Link>
+          <ProtectedLink href='/settings'>Settings</ProtectedLink>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <form action={handleSignOut}>

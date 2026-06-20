@@ -22,6 +22,7 @@ export interface DrawerEditContentHandle {
     tags: string[];
     collectionIds: string[];
   };
+  hasUnsavedChanges: () => boolean;
 }
 
 interface DrawerEditContentProps {
@@ -70,6 +71,19 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
 
     useImperativeHandle(ref, () => ({
       getFormData,
+      hasUnsavedChanges: () => {
+        const initialTags = item.tags.map((t) => t.name).join(', ');
+        const initialCollections = item.collections?.map((c) => c.id) ?? [];
+        return (
+          title.trim() !== item.title ||
+          (description.trim() || null) !== (item.description ?? null) ||
+          (showContent ? (content.trim() || null) : undefined) !== (item.content ?? null) ||
+          (showUrl ? (url.trim() || null) : undefined) !== (item.url ?? null) ||
+          (showLanguage ? (language.trim() || null) : undefined) !== (item.language ?? null) ||
+          tagInput.trim() !== initialTags ||
+          JSON.stringify(collectionIds) !== JSON.stringify(initialCollections)
+        );
+      },
     }));
 
     return (

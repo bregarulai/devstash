@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { ProtectedLink } from '@/components/shared/protectedLink/ProtectedLink';
 import { Star } from 'lucide-react';
 import { CollectionWithStats } from '@/types/db';
 
@@ -9,7 +9,7 @@ interface SidebarCollectionLinkProps {
 
 export function SidebarCollectionLink({ collection, variant }: SidebarCollectionLinkProps) {
   return (
-    <Link
+    <ProtectedLink
       href={`/collections/${collection.id}`}
       className='group flex items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground text-sm'
     >
@@ -27,6 +27,6 @@ export function SidebarCollectionLink({ collection, variant }: SidebarCollection
       <span className='ml-auto text-xs text-muted-foreground'>
         {collection.itemCount}
       </span>
-    </Link>
+    </ProtectedLink>
   );
 }
