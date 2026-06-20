@@ -1,26 +1,16 @@
-# Current Feature: Items Type Page Critique Fixes
-
-**Spec**: `context/fixes/items-type-page-critique-fixes-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Remove 3px colored left border from ImageCard (P1)
-- Replace hover:shadow-md with tonal shift hover pattern in ImageCard (P1)
-- Replace hardcoded text-green-500 with theme success token in ItemCard and ImageCard (P2)
-- Add unsaved-changes guard in drawer edit mode with navigation blocker (P2)
-- Fix sidebar uppercase tracked labels to sentence case (P3)
+<!-- What does success look like? -->
 
 ## Notes
 
-- Source from /impeccable critique of app/items/[type]/page.tsx
-- Score: 35/40 (Good)
-- Scope: Design system violations, data safety, minor polish
-- Drawer architecture: Keep as Sheet (user decision)
-- No browser injection was performed for this critique
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -114,4 +104,4 @@ In Progress
 - **API Routes Cleanup Phase 4 (Completed)** - Migrated item fetch from GET /api/items/[id] to getItemAction server action, added getItemById DB function, replaced fetch() in useItemDrawer hook, deleted unused API route
 - **Dashboard Design Critique Fixes (Completed)** - Removed border-left colored stripes from PinnedItems, RecentItems, and CollectionCard; restyled StatsCards to inline stat row; differentiated PinnedItems as horizontal scrollable strip; replaced numbered steps in GetStartedHero with lucide icons; surfaced silent errors with non-blocking Alert banner; replaced <a> with Next.js Link
 - **Dashboard Critique Fixes (Completed)** - Improved visual hierarchy with dense stats strip and section separation, enforced design system consistency with ring-1 borders, removed pipe dividers from StatsCards, removed keyboard shortcut bar, fixed collectionSession folder naming, and added consistent background to not-signed-in state
-- **Items Type Page Critique Fixes (Completed)** - Removed banned border-l-[3px] side-stripe and hover:shadow-md from ItemCard, added retry button to error banner, improved empty state with type-specific icon/title and ItemCreateDialog CTA, fixed naive type name capitalization with toTitleCase utility
+- **Items Type Page Critique Fixes (Completed)** - Removed banned border-l-[3px] side-stripe and hover:shadow-md from ImageCard, replaced hardcoded text-green-500 with theme success token, added unsaved-changes guard in drawer edit mode with navigation blocker, fixed sidebar uppercase tracked labels to sentence case
