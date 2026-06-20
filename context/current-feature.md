@@ -1,25 +1,16 @@
-# Current Feature: Dashboard Design Critique Fixes
-
-**Spec**: `context/fixes/dashboard-critique-fixes-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Remove border-left colored stripes from PinnedItems, RecentItems, and CollectionCard (P1)
-- Restyle StatsCards from 4-card grid to inline stat row (P2)
-- Differentiate PinnedItems as horizontal scrollable strip vs RecentItems as vertical list (P2)
-- Replace numbered steps in GetStartedHero with lucide icons (P2)
-- Surface silent errors in loadDashboardData with non-blocking banner (P3)
+<!-- What does success look like? -->
 
 ## Notes
 
-- Visual/structural refactors only; no changes to app behavior or user flow
-- All fixes preserve existing data flow, click handlers, and user interactions
-- Implementation order: Fix 1 → Fix 4 → Fix 3 → Fix 2 → Fix 5
-- Verify after each fix: `npm run build`, `npm run lint`, manual dashboard check
+<!-- Constraints, context, or details from spec -->
 
 ## History
 
@@ -111,3 +102,4 @@ In Progress
 - **API Routes Cleanup Phase 2 (Completed)** - Migrated favorite toggle from API route PATCH handler to toggleItemFavoriteAction server action, updated useItemActions hook, removed PATCH endpoint and its tests
 - **API Routes Cleanup Phase 3 (Completed)** - Updated coding standards with explicit API route vs Server Action decision rules, added streaming responses, and added "never duplicate" rule
 - **API Routes Cleanup Phase 4 (Completed)** - Migrated item fetch from GET /api/items/[id] to getItemAction server action, added getItemById DB function, replaced fetch() in useItemDrawer hook, deleted unused API route
+- **Dashboard Design Critique Fixes (Completed)** - Removed border-left colored stripes from PinnedItems, RecentItems, and CollectionCard; restyled StatsCards to inline stat row; differentiated PinnedItems as horizontal scrollable strip; replaced numbered steps in GetStartedHero with lucide icons; surfaced silent errors with non-blocking Alert banner; replaced <a> with Next.js Link
