@@ -32,7 +32,7 @@ export function PinnedItems({ items, onOpen }: PinnedItemsProps) {
             key={item.id}
             type='button'
             onClick={() => onOpen?.(item.id)}
-            className='h-full w-full text-left border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl border-l-[3px]'
+            className='h-full w-full text-left border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl border-l-[3px] cursor-pointer'
             style={{ borderLeftColor: item.itemType.color }}
           >
             <CardContent className='flex items-center gap-4 p-4'>
@@ -51,6 +51,7 @@ export function PinnedItems({ items, onOpen }: PinnedItemsProps) {
                   {item.isFavorite && (
                     <Star className='size-3.5 shrink-0 fill-current text-favorite' />
                   )}
+                  <Pin className='size-3.5 shrink-0 fill-current text-pin' />
                 </div>
                 <p className='truncate text-xs text-muted-foreground'>
                   {item.description ?? ''}

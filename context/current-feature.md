@@ -1,12 +1,28 @@
-# Current Feature
+# Current Feature: Pinned Items
+
+**Spec**: `context/features/pinned-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Create toggleItemPin server action
+- Make Pin button in ItemDrawer clickable (exists but no onClick)
+- Optimistic UI updates for instant feedback
+- Toast notification on success/error
+- Pinned items sort to top of listings
+- Follow Favorite Button pattern
+- Items only (not collections)
+- Pin icon on ItemCard remains static indicator. If there is no Pin icon, add it.
+
 ## Notes
+
+- The Pin button already exists in ItemDrawer but has no onClick handler
+- Follow the same pattern as the Favorite Button for optimistic updates and toast notifications
+- Pinned items should appear at top of listings and on dashboard in pinned items section
+- Only items can be pinned, not collections
 
 ## History
 

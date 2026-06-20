@@ -54,6 +54,7 @@
   --color-image: var(--color-image);
   --color-link: var(--color-link);
   --color-favorite: var(--color-favorite);
+  --color-pin: var(--color-pin);
   --color-success: var(--success);
   --color-dot-red: var(--dot-red);
   --color-dot-yellow: var(--dot-yellow);
@@ -99,22 +100,23 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --color-snippet: #3b82f6;
-  --color-prompt: #8b5cf6;
-  --color-command: #f97316;
-  --color-note: #fde047;
-  --color-file: #6b7280;
-  --color-image: #ec4899;
-  --color-link: #10b981;
-  --color-favorite: #eab308;
+  --color-snippet: oklch(0.623 0.214 259.815);
+  --color-prompt: oklch(0.591 0.237 293.697);
+  --color-command: oklch(0.713 0.192 51.48);
+  --color-note: oklch(0.951 0.133 86.48);
+  --color-file: oklch(0.552 0.016 264.364);
+  --color-image: oklch(0.656 0.241 354.308);
+  --color-link: oklch(0.696 0.17 162.48);
+  --color-favorite: oklch(0.847 0.179 86.38);
+  --color-pin: oklch(0.715 0.143 215.22);
   --markdown-link: oklch(0.65 0.19 260);
   --markdown-code-bg: oklch(1 0 0 / 10%);
   --markdown-pre-bg: oklch(0.145 0 0);
   --markdown-th-bg: oklch(1 0 0 / 5%);
   --markdown-blockquote-border: oklch(0.556 0 0);
-  --dot-red: #ff5f57;
-  --dot-yellow: #febc2e;
-  --dot-green: #28c840;
+  --dot-red: oklch(0.734 0.192 27.48);
+  --dot-yellow: oklch(0.884 0.152 83.07);
+  --dot-green: oklch(0.723 0.219 149.58);
 }
 
 .dark {
@@ -150,22 +152,23 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-  --color-snippet: #3b82f6; /* Blue */
-  --color-prompt: #8b5cf6; /* Purple */
-  --color-command: #f97316; /* Orange */
-  --color-note: #fde047; /* Yellow */
-  --color-file: #6b7280; /* Gray */
-  --color-image: #ec4899; /* Pink */
-  --color-link: #10b981; /* Emerald */
-  --color-favorite: #eab308; /* Yellow */
+  --color-snippet: oklch(0.623 0.214 259.815);
+  --color-prompt: oklch(0.591 0.237 293.697);
+  --color-command: oklch(0.713 0.192 51.48);
+  --color-note: oklch(0.951 0.133 86.48);
+  --color-file: oklch(0.552 0.016 264.364);
+  --color-image: oklch(0.656 0.241 354.308);
+  --color-link: oklch(0.696 0.17 162.48);
+  --color-favorite: oklch(0.847 0.179 86.38);
+  --color-pin: oklch(0.715 0.143 215.22);
   --markdown-link: oklch(0.65 0.19 260);
   --markdown-code-bg: oklch(1 0 0 / 10%);
   --markdown-pre-bg: oklch(0.145 0 0);
   --markdown-th-bg: oklch(1 0 0 / 5%);
   --markdown-blockquote-border: oklch(0.556 0 0);
-  --dot-red: #ff5f57;
-  --dot-yellow: #febc2e;
-  --dot-green: #28c840;
+  --dot-red: oklch(0.734 0.192 27.48);
+  --dot-yellow: oklch(0.884 0.152 83.07);
+  --dot-green: oklch(0.723 0.219 149.58);
 }
 
 .markdown-preview {

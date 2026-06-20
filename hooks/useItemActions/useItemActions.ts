@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
+import { toggleItemPinAction } from '@/actions';
 import type { ItemWithDetails } from '@/types/db';
 
 export function useItemActions(
@@ -36,13 +37,9 @@ export function useItemActions(
     if (!item) return;
     setIsPinning(true);
     try {
-      const res = await fetch(`/api/items/${item.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isPinned: !item.isPinned }),
-      });
-      if (!res.ok) throw new Error('Failed to update pin');
-      updateItem({ isPinned: !item.isPinned });
+      const result = await toggleItemPinAction(item.id);
+      if (!result.success) throw new Error(result.error ?? 'Failed to update pin');
+      updateItem({ isPinned: result.data });
       onMutate?.();
       toast.success(item.isPinned ? 'Unpinned item' : 'Pinned item');
     } catch {

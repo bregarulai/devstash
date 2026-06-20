@@ -139,7 +139,7 @@ async function findItems(
 ): Promise<ItemWithDetails[]> {
   const items = await prisma.item.findMany({
     where: { userId, ...where },
-    orderBy: { updatedAt: 'desc' },
+    orderBy: [{ isPinned: 'desc' }, { updatedAt: 'desc' }],
     ...(limit ? { take: limit } : {}),
     ...(offset ? { skip: offset } : {}),
     include: ITEM_INCLUDE,

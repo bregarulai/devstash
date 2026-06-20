@@ -2,8 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
-import { itemEditSchema, itemCreateSchema, type ItemEditValues, type ItemCreateValues, type ItemWithDetails } from '@/types/db';
-import { updateItem, deleteItem, createItem } from '@/lib/db/items/items';
+import { itemEditSchema, itemCreateSchema, itemUpdateSchema, type ItemEditValues, type ItemCreateValues, type ItemWithDetails } from '@/types/db';
+import { updateItem, deleteItem, createItem, updateItemFields } from '@/lib/db/items/items';
+import { prisma } from '@/lib/prisma/prisma';
 
 type ActionResult<T> =
   | { success: true; data: T; error: null }
@@ -67,6 +68,44 @@ export async function updateItemAction(
       success: false,
       data: null,
       error: err instanceof Error ? err.message : 'Failed to update item',
+    };
+  }
+}
+
+export async function toggleItemPinAction(
+  itemId: string,
+): Promise<ActionResult<boolean>> {
+  const authResult = await requireAuth();
+  if (authResult.error) return { success: false, data: null, error: authResult.error };
+  const { userId } = authResult;
+
+  const result = itemUpdateSchema.safeParse({ itemId });
+  if (!result.success) {
+    const firstError = result.error.issues[0]?.message ?? 'Invalid input';
+    return { success: false, data: null, error: firstError };
+  }
+
+  try {
+    const item = await prisma.item.findUnique({
+      where: { id: itemId, userId },
+      select: { isPinned: true, itemType: { select: { name: true } } },
+    });
+
+    if (!item) {
+      return { success: false, data: null, error: 'Item not found' };
+    }
+
+    const newPinned = !item.isPinned;
+    await updateItemFields(itemId, userId, { isPinned: newPinned });
+    revalidatePath('/dashboard');
+    revalidatePath('/favorites');
+    revalidatePath(`/items/${item.itemType.name.toLowerCase()}`);
+    return { success: true, data: newPinned, error: null };
+  } catch (err) {
+    return {
+      success: false,
+      data: null,
+      error: err instanceof Error ? err.message : 'Failed to toggle pin',
     };
   }
 }

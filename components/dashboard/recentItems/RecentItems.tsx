@@ -29,7 +29,7 @@ export function RecentItems({ items, onOpen }: RecentItemsProps) {
             key={item.id}
             type='button'
             onClick={() => onOpen?.(item.id)}
-            className='h-full w-full text-left border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl border-l-[3px]'
+            className='h-full w-full text-left border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl border-l-[3px] cursor-pointer'
             style={{ borderLeftColor: item.itemType.color }}
           >
             <CardContent className='flex items-center gap-4 p-4'>

@@ -136,7 +136,7 @@ export function DrawerActions({
           >
             <Pin className={cn(
               'size-4',
-              item.isPinned ? 'text-foreground' : 'text-muted-foreground',
+              item.isPinned ? 'fill-current text-pin' : 'text-muted-foreground',
             )} />
             <span className='text-xs text-muted-foreground'>Pin</span>
           </Button>

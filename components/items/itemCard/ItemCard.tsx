@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
 import { Button } from '@/components/ui/button';
 import { cn, formatDaysAgo } from '@/lib/utils/utils';
-import { Copy, Check, Star } from 'lucide-react';
+import { Copy, Check, Star, Pin } from 'lucide-react';
 import type { ItemWithDetails } from '@/types/db';
 
 interface ItemCardProps {
@@ -71,6 +71,9 @@ export function ItemCard({ item, onOpen }: ItemCardProps) {
               </CardTitle>
               {item.isFavorite && (
                 <Star className='size-3.5 shrink-0 fill-current text-favorite' />
+              )}
+              {item.isPinned && (
+                <Pin className='size-3.5 shrink-0 fill-current text-pin' />
               )}
             </div>
             {item.description && (

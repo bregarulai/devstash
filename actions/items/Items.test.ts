@@ -4,7 +4,10 @@ const mockAuth = vi.fn()
 const mockCreateItem = vi.fn()
 const mockUpdateItem = vi.fn()
 const mockDeleteItem = vi.fn()
+const mockUpdateItemFields = vi.fn()
 const mockRevalidatePath = vi.fn()
+const mockPrismaItemFindUnique = vi.fn()
+const mockPrismaItemUpdate = vi.fn()
 
 vi.mock('next/cache', () => ({
   revalidatePath: (...args: unknown[]) => mockRevalidatePath(...args),
@@ -14,10 +17,20 @@ vi.mock('@/lib/auth/auth/auth', () => ({
   auth: (...args: unknown[]) => mockAuth(...args),
 }))
 
+vi.mock('@/lib/prisma/prisma', () => ({
+  prisma: {
+    item: {
+      findUnique: (...args: unknown[]) => mockPrismaItemFindUnique(...args),
+      update: (...args: unknown[]) => mockPrismaItemUpdate(...args),
+    },
+  },
+}))
+
 vi.mock('@/lib/db/items/items', () => ({
   createItem: (...args: unknown[]) => mockCreateItem(...args),
   updateItem: (...args: unknown[]) => mockUpdateItem(...args),
   deleteItem: (...args: unknown[]) => mockDeleteItem(...args),
+  updateItemFields: (...args: unknown[]) => mockUpdateItemFields(...args),
 }))
 
 describe('updateItemAction', () => {
@@ -572,5 +585,178 @@ describe('createItemAction', () => {
       data: null,
       error: 'Unauthorized access to collection(s): invalid-col',
     })
+  })
+})
+
+describe('toggleItemPinAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { toggleItemPinAction } = await import('./Items')
+    const result = await toggleItemPinAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when session has no user id', async () => {
+    mockAuth.mockResolvedValue({ user: {} })
+
+    const { toggleItemPinAction } = await import('./Items')
+    const result = await toggleItemPinAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when item not found', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue(null)
+
+    const { toggleItemPinAction } = await import('./Items')
+    const result = await toggleItemPinAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Item not found',
+    })
+  })
+
+  it('toggles pin from false to true', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isPinned: false,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockResolvedValue({ id: 'item-1', isPinned: true })
+
+    const { toggleItemPinAction } = await import('./Items')
+    const result = await toggleItemPinAction('item-1')
+
+    expect(result).toEqual({
+      success: true,
+      data: true,
+      error: null,
+    })
+    expect(mockUpdateItemFields).toHaveBeenCalledWith('item-1', 'user-1', {
+      isPinned: true,
+    })
+  })
+
+  it('toggles pin from true to false', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isPinned: true,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockResolvedValue({ id: 'item-1', isPinned: false })
+
+    const { toggleItemPinAction } = await import('./Items')
+    const result = await toggleItemPinAction('item-1')
+
+    expect(result).toEqual({
+      success: true,
+      data: false,
+      error: null,
+    })
+    expect(mockUpdateItemFields).toHaveBeenCalledWith('item-1', 'user-1', {
+      isPinned: false,
+    })
+  })
+
+  it('calls revalidatePath after successful toggle', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isPinned: false,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockResolvedValue({ id: 'item-1', isPinned: true })
+
+    const { toggleItemPinAction } = await import('./Items')
+    await toggleItemPinAction('item-1')
+
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/dashboard')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/favorites')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/items/snippet')
+  })
+
+  it('returns error when toggle fails', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isPinned: false,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockRejectedValue(new Error('Database error'))
+
+    const { toggleItemPinAction } = await import('./Items')
+    const result = await toggleItemPinAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Database error',
+    })
+  })
+
+  it('returns generic error for non-Error exceptions', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isPinned: false,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockRejectedValue('Unknown error')
+
+    const { toggleItemPinAction } = await import('./Items')
+    const result = await toggleItemPinAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Failed to toggle pin',
+    })
+  })
+
+  it('does not call revalidatePath when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { toggleItemPinAction } = await import('./Items')
+    await toggleItemPinAction('item-1')
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('does not call revalidatePath when item not found', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue(null)
+
+    const { toggleItemPinAction } = await import('./Items')
+    await toggleItemPinAction('item-1')
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('does not call revalidatePath on toggle failure', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isPinned: false,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockRejectedValue(new Error('DB error'))
+
+    const { toggleItemPinAction } = await import('./Items')
+    await toggleItemPinAction('item-1')
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 })
