@@ -1,22 +1,16 @@
-# Current Feature: API Routes Cleanup — Phase 3: Update Coding Standards
-
-**Spec**: `context/fixes/api-routes-cleanup-phase-3-update-coding-standards-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Update `context/coding-standards.md` lines 43-50 with clearer API route vs Server Action decision criteria
-- Add streaming responses and explicit decision rules to API route guidance
-- Add "never duplicate the same mutation" rule
+<!-- What does success look like for this feature? -->
 
 ## Notes
 
-- Documentation-only change, no code to modify
-- Complexity: Low, Risk: None
-- Based on patterns established by Phases 1 and 2 of API Routes Cleanup
+<!-- Any constraints, context, or details from the spec? -->
 
 ## History
 
@@ -106,3 +100,4 @@ In Progress
 - **Pinned Items (Completed)** - Implemented toggleItemPin server action with optimistic UI updates, wired Pin button in ItemDrawer, added pin indicators to ItemCard and PinnedItems components, sorted pinned items to top of listings
 - **API Routes Cleanup Phase 1 (Completed)** - Removed unused `/api/profile/change-password` API route and its tests; Change Password form confirmed to use server action directly
 - **API Routes Cleanup Phase 2 (Completed)** - Migrated favorite toggle from API route PATCH handler to toggleItemFavoriteAction server action, updated useItemActions hook, removed PATCH endpoint and its tests
+- **API Routes Cleanup Phase 3 (Completed)** - Updated coding standards with explicit API route vs Server Action decision rules, added streaming responses, and added "never duplicate" rule
