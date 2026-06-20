@@ -28,7 +28,6 @@ interface CollectionCardProps {
 
 export function CollectionCard({ collection }: CollectionCardProps) {
   const router = useRouter();
-  const borderColor = collection.dominantItemTypeColor;
 
   const handleCardClick = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('[data-dropdown-trigger]')) {
@@ -39,8 +38,7 @@ export function CollectionCard({ collection }: CollectionCardProps) {
 
   return (
     <Card
-      className='h-full cursor-pointer rounded-xl border-l-[3px] transition-all hover:shadow-md'
-      style={borderColor ? { borderLeftColor: borderColor } : undefined}
+      className='h-full cursor-pointer rounded-xl transition-all hover:shadow-md'
       onClick={handleCardClick}
     >
       <CardHeader className='flex flex-row items-center gap-3 space-y-0 pb-2'>

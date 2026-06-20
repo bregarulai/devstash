@@ -1,17 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
 interface ClientLoaderProps {
   children: React.ReactNode;
   fallback: React.ReactNode;
 }
 
+const emptySubscribe = () => () => {};
+
 export function ClientLoader({ children, fallback }: ClientLoaderProps) {
-  const [mounted] = useState(true);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   if (!mounted) {
-    return fallback;
+    return <>{fallback}</>;
   }
 
   return <>{children}</>;

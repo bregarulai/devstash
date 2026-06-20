@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Dashboard Design Critique Fixes
+
+**Spec**: `context/fixes/dashboard-critique-fixes-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Remove border-left colored stripes from PinnedItems, RecentItems, and CollectionCard (P1)
+- Restyle StatsCards from 4-card grid to inline stat row (P2)
+- Differentiate PinnedItems as horizontal scrollable strip vs RecentItems as vertical list (P2)
+- Replace numbered steps in GetStartedHero with lucide icons (P2)
+- Surface silent errors in loadDashboardData with non-blocking banner (P3)
 
 ## Notes
 
-<!-- Constraints, context, or details from spec -->
+- Visual/structural refactors only; no changes to app behavior or user flow
+- All fixes preserve existing data flow, click handlers, and user interactions
+- Implementation order: Fix 1 → Fix 4 → Fix 3 → Fix 2 → Fix 5
+- Verify after each fix: `npm run build`, `npm run lint`, manual dashboard check
 
 ## History
 

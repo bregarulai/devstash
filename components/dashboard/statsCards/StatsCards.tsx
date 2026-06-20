@@ -46,20 +46,16 @@ export function StatsCards({ stats }: StatsCardsProps) {
   ];
 
   const content = (
-    <div className='grid grid-cols-2 gap-4 lg:grid-cols-4'>
-      {data.map((stat) => (
-        <div
-          key={stat.label}
-          className='rounded-xl border border-border bg-card p-4 transition-colors hover:border-border/80'
-        >
-          <div className='flex items-center gap-3'>
-            <div className={`rounded-lg ${stat.bgColor} p-2`}>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </div>
-            <div className='flex-1'>
-              <p className='text-sm text-muted-foreground'>{stat.label}</p>
-              <p className='text-2xl font-bold'>{stat.value}</p>
-            </div>
+    <div className='flex flex-wrap items-center gap-6 py-4'>
+      {data.map((stat, index) => (
+        <div key={stat.label} className='flex items-center gap-2'>
+          {index > 0 && <div className='h-4 w-px bg-border' />}
+          <div className={`rounded-lg ${stat.bgColor} p-1.5`}>
+            <stat.icon className={`h-4 w-4 ${stat.color}`} />
+          </div>
+          <div className='flex items-baseline gap-1.5'>
+            <span className='text-lg font-semibold'>{stat.value}</span>
+            <span className='text-xs text-muted-foreground'>{stat.label}</span>
           </div>
         </div>
       ))}

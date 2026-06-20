@@ -3,7 +3,6 @@
 import { Pin, Star } from 'lucide-react';
 import { CardContent } from '@/components/ui/card';
 
-import { formatDaysAgo } from '@/lib/utils/utils';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 import { ClientLoader } from '../clientLoader/ClientLoader';
 import { PinnedItemsSkeleton } from '../skeletons/PinnedItemsSkeleton';
@@ -26,16 +25,15 @@ export function PinnedItems({ items, onOpen }: PinnedItemsProps) {
         <h2 className='text-lg font-semibold'>Pinned Items</h2>
       </div>
 
-      <div className='flex flex-col gap-3 py-6'>
+      <div className='flex flex-wrap gap-3 py-6'>
         {items.map((item) => (
           <button
             key={item.id}
             type='button'
             onClick={() => onOpen?.(item.id)}
-            className='h-full w-full text-left border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl border-l-[3px] cursor-pointer'
-            style={{ borderLeftColor: item.itemType.color }}
+            className='h-full w-full min-[690px]:w-72 text-left border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl cursor-pointer'
           >
-            <CardContent className='flex items-center gap-4 p-4'>
+            <CardContent className='flex items-center gap-3 p-4'>
               <div
                 className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg'
                 style={{
@@ -54,21 +52,9 @@ export function PinnedItems({ items, onOpen }: PinnedItemsProps) {
                   <Pin className='size-3.5 shrink-0 fill-current text-pin' />
                 </div>
                 <p className='truncate text-xs text-muted-foreground'>
-                  {item.description ?? ''}
+                  {item.itemType.name}
                 </p>
               </div>
-              <span
-                className='shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium'
-                style={{
-                  color: item.itemType.color,
-                  backgroundColor: `${item.itemType.color}15`,
-                }}
-              >
-                {item.itemType.name}
-              </span>
-              <span className='shrink-0 text-xs text-muted-foreground'>
-                {formatDaysAgo(item.updatedAt)}
-              </span>
             </CardContent>
             </button>
         ))}

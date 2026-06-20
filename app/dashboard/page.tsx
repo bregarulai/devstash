@@ -33,20 +33,47 @@ type DashboardData = {
   favoriteCollections: CollectionWithStats[];
   recentCollections: CollectionWithStats[];
   itemStats: ItemStats;
+  errors: string[];
 };
 
 async function loadDashboardData(userId: string): Promise<DashboardData> {
+  const errors: string[] = [];
+  
   const [pinnedItems, recentItems, systemItemTypes, favoriteCollections, recentCollections, itemStats] =
     await Promise.all([
-      getPinnedItems(userId).catch(() => []),
-      getRecentItems(userId, DASHBOARD_RECENT_ITEMS_LIMIT).catch(() => []),
-      getSystemItemTypesWithCounts(userId).catch(() => []),
-      getFavoriteCollections(userId).catch(() => []),
-      getRecentCollections(userId, DASHBOARD_COLLECTIONS_LIMIT).catch(() => []),
-      getItemStats(userId).catch(() => EMPTY_ITEM_STATS),
+      getPinnedItems(userId).catch((error) => {
+        console.error('Failed to fetch pinned items:', error);
+        errors.push('pinned items');
+        return [];
+      }),
+      getRecentItems(userId, DASHBOARD_RECENT_ITEMS_LIMIT).catch((error) => {
+        console.error('Failed to fetch recent items:', error);
+        errors.push('recent items');
+        return [];
+      }),
+      getSystemItemTypesWithCounts(userId).catch((error) => {
+        console.error('Failed to fetch system item types:', error);
+        errors.push('item types');
+        return [];
+      }),
+      getFavoriteCollections(userId).catch((error) => {
+        console.error('Failed to fetch favorite collections:', error);
+        errors.push('favorite collections');
+        return [];
+      }),
+      getRecentCollections(userId, DASHBOARD_COLLECTIONS_LIMIT).catch((error) => {
+        console.error('Failed to fetch recent collections:', error);
+        errors.push('recent collections');
+        return [];
+      }),
+      getItemStats(userId).catch((error) => {
+        console.error('Failed to fetch item stats:', error);
+        errors.push('item stats');
+        return EMPTY_ITEM_STATS;
+      }),
     ]);
 
-  return { pinnedItems, recentItems, systemItemTypes, favoriteCollections, recentCollections, itemStats };
+  return { pinnedItems, recentItems, systemItemTypes, favoriteCollections, recentCollections, itemStats, errors };
 }
 
 export default async function DashboardPage() {
@@ -84,6 +111,7 @@ export default async function DashboardPage() {
     favoriteCollections: [],
     recentCollections: [],
     itemStats: EMPTY_ITEM_STATS,
+    errors: [],
   };
 
   try {
@@ -105,6 +133,7 @@ export default async function DashboardPage() {
           itemStats={data.itemStats}
           pinnedItems={data.pinnedItems}
           recentItems={data.recentItems}
+          errors={data.errors}
         />
         <ItemDrawer />
       </ItemDrawerProvider>
