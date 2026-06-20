@@ -1,29 +1,16 @@
-# Current Feature: Favorites Page
-
-**Spec**: `context/features/favorites-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add star icon button to TopBar linking to /favorites
-- Create /favorites route with auth protection
-- Fetch all user favorited items and collections using existing fetch patterns
-- Compact list view (VS Code/terminal style, not cards)
-- Each row: type icon, title, type badge, date added
-- Separate sections for items and collections with counts
-- Click item opens ItemDrawer, click collection navigates to /collections/[id]
-- Empty state when no favorites
-- Sort by most recently favorited (updatedAt)
+<!-- What does success look like? -->
 
 ## Notes
 
-- Monospace or semi-monospace font
-- Minimal padding, high density
-- Subtle hover states
-- No cards or heavy borders, clean lines only
+<!-- Any additional context or constraints? -->
 
 ## History
 
@@ -107,3 +94,4 @@ In Progress
 - **Pagination (Completed)** - Added pagination to /items/[type], /collections, and /collections/[id] pages using shadcn Pagination component with page numbers and prev/next links, server-side pagination with offset/limit queries, and constants for items per page
 - **Settings Page + User Menu Fix (Completed)** - Created /settings page with account actions, added Settings link to sidebar user menu, replaced custom dropdown with shadcn DropdownMenu, moved Delete Account and Change Password from profile to settings page
 - **Editor Preferences Settings (Completed)** - Added editor preferences section to settings page with auto-save to database, implemented font size, tab size, word wrap, minimap, and theme dropdowns, created EditorPreferencesContext, applied settings to Monaco editor, created database migration
+- **Favorites Page (Completed)** - Implemented favorites page with compact list view, star icon in TopBar, auth-protected /favorites route, separate items/collections sections with counts, type icons, and sort by most recently favorited
