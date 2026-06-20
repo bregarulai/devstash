@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { CommandPaletteProvider } from "@/hooks/useCommandPalette/useCommandPalette";
 import { CommandPaletteClient } from "@/components/dashboard/CommandPaletteClient/CommandPaletteClient";
+import { GlobalSearchTrigger } from "@/components/globalSearch/GlobalSearchTrigger";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,9 +38,12 @@ export default function RootLayout({
     >
       <head />
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background text-foreground antialiased`}>
-        {children}
-        <Toaster position="top-center" richColors />
-        <CommandPaletteClient />
+        <CommandPaletteProvider>
+          {children}
+          <Toaster position="top-center" richColors />
+          <CommandPaletteClient />
+          <GlobalSearchTrigger />
+        </CommandPaletteProvider>
       </body>
     </html>
   );

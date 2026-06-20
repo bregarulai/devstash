@@ -2,6 +2,7 @@
 
 import { AlertCircle, File } from 'lucide-react';
 import { useItemDrawer } from '@/components/items/itemDrawer/ItemDrawerProvider';
+import { useAutoOpenDrawer } from '@/hooks/useAutoOpenDrawer/useAutoOpenDrawer';
 import { ItemCard } from '@/components/items/itemCard/ItemCard';
 import { ImageCard } from '@/components/items/imageCard/ImageCard';
 import { FileListRow } from '@/components/items/fileListRow/FileListRow';
@@ -30,6 +31,7 @@ export function ItemsListContent({
   hasError,
 }: ItemsListContentProps) {
   const { openDrawer } = useItemDrawer();
+  useAutoOpenDrawer();
 
   const currentType = types.find((t) => t.name === currentTypeName);
 
