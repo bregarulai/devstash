@@ -1,9 +1,7 @@
-import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth/auth';
 import { prisma } from '@/lib/prisma/prisma';
-import { itemUpdateSchema } from '@/types/db';
-import { ITEM_INCLUDE, updateItemFields } from '@/lib/db/items/items';
+import { ITEM_INCLUDE } from '@/lib/db/items/items';
 
 async function requireAuth() {
   const session = await auth();
@@ -61,39 +59,6 @@ export async function GET(
   } catch {
     return NextResponse.json(
       { error: 'Failed to fetch item' },
-      { status: 500 },
-    );
-  }
-}
-
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  const authResult = await requireAuth();
-  if (authResult.error) return authResult.error;
-  const { session } = authResult;
-
-  const { id } = await params;
-
-  try {
-    const body = await request.json();
-    const result = itemUpdateSchema.safeParse(body);
-
-    if (!result.success) {
-      return NextResponse.json(
-        { error: 'Invalid request body', issues: result.error.issues },
-        { status: 400 },
-      );
-    }
-
-    await updateItemFields(id, session.user.id, result.data);
-
-    revalidatePath('/dashboard');
-    return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json(
-      { error: 'Failed to update item' },
       { status: 500 },
     );
   }

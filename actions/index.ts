@@ -1,6 +1,6 @@
 export { handleRegister, handleSignOut, handleChangePassword } from './auth/Auth'
 export { handleForgotPassword } from './forgotPassword/ForgotPassword'
-export { updateItemAction, deleteItemAction, createItemAction, toggleItemPinAction } from './items/Items'
+export { updateItemAction, deleteItemAction, createItemAction, toggleItemPinAction, toggleItemFavoriteAction } from './items/Items'
 export { retryProfileDataAction } from './profile/Profile'
 export { handleResendVerification } from './resendVerification/ResendVerification'
 export { handleResetPassword } from './resetPassword/ResetPassword'

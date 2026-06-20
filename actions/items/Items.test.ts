@@ -760,3 +760,176 @@ describe('toggleItemPinAction', () => {
     expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 })
+
+describe('toggleItemFavoriteAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    const result = await toggleItemFavoriteAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when session has no user id', async () => {
+    mockAuth.mockResolvedValue({ user: {} })
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    const result = await toggleItemFavoriteAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when item not found', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue(null)
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    const result = await toggleItemFavoriteAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Item not found',
+    })
+  })
+
+  it('toggles favorite from false to true', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isFavorite: false,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockResolvedValue({ id: 'item-1', isFavorite: true })
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    const result = await toggleItemFavoriteAction('item-1')
+
+    expect(result).toEqual({
+      success: true,
+      data: true,
+      error: null,
+    })
+    expect(mockUpdateItemFields).toHaveBeenCalledWith('item-1', 'user-1', {
+      isFavorite: true,
+    })
+  })
+
+  it('toggles favorite from true to false', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isFavorite: true,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockResolvedValue({ id: 'item-1', isFavorite: false })
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    const result = await toggleItemFavoriteAction('item-1')
+
+    expect(result).toEqual({
+      success: true,
+      data: false,
+      error: null,
+    })
+    expect(mockUpdateItemFields).toHaveBeenCalledWith('item-1', 'user-1', {
+      isFavorite: false,
+    })
+  })
+
+  it('calls revalidatePath after successful toggle', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isFavorite: false,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockResolvedValue({ id: 'item-1', isFavorite: true })
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    await toggleItemFavoriteAction('item-1')
+
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/dashboard')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/favorites')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/items/snippet')
+  })
+
+  it('returns error when toggle fails', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isFavorite: false,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockRejectedValue(new Error('Database error'))
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    const result = await toggleItemFavoriteAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Database error',
+    })
+  })
+
+  it('returns generic error for non-Error exceptions', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isFavorite: false,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockRejectedValue('Unknown error')
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    const result = await toggleItemFavoriteAction('item-1')
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Failed to toggle favorite',
+    })
+  })
+
+  it('does not call revalidatePath when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    await toggleItemFavoriteAction('item-1')
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('does not call revalidatePath when item not found', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue(null)
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    await toggleItemFavoriteAction('item-1')
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('does not call revalidatePath on toggle failure', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      isFavorite: false,
+      itemType: { name: 'snippet' },
+    })
+    mockUpdateItemFields.mockRejectedValue(new Error('DB error'))
+
+    const { toggleItemFavoriteAction } = await import('./Items')
+    await toggleItemFavoriteAction('item-1')
+
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+})

@@ -110,6 +110,44 @@ export async function toggleItemPinAction(
   }
 }
 
+export async function toggleItemFavoriteAction(
+  itemId: string,
+): Promise<ActionResult<boolean>> {
+  const authResult = await requireAuth();
+  if (authResult.error) return { success: false, data: null, error: authResult.error };
+  const { userId } = authResult;
+
+  const result = itemUpdateSchema.safeParse({ itemId });
+  if (!result.success) {
+    const firstError = result.error.issues[0]?.message ?? 'Invalid input';
+    return { success: false, data: null, error: firstError };
+  }
+
+  try {
+    const item = await prisma.item.findUnique({
+      where: { id: itemId, userId },
+      select: { isFavorite: true, itemType: { select: { name: true } } },
+    });
+
+    if (!item) {
+      return { success: false, data: null, error: 'Item not found' };
+    }
+
+    const newFavorite = !item.isFavorite;
+    await updateItemFields(itemId, userId, { isFavorite: newFavorite });
+    revalidatePath('/dashboard');
+    revalidatePath('/favorites');
+    revalidatePath(`/items/${item.itemType.name.toLowerCase()}`);
+    return { success: true, data: newFavorite, error: null };
+  } catch (err) {
+    return {
+      success: false,
+      data: null,
+      error: err instanceof Error ? err.message : 'Failed to toggle favorite',
+    };
+  }
+}
+
 export async function deleteItemAction(
   itemId: string,
 ): Promise<ActionResult<null>> {
