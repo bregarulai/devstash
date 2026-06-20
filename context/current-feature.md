@@ -1,24 +1,16 @@
-# Current Feature: API Routes Cleanup — Phase 1: Remove Unused Change Password Route
-
-**Spec**: `context/fixes/api-routes-cleanup-phase-1-remove-change-password-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Remove the unused `/api/profile/change-password` API route
-- Delete `app/api/profile/change-password/route.ts` (unused file with zero consumers)
-- Delete `app/api/profile/change-password/route.test.ts` (tests for unused route)
-- Verify lint, build, and tests pass after deletion
-- Confirm Change Password form still works via the server action
+<!-- What does success look like? -->
 
 ## Notes
 
-- The server action `handleChangePassword` in `actions/auth/Auth.ts:93-141` is the actual implementation used by `ChangePasswordForm.tsx`
-- The API route duplicates functionality and is less secure (manual CSRF validation vs built-in Next.js protection)
-- Risk: Low, Complexity: Low
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -106,3 +98,4 @@ In Progress
 - **Favorite Button Toggle (Completed)** - Added favorite toggle to ItemDrawer action bar, collection detail page header, and collection cards dropdown menu with optimistic UI updates, toast notifications, and consistent star icon styling
 - **Client-Side Sorting for Favorites Page (Completed)** - Added sorting controls to favorites page with dropdown for sort options (name, date, type), client-side sorting of already-loaded data, URL search params for persisting sort preference, and default sort by most recently favorited
 - **Pinned Items (Completed)** - Implemented toggleItemPin server action with optimistic UI updates, wired Pin button in ItemDrawer, added pin indicators to ItemCard and PinnedItems components, sorted pinned items to top of listings
+- **API Routes Cleanup Phase 1 (Completed)** - Removed unused `/api/profile/change-password` API route and its tests; Change Password form confirmed to use server action directly
