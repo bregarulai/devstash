@@ -1,28 +1,16 @@
-# Current Feature: Pinned Items
-
-**Spec**: `context/features/pinned-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create toggleItemPin server action
-- Make Pin button in ItemDrawer clickable (exists but no onClick)
-- Optimistic UI updates for instant feedback
-- Toast notification on success/error
-- Pinned items sort to top of listings
-- Follow Favorite Button pattern
-- Items only (not collections)
-- Pin icon on ItemCard remains static indicator. If there is no Pin icon, add it.
+<!-- What does success look like? -->
 
 ## Notes
 
-- The Pin button already exists in ItemDrawer but has no onClick handler
-- Follow the same pattern as the Favorite Button for optimistic updates and toast notifications
-- Pinned items should appear at top of listings and on dashboard in pinned items section
-- Only items can be pinned, not collections
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -109,3 +97,4 @@ In Progress
 - **Favorites Page (Completed)** - Implemented favorites page with compact list view, star icon in TopBar, auth-protected /favorites route, separate items/collections sections with counts, type icons, and sort by most recently favorited
 - **Favorite Button Toggle (Completed)** - Added favorite toggle to ItemDrawer action bar, collection detail page header, and collection cards dropdown menu with optimistic UI updates, toast notifications, and consistent star icon styling
 - **Client-Side Sorting for Favorites Page (Completed)** - Added sorting controls to favorites page with dropdown for sort options (name, date, type), client-side sorting of already-loaded data, URL search params for persisting sort preference, and default sort by most recently favorited
+- **Pinned Items (Completed)** - Implemented toggleItemPin server action with optimistic UI updates, wired Pin button in ItemDrawer, added pin indicators to ItemCard and PinnedItems components, sorted pinned items to top of listings
