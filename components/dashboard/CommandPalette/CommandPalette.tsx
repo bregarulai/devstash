@@ -16,7 +16,7 @@ import { ITEM_TYPES } from '@/lib/constants';
 import type { ItemWithDetails, CollectionWithStats } from '@/types/db';
 import {
   Folder,
-  Heart,
+  Star,
   Moon,
   Sun,
   Settings,
@@ -167,9 +167,9 @@ export function CommandPalette({
           </CommandItem>
           <CommandItem
             value='favorites'
-            onSelect={() => { onOpenChange(false); router.push('/collections?favorite=true'); }}
+            onSelect={() => { onOpenChange(false); router.push('/favorites'); }}
           >
-            <Heart className='mr-2 h-4 w-4' />
+            <Star className='mr-2 h-4 w-4' />
             <span>Favorites</span>
             <CommandShortcut>Go</CommandShortcut>
           </CommandItem>

@@ -1,5 +1,8 @@
+import Link from 'next/link';
+import { Star } from 'lucide-react';
 import { SearchBar } from '../searchBar/SearchBar';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import { ItemCreateDialog } from '@/components/items/itemCreateDialog/ItemCreateDialog';
 import { CollectionCreateDialog } from '@/components/collections/collectionCreateDialog/CollectionCreateDialog';
 
@@ -11,6 +14,12 @@ export function MobileSideBar() {
           <SearchBar />
         </div>
         <div className='flex items-center gap-2 shrink-0'>
+          <Button variant='ghost' size='icon' asChild>
+            <Link href='/favorites'>
+              <Star className='h-4 w-4' />
+              <span className='sr-only'>Favorites</span>
+            </Link>
+          </Button>
           <CollectionCreateDialog />
           <ItemCreateDialog />
         </div>

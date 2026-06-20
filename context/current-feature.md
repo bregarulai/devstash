@@ -1,18 +1,29 @@
-# Current Feature
+# Current Feature: Favorites Page
 
-**Spec**: `context/features/editor-settings-spec.md`
+**Spec**: `context/features/favorites-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Add star icon button to TopBar linking to /favorites
+- Create /favorites route with auth protection
+- Fetch all user favorited items and collections using existing fetch patterns
+- Compact list view (VS Code/terminal style, not cards)
+- Each row: type icon, title, type badge, date added
+- Separate sections for items and collections with counts
+- Click item opens ItemDrawer, click collection navigates to /collections/[id]
+- Empty state when no favorites
+- Sort by most recently favorited (updatedAt)
 
 ## Notes
 
-<!-- Any constraints or context -->
+- Monospace or semi-monospace font
+- Minimal padding, high density
+- Subtle hover states
+- No cards or heavy borders, clean lines only
 
 ## History
 
