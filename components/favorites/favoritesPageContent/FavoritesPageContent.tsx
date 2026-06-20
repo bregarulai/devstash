@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Star, FolderOpen, AlertCircle } from 'lucide-react';
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Empty,
   EmptyDescription,
@@ -78,6 +79,14 @@ export function FavoritesPageContent({
         <div className='flex items-center gap-2 rounded-lg bg-destructive/10 p-3 text-destructive'>
           <AlertCircle className='h-4 w-4 shrink-0' />
           <p className='text-sm'>Failed to load favorites. Please try again.</p>
+          <Button
+            variant='link'
+            size='sm'
+            onClick={() => router.refresh()}
+            className='ml-auto'
+          >
+            Retry
+          </Button>
         </div>
       )}
 
@@ -88,9 +97,7 @@ export function FavoritesPageContent({
         <div>
           <h1 className='text-2xl font-semibold tracking-tight'>Favorites</h1>
           <p className='text-sm text-muted-foreground'>
-            {totalCount === 0
-              ? 'No favorites yet'
-              : `${totalCount} ${totalCount === 1 ? 'item' : 'items'}`}
+            {totalCount} {totalCount === 1 ? 'item' : 'items'}
           </p>
         </div>
       </div>
@@ -120,7 +127,7 @@ export function FavoritesPageContent({
                 </div>
                 <SortControls value={itemsSort} onChange={handleItemsSortChange} />
               </div>
-              <div className='space-y-1 font-mono text-sm'>
+              <div className='space-y-1 text-sm'>
                 {sortedItems.map((item) => (
                   <div
                     key={item.id}
@@ -135,11 +142,11 @@ export function FavoritesPageContent({
                     }}
                     className={cn(
                       'flex items-center gap-3 rounded-md px-3 py-2 cursor-pointer',
-                      'hover:bg-muted/50 transition-colors'
+                      'hover:bg-muted/50 transition-colors',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
                     )}
                   >
                     <ItemTypeIcon type={item.itemType.name} className='h-4 w-4' />
-                    <Star className='size-3.5 shrink-0 fill-current text-favorite' />
                     <span className='flex-1 truncate font-medium'>{item.title}</span>
                     <Badge
                       variant='outline'
@@ -170,7 +177,7 @@ export function FavoritesPageContent({
                 </div>
                 <SortControls value={collectionsSort} onChange={handleCollectionsSortChange} />
               </div>
-              <div className='space-y-1 font-mono text-sm'>
+              <div className='space-y-1 text-sm'>
                 {sortedCollections.map((collection) => (
                   <div
                     key={collection.id}
@@ -185,11 +192,11 @@ export function FavoritesPageContent({
                     }}
                     className={cn(
                       'flex items-center gap-3 rounded-md px-3 py-2 cursor-pointer',
-                      'hover:bg-muted/50 transition-colors'
+                      'hover:bg-muted/50 transition-colors',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
                     )}
                   >
                     <FolderOpen className='h-4 w-4 text-muted-foreground' />
-                    <Star className='size-3.5 shrink-0 fill-current text-favorite' />
                     <span className='flex-1 truncate font-medium'>{collection.name}</span>
                     <span className='text-xs text-muted-foreground shrink-0'>
                       {collection.itemCount} {collection.itemCount === 1 ? 'item' : 'items'}
