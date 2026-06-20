@@ -2,11 +2,10 @@
 
 import { useItemDrawer } from '@/components/items/itemDrawer/ItemDrawerProvider';
 import { StatsCards } from '@/components/dashboard/statsCards/StatsCards';
-import { CollectionsSession } from '@/components/dashboard/collectionSession/CollectionsSession';
+import { CollectionsSession } from '@/components/dashboard/collectionsSession/CollectionsSession';
 import { PinnedItems } from '@/components/dashboard/pinnedItems/PinnedItems';
 import { RecentItems } from '@/components/dashboard/recentItems/RecentItems';
 import { GetStartedHero } from '@/components/dashboard/getStartedHero/GetStartedHero';
-import { KeyboardHint } from '@/components/dashboard/keyboardHint/KeyboardHint';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import type { ItemWithDetails, CollectionWithStats, ItemStats } from '@/types/db';
@@ -39,18 +38,18 @@ export function DashboardContent({
           </AlertDescription>
         </Alert>
       )}
-      <div className='flex items-center gap-2 px-2 py-1'>
-        <span className='text-xs text-muted-foreground'>Quick commands:</span>
-        <KeyboardHint shortcut="Ctrl+K" />
-      </div>
       <div className='space-y-6'>
         {itemStats.totalItems === 0 ? (
           <GetStartedHero />
         ) : (
           <>
             <StatsCards stats={itemStats} />
-            <CollectionsSession collections={recentCollections} />
-            <PinnedItems items={pinnedItems} onOpen={openDrawer} />
+            <div className='mt-2 mb-2'>
+              <CollectionsSession collections={recentCollections} />
+            </div>
+            <div className='border-b border-border/50 pb-6'>
+              <PinnedItems items={pinnedItems} onOpen={openDrawer} />
+            </div>
             <RecentItems items={recentItems} onOpen={openDrawer} />
           </>
         )}

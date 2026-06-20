@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Dashboard Critique Fixes
+
+**Spec**: `context/fixes/dashboard-critique-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Improve visual hierarchy with dense stats strip, section separation, PinnedItems grid, and denser RecentItems list
+- Enforce design system consistency: replace `border border-border` with `ring-1 ring-foreground/10`, remove inline `borderColor`, add accessible focus indicators
+- Remove pipe dividers from StatsCards for cleaner appearance
+- Remove keyboard shortcut bar from dashboard (Ctrl+K discoverable elsewhere)
+- Fix folder naming mismatch: `collectionSession/` → `collectionsSession/`
+- Add consistent background class to not-signed-in state
 
 ## Notes
 
-<!-- Constraints, context, or details from spec -->
+- 6 fixes total, ordered by impact: Fix 1 (Visual Hierarchy) → Fix 2 (Design System) → Fix 3 (Dividers) → Fix 4 (Keyboard Bar) → Fix 5 (Folder Rename) → Fix 6 (State Consistency)
+- Fix 1 is P1 with the biggest visual impact
+- Fix 5 is a folder rename requiring import updates
+- Verification: `npm run lint` and `npm run build` after all fixes
 
 ## History
 
