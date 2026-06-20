@@ -11,13 +11,13 @@
 
 Five issues identified from the design critique. All fixes are visual or structural refactors that preserve existing behavior, data flow, and user interactions.
 
-| Priority | Issue | Files Affected |
-|----------|-------|----------------|
-| P1 | Border-left colored stripe on item cards | `PinnedItems.tsx`, `RecentItems.tsx`, `CollectionCard.tsx` |
-| P2 | StatsCards hero-metric SaaS template | `StatsCards.tsx` |
-| P2 | PinnedItems ≈ RecentItems structural duplication | `PinnedItems.tsx`, `RecentItems.tsx` |
-| P2 | GetStartedHero numbered steps scaffold | `GetStartedHero.tsx` |
-| P3 | Silent error swallowing in loadDashboardData | `page.tsx` |
+| Priority | Issue                                            | Files Affected                                             |
+| -------- | ------------------------------------------------ | ---------------------------------------------------------- |
+| P1       | Border-left colored stripe on item cards         | `PinnedItems.tsx`, `RecentItems.tsx`, `CollectionCard.tsx` |
+| P2       | StatsCards hero-metric SaaS template             | `StatsCards.tsx`                                           |
+| P2       | PinnedItems ≈ RecentItems structural duplication | `PinnedItems.tsx`, `RecentItems.tsx`                       |
+| P2       | GetStartedHero numbered steps scaffold           | `GetStartedHero.tsx`                                       |
+| P3       | Silent error swallowing in loadDashboardData     | `page.tsx`                                                 |
 
 ---
 
@@ -26,6 +26,7 @@ Five issues identified from the design critique. All fixes are visual or structu
 **Problem:** PinnedItems, RecentItems, and CollectionCard use `border-l-[3px]` with `borderLeftColor` set to the item type color. This is an absolute ban in the design system — colored side-stripes as accent on cards/list items are never intentional and are the most visible AI-generated tell.
 
 **Files:**
+
 - `components/dashboard/pinnedItems/PinnedItems.tsx`
 - `components/dashboard/recentItems/RecentItems.tsx`
 - `components/dashboard/collectionCard/CollectionCard.tsx`
@@ -35,10 +36,13 @@ Five issues identified from the design critique. All fixes are visual or structu
 ### PinnedItems.tsx and RecentItems.tsx
 
 Remove from the `<button>` element:
+
 ```
 border-l-[3px]
 ```
+
 and:
+
 ```
 style={{ borderLeftColor: item.itemType.color }}
 ```
@@ -48,10 +52,13 @@ The item-type icon container already carries the color via `backgroundColor: ${i
 ### CollectionCard.tsx
 
 Remove from the `<Card>` element:
+
 ```
 border-l-[3px]
 ```
+
 and:
+
 ```
 style={borderColor ? { borderLeftColor: borderColor } : undefined}
 ```
@@ -71,6 +78,7 @@ Also remove the `borderColor` variable and its `const` declaration since it's no
 **Approach:** Replace the 4-card grid with an inline stat row. This is denser, more information-rich, and less template-like.
 
 **Current layout:**
+
 ```
 ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
 │ 📁 42    │ │ 📂 8     │ │ ❤️ 12    │ │ ⭐ 3     │
@@ -79,11 +87,13 @@ Also remove the `borderColor` variable and its `const` declaration since it's no
 ```
 
 **New layout:**
+
 ```
 42 items · 8 collections · 12 favorites · 3 favorite collections
 ```
 
 Or a compact pill row:
+
 ```
 [📁 42 items] [📂 8 collections] [❤️ 12 favorites] [⭐ 3 favorite collections]
 ```
@@ -117,6 +127,7 @@ This removes the card containers entirely. Stats become a single information-den
 **Constraint:** Must keep them as separate components with separate data sources. Do NOT merge into one component.
 
 **Files:**
+
 - `components/dashboard/pinnedItems/PinnedItems.tsx`
 - `components/dashboard/recentItems/RecentItems.tsx`
 
@@ -147,7 +158,9 @@ Pinned items are explicitly saved for quick access. Treat them like browser book
       </div>
       <div className='min-w-0 flex-1'>
         <p className='truncate text-sm font-medium'>{item.title}</p>
-        <p className='truncate text-xs text-muted-foreground'>{item.itemType.name}</p>
+        <p className='truncate text-xs text-muted-foreground'>
+          {item.itemType.name}
+        </p>
       </div>
     </button>
   ))}
@@ -161,6 +174,7 @@ Remove: `border-l-[3px]`, `borderLeftColor`, the badge, the date, the descriptio
 Recent items are a browsing surface. The current vertical list with title, description, type badge, and date is appropriate.
 
 **Changes to make:**
+
 - Remove `border-l-[3px]` and `borderLeftColor` (covered in Fix 1)
 - Keep everything else as-is
 
@@ -199,6 +213,7 @@ const STEPS = [
 ```
 
 Replace the numbered circle div:
+
 ```tsx
 // Before
 <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold'>
@@ -206,7 +221,7 @@ Replace the numbered circle div:
 </div>
 
 // After
-<div className='flex h-8 w-8 shrink-0 items-center items-center justify-center rounded-lg bg-muted'>
+<div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted'>
   <step.icon className='h-4 w-4 text-muted-foreground' />
 </div>
 ```
@@ -245,17 +260,49 @@ type DashboardData = {
 async function loadDashboardData(userId: string): Promise<DashboardData> {
   let hasErrors = false;
 
-  const [pinnedItems, recentItems, systemItemTypes, favoriteCollections, recentCollections, itemStats] =
-    await Promise.all([
-      getPinnedItems(userId).catch(() => { hasErrors = true; return []; }),
-      getRecentItems(userId, DASHBOARD_RECENT_ITEMS_LIMIT).catch(() => { hasErrors = true; return []; }),
-      getSystemItemTypesWithCounts(userId).catch(() => { hasErrors = true; return []; }),
-      getFavoriteCollections(userId).catch(() => { hasErrors = true; return []; }),
-      getRecentCollections(userId, DASHBOARD_COLLECTIONS_LIMIT).catch(() => { hasErrors = true; return []; }),
-      getItemStats(userId).catch(() => { hasErrors = true; return EMPTY_ITEM_STATS; }),
-    ]);
+  const [
+    pinnedItems,
+    recentItems,
+    systemItemTypes,
+    favoriteCollections,
+    recentCollections,
+    itemStats,
+  ] = await Promise.all([
+    getPinnedItems(userId).catch(() => {
+      hasErrors = true;
+      return [];
+    }),
+    getRecentItems(userId, DASHBOARD_RECENT_ITEMS_LIMIT).catch(() => {
+      hasErrors = true;
+      return [];
+    }),
+    getSystemItemTypesWithCounts(userId).catch(() => {
+      hasErrors = true;
+      return [];
+    }),
+    getFavoriteCollections(userId).catch(() => {
+      hasErrors = true;
+      return [];
+    }),
+    getRecentCollections(userId, DASHBOARD_COLLECTIONS_LIMIT).catch(() => {
+      hasErrors = true;
+      return [];
+    }),
+    getItemStats(userId).catch(() => {
+      hasErrors = true;
+      return EMPTY_ITEM_STATS;
+    }),
+  ]);
 
-  return { pinnedItems, recentItems, systemItemTypes, favoriteCollections, recentCollections, itemStats, hasErrors };
+  return {
+    pinnedItems,
+    recentItems,
+    systemItemTypes,
+    favoriteCollections,
+    recentCollections,
+    itemStats,
+    hasErrors,
+  };
 }
 ```
 
@@ -271,11 +318,13 @@ interface DashboardContentProps {
 Add a subtle banner at the top when `hasErrors` is true:
 
 ```tsx
-{hasErrors && (
-  <div className='rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-2 text-sm text-destructive'>
-    Some data couldn't be loaded. Your dashboard may be incomplete.
-  </div>
-)}
+{
+  hasErrors && (
+    <div className='rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-2 text-sm text-destructive'>
+      Some data couldn't be loaded. Your dashboard may be incomplete.
+    </div>
+  );
+}
 ```
 
 **Behavior change:** None for the happy path. When data fetches fail, a non-blocking banner appears. No new user flows, no changed interactions.
@@ -295,6 +344,7 @@ Add a subtle banner at the top when `hasErrors` is true:
 ## Verification
 
 After each fix:
+
 - `npm run build` — Ensure no type errors or build failures
 - `npm run lint` — Ensure no lint errors
 - Manual: Navigate to `/dashboard` and verify the visual change renders correctly
