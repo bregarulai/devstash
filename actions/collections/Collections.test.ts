@@ -5,6 +5,7 @@ const mockCreateCollection = vi.fn()
 const mockGetUserCollectionList = vi.fn()
 const mockUpdateCollection = vi.fn()
 const mockDeleteCollection = vi.fn()
+const mockToggleCollectionFavorite = vi.fn()
 const mockRevalidatePath = vi.fn()
 
 vi.mock('next/cache', () => ({
@@ -20,6 +21,7 @@ vi.mock('@/lib/db/collections/collections', () => ({
   getUserCollectionList: (...args: unknown[]) => mockGetUserCollectionList(...args),
   updateCollection: (...args: unknown[]) => mockUpdateCollection(...args),
   deleteCollection: (...args: unknown[]) => mockDeleteCollection(...args),
+  toggleCollectionFavorite: (...args: unknown[]) => mockToggleCollectionFavorite(...args),
 }))
 
 describe('createCollectionAction', () => {
@@ -472,6 +474,145 @@ describe('deleteCollectionAction', () => {
       success: false,
       data: null,
       error: 'Failed to delete collection',
+    })
+  })
+})
+
+describe('toggleCollectionFavoriteAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { toggleCollectionFavoriteAction } = await import('./Collections')
+    const result = await toggleCollectionFavoriteAction('col-1', { isFavorite: true })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns error when session has no user id', async () => {
+    mockAuth.mockResolvedValue({ user: {} })
+
+    const { toggleCollectionFavoriteAction } = await import('./Collections')
+    const result = await toggleCollectionFavoriteAction('col-1', { isFavorite: true })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns validation error for invalid isFavorite type', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+
+    const { toggleCollectionFavoriteAction } = await import('./Collections')
+    const result = await toggleCollectionFavoriteAction('col-1', { isFavorite: 'not-a-boolean' as unknown as boolean })
+
+    expect(result.success).toBe(false)
+    expect(result.data).toBeNull()
+    expect(result.error).toContain('expected boolean')
+  })
+
+  it('returns error when collection not found', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockToggleCollectionFavorite.mockResolvedValue(null)
+
+    const { toggleCollectionFavoriteAction } = await import('./Collections')
+    const result = await toggleCollectionFavoriteAction('col-1', { isFavorite: true })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Collection not found',
+    })
+  })
+
+  it('returns success with updated collection when favoriting', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    const mockUpdated = {
+      id: 'col-1',
+      name: 'My Collection',
+      description: null,
+      isFavorite: true,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockToggleCollectionFavorite.mockResolvedValue(mockUpdated)
+
+    const { toggleCollectionFavoriteAction } = await import('./Collections')
+    const result = await toggleCollectionFavoriteAction('col-1', { isFavorite: true })
+
+    expect(result).toEqual({
+      success: true,
+      data: mockUpdated,
+      error: null,
+    })
+    expect(mockToggleCollectionFavorite).toHaveBeenCalledWith('user-1', 'col-1', true)
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/dashboard')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/collections')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/collections/col-1')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/favorites')
+  })
+
+  it('returns success with updated collection when unfavoriting', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    const mockUpdated = {
+      id: 'col-1',
+      name: 'My Collection',
+      description: null,
+      isFavorite: false,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockToggleCollectionFavorite.mockResolvedValue(mockUpdated)
+
+    const { toggleCollectionFavoriteAction } = await import('./Collections')
+    const result = await toggleCollectionFavoriteAction('col-1', { isFavorite: false })
+
+    expect(result).toEqual({
+      success: true,
+      data: mockUpdated,
+      error: null,
+    })
+    expect(mockToggleCollectionFavorite).toHaveBeenCalledWith('user-1', 'col-1', false)
+  })
+
+  it('returns error when toggleCollectionFavorite throws', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockToggleCollectionFavorite.mockRejectedValue(new Error('DB failure'))
+
+    const { toggleCollectionFavoriteAction } = await import('./Collections')
+    const result = await toggleCollectionFavoriteAction('col-1', { isFavorite: true })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'DB failure',
+    })
+  })
+
+  it('returns generic error for non-Error thrown values', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockToggleCollectionFavorite.mockRejectedValue('unknown error')
+
+    const { toggleCollectionFavoriteAction } = await import('./Collections')
+    const result = await toggleCollectionFavoriteAction('col-1', { isFavorite: true })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Failed to toggle favorite',
     })
   })
 })

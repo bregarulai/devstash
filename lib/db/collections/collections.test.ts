@@ -931,3 +931,69 @@ describe('getCollectionByIdPaginated', () => {
     expect(result.collection!.items[0].id).toBe('item-1')
   })
 })
+
+describe('toggleCollectionFavorite', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns null when collection not found', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue(null)
+
+    const { toggleCollectionFavorite } = await import('./collections')
+    const result = await toggleCollectionFavorite('user-1', 'col-1', true)
+
+    expect(result).toBeNull()
+    expect(mockPrismaCollectionFindFirst).toHaveBeenCalledWith({
+      where: { id: 'col-1', userId: 'user-1' },
+    })
+  })
+
+  it('updates isFavorite to true', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue({ id: 'col-1', userId: 'user-1' })
+    const mockUpdated = {
+      id: 'col-1',
+      name: 'My Collection',
+      description: null,
+      isFavorite: true,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaCollectionUpdate.mockResolvedValue(mockUpdated)
+
+    const { toggleCollectionFavorite } = await import('./collections')
+    const result = await toggleCollectionFavorite('user-1', 'col-1', true)
+
+    expect(result).toEqual(mockUpdated)
+    expect(mockPrismaCollectionUpdate).toHaveBeenCalledWith({
+      where: { id: 'col-1' },
+      data: { isFavorite: true },
+    })
+  })
+
+  it('updates isFavorite to false', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue({ id: 'col-1', userId: 'user-1' })
+    const mockUpdated = {
+      id: 'col-1',
+      name: 'My Collection',
+      description: null,
+      isFavorite: false,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaCollectionUpdate.mockResolvedValue(mockUpdated)
+
+    const { toggleCollectionFavorite } = await import('./collections')
+    const result = await toggleCollectionFavorite('user-1', 'col-1', false)
+
+    expect(result).toEqual(mockUpdated)
+    expect(mockPrismaCollectionUpdate).toHaveBeenCalledWith({
+      where: { id: 'col-1' },
+      data: { isFavorite: false },
+    })
+  })
+})

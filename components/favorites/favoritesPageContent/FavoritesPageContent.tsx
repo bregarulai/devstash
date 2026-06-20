@@ -104,6 +104,7 @@ export function FavoritesPageContent({
                     )}
                   >
                     <ItemTypeIcon type={item.itemType.name} className='h-4 w-4' />
+                    <Star className='size-3.5 shrink-0 fill-current text-favorite' />
                     <span className='flex-1 truncate font-medium'>{item.title}</span>
                     <Badge
                       variant='outline'
@@ -150,6 +151,7 @@ export function FavoritesPageContent({
                     )}
                   >
                     <FolderOpen className='h-4 w-4 text-muted-foreground' />
+                    <Star className='size-3.5 shrink-0 fill-current text-favorite' />
                     <span className='flex-1 truncate font-medium'>{collection.name}</span>
                     <span className='text-xs text-muted-foreground shrink-0'>
                       {collection.itemCount} {collection.itemCount === 1 ? 'item' : 'items'}

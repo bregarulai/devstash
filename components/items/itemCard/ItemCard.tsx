@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
 import { Button } from '@/components/ui/button';
 import { cn, formatDaysAgo } from '@/lib/utils/utils';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Star } from 'lucide-react';
 import type { ItemWithDetails } from '@/types/db';
 
 interface ItemCardProps {
@@ -65,9 +65,14 @@ export function ItemCard({ item, onOpen }: ItemCardProps) {
             <ItemTypeIcon type={item.itemType.name} className='h-4 w-4' />
           </div>
           <div className='min-w-0 flex-1'>
-            <CardTitle className='truncate text-sm font-medium'>
-              {item.title}
-            </CardTitle>
+            <div className='flex items-center gap-1.5'>
+              <CardTitle className='truncate text-sm font-medium'>
+                {item.title}
+              </CardTitle>
+              {item.isFavorite && (
+                <Star className='size-3.5 shrink-0 fill-current text-favorite' />
+              )}
+            </div>
             {item.description && (
               <p className='truncate text-xs text-muted-foreground'>
                 {item.description}

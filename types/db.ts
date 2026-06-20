@@ -211,6 +211,12 @@ export const collectionUpdateSchema = z.object({
 
 export type CollectionUpdateValues = z.infer<typeof collectionUpdateSchema>;
 
+export const collectionUpdateFavoriteSchema = z.object({
+  isFavorite: z.boolean(),
+});
+
+export type CollectionUpdateFavorite = z.infer<typeof collectionUpdateFavoriteSchema>;
+
 // ── ItemType ──────────────────────────────────────────────────────────────────
 
 export const itemTypeSchema = z.object({

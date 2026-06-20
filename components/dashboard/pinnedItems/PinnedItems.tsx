@@ -1,6 +1,6 @@
 'use client'; // Required for ClientLoader interactivity (mounted state)
 
-import { Pin } from 'lucide-react';
+import { Pin, Star } from 'lucide-react';
 import { CardContent } from '@/components/ui/card';
 
 import { formatDaysAgo } from '@/lib/utils/utils';
@@ -46,7 +46,12 @@ export function PinnedItems({ items, onOpen }: PinnedItemsProps) {
                 <ItemTypeIcon type={item.itemType.name} />
               </div>
               <div className='min-w-0 flex-1'>
-                <p className='truncate text-sm font-medium'>{item.title}</p>
+                <div className='flex items-center gap-1.5'>
+                  <p className='truncate text-sm font-medium'>{item.title}</p>
+                  {item.isFavorite && (
+                    <Star className='size-3.5 shrink-0 fill-current text-favorite' />
+                  )}
+                </div>
                 <p className='truncate text-xs text-muted-foreground'>
                   {item.description ?? ''}
                 </p>

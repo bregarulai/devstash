@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
-import { collectionCreateSchema, collectionUpdateSchema, type CollectionCreateValues, type CollectionUpdateValues, type CollectionSelect } from '@/types/db';
-import { createCollection, getUserCollectionList, updateCollection, deleteCollection } from '@/lib/db/collections/collections';
+import { collectionCreateSchema, collectionUpdateSchema, collectionUpdateFavoriteSchema, type CollectionCreateValues, type CollectionUpdateValues, type CollectionUpdateFavorite, type CollectionSelect } from '@/types/db';
+import { createCollection, getUserCollectionList, updateCollection, deleteCollection, toggleCollectionFavorite } from '@/lib/db/collections/collections';
 
 type ActionResult<T> =
   | { success: true; data: T; error: null }
@@ -114,6 +114,39 @@ export async function getCollectionsForPickerAction(): Promise<
       success: false,
       data: null,
       error: err instanceof Error ? err.message : 'Failed to fetch collections',
+    };
+  }
+}
+
+export async function toggleCollectionFavoriteAction(
+  collectionId: string,
+  data: CollectionUpdateFavorite,
+): Promise<ActionResult<CollectionSelect>> {
+  const authResult = await requireAuth();
+  if (authResult.error) return { success: false, data: null, error: authResult.error };
+  const { userId } = authResult;
+
+  const result = collectionUpdateFavoriteSchema.safeParse(data);
+  if (!result.success) {
+    const firstError = result.error.issues[0]?.message ?? 'Invalid input';
+    return { success: false, data: null, error: firstError };
+  }
+
+  try {
+    const updated = await toggleCollectionFavorite(userId, collectionId, result.data.isFavorite);
+    if (!updated) {
+      return { success: false, data: null, error: 'Collection not found' };
+    }
+    revalidatePath('/dashboard');
+    revalidatePath('/collections');
+    revalidatePath(`/collections/${collectionId}`);
+    revalidatePath('/favorites');
+    return { success: true, data: updated, error: null };
+  } catch (err) {
+    return {
+      success: false,
+      data: null,
+      error: err instanceof Error ? err.message : 'Failed to toggle favorite',
     };
   }
 }

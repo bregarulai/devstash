@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Star } from 'lucide-react';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
 import { CollectionCardMenu } from '@/components/collections/collectionCardMenu/CollectionCardMenu';
 
@@ -44,9 +45,14 @@ export function CollectionCard({ collection }: CollectionCardProps) {
     >
       <CardHeader className='flex flex-row items-center gap-3 space-y-0 pb-2'>
         <div className='min-w-0 flex-1'>
-          <CardTitle className='truncate text-sm font-medium'>
-            {collection.name}
-          </CardTitle>
+          <div className='flex items-center gap-1.5'>
+            <CardTitle className='truncate text-sm font-medium'>
+              {collection.name}
+            </CardTitle>
+            {collection.isFavorite && (
+              <Star className='size-3.5 shrink-0 fill-current text-favorite' />
+            )}
+          </div>
           {collection.description && (
             <CardDescription className='truncate text-xs'>
               {collection.description}

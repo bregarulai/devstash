@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { MoreHorizontal, Pencil, Trash2, Star } from 'lucide-react';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,6 +16,7 @@ import {
 import { CollectionEditDialog } from '@/components/collections/collectionEditDialog/CollectionEditDialog';
 import { DeleteCollectionDialog } from '@/components/collections/deleteCollectionDialog/DeleteCollectionDialog';
 import { useDeleteCollection } from '@/hooks/useDeleteCollection/useDeleteCollection';
+import { toggleCollectionFavoriteAction } from '@/actions/collections/Collections';
 
 interface CollectionCardMenuProps {
   collectionId: string;
@@ -32,11 +34,30 @@ export function CollectionCardMenu({
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [optimisticFavorite, setOptimisticFavorite] = useState(isFavorite);
+  const [isPending, startTransition] = useTransition();
 
   const { isDeleting, deleteCollection } = useDeleteCollection(() => {
     setIsDeleteDialogOpen(false);
     router.refresh();
   });
+
+  const handleFavoriteToggle = () => {
+    const newValue = !optimisticFavorite;
+    setOptimisticFavorite(newValue);
+    startTransition(async () => {
+      const result = await toggleCollectionFavoriteAction(collectionId, {
+        isFavorite: newValue,
+      });
+      if (result.success) {
+        toast.success(newValue ? 'Added to favorites' : 'Removed from favorites');
+        router.refresh();
+      } else {
+        setOptimisticFavorite(!newValue);
+        toast.error(result.error ?? 'Failed to update favorite');
+      }
+    });
+  };
 
   return (
     <>
@@ -63,16 +84,23 @@ export function CollectionCardMenu({
             <Pencil className='size-4' />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem className='cursor-pointer'>
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              handleFavoriteToggle();
+            }}
+            className='cursor-pointer'
+            disabled={isPending}
+          >
             <Star
               className={cn(
                 'size-4',
-                isFavorite
+                optimisticFavorite
                   ? 'fill-current text-favorite'
                   : 'fill-none text-muted-foreground',
               )}
             />
-            {isFavorite ? 'Unfavorite' : 'Favorite'}
+            {optimisticFavorite ? 'Unfavorite' : 'Favorite'}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem

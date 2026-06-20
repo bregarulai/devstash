@@ -1,16 +1,24 @@
-# Current Feature
+# Current Feature: Favorite Button Toggle
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Add favorite button to ItemDrawer action bar with toggle (star filled/outline)
+- Add favorite button to collection detail page header with toggle
+- Add favorite button to collection cards with toggle
+- All favorite buttons call the same toggle logic (add/remove favorite)
+- Optimistic UI update on toggle (instant visual feedback)
+- Toast notification on successful toggle
+- Refresh relevant data after toggle (drawer, favorites page, dashboard)
 
 ## Notes
 
-<!-- Any additional context or constraints? -->
+- Reuse existing favorite/unfavorite server actions
+- Star icon should be filled when favorited, outline when not
+- Consistent styling across all locations
 
 ## History
 

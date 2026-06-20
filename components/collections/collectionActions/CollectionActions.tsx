@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Star, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils/utils';
 import { Button } from '@/components/ui/button';
 import { CollectionEditDialog } from '@/components/collections/collectionEditDialog/CollectionEditDialog';
 import { DeleteCollectionDialog } from '@/components/collections/deleteCollectionDialog/DeleteCollectionDialog';
 import { useDeleteCollection } from '@/hooks/useDeleteCollection/useDeleteCollection';
+import { toggleCollectionFavoriteAction } from '@/actions/collections/Collections';
 
 interface CollectionActionsProps {
   collectionId: string;
@@ -24,11 +26,30 @@ export function CollectionActions({
 }: CollectionActionsProps) {
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [optimisticFavorite, setOptimisticFavorite] = useState(isFavorite);
+  const [isPending, startTransition] = useTransition();
 
   const { isDeleting, deleteCollection } = useDeleteCollection(() => {
     setIsDeleteDialogOpen(false);
     router.push('/collections');
   });
+
+  const handleFavoriteToggle = () => {
+    const newValue = !optimisticFavorite;
+    setOptimisticFavorite(newValue);
+    startTransition(async () => {
+      const result = await toggleCollectionFavoriteAction(collectionId, {
+        isFavorite: newValue,
+      });
+      if (result.success) {
+        toast.success(newValue ? 'Added to favorites' : 'Removed from favorites');
+        router.refresh();
+      } else {
+        setOptimisticFavorite(!newValue);
+        toast.error(result.error ?? 'Failed to update favorite');
+      }
+    });
+  };
 
   return (
     <>
@@ -38,14 +59,16 @@ export function CollectionActions({
           size='sm'
           className={cn(
             'cursor-pointer',
-            isFavorite && 'hover:bg-favorite/10',
+            optimisticFavorite && 'hover:bg-favorite/10',
           )}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          aria-label={optimisticFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          onClick={handleFavoriteToggle}
+          disabled={isPending}
         >
           <Star
             className={cn(
               'size-4',
-              isFavorite
+              optimisticFavorite
                 ? 'fill-current text-favorite'
                 : 'fill-none text-muted-foreground',
             )}

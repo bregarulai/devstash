@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth/auth/auth';
 import { getFavoriteItems, getSystemItemTypesWithCounts } from '@/lib/db/items/items';
-import { getFavoriteCollections } from '@/lib/db/collections/collections';
+import { getFavoriteCollections, getRecentCollections } from '@/lib/db/collections/collections';
 import type { SystemItemType, DashboardUser, ItemWithDetails, CollectionWithStats } from '@/types/db';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
 import { ItemDrawerProvider } from '@/components/items/itemDrawer/ItemDrawerProvider';
@@ -17,18 +17,21 @@ export default async function FavoritesPage() {
 
   let favoriteItems: ItemWithDetails[] = [];
   let favoriteCollections: CollectionWithStats[] = [];
+  let recentCollections: CollectionWithStats[] = [];
   let systemItemTypes: SystemItemType[] = [];
   let hasError = false;
 
   try {
-    const [items, collections, types] = await Promise.all([
+    const [items, collections, recent, types] = await Promise.all([
       getFavoriteItems(session.user.id),
       getFavoriteCollections(session.user.id),
+      getRecentCollections(session.user.id),
       getSystemItemTypesWithCounts(session.user.id),
     ]);
 
     favoriteItems = items;
     favoriteCollections = collections;
+    recentCollections = recent;
     systemItemTypes = types;
   } catch (error) {
     console.error('Failed to load favorites:', error);
@@ -47,8 +50,8 @@ export default async function FavoritesPage() {
     <DashboardWrapper
       user={user}
       systemItemTypes={systemItemTypes}
-      favoriteCollections={[]}
-      recentCollections={[]}
+      favoriteCollections={favoriteCollections}
+      recentCollections={recentCollections}
     >
       <ItemDrawerProvider>
         <FavoritesPageContent
