@@ -1,26 +1,16 @@
-# Current Feature: Favorites Page Critique Fixes
-
-**Spec**: `context/fixes/favorites-page-critique.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Remove misleading aggregate count that combines items and collections
-- Add unfavoriting action with confirmation toast for quick list management
-- Add loading skeleton while server component data loads
-- Improve collection icon distinction (replace FolderOpen with Folder)
-- Clarify retry button semantics (low priority)
+<!-- goals go here -->
 
 ## Notes
 
-- Source: `/impeccable critique app/favorites/page.tsx`
-- Score: 30/40 (Good)
-- Implementation order: P2 fixes first (count removal, unfavoriting), then P3 (skeleton, icon, retry)
-- Main file to modify: `components/favorites/favoritesPageContent/FavoritesPageContent.tsx`
-- May need new server actions: `toggleFavoriteItem`, `toggleFavoriteCollection`
+<!-- notes go here -->
 
 ## History
 
@@ -116,3 +106,4 @@ In Progress
 - **Dashboard Critique Fixes (Completed)** - Improved visual hierarchy with dense stats strip and section separation, enforced design system consistency with ring-1 borders, removed pipe dividers from StatsCards, removed keyboard shortcut bar, fixed collectionSession folder naming, and added consistent background to not-signed-in state
 - **Items Type Page Critique Fixes (Completed)** - Removed banned border-l-[3px] side-stripe and hover:shadow-md from ImageCard, replaced hardcoded text-green-500 with theme success token, added unsaved-changes guard in drawer edit mode with navigation blocker, fixed sidebar uppercase tracked labels to sentence case
 - **Favorites Page Design Fixes (Completed)** - Removed font-mono from list rows, removed redundant star icons, added focus-visible rings for keyboard accessibility, added retry button to error state, removed duplicate empty-state text
+- **Favorites Page Critique Fixes (Completed)** - Removed misleading aggregate count, added unfavoriting with toast, added loading skeleton, replaced FolderOpen with Folder icon, replaced hand-built buttons with shadcn Button
