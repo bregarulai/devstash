@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
-import { toggleItemPinAction } from '@/actions';
+import { toggleItemPinAction, toggleItemFavoriteAction } from '@/actions';
 import type { ItemWithDetails } from '@/types/db';
 
 export function useItemActions(
@@ -15,16 +15,12 @@ export function useItemActions(
     if (!item) return;
     setIsFavoriting(true);
     try {
-      const res = await fetch(`/api/items/${item.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isFavorite: !item.isFavorite }),
-      });
-      if (!res.ok) throw new Error('Failed to update favorite');
-      updateItem({ isFavorite: !item.isFavorite });
+      const result = await toggleItemFavoriteAction(item.id);
+      if (!result.success) throw new Error(result.error ?? 'Failed to update favorite');
+      updateItem({ isFavorite: result.data });
       onMutate?.();
       toast.success(
-        item.isFavorite ? 'Removed from favorites' : 'Added to favorites',
+        result.data ? 'Added to favorites' : 'Removed from favorites',
       );
     } catch {
       toast.error('Failed to update favorite');

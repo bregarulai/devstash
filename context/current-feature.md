@@ -1,16 +1,27 @@
-# Current Feature
+# Current Feature: API Routes Cleanup — Phase 2: Migrate Favorite Toggle to Server Action
+
+**Spec**: `context/fixes/api-routes-cleanup-phase-2-migrate-favorite-toggle-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Add `toggleItemFavoriteAction` server action to `actions/items/Items.ts`
+- Export the new action from `actions/index.ts`
+- Update `hooks/useItemActions/useItemActions.ts` to use the server action instead of `fetch`
+- Remove `PATCH` handler from `app/api/items/[id]/route.ts`
+- Delete `app/api/items/[id]/route.test.ts` (only contains PATCH tests)
+- Verify lint, build, and tests pass
+- Confirm favorite toggling works in item drawer and favorites page
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- The current `useItemActions` hook calls `fetch(/api/items/${item.id})` directly for favorite toggling
+- This bypasses the server action pattern used by every other mutation in the codebase
+- `toggleItemPinAction` (sibling operation) already follows the server action pattern
+- Risk: Low, Complexity: Medium
 
 ## History
 
