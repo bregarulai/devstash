@@ -1,31 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import { Mail, Calendar, Lock } from 'lucide-react';
+import { Mail, Calendar } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  CardFooter,
   CardDescription,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
-import { ChangePasswordForm } from '@/components/profile/changePasswordForm/ChangePasswordForm';
-import { DeleteAccountDialog } from '@/components/profile/deleteAccountDialog/DeleteAccountDialog';
 import { formatDaysAgo, getInitials } from '@/lib/utils/utils';
 
 interface ProfilePageClientProps {
@@ -59,7 +46,6 @@ export function ProfilePageClient({
   hasPassword,
 }: ProfilePageClientProps) {
   const initials = getInitials(user.name, user.email);
-  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 
   return (
     <div className='mx-auto max-w-4xl space-y-6'>
@@ -122,29 +108,6 @@ export function ProfilePageClient({
             <span className='text-foreground'>{formatDaysAgo(user.createdAt)}</span>
           </div>
         </CardContent>
-        <CardFooter className='flex flex-col sm:flex-row gap-3 pt-4'>
-          {hasPassword && (
-            <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant='outline'>
-                  <Lock className='size-4 mr-2' />
-                  Change Password
-                </Button>
-              </DialogTrigger>
-              <DialogContent className='sm:max-w-md'>
-                <DialogHeader>
-                  <DialogTitle>Change Password</DialogTitle>
-                  <DialogDescription>
-                    Update your account password. Make sure to use a strong,
-                    unique password.
-                  </DialogDescription>
-                </DialogHeader>
-                <ChangePasswordForm onSuccess={() => setPasswordDialogOpen(false)} />
-              </DialogContent>
-            </Dialog>
-          )}
-          <DeleteAccountDialog />
-        </CardFooter>
       </Card>
 
       {/* Usage Overview */}

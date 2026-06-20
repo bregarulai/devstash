@@ -1,171 +1,150 @@
-# Current Feature
+# Current Feature: Settings Page + User Menu Fix
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- goals -->
+- Create a `/settings` page with account actions (Delete Account, Change Password)
+- Add a "Settings" link to the user icon dropdown in the sidebar
+- Replace the custom dropdown in `SidebarUserMenu` with shadcn `DropdownMenu` to fix outside-click-to-close behavior
+- The `/settings` route must be protected (redirect to `/sign-in` if unauthenticated)
+- Move Delete Account and Change Password from the profile page to the settings page
+- Profile page retains: Account Information, Usage Overview
 
 ## Notes
 
-<!-- notes -->
+- The user menu dropdown currently uses a custom `useState` toggle with no outside-click handler. Replacing it with shadcn `DropdownMenu` solves the close-on-outside-click issue natively.
+- The user confirmed `DropdownMenu` (not `Dialog`) for the dropdown — correct component choice.
+- Route protection follows the existing pattern: `auth()` call in server component + `redirect('/sign-in')` if no session (same as `app/profile/page.tsx`).
+- No `middleware.ts` exists — per-page auth checks are the established pattern.
+- `DeleteAccountDialog` and `ChangePasswordForm` are self-contained client components that can be re-used as-is on the settings page.
+- The profile page currently passes `hasPassword` to `ProfilePageClient` to conditionally show Change Password. The settings page will also need this.
+
+## Implementation Plan
+
+### Step 1: Replace custom dropdown in SidebarUserMenu with shadcn DropdownMenu
+
+**File:** `components/dashboard/sidebar/SidebarUserMenu.tsx`
+
+- Remove the custom `useState` toggle and manual absolute-positioned dropdown div
+- Import and use `DropdownMenu`, `DropdownMenuTrigger`, `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuSeparator` from `@/components/ui/dropdown-menu`
+- Keep the Avatar as the `DropdownMenuTrigger` (via `asChild`)
+- Add three items: "View Profile" (`/profile`), "Settings" (`/settings`), separator, "Sign out"
+- The DropdownMenu handles outside clicks, Escape key, and focus management natively
+- Fix the missing `'use client'` directive (currently missing, uses `useState`)
+- Keep the same visual appearance (avatar, name, email, chevron)
+
+### Step 2: Create the settings page
+
+**File:** `app/settings/page.tsx` (Server Component)
+
+- Call `auth()`, redirect to `/sign-in` if no session (same pattern as `app/profile/page.tsx`)
+- Load user data via `loadProfileDataAsync(session.user.id)` to get `hasPassword`
+- Render `DashboardWrapper` with sidebar data (same pattern as profile page)
+- Render `SettingsPageClient` with user info and `hasPassword`
+
+### Step 3: Create SettingsPageClient component
+
+**File:** `components/settings/settingsPageClient/SettingsPageClient.tsx` (Client Component)
+
+- Page title: "Settings"
+- Section: "Account Actions" card
+  - Re-use existing `DeleteAccountDialog` component (imported as-is)
+  - Re-use existing `ChangePasswordForm` component inside a Dialog (imported as-is, same pattern as profile page)
+  - Conditionally show Change Password only when `hasPassword` is true
+
+### Step 4: Remove account actions from profile page
+
+**File:** `components/profile/profilePageClient/ProfilePageClient.tsx`
+
+- Remove the `DeleteAccountDialog` import and its `<CardFooter>` section
+- Remove the `ChangePasswordForm` import, the `Dialog` import, the `passwordDialogOpen` state, and the Change Password button/dialog
+- Keep: Account Information Card (avatar, name, email, member since, PRO badge, account type badge), Usage Overview Card, Item Type Breakdown
+
+### Step 5: Verify build
+
+- Run `npm run build` to verify no type errors or build failures
+- Run `npm run lint` to verify lint passes
 
 ## History
 
 - **Initial setup** - Next.js 16, Tailwind CSS V4, Typescript configured (Completed)
-
 - **Phase 1 Completed** - Dashboard UI Phase 1 completed with build verification
-
 - **Phase 2 Completed** - Implemented collapsible sidebar with mobile drawer, items/types section with type icons and links, favorite collections section, recent collections section, and user avatar at the bottom
-
 - **Phase 3 Completed** - Implemented stats cards (items, collections, favorites), pinned items section, recent items section, and recent collections section. Merged to main and deleted feature branch.
-
 - **Prisma + Neon PostgresSQL Setup Completed** - Implemented Prisma + Neon PostgreSQL database layer
-
 - **Seed Data (Completed)** - Create seed script with user, system item types, and sample collections/items
-
 - **Dashboard Collections** - Replaced dummy collection data with actual database data from Neon PostgreSQL, created `lib/db/collections.ts`, derived collection card border color from most-used content type, showed type icons, and updated collection stats display (Completed)
-
 - **Dashboard Items** - Implemented pinned and recent items sections with database data, created `lib/db/items.ts` with data fetching functions, updated StatsCards to use real data, updated collection stats display (Completed)
-
 - **Stats & Sidebar (Completed)** - Display stats from database data instead of mock data, show system item types in sidebar with icons linking to /items/[typename], add "View all collections" link under collections list, update collection card border color and type icons, update `lib/db/items.ts` as needed for stats functionality
-
 - **Add Pro Badge to Sidebar (Completed)** - Added PRO badge to file and image item types in sidebar using shadcn UI Badge component with clean, subtle styling
-
 - **Quick Wins (Completed)** - Extract duplicate transformation helpers, remove dead code, fix filename typo, add loading states, add skeleton component, define named constants, add isPro field, create hooks/ and types/ directories
-
 - **Auth Setup (Completed)** - Implemented NextAuth v5 with GitHub OAuth, split config pattern, proxy protection, and API routes
-
 - **Auth Credentials (Completed)** - Added Credentials provider for email/password authentication, created `/api/auth/register` route, updated `auth.config.ts` with placeholder, updated `auth.ts` with bcrypt validation, supports GitHub OAuth + email/password side by side
-
 - **Auth UI (Completed)** - Implemented custom sign-in page with email/password and GitHub OAuth, register page with form validation, sonner toast notifications, and success redirect
-
 - **Email Verification on Register (Completed)** - Installed Resend SDK, created verification token system with SHA-256 hashing and 24h expiry, added verification email on registration via Resend, created `/api/auth/verify` route for token validation, built `/verify-email` page with success/error/expired states, blocked sign-in for unverified users, added resend verification functionality, and handled all edge cases (expired tokens, already verified, invalid tokens)
-
 - **Toggle Email Verification (Completed)** - Added ENABLE_EMAIL_VERIFICATION env variable to enable/disable email verification, skip token creation and email sending when disabled, allow sign-in without verification when disabled
-
 - **Password Reset (Completed)** - Added forgot password link, created `/forgot-password` and `/reset-password` pages, implemented server actions for token generation and password update
-
 - **Email Template Improvements (Completed)** - Added dark-themed HTML email templates with branded styling and text fallbacks for verification and password reset emails
-
 - **Dashboard Hardening Phase 1 (Completed)** - Implemented error handling and reliability hardening including try/catch for dashboard data fetch, session.user direct usage, null-safe defaults, DashboardDataRetry component, and alert UI component
-
 - **Dashboard Hardening Phase 2 (Completed)** - Implemented shared DashboardSkeleton component with skeleton loading states for StatsCards, CollectionsSession, PinnedItems, and RecentItems sections using static bg-muted placeholders without animation or shimmer
-
 - **Dashboard Hardening Phase 3 (Completed)** - Implemented reusable EmptyState component, GetStartedHero for new users, empty states for CollectionsSession, PinnedItems, and RecentItems sections with actionable CTAs
-
 - **Dashboard Hardening Phase 4 (Completed)** - Fixed prisma.user.findFirst to findUnique correctness issue, standardized user prop across sibling components, added command palette with Ctrl+K/Cmd+K activation for quick navigation and item creation, added keyboard shortcut hints to key dashboard actions, and ensured all interactive elements have keyboard alternatives
-
 - **Sign-In Form Hardening Phase 1 (Completed)** - Extracted sign-in form into client component with useTransition, added password visibility toggle with inline SVG, added autocomplete attributes, and prevented double-submission with disabled state on submit button
-
 - **Sign-In Form Hardening Phase 2 (Completed)** - Added Zod validation to sign-in form with react-hook-form, zodResolver, and shadcn Field components for typed form state and inline error display
-
 - **Sign-In Form Hardening Phase 3 (Completed)** - Updated CardDescription copy to neutral text "Sign in to your DevStash account", verified SignInToast mounts unconditionally without firing on every page load, and confirmed auth() call and dynamic = 'force-dynamic' settings are appropriate
-
 - **Register Page Hardening (Completed)** - Converted register page to react-hook-form + Zod validation with onChange mode, added password visibility toggle with Eye/EyeOff icons, live password confirmation feedback, password requirements checklist, autocomplete attributes, loading state with disabled button, aria-invalid on fields, inline FieldError messages, fixed button height and sign-in link hover color, moved RegisterToast to page root level, removed force-dynamic, and preserved form values on validation error
-
 - **Profile Page (Completed)** - Implemented /profile route with auth protection, user info display (email, name, avatar, member since), usage stats cards (items, collections, favorites), item type breakdown, change password form for email/password users, and delete account with confirmation dialog
-
 - **Profile Redesign (Completed)** - Wrapped profile page with DashboardWrapper, moved avatar and name into Account Information Card, added Mail icon, replaced Usage Statistics with Usage Overview, added side-by-side Total Items and Collections cards, added Item by Type section with type cards, and added password visibility toggle
-
 - **Profile Page Phase 1 Layout Restructuring (Completed)** - Replaced nested cards in Usage Overview with flat 3-column grid using tonal backgrounds and ring borders, moved Favorites into grid, fixed email to single-column layout, updated PRO badge to use sidebar-primary token, and tightened vertical spacing
-
 - **Profile Page Phase 2 Error Handling (Completed)** - Implemented distinct error states for "account not found" vs "temporary failure" on /profile, replaced vague error messages with plain-language recovery paths, extracted fetch into named async function, added retry mechanism with client-side fetch helper
-
 - **Profile Page Phase 3 Loading States (Completed)** - Added ProfilePageLoading client component with skeleton placeholders for avatar, stats grid, and item type breakdown; updated ProfileRetryForm to conditionally hide for user-not-found errors; integrated loading state into profile page
-
 - **Zod Schema Inference Phase 1 (Completed)** - Created types/db.ts with Zod schemas for all Prisma models (User, Item, Collection, ItemType, Tag, VerificationToken, Account, Session, ItemCollection), insert/select variants, computed/DTO schemas, and z.infer type aliases; build verified
-
 - **Zod Schema Inference Phase 2 (Completed)** - Merged registerSchema, signInSchema, and changePasswordSchema into types/db.ts, deleted types/register.ts, types/signIn.ts, and types/auth.ts, updated all imports to use @/types/db
-
 - **Zod Schema Inference Phase 3 (Completed)** - Replaced manual interfaces in lib/db/user.ts, lib/db/items.ts, and lib/db/collections.ts with z.infer types from @/types/db, added computed/DTO schemas and type aliases to types/db.ts
-
 - **Zod Schema Inference Phase 4 (Completed)** - Added deleteAccountSchema and verifyTokenSchema to types/db.ts, replaced manual validation in change-password, delete-account, and verify API routes with Zod .safeParse()
-
 - **Zod Schema Inference Phase 5 (Completed)** - Migrated all server actions, server components, and component props to z.infer types from @/types/db, eliminated all manual interface definitions and @/lib/db type imports, verified build passes with no type errors
-
 - **Auth Hardening Phase 1 (Completed)** - Implemented 5 security fixes: increased bcrypt cost factor to 12, removed user existence disclosure in forgot password and resend verification, extended middleware to /profile routes, and added graceful verification token deletion after successful use
-
 - **Auth Hardening Phase 2 (Completed)** - Removed email verification check from pre-authentication authorize function and handleSignIn server action, unified error message on sign-in page, created /verify-required page for post-sign-in verification redirect
-
 - **Sign-In Page Resend Verification Success Param (Completed)** - Confirmed ?success=resent param support already implemented in SignInToast, verified build passes, no changes needed
-
 - **Rate Limiting for Auth (Completed)** - Implemented rate limiting on all auth endpoints with Upstash Redis, created reusable lib/rate-limit.ts with sliding window algorithm, integrated limits into sign-in, register, forgot-password, reset-password, resend-verification, email verify, and GitHub OAuth flows, fails open if Redis unavailable
-
 - **Account Deletion Security Fixes (Completed)** - Added CSRF token validation to delete-account API endpoint, added password re-authentication via bcrypt.compare before deletion, implemented 3 requests per 15 minutes rate limiting per IP, created useDeleteAccount hook with CSRF token fetching, added password input to DeleteAccountDialog, extracted deleteAccountByPassword helper, added deleteAccountSchema to types/db.ts, added formatRetryAfter utility to rate-limit.ts
-
 - **Items List View (Completed)** - Implemented dynamic route /items/[type] for type-filtered items listing with ItemCard component and database filtering
-
 - **Items Listing Three Columns (Completed)** - Changed grid from `md:grid-cols-2` to `lg:grid-cols-3` for 3-column layout on larger screens, 1 column on mobile, 2 on md screens
-
 - **Item Drawer (Completed)** - Implemented right-side slide-in drawer for item detail view using shadcn Sheet component, added action bar with Favorite, Pin, Copy, Edit, and Delete actions, supports both dashboard and items list pages, created client wrapper components to manage drawer state, fetches full item detail on click via API route, shows skeleton/loading state while fetching
-
 - **Testing Strategy Phase 1 (Completed)** - Added test files for lib/rate-limit.ts, lib/verification-token.ts, lib/auth.ts, and types/db.ts with comprehensive test coverage for security-critical pure functions and validation schemas
-
 - **Testing Strategy Phase 2 (Completed)** - Added test files for actions/auth.ts, actions/sign-in.ts, lib/account-deletion.ts, and lib/auth.config.ts with comprehensive test coverage for core auth flows
-
 - **Testing Strategy Phase 3 (Completed)** - Added test files for lib/db/collections.ts, lib/db/items.ts, lib/utils.ts, lib/constants.ts, and server actions (forgot-password, reset-password, resend-verification, sign-in-github, profile) with comprehensive test coverage for pure functions and utilities
-
 - **Item Drawer Edit Mode (Completed)** - Implemented inline editing in item drawer with toggle between view/edit modes, DrawerEditContent component with controlled inputs, updateItem server action with Zod validation, tag disconnect/reconnect-or-create handling, Save/Cancel buttons in edit mode, toast notifications, and router.refresh() after save
-
 - **Item Edit Persistence Fix (Completed)** - Added revalidatePath calls to updateItemAction and PATCH endpoint to fix stale cache issue where edits didn't persist after page refresh, added unit tests for revalidatePath behavior
-
 - **Item Delete (Completed)** - Implemented item delete with AlertDialog confirmation, server action with auth/ownership validation, and toast notifications
-
 - **Item Create (Completed)** - Implemented item create dialog with type selector, dynamic fields based on type, server action with Zod validation, and database query function
-
 - **Code Editor (Completed)** - Implemented CodeEditor component using Monaco Editor with dark theme, macOS-style window dots, copy button, language display, and support for both readonly and edit modes
-
 - **Markdown Editor (Completed)** - Implemented MarkdownEditor component with tabbed Write/Preview interface, replaced Textarea for notes and prompts, added react-markdown with remark-gfm, integrated dark theme styling, copy button, and support for both readonly and edit modes
-
 - **File Upload with Cloudflare R2 (Completed)** - Implemented file upload with Cloudflare R2 storage including upload API route, FileUpload component with drag-and-drop, file validation, download proxy API, download button in ItemDrawer, upload progress indicator, and image/file previews
-
 - **Image Gallery View (Completed)** - Implemented ImageCard component with 16:9 aspect ratio thumbnails, hover zoom effect, isImageItem utility, and integrated into ItemsListContent for image items
-
 - **File List View (Completed)** - Implemented single-column list layout for files with FileListRow component showing file icon, name, size, upload date, and download button with row hover highlight
-
 - **Account Linking Fix (Completed)** - Disabled `allowDangerousEmailAccountLinking` to prevent account takeover via email collision, set to false in `lib/auth/auth/authConfig.ts`
-
 - **Debug Logging Fix (Completed)** - Removed debug `console.log` statement from sign-in form that leaked auth response data to browser console
-
 - **Header Injection Fix (Completed)** - Sanitized fileName query parameter in download route to prevent HTTP response splitting, implemented RFC 5987 encoding for non-ASCII filenames, and added comprehensive tests
-
 - **Rate Limiting Fix — Server Actions Bypassed (Completed)** - Fixed rate limiting bypass in Server Actions by adding x-client-ip header forwarding in proxy.ts, extracting real client IP from headers in all 6 auth server actions, and including IP in rate limit keys to prevent cross-user collision
-
 - **Codebase Audit — Phase 1: Critical Fixes (Completed)** - Fixed CSRF token validation to compare against server-side session, removed password hash from ProfileData type with hasPassword boolean, added userId filter to getSystemItemTypesWithCounts for per-user counts, and added missing 'use client' directive to ContentTypeField
-
 - **Codebase Audit — Phase 2: High Severity Fixes (Completed)** - Fixed handleSignIn error handling, added rate limiting to password change endpoint, changed rate limiter to fail closed on Redis outage, fixed password reset to use generic error message, removed duplicate account deletion logic, and consolidated IMAGE_EXTENSIONS constants
-
 - **Codebase Audit — Phase 3: Medium Severity Fixes (Completed)** - Fixed inconsistent rate limit IP extraction, removed token from error redirect URL, added SVG sanitization, added database ownership check to download route, extracted duplicate collection transform logic, removed redundant identity transform, parallelized DB queries in profile load, and wired New Collection button
-
 - **Codebase Audit — Phase 4: Low Severity Fixes (Completed)** - Extracted hardcoded email sender address and magic number token expiry to named constants, split DashboardWrapper into server component wrapper + client component for sidebar toggle, fixed handleResetPassword user not found error to use generic error message
-
 - **Audit June 2026 — Phase 1: Security (Completed)** - Added rate limiting and CSRF validation to change-password API route, wrapped bcrypt.hash/prisma.user.update in try-catch, replaced email enumeration message on registration with generic error
-
 - **Audit June 2026 — Phase 2: Bugs (Completed)** - Fixed "ago ago" display bug, isPro query, CommandPalette ITEM_TYPES, recent collections DEFAULT_SAMPLE_COUNT, and ChangePasswordForm startTransition misuse
-
 - **Audit June 2026 — Phase 3: Cleanup (Completed)** - Added globalThis PrismaClient singleton, extracted shared ITEM_INCLUDE, removed manual item mapping, consolidated duplicate queries, unified item type breakdown functions, consolidated file size constants, extracted email template and download handler, replaced local constants with imports, replaced DB query with static import in generateStaticParams
-
 - **Code Decomposition — Phase 1: Component Decomposition (Completed)** - Extracted SidebarItemTypeLink, SidebarCollectionLink, and SidebarUserMenu components from Sidebar.tsx, deduplicated PRO badge logic via centralized PRO_TYPES set, reduced Sidebar.tsx by 129 lines
-
 - **Code Decomposition — Phase 2: Form & Dialog Decomposition (Completed)** - Extracted CreateFormField wrapper component, extracted getFileConfig utility, and extracted ItemCreateFormBody sub-component to reduce boilerplate in ItemCreateDialog.tsx
-
 - **Code Decomposition — Phase 3: Data Layer (Completed)** - Extracted generic findItems helper consolidating 6 query functions into thin wrappers, removed ~85 lines of duplicated query logic while maintaining backward compatibility
-
 - **Code Decomposition — Phase 4: API & Actions (Completed)** - Extracted requireAuth() helper in item API route and server actions, imported shared ITEM_INCLUDE and updateItemFields(), defined generic ActionResult<T> type, fixed pre-existing authConfig test failures, removed ~25 lines of duplicated code
-
 - **Code Decomposition — Phase 5: Page Decomposition (Completed)** - Extracted EMPTY_ITEM_STATS constant, DashboardUser type, and loadDashboardData helper to separate data-fetching from rendering in dashboard page
-
 - **Collection Create (Completed)** - Added createCollection DB function, collectionCreateSchema, createCollectionAction server action, CollectionCreateDialog component, wired MobileSideBar button, and comprehensive tests
-
 - **Add Item to Collections (Completed)** - Created CollectionPicker component with popover and checkbox multi-select, added collectionIds to createItem/updateItem schemas, wired into create and edit forms, updated server actions and DB functions for collection linking via ItemCollection junction table, and added comprehensive tests
-
 - **Collections Pages (Completed)** - Created /collections page with all user collections, /collections/[id] detail page with items grouped by type, added getCollectionsForPickerAction, getUserCollectionList and getCollectionById DB functions, color-coded type headers, comprehensive tests
-
 - **Collection Management Actions (Completed)** - Added Edit, Delete, and Favorite action buttons to collection detail page header, 3-dots DropdownMenu on collection cards with Edit/Delete/Favorite options, card click navigates to collection page, created updateCollection/deleteCollection DB functions and server actions, added collectionUpdateSchema, installed shadcn dropdown-menu component, added useDeleteCollection hook
-
 - **Global Search / Command Palette (Completed)** - Implemented Cmd+K/Ctrl+K command palette with fuzzy search across items and collections, grouped results with type icons and collection counts, keyboard navigation, item drawer and collection page navigation on select, and TopBar search input integration
-
 - **Pagination (Completed)** - Added pagination to /items/[type], /collections, and /collections/[id] pages using shadcn Pagination component with page numbers and prev/next links, server-side pagination with offset/limit queries, and constants for items per page
