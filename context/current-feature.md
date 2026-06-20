@@ -1,24 +1,16 @@
-# Current Feature: Favorite Button Toggle
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add favorite button to ItemDrawer action bar with toggle (star filled/outline)
-- Add favorite button to collection detail page header with toggle
-- Add favorite button to collection cards with toggle
-- All favorite buttons call the same toggle logic (add/remove favorite)
-- Optimistic UI update on toggle (instant visual feedback)
-- Toast notification on successful toggle
-- Refresh relevant data after toggle (drawer, favorites page, dashboard)
+<!-- Goals will be added when a new feature is loaded -->
 
 ## Notes
 
-- Reuse existing favorite/unfavorite server actions
-- Star icon should be filled when favorited, outline when not
-- Consistent styling across all locations
+<!-- Notes will be added when a new feature is loaded -->
 
 ## History
 
@@ -103,3 +95,4 @@ In Progress
 - **Settings Page + User Menu Fix (Completed)** - Created /settings page with account actions, added Settings link to sidebar user menu, replaced custom dropdown with shadcn DropdownMenu, moved Delete Account and Change Password from profile to settings page
 - **Editor Preferences Settings (Completed)** - Added editor preferences section to settings page with auto-save to database, implemented font size, tab size, word wrap, minimap, and theme dropdowns, created EditorPreferencesContext, applied settings to Monaco editor, created database migration
 - **Favorites Page (Completed)** - Implemented favorites page with compact list view, star icon in TopBar, auth-protected /favorites route, separate items/collections sections with counts, type icons, and sort by most recently favorited
+- **Favorite Button Toggle (Completed)** - Added favorite toggle to ItemDrawer action bar, collection detail page header, and collection cards dropdown menu with optimistic UI updates, toast notifications, and consistent star icon styling
