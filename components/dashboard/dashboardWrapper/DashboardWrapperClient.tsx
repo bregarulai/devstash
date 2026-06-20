@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { SystemItemType, CollectionWithStats } from '@/types/db';
 import { MobileSideBar } from '../mobileSideBar/MobileSideBar';
 import { Sidebar } from '../sidebar/Sidebar';
+import { EditorPreferencesProvider } from '@/contexts/editorPreferencesContext/EditorPreferencesContext';
 
 export function DashboardWrapperClient({
   children,
@@ -28,7 +29,8 @@ export function DashboardWrapperClient({
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
   return (
-    <div className='flex h-screen w-screen overflow-hidden'>
+    <EditorPreferencesProvider>
+      <div className='flex h-screen w-screen overflow-hidden'>
         {/* Sidebar — always visible, compact on mobile */}
         <div className='hidden lg:flex lg:shrink-0'>
           <Sidebar
@@ -62,5 +64,6 @@ export function DashboardWrapperClient({
           <main className='flex-1 overflow-y-auto p-6 lg:p-8'>{children}</main>
         </div>
       </div>
+    </EditorPreferencesProvider>
   );
 }

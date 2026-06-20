@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useCallback, useState, useMemo } from 'react';
+import { useCallback, useState, useMemo, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import { Copy, Check } from 'lucide-react';
-import type { OnMount } from '@monaco-editor/react';
+import { EditorPreferencesContext } from '@/contexts/editorPreferencesContext/EditorPreferencesContext';
+import { DEFAULT_EDITOR_PREFERENCES } from '@/types/db';
 
 const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.default), {
   ssr: false,
@@ -30,44 +31,16 @@ export function CodeEditor({
   className,
 }: CodeEditorProps) {
   const [copied, setCopied] = useState(false);
-  const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
+  const context = useContext(EditorPreferencesContext);
+  const preferences = context?.preferences ?? DEFAULT_EDITOR_PREFERENCES;
 
   const editorHeight = useMemo(() => {
     const lineCount = value.split('\n').length;
     return Math.min(Math.max(lineCount * 20 + 24, 120), 400);
   }, [value]);
 
-  const handleEditorMount: OnMount = useCallback(
-    (editor) => {
-      editorRef.current = editor;
-      editor.updateOptions({
-        readOnly,
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-        wordWrap: 'on',
-        padding: { top: 12, bottom: 12 },
-        fontFamily: 'var(--font-mono), ui-monospace, monospace',
-        fontSize: 13,
-        lineHeight: 20,
-        renderLineHighlight: 'none',
-        overviewRulerLanes: 0,
-        hideCursorInOverviewRuler: true,
-        overviewRulerBorder: false,
-        scrollbar: {
-          vertical: 'auto',
-          horizontal: 'auto',
-          verticalScrollbarSize: 8,
-          horizontalScrollbarSize: 8,
-          useShadows: false,
-        },
-      });
-    },
-    [readOnly],
-  );
-
   const handleCopy = useCallback(async () => {
-    const text = editorRef.current?.getValue() ?? value;
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(value);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [value]);
@@ -104,19 +77,19 @@ export function CodeEditor({
         <Editor
           language={language}
           value={value}
-          theme='vs-dark'
+          theme={preferences.theme}
           height={editorHeight}
           onChange={(v) => onChange?.(v ?? '')}
-          onMount={handleEditorMount}
           options={{
             readOnly,
-            minimap: { enabled: false },
+            minimap: { enabled: preferences.minimap },
             scrollBeyondLastLine: false,
-            wordWrap: 'on',
+            wordWrap: preferences.wordWrap ? 'on' : 'off',
             padding: { top: 12, bottom: 12 },
             fontFamily: 'var(--font-mono), ui-monospace, monospace',
-            fontSize: 13,
-            lineHeight: 20,
+            fontSize: preferences.fontSize,
+            tabSize: preferences.tabSize,
+            lineHeight: preferences.fontSize + 7,
             renderLineHighlight: 'none',
             overviewRulerLanes: 0,
             hideCursorInOverviewRuler: true,

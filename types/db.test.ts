@@ -9,6 +9,8 @@ import {
   verifyTokenSchema,
   itemInsertSchema,
   passwordRequirements,
+  editorPreferencesSchema,
+  DEFAULT_EDITOR_PREFERENCES,
 } from './db'
 
 describe('registerSchema', () => {
@@ -292,5 +294,84 @@ describe('passwordRequirements', () => {
     const password = 'weak'
     const results = passwordRequirements.map((req) => req.test(password))
     expect(results.some((r) => r === false)).toBe(true)
+  })
+})
+
+describe('editorPreferencesSchema', () => {
+  it('passes with valid data', () => {
+    const result = editorPreferencesSchema.safeParse({
+      fontSize: 14,
+      tabSize: 4,
+      wordWrap: true,
+      minimap: false,
+      theme: 'vs-dark',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('applies defaults for empty input', () => {
+    const result = editorPreferencesSchema.safeParse({})
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data).toEqual(DEFAULT_EDITOR_PREFERENCES)
+    }
+  })
+
+  it('fails with fontSize below minimum', () => {
+    const result = editorPreferencesSchema.safeParse({ fontSize: 9 })
+    expect(result.success).toBe(false)
+  })
+
+  it('fails with fontSize above maximum', () => {
+    const result = editorPreferencesSchema.safeParse({ fontSize: 25 })
+    expect(result.success).toBe(false)
+  })
+
+  it('passes with fontSize at boundaries', () => {
+    expect(editorPreferencesSchema.safeParse({ fontSize: 10 }).success).toBe(true)
+    expect(editorPreferencesSchema.safeParse({ fontSize: 24 }).success).toBe(true)
+  })
+
+  it('fails with non-integer fontSize', () => {
+    const result = editorPreferencesSchema.safeParse({ fontSize: 14.5 })
+    expect(result.success).toBe(false)
+  })
+
+  it('fails with tabSize below minimum', () => {
+    const result = editorPreferencesSchema.safeParse({ tabSize: 1 })
+    expect(result.success).toBe(false)
+  })
+
+  it('fails with tabSize above maximum', () => {
+    const result = editorPreferencesSchema.safeParse({ tabSize: 9 })
+    expect(result.success).toBe(false)
+  })
+
+  it('passes with tabSize at boundaries', () => {
+    expect(editorPreferencesSchema.safeParse({ tabSize: 2 }).success).toBe(true)
+    expect(editorPreferencesSchema.safeParse({ tabSize: 8 }).success).toBe(true)
+  })
+
+  it('fails with invalid theme', () => {
+    const result = editorPreferencesSchema.safeParse({ theme: 'invalid-theme' })
+    expect(result.success).toBe(false)
+  })
+
+  it('passes with all valid themes', () => {
+    expect(editorPreferencesSchema.safeParse({ theme: 'vs-dark' }).success).toBe(true)
+    expect(editorPreferencesSchema.safeParse({ theme: 'monokai' }).success).toBe(true)
+    expect(editorPreferencesSchema.safeParse({ theme: 'github-dark' }).success).toBe(true)
+  })
+
+  it('accepts boolean values for wordWrap and minimap', () => {
+    const result = editorPreferencesSchema.safeParse({
+      wordWrap: false,
+      minimap: true,
+    })
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data.wordWrap).toBe(false)
+      expect(result.data.minimap).toBe(true)
+    }
   })
 })

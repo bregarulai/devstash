@@ -50,6 +50,26 @@ export const changePasswordSchema = z
 
 export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
 
+// ── Editor Preferences ────────────────────────────────────────────────────────
+
+export const editorPreferencesSchema = z.object({
+  fontSize: z.number().int().min(10).max(24).default(13),
+  tabSize: z.number().int().min(2).max(8).default(2),
+  wordWrap: z.boolean().default(true),
+  minimap: z.boolean().default(false),
+  theme: z.enum(['vs-dark', 'monokai', 'github-dark']).default('vs-dark'),
+});
+
+export type EditorPreferences = z.infer<typeof editorPreferencesSchema>;
+
+export const DEFAULT_EDITOR_PREFERENCES: EditorPreferences = {
+  fontSize: 13,
+  tabSize: 2,
+  wordWrap: true,
+  minimap: false,
+  theme: 'vs-dark',
+};
+
 // ── User ──────────────────────────────────────────────────────────────────────
 
 export const userInsertSchema = z.object({
@@ -60,6 +80,7 @@ export const userInsertSchema = z.object({
   isPro: z.boolean().optional(),
   stripeCustomerId: z.string().or(z.null()).optional(),
   stripeSubscriptionId: z.string().or(z.null()).optional(),
+  editorPreferences: editorPreferencesSchema.or(z.null()).optional(),
 });
 
 export const userSelectSchema = userInsertSchema.extend({
