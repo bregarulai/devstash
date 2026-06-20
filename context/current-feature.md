@@ -1,27 +1,18 @@
-# Current Feature: Editor Preferences Settings
+# Current Feature
 
 **Spec**: `context/features/editor-settings-spec.md`
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add editor preferences section to settings page with auto-save to database
-- Implement font size dropdown, tab size dropdown, word wrap toggle, minimap toggle, and theme dropdown
-- Store preferences in JSON column `editorPreferences` on User model
-- Create and run database migration (never db push)
-- Create server action to update preferences
-- Apply settings to Monaco editor component
-- Auto-save on change (no save button) with success toast on save
-- Create EditorPreferencesContext for client components
+<!-- What does success look like? -->
 
 ## Notes
 
-- Defaults: word wrap on, minimap off, theme vs-dark
-- Themes: vs-dark, monokai, github-dark
-- Auto-save on every change without a save button
+<!-- Any constraints or context -->
 
 ## History
 
@@ -104,3 +95,4 @@ In Progress
 - **Global Search / Command Palette (Completed)** - Implemented Cmd+K/Ctrl+K command palette with fuzzy search across items and collections, grouped results with type icons and collection counts, keyboard navigation, item drawer and collection page navigation on select, and TopBar search input integration
 - **Pagination (Completed)** - Added pagination to /items/[type], /collections, and /collections/[id] pages using shadcn Pagination component with page numbers and prev/next links, server-side pagination with offset/limit queries, and constants for items per page
 - **Settings Page + User Menu Fix (Completed)** - Created /settings page with account actions, added Settings link to sidebar user menu, replaced custom dropdown with shadcn DropdownMenu, moved Delete Account and Change Password from profile to settings page
+- **Editor Preferences Settings (Completed)** - Added editor preferences section to settings page with auto-save to database, implemented font size, tab size, word wrap, minimap, and theme dropdowns, created EditorPreferencesContext, applied settings to Monaco editor, created database migration
