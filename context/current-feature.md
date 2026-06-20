@@ -1,16 +1,22 @@
-# Current Feature
+# Current Feature: API Routes Cleanup — Phase 3: Update Coding Standards
+
+**Spec**: `context/fixes/api-routes-cleanup-phase-3-update-coding-standards-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+- Update `context/coding-standards.md` lines 43-50 with clearer API route vs Server Action decision criteria
+- Add streaming responses and explicit decision rules to API route guidance
+- Add "never duplicate the same mutation" rule
 
 ## Notes
 
-<!-- Any constraints, context, or details from the spec? -->
+- Documentation-only change, no code to modify
+- Complexity: Low, Risk: None
+- Based on patterns established by Phases 1 and 2 of API Routes Cleanup
 
 ## History
 
