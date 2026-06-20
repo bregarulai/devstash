@@ -43,7 +43,7 @@ export function Sidebar({
     <div className='relative flex h-screen flex-col bg-background'>
       {/* Header */}
       <div className='flex h-16 items-center px-4'>
-        <Link href='/' className='text-lg font-bold'>
+        <Link href='/dashboard' className='text-lg font-bold'>
           {isExpanded && 'DevStash'}
         </Link>
       </div>
