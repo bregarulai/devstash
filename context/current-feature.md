@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Favorites Page Critique Fixes
+
+**Spec**: `context/fixes/favorites-page-critique.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Remove misleading aggregate count that combines items and collections
+- Add unfavoriting action with confirmation toast for quick list management
+- Add loading skeleton while server component data loads
+- Improve collection icon distinction (replace FolderOpen with Folder)
+- Clarify retry button semantics (low priority)
 
 ## Notes
 
-<!-- Any constraints, context, or details -->
+- Source: `/impeccable critique app/favorites/page.tsx`
+- Score: 30/40 (Good)
+- Implementation order: P2 fixes first (count removal, unfavoriting), then P3 (skeleton, icon, retry)
+- Main file to modify: `components/favorites/favoritesPageContent/FavoritesPageContent.tsx`
+- May need new server actions: `toggleFavoriteItem`, `toggleFavoriteCollection`
 
 ## History
 
