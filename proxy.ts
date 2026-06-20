@@ -13,8 +13,12 @@ export async function proxy(request: NextRequest) {
 
   const session = await auth()
   const isAuthPath = request.nextUrl.pathname.startsWith("/api/auth")
+  const isPublicPath = request.nextUrl.pathname === "/" || 
+    request.nextUrl.pathname.startsWith("/sign-in") ||
+    request.nextUrl.pathname.startsWith("/register") ||
+    request.nextUrl.pathname.startsWith("/forgot-password")
   
-  if (!session && !isAuthPath) {
+  if (!session && !isAuthPath && !isPublicPath) {
     const signInUrl = new URL("/sign-in", request.url)
     signInUrl.searchParams.set("callbackUrl", request.nextUrl.pathname)
     return NextResponse.redirect(signInUrl)
