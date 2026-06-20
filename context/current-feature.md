@@ -1,26 +1,16 @@
-# Current Feature: Dashboard Critique Fixes
-
-**Spec**: `context/fixes/dashboard-critique-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Improve visual hierarchy with dense stats strip, section separation, PinnedItems grid, and denser RecentItems list
-- Enforce design system consistency: replace `border border-border` with `ring-1 ring-foreground/10`, remove inline `borderColor`, add accessible focus indicators
-- Remove pipe dividers from StatsCards for cleaner appearance
-- Remove keyboard shortcut bar from dashboard (Ctrl+K discoverable elsewhere)
-- Fix folder naming mismatch: `collectionSession/` → `collectionsSession/`
-- Add consistent background class to not-signed-in state
+<!-- What does success look like? -->
 
 ## Notes
 
-- 6 fixes total, ordered by impact: Fix 1 (Visual Hierarchy) → Fix 2 (Design System) → Fix 3 (Dividers) → Fix 4 (Keyboard Bar) → Fix 5 (Folder Rename) → Fix 6 (State Consistency)
-- Fix 1 is P1 with the biggest visual impact
-- Fix 5 is a folder rename requiring import updates
-- Verification: `npm run lint` and `npm run build` after all fixes
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -113,3 +103,4 @@ In Progress
 - **API Routes Cleanup Phase 3 (Completed)** - Updated coding standards with explicit API route vs Server Action decision rules, added streaming responses, and added "never duplicate" rule
 - **API Routes Cleanup Phase 4 (Completed)** - Migrated item fetch from GET /api/items/[id] to getItemAction server action, added getItemById DB function, replaced fetch() in useItemDrawer hook, deleted unused API route
 - **Dashboard Design Critique Fixes (Completed)** - Removed border-left colored stripes from PinnedItems, RecentItems, and CollectionCard; restyled StatsCards to inline stat row; differentiated PinnedItems as horizontal scrollable strip; replaced numbered steps in GetStartedHero with lucide icons; surfaced silent errors with non-blocking Alert banner; replaced <a> with Next.js Link
+- **Dashboard Critique Fixes (Completed)** - Improved visual hierarchy with dense stats strip and section separation, enforced design system consistency with ring-1 borders, removed pipe dividers from StatsCards, removed keyboard shortcut bar, fixed collectionSession folder naming, and added consistent background to not-signed-in state
