@@ -46,10 +46,9 @@ export function StatsCards({ stats }: StatsCardsProps) {
   ];
 
   const content = (
-    <div className='flex flex-wrap items-center gap-6 py-4'>
-      {data.map((stat, index) => (
+    <div className='flex flex-wrap items-center gap-8 bg-muted/40 rounded-xl px-6 py-4'>
+      {data.map((stat) => (
         <div key={stat.label} className='flex items-center gap-2'>
-          {index > 0 && <div className='h-4 w-px bg-border' />}
           <div className={`rounded-lg ${stat.bgColor} p-1.5`}>
             <stat.icon className={`h-4 w-4 ${stat.color}`} />
           </div>

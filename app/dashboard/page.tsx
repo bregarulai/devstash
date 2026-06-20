@@ -80,7 +80,7 @@ export default async function DashboardPage() {
   const session = await auth();
 
   if (!session?.user?.id) {
-    return <div className="min-h-screen flex items-center justify-center">Not signed in</div>;
+    return <div className="min-h-screen bg-background flex items-center justify-center">Not signed in</div>;
   }
 
   let user: DashboardUser | null = null;

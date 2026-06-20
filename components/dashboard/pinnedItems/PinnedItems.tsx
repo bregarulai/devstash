@@ -25,20 +25,19 @@ export function PinnedItems({ items, onOpen }: PinnedItemsProps) {
         <h2 className='text-lg font-semibold'>Pinned Items</h2>
       </div>
 
-      <div className='flex flex-wrap gap-3 py-6'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 py-6'>
         {items.map((item) => (
           <button
             key={item.id}
             type='button'
             onClick={() => onOpen?.(item.id)}
-            className='h-full w-full min-[690px]:w-72 text-left border border-border overflow-hidden ring-0 hover:bg-muted/50 transition-all rounded-xl cursor-pointer'
+            className='h-full w-full text-left ring-1 ring-foreground/10 overflow-hidden hover:bg-muted/50 transition-all rounded-xl cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
           >
             <CardContent className='flex items-center gap-3 p-4'>
               <div
                 className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg'
                 style={{
                   backgroundColor: `${item.itemType.color}15`,
-                  borderColor: item.itemType.color,
                 }}
               >
                 <ItemTypeIcon type={item.itemType.name} />
