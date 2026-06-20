@@ -1,28 +1,16 @@
-# Current Feature: Items Type Page Critique Fixes
-
-**Spec**: `context/fixes/items-type-page-critique.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Remove banned side-stripe border (`border-l-[3px]`) from ItemCard — replace with 1px full border or background tint
-- Remove banned `hover:shadow-md` from ItemCard — replace with background tone shift on hover
-- Improve empty state in ItemsListContent with a CTA button and type description
-- Add retry mechanism to error banner in ItemsListContent
-- Fix naive type name capitalization to use title case
-- Pass lint and build verification
+<!-- What does success look like? -->
 
 ## Notes
 
-- Source: `/impeccable critique app/items/[type]/page.tsx` — scored 23/40 (Acceptable)
-- P1 violations are design system rule breaks (banned anti-patterns)
-- P2 issues are UX gaps (empty state, error recovery)
-- P3 is fragile but not currently broken
-- Type icon + color is the primary chromatic identifier; the border stripe is redundant
-- Card component already has `ring-1 ring-foreground/10` for separation — shadow is unnecessary
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -116,3 +104,4 @@ In Progress
 - **API Routes Cleanup Phase 4 (Completed)** - Migrated item fetch from GET /api/items/[id] to getItemAction server action, added getItemById DB function, replaced fetch() in useItemDrawer hook, deleted unused API route
 - **Dashboard Design Critique Fixes (Completed)** - Removed border-left colored stripes from PinnedItems, RecentItems, and CollectionCard; restyled StatsCards to inline stat row; differentiated PinnedItems as horizontal scrollable strip; replaced numbered steps in GetStartedHero with lucide icons; surfaced silent errors with non-blocking Alert banner; replaced <a> with Next.js Link
 - **Dashboard Critique Fixes (Completed)** - Improved visual hierarchy with dense stats strip and section separation, enforced design system consistency with ring-1 borders, removed pipe dividers from StatsCards, removed keyboard shortcut bar, fixed collectionSession folder naming, and added consistent background to not-signed-in state
+- **Items Type Page Critique Fixes (Completed)** - Removed banned border-l-[3px] side-stripe and hover:shadow-md from ItemCard, added retry button to error banner, improved empty state with type-specific icon/title and ItemCreateDialog CTA, fixed naive type name capitalization with toTitleCase utility
