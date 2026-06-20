@@ -60,3 +60,10 @@ export function getInitials(name: string | null, email: string): string {
   }
   return email.slice(0, 2).toUpperCase();
 }
+
+export function toTitleCase(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
