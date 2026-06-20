@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { CommandPaletteProvider } from "@/hooks/useCommandPalette/useCommandPalette";
 import { CommandPaletteClient } from "@/components/dashboard/CommandPaletteClient/CommandPaletteClient";
-import { GlobalSearchTrigger } from "@/components/globalSearch/GlobalSearchTrigger";
 import { UnsavedChangesProvider } from "@/components/items/itemDrawer/UnsavedChangesProvider";
 import "./globals.css";
 
@@ -45,7 +44,6 @@ export default function RootLayout({
           </UnsavedChangesProvider>
           <Toaster position="top-center" richColors />
           <CommandPaletteClient />
-          <GlobalSearchTrigger />
         </CommandPaletteProvider>
       </body>
     </html>
