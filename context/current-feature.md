@@ -1,25 +1,12 @@
-# Current Feature: Client-Side Sorting for Favorites Page
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add sorting controls to the favorites page (dropdown or button group)
-- Sort by name (alphabetical, A-Z and Z-A)
-- Sort by date favorited (newest first, oldest first)
-- Sort by item type (group by type)
-- Client-side sorting (no server roundtrip, sort already-loaded data)
-- Persist sort preference in URL params or localStorage
-- Default sort: most recently favorited
-
 ## Notes
-
-- The favorites page already loads items and collections with their metadata
-- Sorting should be instant since it's client-side
-- Consider using URL search params so sort state survives page refresh
-- shadcn Select or ToggleGroup for the sort controls
 
 ## History
 
@@ -105,3 +92,4 @@ In Progress
 - **Editor Preferences Settings (Completed)** - Added editor preferences section to settings page with auto-save to database, implemented font size, tab size, word wrap, minimap, and theme dropdowns, created EditorPreferencesContext, applied settings to Monaco editor, created database migration
 - **Favorites Page (Completed)** - Implemented favorites page with compact list view, star icon in TopBar, auth-protected /favorites route, separate items/collections sections with counts, type icons, and sort by most recently favorited
 - **Favorite Button Toggle (Completed)** - Added favorite toggle to ItemDrawer action bar, collection detail page header, and collection cards dropdown menu with optimistic UI updates, toast notifications, and consistent star icon styling
+- **Client-Side Sorting for Favorites Page (Completed)** - Added sorting controls to favorites page with dropdown for sort options (name, date, type), client-side sorting of already-loaded data, URL search params for persisting sort preference, and default sort by most recently favorited
