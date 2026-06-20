@@ -1,72 +1,16 @@
-# Current Feature: Settings Page + User Menu Fix
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create a `/settings` page with account actions (Delete Account, Change Password)
-- Add a "Settings" link to the user icon dropdown in the sidebar
-- Replace the custom dropdown in `SidebarUserMenu` with shadcn `DropdownMenu` to fix outside-click-to-close behavior
-- The `/settings` route must be protected (redirect to `/sign-in` if unauthenticated)
-- Move Delete Account and Change Password from the profile page to the settings page
-- Profile page retains: Account Information, Usage Overview
+<!-- What does success look like for this feature? -->
 
 ## Notes
 
-- The user menu dropdown currently uses a custom `useState` toggle with no outside-click handler. Replacing it with shadcn `DropdownMenu` solves the close-on-outside-click issue natively.
-- The user confirmed `DropdownMenu` (not `Dialog`) for the dropdown — correct component choice.
-- Route protection follows the existing pattern: `auth()` call in server component + `redirect('/sign-in')` if no session (same as `app/profile/page.tsx`).
-- No `middleware.ts` exists — per-page auth checks are the established pattern.
-- `DeleteAccountDialog` and `ChangePasswordForm` are self-contained client components that can be re-used as-is on the settings page.
-- The profile page currently passes `hasPassword` to `ProfilePageClient` to conditionally show Change Password. The settings page will also need this.
-
-## Implementation Plan
-
-### Step 1: Replace custom dropdown in SidebarUserMenu with shadcn DropdownMenu
-
-**File:** `components/dashboard/sidebar/SidebarUserMenu.tsx`
-
-- Remove the custom `useState` toggle and manual absolute-positioned dropdown div
-- Import and use `DropdownMenu`, `DropdownMenuTrigger`, `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuSeparator` from `@/components/ui/dropdown-menu`
-- Keep the Avatar as the `DropdownMenuTrigger` (via `asChild`)
-- Add three items: "View Profile" (`/profile`), "Settings" (`/settings`), separator, "Sign out"
-- The DropdownMenu handles outside clicks, Escape key, and focus management natively
-- Fix the missing `'use client'` directive (currently missing, uses `useState`)
-- Keep the same visual appearance (avatar, name, email, chevron)
-
-### Step 2: Create the settings page
-
-**File:** `app/settings/page.tsx` (Server Component)
-
-- Call `auth()`, redirect to `/sign-in` if no session (same pattern as `app/profile/page.tsx`)
-- Load user data via `loadProfileDataAsync(session.user.id)` to get `hasPassword`
-- Render `DashboardWrapper` with sidebar data (same pattern as profile page)
-- Render `SettingsPageClient` with user info and `hasPassword`
-
-### Step 3: Create SettingsPageClient component
-
-**File:** `components/settings/settingsPageClient/SettingsPageClient.tsx` (Client Component)
-
-- Page title: "Settings"
-- Section: "Account Actions" card
-  - Re-use existing `DeleteAccountDialog` component (imported as-is)
-  - Re-use existing `ChangePasswordForm` component inside a Dialog (imported as-is, same pattern as profile page)
-  - Conditionally show Change Password only when `hasPassword` is true
-
-### Step 4: Remove account actions from profile page
-
-**File:** `components/profile/profilePageClient/ProfilePageClient.tsx`
-
-- Remove the `DeleteAccountDialog` import and its `<CardFooter>` section
-- Remove the `ChangePasswordForm` import, the `Dialog` import, the `passwordDialogOpen` state, and the Change Password button/dialog
-- Keep: Account Information Card (avatar, name, email, member since, PRO badge, account type badge), Usage Overview Card, Item Type Breakdown
-
-### Step 5: Verify build
-
-- Run `npm run build` to verify no type errors or build failures
-- Run `npm run lint` to verify lint passes
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -148,3 +92,4 @@ In Progress
 - **Collection Management Actions (Completed)** - Added Edit, Delete, and Favorite action buttons to collection detail page header, 3-dots DropdownMenu on collection cards with Edit/Delete/Favorite options, card click navigates to collection page, created updateCollection/deleteCollection DB functions and server actions, added collectionUpdateSchema, installed shadcn dropdown-menu component, added useDeleteCollection hook
 - **Global Search / Command Palette (Completed)** - Implemented Cmd+K/Ctrl+K command palette with fuzzy search across items and collections, grouped results with type icons and collection counts, keyboard navigation, item drawer and collection page navigation on select, and TopBar search input integration
 - **Pagination (Completed)** - Added pagination to /items/[type], /collections, and /collections/[id] pages using shadcn Pagination component with page numbers and prev/next links, server-side pagination with offset/limit queries, and constants for items per page
+- **Settings Page + User Menu Fix (Completed)** - Created /settings page with account actions, added Settings link to sidebar user menu, replaced custom dropdown with shadcn DropdownMenu, moved Delete Account and Change Password from profile to settings page
