@@ -3,6 +3,7 @@ import {
   DEFAULT_FAVORITE_LIMIT,
   DEFAULT_RECENT_COLLECTIONS_LIMIT,
   DEFAULT_SAMPLE_COUNT,
+  COLLECTIONS_PER_PAGE,
 } from '@/lib/db/constants/constants';
 import type { CollectionWithStats, CollectionDetail, CollectionSelect, ItemWithDetails } from '@/types/db';
 
@@ -190,6 +191,58 @@ export async function getAllCollections(
   return collections.map(mapCollectionToStats);
 }
 
+export async function getAllCollectionsPaginated(
+  userId: string,
+  page: number,
+  perPage: number = COLLECTIONS_PER_PAGE,
+): Promise<{
+  collections: CollectionWithStats[];
+  totalCount: number;
+  totalPages: number;
+}> {
+  const skip = (page - 1) * perPage;
+
+  const [collections, totalCount] = await Promise.all([
+    prisma.collection.findMany({
+      where: { userId },
+      orderBy: { updatedAt: 'desc' },
+      skip,
+      take: perPage,
+      include: {
+        _count: {
+          select: {
+            items: true,
+          },
+        },
+        items: {
+          take: DEFAULT_SAMPLE_COUNT,
+          include: {
+            item: {
+              include: {
+                itemType: {
+                  select: {
+                    name: true,
+                    color: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }),
+    prisma.collection.count({ where: { userId } }),
+  ]);
+
+  const totalPages = Math.ceil(totalCount / perPage);
+
+  return {
+    collections: collections.map(mapCollectionToStats),
+    totalCount,
+    totalPages,
+  };
+}
+
 export async function getUserCollectionList(
   userId: string,
 ): Promise<{ id: string; name: string }[]> {
@@ -321,4 +374,99 @@ export async function getCollectionById(
     ...stats,
     items,
   };
+}
+
+export async function getCollectionByIdPaginated(
+  userId: string,
+  collectionId: string,
+  page: number,
+  perPage: number = COLLECTIONS_PER_PAGE,
+): Promise<{
+  collection: CollectionDetail | null;
+  totalCount: number;
+  totalPages: number;
+  hasError: boolean;
+}> {
+  let collection: CollectionDetail | null = null;
+  let totalCount = 0;
+  let hasError = false;
+
+  const skip = (page - 1) * perPage;
+
+  try {
+    const dbCollection = await prisma.collection.findFirst({
+      where: {
+        id: collectionId,
+        userId,
+      },
+      include: {
+        _count: {
+          select: {
+            items: true,
+          },
+        },
+        items: {
+          skip,
+          take: perPage,
+          include: {
+            item: {
+              include: {
+                itemType: {
+                  select: {
+                    name: true,
+                    icon: true,
+                    color: true,
+                  },
+                },
+                tags: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+                collections: {
+                  select: {
+                    collection: {
+                      select: {
+                        id: true,
+                        name: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (dbCollection) {
+      const stats = mapCollectionToStats(dbCollection);
+      const items: ItemWithDetails[] = dbCollection.items
+        .map((ic) => ic.item)
+        .filter((item): item is NonNullable<typeof item> => item != null)
+        .map((item) => ({
+          ...item,
+          collections: item.collections.map((ic) => ({
+            id: ic.collection.id,
+            name: ic.collection.name,
+          })),
+        })) as ItemWithDetails[];
+
+      collection = {
+        ...stats,
+        items,
+      };
+
+      totalCount = dbCollection._count.items;
+    }
+  } catch (error) {
+    console.error('Failed to load collection by id:', error);
+    hasError = true;
+  }
+
+  const totalPages = Math.ceil(totalCount / perPage);
+
+  return { collection, totalCount, totalPages, hasError };
 }

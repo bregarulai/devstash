@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma/prisma';
 import { Prisma } from '@/generated/prisma/client';
-import { DEFAULT_RECENT_LIMIT } from '@/lib/db/constants/constants';
+import { DEFAULT_RECENT_LIMIT, ITEMS_PER_PAGE } from '@/lib/db/constants/constants';
 import { deleteFromR2, extractR2Key } from '@/lib/r2';
 import type { ItemWithDetails, SystemItemType, ItemEditValues, ItemCreateValues, ItemStats } from '@/types/db';
 
@@ -135,11 +135,13 @@ async function findItems(
   userId: string,
   where?: Prisma.ItemWhereInput,
   limit?: number,
+  offset?: number,
 ): Promise<ItemWithDetails[]> {
   const items = await prisma.item.findMany({
     where: { userId, ...where },
     orderBy: { updatedAt: 'desc' },
     ...(limit ? { take: limit } : {}),
+    ...(offset ? { skip: offset } : {}),
     include: ITEM_INCLUDE,
   });
 
@@ -253,6 +255,43 @@ export async function getItemsByTypeWithMeta(
   }
 
   return { items, types, hasError };
+}
+
+export async function getItemsByTypeWithMetaPaginated(
+  userId: string,
+  itemTypeName: string,
+  page: number,
+  perPage: number = ITEMS_PER_PAGE,
+): Promise<{
+  items: ItemWithDetails[];
+  types: SystemItemType[];
+  totalCount: number;
+  totalPages: number;
+  hasError: boolean;
+}> {
+  let items: ItemWithDetails[] = [];
+  let types: SystemItemType[] = [];
+  let totalCount = 0;
+  let hasError = false;
+
+  const skip = (page - 1) * perPage;
+
+  try {
+    [items, types, totalCount] = await Promise.all([
+      findItems(userId, { itemType: { name: itemTypeName } }, perPage, skip).catch(() => []),
+      getSystemItemTypesWithCounts(userId).catch(() => []),
+      prisma.item.count({
+        where: { userId, itemType: { name: itemTypeName } },
+      }).catch(() => 0),
+    ]);
+  } catch (error) {
+    console.error('Failed to load items by type:', error);
+    hasError = true;
+  }
+
+  const totalPages = Math.ceil(totalCount / perPage);
+
+  return { items, types, totalCount, totalPages, hasError };
 }
 
 export async function updateItemFields(

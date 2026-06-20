@@ -1163,3 +1163,156 @@ describe('createItem', () => {
     ).rejects.toThrow('Unauthorized access to collection(s): col-2')
   })
 })
+
+describe('getItemsByTypeWithMetaPaginated', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns paginated items with correct metadata', async () => {
+    const mockItems: ItemWithDetails[] = [
+      {
+        id: 'item-1',
+        title: 'Item 1',
+        description: null,
+        contentType: 'TEXT',
+        content: null,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
+        url: null,
+        language: null,
+        isFavorite: false,
+        isPinned: false,
+        itemType: { name: 'File', icon: '📄', color: '#ff0000' },
+        tags: [],
+        collections: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]
+    const mockTypes = [
+      { id: 'type-1', name: 'File', icon: '📄', color: '#ff0000' },
+    ]
+    mockPrismaItemFindMany.mockResolvedValue(mockItems)
+    mockPrismaItemTypeFindMany.mockResolvedValue(mockTypes)
+    mockPrismaItemGroupBy.mockResolvedValue([
+      { itemTypeId: 'type-1', _count: { id: 25 } },
+    ])
+    mockPrismaItemCount.mockResolvedValue(25)
+
+    const { getItemsByTypeWithMetaPaginated } = await import('./items')
+    const result = await getItemsByTypeWithMetaPaginated('user-1', 'File', 1, 10)
+
+    expect(result.items).toHaveLength(1)
+    expect(result.types).toHaveLength(1)
+    expect(result.totalCount).toBe(25)
+    expect(result.totalPages).toBe(3)
+    expect(result.hasError).toBe(false)
+  })
+
+  it('calculates skip correctly for page 2', async () => {
+    mockPrismaItemFindMany.mockResolvedValue([])
+    mockPrismaItemTypeFindMany.mockResolvedValue([])
+    mockPrismaItemGroupBy.mockResolvedValue([])
+    mockPrismaItemCount.mockResolvedValue(0)
+
+    const { getItemsByTypeWithMetaPaginated } = await import('./items')
+    await getItemsByTypeWithMetaPaginated('user-1', 'File', 2, 10)
+
+    expect(mockPrismaItemFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({ skip: 10, take: 10 })
+    )
+  })
+
+  it('calculates skip correctly for page 3', async () => {
+    mockPrismaItemFindMany.mockResolvedValue([])
+    mockPrismaItemTypeFindMany.mockResolvedValue([])
+    mockPrismaItemGroupBy.mockResolvedValue([])
+    mockPrismaItemCount.mockResolvedValue(0)
+
+    const { getItemsByTypeWithMetaPaginated } = await import('./items')
+    await getItemsByTypeWithMetaPaginated('user-1', 'File', 3, 10)
+
+    expect(mockPrismaItemFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({ skip: 20, take: 10 })
+    )
+  })
+
+  it('uses default ITEMS_PER_PAGE when perPage not provided', async () => {
+    mockPrismaItemFindMany.mockResolvedValue([])
+    mockPrismaItemTypeFindMany.mockResolvedValue([])
+    mockPrismaItemGroupBy.mockResolvedValue([])
+    mockPrismaItemCount.mockResolvedValue(0)
+
+    const { getItemsByTypeWithMetaPaginated } = await import('./items')
+    await getItemsByTypeWithMetaPaginated('user-1', 'File', 1)
+
+    expect(mockPrismaItemFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({ take: 21 })
+    )
+  })
+
+  it('returns totalPages as 0 when no items', async () => {
+    mockPrismaItemFindMany.mockResolvedValue([])
+    mockPrismaItemTypeFindMany.mockResolvedValue([])
+    mockPrismaItemGroupBy.mockResolvedValue([])
+    mockPrismaItemCount.mockResolvedValue(0)
+
+    const { getItemsByTypeWithMetaPaginated } = await import('./items')
+    const result = await getItemsByTypeWithMetaPaginated('user-1', 'File', 1)
+
+    expect(result.totalPages).toBe(0)
+    expect(result.totalCount).toBe(0)
+  })
+
+  it('rounds totalPages up correctly', async () => {
+    mockPrismaItemFindMany.mockResolvedValue([])
+    mockPrismaItemTypeFindMany.mockResolvedValue([])
+    mockPrismaItemGroupBy.mockResolvedValue([])
+    mockPrismaItemCount.mockResolvedValue(22)
+
+    const { getItemsByTypeWithMetaPaginated } = await import('./items')
+    const result = await getItemsByTypeWithMetaPaginated('user-1', 'File', 1, 10)
+
+    expect(result.totalPages).toBe(3)
+  })
+
+  it('handles database failure gracefully with empty results', async () => {
+    mockPrismaItemFindMany.mockRejectedValue(new Error('DB connection failed'))
+    mockPrismaItemTypeFindMany.mockRejectedValue(new Error('DB connection failed'))
+    mockPrismaItemGroupBy.mockRejectedValue(new Error('DB connection failed'))
+    mockPrismaItemCount.mockRejectedValue(new Error('DB connection failed'))
+
+    const { getItemsByTypeWithMetaPaginated } = await import('./items')
+    const result = await getItemsByTypeWithMetaPaginated('user-1', 'File', 1)
+
+    expect(result.items).toEqual([])
+    expect(result.types).toEqual([])
+    expect(result.totalCount).toBe(0)
+    expect(result.totalPages).toBe(0)
+  })
+
+  it('filters by item type name', async () => {
+    mockPrismaItemFindMany.mockResolvedValue([])
+    mockPrismaItemTypeFindMany.mockResolvedValue([])
+    mockPrismaItemGroupBy.mockResolvedValue([])
+    mockPrismaItemCount.mockResolvedValue(0)
+
+    const { getItemsByTypeWithMetaPaginated } = await import('./items')
+    await getItemsByTypeWithMetaPaginated('user-1', 'snippet', 1, 10)
+
+    expect(mockPrismaItemFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          itemType: { name: 'snippet' },
+        }),
+      })
+    )
+    expect(mockPrismaItemCount).toHaveBeenCalledWith({
+      where: expect.objectContaining({
+        itemType: { name: 'snippet' },
+      }),
+    })
+  })
+})

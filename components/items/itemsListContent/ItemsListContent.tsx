@@ -14,6 +14,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/components/ui/empty';
+import { PaginationControls } from '@/components/ui/pagination-controls';
 import { isImageItem } from '@/lib/utils/items';
 import type { ItemWithDetails, SystemItemType } from '@/types/db';
 
@@ -22,6 +23,11 @@ interface ItemsListContentProps {
   types: SystemItemType[];
   currentTypeName: string;
   hasError: boolean;
+  page: number;
+  totalPages: number;
+  totalCount: number;
+  baseUrl: string;
+  perPage: number;
 }
 
 export function ItemsListContent({
@@ -29,6 +35,11 @@ export function ItemsListContent({
   types,
   currentTypeName,
   hasError,
+  page,
+  totalPages,
+  totalCount,
+  baseUrl,
+  perPage,
 }: ItemsListContentProps) {
   const { openDrawer } = useItemDrawer();
   useAutoOpenDrawer();
@@ -38,6 +49,9 @@ export function ItemsListContent({
   if (!currentType) {
     return null;
   }
+
+  const startItem = (page - 1) * perPage + 1;
+  const endItem = Math.min(page * perPage, totalCount);
 
   return (
     <div className='flex flex-1 flex-col gap-6 p-6'>
@@ -63,7 +77,9 @@ export function ItemsListContent({
               currentType.name.slice(1)}
           </h1>
           <p className='text-sm text-muted-foreground'>
-            {items.length} {items.length === 1 ? 'item' : 'items'}
+            {totalCount === 0
+              ? 'No items'
+              : `Showing ${startItem}-${endItem} of ${totalCount} ${totalCount === 1 ? 'item' : 'items'}`}
           </p>
         </div>
       </div>
@@ -124,6 +140,8 @@ export function ItemsListContent({
           )}
         </div>
       )}
+
+      <PaginationControls page={page} totalPages={totalPages} baseUrl={baseUrl} />
     </div>
   );
 }

@@ -9,17 +9,31 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/components/ui/empty';
+import { PaginationControls } from '@/components/ui/pagination-controls';
 import type { CollectionWithStats } from '@/types/db';
 
 interface CollectionsPageContentProps {
   collections: CollectionWithStats[];
   hasError: boolean;
+  page: number;
+  totalPages: number;
+  totalCount: number;
+  baseUrl: string;
+  perPage: number;
 }
 
 export function CollectionsPageContent({
   collections,
   hasError,
+  page,
+  totalPages,
+  totalCount,
+  baseUrl,
+  perPage,
 }: CollectionsPageContentProps) {
+  const startItem = (page - 1) * perPage + 1;
+  const endItem = Math.min(page * perPage, totalCount);
+
   return (
     <div className='flex flex-1 flex-col gap-6 p-6'>
       {hasError && (
@@ -35,7 +49,9 @@ export function CollectionsPageContent({
         <div>
           <h1 className='text-2xl font-semibold tracking-tight'>Collections</h1>
           <p className='text-sm text-muted-foreground'>
-            {collections.length} {collections.length === 1 ? 'collection' : 'collections'}
+            {totalCount === 0
+              ? 'No collections'
+              : `Showing ${startItem}-${endItem} of ${totalCount} ${totalCount === 1 ? 'collection' : 'collections'}`}
           </p>
         </div>
       </div>
@@ -59,6 +75,8 @@ export function CollectionsPageContent({
           ))}
         </div>
       )}
+
+      <PaginationControls page={page} totalPages={totalPages} baseUrl={baseUrl} />
     </div>
   );
 }

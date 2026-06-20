@@ -15,11 +15,17 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/components/ui/empty';
+import { PaginationControls } from '@/components/ui/pagination-controls';
 import type { CollectionDetail, ItemWithDetails } from '@/types/db';
 
 interface CollectionItemsContentProps {
   collection: CollectionDetail | null;
   hasError: boolean;
+  page: number;
+  totalPages: number;
+  totalCount: number;
+  baseUrl: string;
+  perPage: number;
 }
 
 interface GroupedItems {
@@ -31,6 +37,11 @@ interface GroupedItems {
 export function CollectionItemsContent({
   collection,
   hasError,
+  page,
+  totalPages,
+  totalCount,
+  baseUrl,
+  perPage,
 }: CollectionItemsContentProps) {
   const { openDrawer } = useItemDrawer();
 
@@ -60,6 +71,9 @@ export function CollectionItemsContent({
     return null;
   }
 
+  const startItem = (page - 1) * perPage + 1;
+  const endItem = Math.min(page * perPage, totalCount);
+
   return (
     <div className='flex flex-1 flex-col gap-6 p-6'>
       {hasError && (
@@ -78,7 +92,9 @@ export function CollectionItemsContent({
               {collection.name}
             </h1>
             <p className='text-sm text-muted-foreground'>
-              {items.length} {items.length === 1 ? 'item' : 'items'}
+              {totalCount === 0
+                ? 'No items'
+                : `Showing ${startItem}-${endItem} of ${totalCount} ${totalCount === 1 ? 'item' : 'items'}`}
             </p>
           </div>
         </div>
@@ -168,6 +184,8 @@ export function CollectionItemsContent({
           </div>
         ))
       )}
+
+      <PaginationControls page={page} totalPages={totalPages} baseUrl={baseUrl} />
     </div>
   );
 }

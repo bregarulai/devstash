@@ -1,8 +1,9 @@
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/lib/auth/auth/auth';
 import {
-  getItemsByTypeWithMeta,
+  getItemsByTypeWithMetaPaginated,
 } from '@/lib/db/items/items';
+import { ITEMS_PER_PAGE } from '@/lib/db/constants/constants';
 import { ITEM_TYPES } from '@/lib/constants';
 import type { DashboardUser } from '@/types/db';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
@@ -16,20 +17,23 @@ export async function generateStaticParams() {
 
 export default async function ItemsTypePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ type: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { type } = await params;
+  const { page: pageParam } = await searchParams;
   const session = await auth();
 
   if (!session?.user?.id) {
     redirect('/sign-in');
   }
 
-  const { items, types, hasError } = await getItemsByTypeWithMeta(
-    session.user.id,
-    type,
-  );
+  const page = Math.max(1, Number(pageParam) || 1);
+
+  const { items, types, totalCount, totalPages, hasError } =
+    await getItemsByTypeWithMetaPaginated(session.user.id, type, page, ITEMS_PER_PAGE);
 
   const currentType = types.find((t) => t.name === type);
 
@@ -58,6 +62,11 @@ export default async function ItemsTypePage({
           types={types}
           currentTypeName={type}
           hasError={hasError}
+          page={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          baseUrl={`/items/${type}`}
+          perPage={ITEMS_PER_PAGE}
         />
         <ItemDrawer />
       </ItemDrawerProvider>

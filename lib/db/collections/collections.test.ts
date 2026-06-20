@@ -5,6 +5,7 @@ const mockPrismaCollectionFindFirst = vi.fn()
 const mockPrismaCollectionCreate = vi.fn()
 const mockPrismaCollectionUpdate = vi.fn()
 const mockPrismaCollectionDeleteMany = vi.fn()
+const mockPrismaCollectionCount = vi.fn()
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
@@ -14,6 +15,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
       create: (...args: unknown[]) => mockPrismaCollectionCreate(...args),
       update: (...args: unknown[]) => mockPrismaCollectionUpdate(...args),
       deleteMany: (...args: unknown[]) => mockPrismaCollectionDeleteMany(...args),
+      count: (...args: unknown[]) => mockPrismaCollectionCount(...args),
     },
   },
 }))
@@ -695,5 +697,237 @@ describe('deleteCollection', () => {
     const { deleteCollection } = await import('./collections')
 
     await expect(deleteCollection('user-1', 'col-1')).rejects.toThrow('DB error')
+  })
+})
+
+describe('getAllCollectionsPaginated', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns paginated collections with metadata', async () => {
+    mockPrismaCollectionFindMany.mockResolvedValue([
+      {
+        id: 'col-1',
+        name: 'Collection 1',
+        description: 'Desc',
+        isFavorite: false,
+        createdAt: new Date(),
+        _count: { items: 5 },
+        items: [
+          { item: { itemType: { name: 'Type A', color: '#ff0000' }, contentType: 'code' } },
+        ],
+      },
+    ])
+    mockPrismaCollectionCount.mockResolvedValue(25)
+
+    const { getAllCollectionsPaginated } = await import('./collections')
+    const result = await getAllCollectionsPaginated('user-1', 1, 10)
+
+    expect(result.collections).toHaveLength(1)
+    expect(result.totalCount).toBe(25)
+    expect(result.totalPages).toBe(3)
+  })
+
+  it('calculates skip correctly for page 2', async () => {
+    mockPrismaCollectionFindMany.mockResolvedValue([])
+    mockPrismaCollectionCount.mockResolvedValue(0)
+
+    const { getAllCollectionsPaginated } = await import('./collections')
+    await getAllCollectionsPaginated('user-1', 2, 10)
+
+    expect(mockPrismaCollectionFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({ skip: 10, take: 10 })
+    )
+  })
+
+  it('uses default COLLECTIONS_PER_PAGE when perPage not provided', async () => {
+    mockPrismaCollectionFindMany.mockResolvedValue([])
+    mockPrismaCollectionCount.mockResolvedValue(0)
+
+    const { getAllCollectionsPaginated } = await import('./collections')
+    await getAllCollectionsPaginated('user-1', 1)
+
+    expect(mockPrismaCollectionFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({ take: 21 })
+    )
+  })
+
+  it('returns totalPages as 0 when no collections', async () => {
+    mockPrismaCollectionFindMany.mockResolvedValue([])
+    mockPrismaCollectionCount.mockResolvedValue(0)
+
+    const { getAllCollectionsPaginated } = await import('./collections')
+    const result = await getAllCollectionsPaginated('user-1', 1)
+
+    expect(result.totalPages).toBe(0)
+    expect(result.totalCount).toBe(0)
+  })
+
+  it('rounds totalPages up correctly', async () => {
+    mockPrismaCollectionFindMany.mockResolvedValue([])
+    mockPrismaCollectionCount.mockResolvedValue(22)
+
+    const { getAllCollectionsPaginated } = await import('./collections')
+    const result = await getAllCollectionsPaginated('user-1', 1, 10)
+
+    expect(result.totalPages).toBe(3)
+  })
+
+  it('orders by updatedAt descending', async () => {
+    mockPrismaCollectionFindMany.mockResolvedValue([])
+    mockPrismaCollectionCount.mockResolvedValue(0)
+
+    const { getAllCollectionsPaginated } = await import('./collections')
+    await getAllCollectionsPaginated('user-1', 1, 10)
+
+    expect(mockPrismaCollectionFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({ orderBy: { updatedAt: 'desc' } })
+    )
+  })
+})
+
+describe('getCollectionByIdPaginated', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns collection with paginated items and metadata', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue({
+      id: 'col-1',
+      name: 'Test Collection',
+      description: 'A test',
+      isFavorite: true,
+      createdAt: new Date(),
+      _count: { items: 25 },
+      items: [
+        {
+          item: {
+            id: 'item-1',
+            title: 'Item 1',
+            description: null,
+            contentType: 'TEXT',
+            content: null,
+            url: null,
+            fileUrl: null,
+            fileName: null,
+            fileSize: null,
+            language: null,
+            isFavorite: false,
+            isPinned: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            itemType: { name: 'Note', icon: '📝', color: '#0000ff' },
+            tags: [],
+            collections: [{ collection: { id: 'col-1', name: 'Test Collection' } }],
+          },
+        },
+      ],
+    })
+
+    const { getCollectionByIdPaginated } = await import('./collections')
+    const result = await getCollectionByIdPaginated('user-1', 'col-1', 1, 10)
+
+    expect(result.collection).not.toBeNull()
+    expect(result.collection!.id).toBe('col-1')
+    expect(result.collection!.items).toHaveLength(1)
+    expect(result.totalCount).toBe(25)
+    expect(result.totalPages).toBe(3)
+    expect(result.hasError).toBe(false)
+  })
+
+  it('returns null collection when not found', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue(null)
+
+    const { getCollectionByIdPaginated } = await import('./collections')
+    const result = await getCollectionByIdPaginated('user-1', 'nonexistent', 1)
+
+    expect(result.collection).toBeNull()
+    expect(result.totalCount).toBe(0)
+    expect(result.totalPages).toBe(0)
+  })
+
+  it('calculates skip correctly for page 2', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue(null)
+
+    const { getCollectionByIdPaginated } = await import('./collections')
+    await getCollectionByIdPaginated('user-1', 'col-1', 2, 10)
+
+    expect(mockPrismaCollectionFindFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        include: expect.objectContaining({
+          items: expect.objectContaining({ skip: 10, take: 10 }),
+        }),
+      })
+    )
+  })
+
+  it('returns hasError true on database failure', async () => {
+    mockPrismaCollectionFindFirst.mockRejectedValue(new Error('DB error'))
+
+    const { getCollectionByIdPaginated } = await import('./collections')
+    const result = await getCollectionByIdPaginated('user-1', 'col-1', 1)
+
+    expect(result.hasError).toBe(true)
+    expect(result.collection).toBeNull()
+    expect(result.totalCount).toBe(0)
+    expect(result.totalPages).toBe(0)
+  })
+
+  it('uses default COLLECTIONS_PER_PAGE when perPage not provided', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue(null)
+
+    const { getCollectionByIdPaginated } = await import('./collections')
+    await getCollectionByIdPaginated('user-1', 'col-1', 1)
+
+    expect(mockPrismaCollectionFindFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        include: expect.objectContaining({
+          items: expect.objectContaining({ take: 21 }),
+        }),
+      })
+    )
+  })
+
+  it('filters out null items from results', async () => {
+    mockPrismaCollectionFindFirst.mockResolvedValue({
+      id: 'col-1',
+      name: 'Mixed Collection',
+      description: null,
+      isFavorite: false,
+      createdAt: new Date(),
+      _count: { items: 2 },
+      items: [
+        {
+          item: {
+            id: 'item-1',
+            title: 'Item 1',
+            description: null,
+            contentType: 'TEXT',
+            content: null,
+            url: null,
+            fileUrl: null,
+            fileName: null,
+            fileSize: null,
+            language: null,
+            isFavorite: false,
+            isPinned: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            itemType: { name: 'Note', icon: '📝', color: '#0000ff' },
+            tags: [],
+            collections: [],
+          },
+        },
+        { item: null },
+      ],
+    })
+
+    const { getCollectionByIdPaginated } = await import('./collections')
+    const result = await getCollectionByIdPaginated('user-1', 'col-1', 1)
+
+    expect(result.collection).not.toBeNull()
+    expect(result.collection!.items).toHaveLength(1)
+    expect(result.collection!.items[0].id).toBe('item-1')
   })
 })

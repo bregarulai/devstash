@@ -1,5 +1,5 @@
-import { prisma } from '@/lib/prisma/prisma';
 import { auth } from '@/lib/auth/auth/auth';
+import { getUserById } from '@/lib/db/users/users';
 import {
   getPinnedItems,
   getRecentItems,
@@ -10,6 +10,7 @@ import {
   getFavoriteCollections,
   getRecentCollections,
 } from '@/lib/db/collections/collections';
+import { DASHBOARD_COLLECTIONS_LIMIT, DASHBOARD_RECENT_ITEMS_LIMIT } from '@/lib/db/constants/constants';
 import type {
   ItemWithDetails,
   SystemItemType,
@@ -38,10 +39,10 @@ async function loadDashboardData(userId: string): Promise<DashboardData> {
   const [pinnedItems, recentItems, systemItemTypes, favoriteCollections, recentCollections, itemStats] =
     await Promise.all([
       getPinnedItems(userId).catch(() => []),
-      getRecentItems(userId).catch(() => []),
+      getRecentItems(userId, DASHBOARD_RECENT_ITEMS_LIMIT).catch(() => []),
       getSystemItemTypesWithCounts(userId).catch(() => []),
       getFavoriteCollections(userId).catch(() => []),
-      getRecentCollections(userId).catch(() => []),
+      getRecentCollections(userId, DASHBOARD_COLLECTIONS_LIMIT).catch(() => []),
       getItemStats(userId).catch(() => EMPTY_ITEM_STATS),
     ]);
 
@@ -58,16 +59,7 @@ export default async function DashboardPage() {
   let user: DashboardUser | null = null;
 
   try {
-    user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        isPro: true,
-      },
-    });
+    user = await getUserById(session.user.id);
   } catch (error) {
     console.error('Failed to fetch user:', error);
   }
@@ -109,7 +101,6 @@ export default async function DashboardPage() {
     >
       <ItemDrawerProvider>
         <DashboardContent
-          user={user}
           recentCollections={data.recentCollections}
           itemStats={data.itemStats}
           pinnedItems={data.pinnedItems}

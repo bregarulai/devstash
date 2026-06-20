@@ -11,7 +11,6 @@ import { KeyboardHint } from '@/components/dashboard/keyboardHint/KeyboardHint';
 import type { ItemWithDetails, CollectionWithStats, ItemStats } from '@/types/db';
 
 interface DashboardContentProps {
-  user: { id: string; name: string | null; email: string; image: string | null; isPro: boolean };
   recentCollections: CollectionWithStats[];
   itemStats: ItemStats;
   pinnedItems: ItemWithDetails[];
@@ -19,7 +18,6 @@ interface DashboardContentProps {
 }
 
 export function DashboardContent({
-  user,
   recentCollections,
   itemStats,
   pinnedItems,
