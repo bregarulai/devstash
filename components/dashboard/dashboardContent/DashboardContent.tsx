@@ -7,6 +7,8 @@ import { PinnedItems } from '@/components/dashboard/pinnedItems/PinnedItems';
 import { RecentItems } from '@/components/dashboard/recentItems/RecentItems';
 import { GetStartedHero } from '@/components/dashboard/getStartedHero/GetStartedHero';
 import { KeyboardHint } from '@/components/dashboard/keyboardHint/KeyboardHint';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
 import type { ItemWithDetails, CollectionWithStats, ItemStats } from '@/types/db';
 
 interface DashboardContentProps {
@@ -14,6 +16,7 @@ interface DashboardContentProps {
   itemStats: ItemStats;
   pinnedItems: ItemWithDetails[];
   recentItems: ItemWithDetails[];
+  errors?: string[];
 }
 
 export function DashboardContent({
@@ -21,11 +24,21 @@ export function DashboardContent({
   itemStats,
   pinnedItems,
   recentItems,
+  errors = [],
 }: DashboardContentProps) {
   const { openDrawer } = useItemDrawer();
 
   return (
     <>
+      {errors.length > 0 && (
+        <Alert variant='destructive' className='mb-4'>
+          <AlertTriangle className='h-4 w-4' />
+          <AlertTitle>Some data couldn&apos;t load</AlertTitle>
+          <AlertDescription>
+            Failed to load: {errors.join(', ')}. Please try refreshing the page.
+          </AlertDescription>
+        </Alert>
+      )}
       <div className='flex items-center gap-2 px-2 py-1'>
         <span className='text-xs text-muted-foreground'>Quick commands:</span>
         <KeyboardHint shortcut="Ctrl+K" />
