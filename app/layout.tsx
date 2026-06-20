@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { CommandPaletteProvider } from "@/hooks/useCommandPalette/useCommandPalette";
 import { CommandPaletteClient } from "@/components/dashboard/CommandPaletteClient/CommandPaletteClient";
 import { GlobalSearchTrigger } from "@/components/globalSearch/GlobalSearchTrigger";
+import { UnsavedChangesProvider } from "@/components/items/itemDrawer/UnsavedChangesProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -39,7 +40,9 @@ export default function RootLayout({
       <head />
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background text-foreground antialiased`}>
         <CommandPaletteProvider>
-          {children}
+          <UnsavedChangesProvider>
+            {children}
+          </UnsavedChangesProvider>
           <Toaster position="top-center" richColors />
           <CommandPaletteClient />
           <GlobalSearchTrigger />

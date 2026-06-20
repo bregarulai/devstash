@@ -114,7 +114,7 @@ export function ItemCard({ item, onOpen }: ItemCardProps) {
                 title='Copy content'
               >
                 {copied ? (
-                  <Check className='text-green-500' />
+                  <Check className='text-success' />
                 ) : (
                   <Copy />
                 )}

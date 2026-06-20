@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { cn, formatDaysAgo } from '@/lib/utils/utils';
+import { formatDaysAgo } from '@/lib/utils/utils';
 import { Copy, Check } from 'lucide-react';
 import type { ItemWithDetails } from '@/types/db';
 
@@ -15,7 +15,6 @@ interface ImageCardProps {
 
 export function ImageCard({ item, onOpen }: ImageCardProps) {
   const [copied, setCopied] = useState(false);
-  const borderColor = item.itemType.color;
 
   const handleClick = () => {
     onOpen?.(item.id);
@@ -48,11 +47,7 @@ export function ImageCard({ item, onOpen }: ImageCardProps) {
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className={cn(
-        'h-full w-full overflow-hidden rounded-xl border-l-[3px] transition-all hover:shadow-md text-left cursor-pointer',
-        borderColor ? '' : 'border-l-transparent',
-      )}
-      style={borderColor ? { borderLeftColor: borderColor } : undefined}
+      className='h-full w-full overflow-hidden rounded-xl border transition-colors hover:bg-accent/50 text-left cursor-pointer'
     >
       <Card className='h-full overflow-hidden'>
         <div className='relative aspect-video w-full overflow-hidden'>
@@ -94,7 +89,7 @@ export function ImageCard({ item, onOpen }: ImageCardProps) {
                   title='Copy content'
                 >
                   {copied ? (
-                    <Check className='text-green-500' />
+                    <Check className='text-success' />
                   ) : (
                     <Copy />
                   )}
