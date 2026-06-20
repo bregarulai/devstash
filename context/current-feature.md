@@ -1,27 +1,16 @@
-# Current Feature: API Routes Cleanup — Phase 2: Migrate Favorite Toggle to Server Action
-
-**Spec**: `context/fixes/api-routes-cleanup-phase-2-migrate-favorite-toggle-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add `toggleItemFavoriteAction` server action to `actions/items/Items.ts`
-- Export the new action from `actions/index.ts`
-- Update `hooks/useItemActions/useItemActions.ts` to use the server action instead of `fetch`
-- Remove `PATCH` handler from `app/api/items/[id]/route.ts`
-- Delete `app/api/items/[id]/route.test.ts` (only contains PATCH tests)
-- Verify lint, build, and tests pass
-- Confirm favorite toggling works in item drawer and favorites page
+<!-- What does success look like for this feature? -->
 
 ## Notes
 
-- The current `useItemActions` hook calls `fetch(/api/items/${item.id})` directly for favorite toggling
-- This bypasses the server action pattern used by every other mutation in the codebase
-- `toggleItemPinAction` (sibling operation) already follows the server action pattern
-- Risk: Low, Complexity: Medium
+<!-- Any constraints, context, or details from the spec? -->
 
 ## History
 
@@ -110,3 +99,4 @@ In Progress
 - **Client-Side Sorting for Favorites Page (Completed)** - Added sorting controls to favorites page with dropdown for sort options (name, date, type), client-side sorting of already-loaded data, URL search params for persisting sort preference, and default sort by most recently favorited
 - **Pinned Items (Completed)** - Implemented toggleItemPin server action with optimistic UI updates, wired Pin button in ItemDrawer, added pin indicators to ItemCard and PinnedItems components, sorted pinned items to top of listings
 - **API Routes Cleanup Phase 1 (Completed)** - Removed unused `/api/profile/change-password` API route and its tests; Change Password form confirmed to use server action directly
+- **API Routes Cleanup Phase 2 (Completed)** - Migrated favorite toggle from API route PATCH handler to toggleItemFavoriteAction server action, updated useItemActions hook, removed PATCH endpoint and its tests
