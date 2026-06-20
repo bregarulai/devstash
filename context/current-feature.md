@@ -1,26 +1,16 @@
-# Current Feature: API Routes Cleanup Phase 4 — Migrate Item Fetch
-
-**Spec**: `context/fixes/api-routes-cleanup-phase-4-migrate-item-fetch-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Replace `fetch` call to `GET /api/items/[id]` in `useItemDrawer` with a `getItemAction` server action
-- Add `getItemById` DB function to `lib/db/items/items.ts`
-- Add `getItemAction` server action to `actions/items/Items.ts`
-- Export `getItemAction` from `actions/index.ts`
-- Delete the now-unused `app/api/items/[id]/route.ts`
-- Verify lint, build, and tests pass
-- Verify item drawer works on dashboard and items list pages
+<!-- What does success look like? -->
 
 ## Notes
 
-- Complexity: Low | Risk: Low | Files to modify: 3, Files to delete: 1
-- The API route is the only consumer since PATCH was removed in Phase 2
-- Reuses existing `ITEM_INCLUDE` and `mapItemResponse` from `lib/db/items/items.ts`
+<!-- Constraints, context, or details from spec -->
 
 ## History
 
@@ -111,3 +101,4 @@ In Progress
 - **API Routes Cleanup Phase 1 (Completed)** - Removed unused `/api/profile/change-password` API route and its tests; Change Password form confirmed to use server action directly
 - **API Routes Cleanup Phase 2 (Completed)** - Migrated favorite toggle from API route PATCH handler to toggleItemFavoriteAction server action, updated useItemActions hook, removed PATCH endpoint and its tests
 - **API Routes Cleanup Phase 3 (Completed)** - Updated coding standards with explicit API route vs Server Action decision rules, added streaming responses, and added "never duplicate" rule
+- **API Routes Cleanup Phase 4 (Completed)** - Migrated item fetch from GET /api/items/[id] to getItemAction server action, added getItemById DB function, replaced fetch() in useItemDrawer hook, deleted unused API route
