@@ -1,7 +1,8 @@
 'use client';
 
+import { useState, useMemo, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Star, FolderOpen, AlertCircle } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { ItemTypeIcon } from '@/components/dashboard/itemTypeIcon/ItemTypeIcon';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -13,6 +14,8 @@ import {
 } from '@/components/ui/empty';
 import { cn, formatDaysAgo } from '@/lib/utils/utils';
 import { useItemDrawer } from '@/components/items/itemDrawer/ItemDrawerProvider';
+import { SortControls, type SortOption } from '@/components/favorites/sortControls/SortControls';
+import { sortItems, sortCollections } from '@/lib/utils/sort';
 import type { ItemWithDetails, CollectionWithStats } from '@/types/db';
 
 const itemTypeColorMap: Record<string, string> = {
@@ -37,7 +40,36 @@ export function FavoritesPageContent({
   hasError,
 }: FavoritesPageContentProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { openDrawer } = useItemDrawer();
+
+  const itemsSortParam = searchParams.get('itemsSort') as SortOption | null;
+  const collectionsSortParam = searchParams.get('collectionsSort') as SortOption | null;
+  const [itemsSort, setItemsSort] = useState<SortOption>(itemsSortParam ?? 'newest');
+  const [collectionsSort, setCollectionsSort] = useState<SortOption>(collectionsSortParam ?? 'newest');
+
+  const updateSortParam = useCallback(
+    (key: string, value: SortOption) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(key, value);
+      router.replace(`/favorites?${params.toString()}`, { scroll: false });
+    },
+    [searchParams, router]
+  );
+
+  const handleItemsSortChange = (value: SortOption) => {
+    setItemsSort(value);
+    updateSortParam('itemsSort', value);
+  };
+
+  const handleCollectionsSortChange = (value: SortOption) => {
+    setCollectionsSort(value);
+    updateSortParam('collectionsSort', value);
+  };
+
+  const sortedItems = useMemo(() => sortItems(favoriteItems, itemsSort), [favoriteItems, itemsSort]);
+  const sortedCollections = useMemo(() => sortCollections(favoriteCollections, collectionsSort), [favoriteCollections, collectionsSort]);
+
   const totalCount = favoriteItems.length + favoriteCollections.length;
 
   return (
@@ -79,14 +111,17 @@ export function FavoritesPageContent({
         <div className='space-y-6'>
           {favoriteItems.length > 0 && (
             <div>
-              <div className='flex items-center gap-2 mb-3'>
-                <h2 className='text-sm font-medium text-muted-foreground'>Items</h2>
-                <Badge variant='secondary' className='text-xs'>
-                  {favoriteItems.length}
-                </Badge>
+              <div className='flex items-center justify-between mb-3'>
+                <div className='flex items-center gap-2'>
+                  <h2 className='text-sm font-medium text-muted-foreground'>Items</h2>
+                  <Badge variant='secondary' className='text-xs'>
+                    {favoriteItems.length}
+                  </Badge>
+                </div>
+                <SortControls value={itemsSort} onChange={handleItemsSortChange} />
               </div>
               <div className='space-y-1 font-mono text-sm'>
-                {favoriteItems.map((item) => (
+                {sortedItems.map((item) => (
                   <div
                     key={item.id}
                     role='button'
@@ -126,14 +161,17 @@ export function FavoritesPageContent({
 
           {favoriteCollections.length > 0 && (
             <div>
-              <div className='flex items-center gap-2 mb-3'>
-                <h2 className='text-sm font-medium text-muted-foreground'>Collections</h2>
-                <Badge variant='secondary' className='text-xs'>
-                  {favoriteCollections.length}
-                </Badge>
+              <div className='flex items-center justify-between mb-3'>
+                <div className='flex items-center gap-2'>
+                  <h2 className='text-sm font-medium text-muted-foreground'>Collections</h2>
+                  <Badge variant='secondary' className='text-xs'>
+                    {favoriteCollections.length}
+                  </Badge>
+                </div>
+                <SortControls value={collectionsSort} onChange={handleCollectionsSortChange} />
               </div>
               <div className='space-y-1 font-mono text-sm'>
-                {favoriteCollections.map((collection) => (
+                {sortedCollections.map((collection) => (
                   <div
                     key={collection.id}
                     role='button'

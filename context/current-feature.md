@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Client-Side Sorting for Favorites Page
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals will be added when a new feature is loaded -->
+- Add sorting controls to the favorites page (dropdown or button group)
+- Sort by name (alphabetical, A-Z and Z-A)
+- Sort by date favorited (newest first, oldest first)
+- Sort by item type (group by type)
+- Client-side sorting (no server roundtrip, sort already-loaded data)
+- Persist sort preference in URL params or localStorage
+- Default sort: most recently favorited
 
 ## Notes
 
-<!-- Notes will be added when a new feature is loaded -->
+- The favorites page already loads items and collections with their metadata
+- Sorting should be instant since it's client-side
+- Consider using URL search params so sort state survives page refresh
+- shadcn Select or ToggleGroup for the sort controls
 
 ## History
 
