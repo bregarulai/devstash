@@ -48,10 +48,9 @@ export function ItemCard({ item, onOpen }: ItemCardProps) {
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        'h-full w-full overflow-hidden rounded-xl border-l-[3px] transition-all hover:shadow-md text-left cursor-pointer',
-        borderColor ? '' : 'border-l-transparent',
+        'h-full w-full overflow-hidden rounded-xl border transition-colors hover:bg-accent/50 text-left cursor-pointer',
+        'border-foreground/10',
       )}
-      style={borderColor ? { borderLeftColor: borderColor } : undefined}
     >
       <Card className='h-full'>
         <CardHeader className='flex flex-row items-center gap-3 space-y-0 pb-2'>

@@ -1,16 +1,28 @@
-# Current Feature
+# Current Feature: Items Type Page Critique Fixes
+
+**Spec**: `context/fixes/items-type-page-critique.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Remove banned side-stripe border (`border-l-[3px]`) from ItemCard — replace with 1px full border or background tint
+- Remove banned `hover:shadow-md` from ItemCard — replace with background tone shift on hover
+- Improve empty state in ItemsListContent with a CTA button and type description
+- Add retry mechanism to error banner in ItemsListContent
+- Fix naive type name capitalization to use title case
+- Pass lint and build verification
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Source: `/impeccable critique app/items/[type]/page.tsx` — scored 23/40 (Acceptable)
+- P1 violations are design system rule breaks (banned anti-patterns)
+- P2 issues are UX gaps (empty state, error recovery)
+- P3 is fragile but not currently broken
+- Type icon + color is the primary chromatic identifier; the border stripe is redundant
+- Card component already has `ring-1 ring-foreground/10` for separation — shadow is unnecessary
 
 ## History
 
