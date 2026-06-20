@@ -1,31 +1,16 @@
-# Current Feature: Homepage Mockup
-
-**Spec**: `context/features/homepage-mockup-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create a static marketing homepage in `prototypes/homepage/` with `index.html`, `styles.css`, `script.js`
-- Implement "chaos to order" hero concept with animated floating icons, pulsing arrow, and dashboard preview
-- Build dark theme with 7 item type accent colors (Blue, Amber, Cyan, Green, Slate, Pink, Indigo)
-- Add fixed navigation with logo, links, and CTA buttons
-- Create 6 feature cards grid with item type accent colors
-- Implement AI Pro section with checklist and code editor mockup
-- Build pricing section with Free/Pro toggle (monthly/yearly)
-- Add CTA section and footer
-- Implement scroll animations and navbar opacity transition on scroll
-- Ensure responsive design with mobile-first approach
+<!-- goals go here -->
 
 ## Notes
 
-- Static HTML/CSS/JS output — not a Next.js page
-- Uses requestAnimationFrame for chaos icon animation with mouse repulsion
-- Arrow rotates 90° on mobile to point down
-- Pro card highlighted with "Most Popular" badge
-- Pricing toggle: $8/mo or $72/year
+<!-- notes go here -->
 
 ## History
 
@@ -122,3 +107,4 @@ In Progress
 - **Items Type Page Critique Fixes (Completed)** - Removed banned border-l-[3px] side-stripe and hover:shadow-md from ImageCard, replaced hardcoded text-green-500 with theme success token, added unsaved-changes guard in drawer edit mode with navigation blocker, fixed sidebar uppercase tracked labels to sentence case
 - **Favorites Page Design Fixes (Completed)** - Removed font-mono from list rows, removed redundant star icons, added focus-visible rings for keyboard accessibility, added retry button to error state, removed duplicate empty-state text
 - **Favorites Page Critique Fixes (Completed)** - Removed misleading aggregate count, added unfavoriting with toast, added loading skeleton, replaced FolderOpen with Folder icon, replaced hand-built buttons with shadcn Button
+- **Homepage Mockup (Completed)** - Created static marketing homepage with hero, features, pricing, and responsive design
