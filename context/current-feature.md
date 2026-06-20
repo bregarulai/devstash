@@ -1,16 +1,31 @@
-# Current Feature
+# Current Feature: Homepage Mockup
+
+**Spec**: `context/features/homepage-mockup-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- goals go here -->
+- Create a static marketing homepage in `prototypes/homepage/` with `index.html`, `styles.css`, `script.js`
+- Implement "chaos to order" hero concept with animated floating icons, pulsing arrow, and dashboard preview
+- Build dark theme with 7 item type accent colors (Blue, Amber, Cyan, Green, Slate, Pink, Indigo)
+- Add fixed navigation with logo, links, and CTA buttons
+- Create 6 feature cards grid with item type accent colors
+- Implement AI Pro section with checklist and code editor mockup
+- Build pricing section with Free/Pro toggle (monthly/yearly)
+- Add CTA section and footer
+- Implement scroll animations and navbar opacity transition on scroll
+- Ensure responsive design with mobile-first approach
 
 ## Notes
 
-<!-- notes go here -->
+- Static HTML/CSS/JS output — not a Next.js page
+- Uses requestAnimationFrame for chaos icon animation with mouse repulsion
+- Arrow rotates 90° on mobile to point down
+- Pro card highlighted with "Most Popular" badge
+- Pricing toggle: $8/mo or $72/year
 
 ## History
 
