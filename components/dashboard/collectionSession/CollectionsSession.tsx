@@ -26,7 +26,6 @@ export function CollectionsSession({ collections }: CollectionsSessionProps) {
             className='text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1'
           >
             View All
-            <span className='ml-1 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded'>Go</span>
           </Link>
         </div>
         {collections.length === 0 ? (
