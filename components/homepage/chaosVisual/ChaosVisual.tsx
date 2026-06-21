@@ -95,6 +95,18 @@ export function ChaosVisual() {
           p.vx += (dx / dist) * force;
           p.vy += (dy / dist) * force;
         }
+      } else {
+        const { width: stageW, height: stageH } = stageDimensionsRef.current;
+        const pad = 10;
+        const usableW = stageW - pad * 2;
+        const usableH = stageH - pad * 2;
+        const rows = Math.ceil(ICONS.length / COLS);
+        const cellW = usableW / COLS;
+        const cellH = usableH / rows;
+        const homeCx = pad + p.homeCol * cellW + cellW / 2 - p.size / 2;
+        const homeCy = pad + p.homeRow * cellH + cellH / 2 - p.size / 2;
+        p.vx += (homeCx - p.x) * 0.003;
+        p.vy += (homeCy - p.y) * 0.003;
       }
 
       const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
@@ -250,16 +262,22 @@ export function ChaosVisual() {
     const stage = stageRef.current;
     if (!stage) return;
 
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
     stage.addEventListener('mousemove', onMove);
     stage.addEventListener('mouseleave', onLeave);
-    stage.addEventListener('touchmove', onMove, { passive: true });
-    stage.addEventListener('touchend', onLeave);
+    if (!isTouch) {
+      stage.addEventListener('touchmove', onMove, { passive: true });
+      stage.addEventListener('touchend', onLeave);
+    }
 
     return () => {
       stage.removeEventListener('mousemove', onMove);
       stage.removeEventListener('mouseleave', onLeave);
-      stage.removeEventListener('touchmove', onMove);
-      stage.removeEventListener('touchend', onLeave);
+      if (!isTouch) {
+        stage.removeEventListener('touchmove', onMove);
+        stage.removeEventListener('touchend', onLeave);
+      }
     };
   }, [onMove, onLeave]);
 
@@ -271,7 +289,7 @@ export function ChaosVisual() {
         </span>
         <div
           ref={stageRef}
-          className="relative flex-1 min-h-[260px] rounded-lg overflow-hidden cursor-crosshair"
+          className="relative flex-1 min-h-[260px] rounded-lg overflow-hidden cursor-default"
           style={{
             background: `radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-snippet) 8%, transparent), transparent 70%)`,
           }}
@@ -280,7 +298,7 @@ export function ChaosVisual() {
       </div>
 
       <div
-        className="relative h-[70px] rotate-90 flex items-center justify-center lg:h-auto lg:min-h-[60px] lg:rotate-0"
+        className="relative h-[44px] rotate-90 flex items-center justify-center lg:h-auto lg:min-h-[60px] lg:rotate-0"
         aria-hidden="true"
       >
         <div className="w-[130px] h-1.5 bg-muted-foreground rounded-md relative">
@@ -291,7 +309,7 @@ export function ChaosVisual() {
               height: 0,
               borderTop: '13px solid transparent',
               borderBottom: '13px solid transparent',
-              borderLeft: '20px solid var(--color-foreground)',
+              borderLeft: '20px solid var(--muted-foreground)',
             }}
           />
         </div>

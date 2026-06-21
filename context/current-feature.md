@@ -1,12 +1,37 @@
-# Current Feature
+# Current Feature: Homepage Critique Fixes — 2026-06-21
+
+**Spec**: `context/fixes/homepage-critique-fixes-2026-06-21-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- **Fix 1 (P0, Trust)** — Replace placeholder social links (`your-repo`, `your-handle`) in `Footer.tsx` with real targets, or remove the anchors entirely until they exist.
+- **Fix 3 + Fix 4 (P1, Trust)** — Add security/privacy/training-data reassurance to `AiSection.tsx`, `PricingSection.tsx`, and `Footer.tsx`; thicken the footer with a Resources/Company column of real, resolving dev-trust links.
+- **Fix 2 (P1, Trust)** — Replace `TrustedStrip.tsx` filler with a real credibility signal (named testimonial, usage/build signal, or compact trust bar); collapse the section if none exists yet.
+- **Fix 5 (P0, Brand)** — Codify snippet blue as the brand accent: add `--color-brand` alias token in `globals.css`, update `DESIGN.md` Section 2 with the brand-accent + disambiguation rules, repoint logo/h1/AI-tab/glow call sites to `--color-brand`.
+- **Fix 6 + Fix 7 + Fix 8 (P1/P2, Brand)** — In one AiSection pass: collapse the AI tags row to a single neutral/AI chip style, convert uppercase-tracked eyebrows to normal-case hierarchy, and bring the code-mock syntax colors onto oklch tokens.
+- **Fix 9 (P1, Features)** — Remap `FeaturesSection.tsx` types to titles coherently, resolve the 7-vs-6 count mismatch (add an Images card or fix the copy), break the uniform grid into a deliberate bento using `col-span`/`row-span` on multiple cards, and fix the backwards `hover:border-border/40` affordance.
+- **Fix 10 (P1, Motion)** — Give `Reveal.tsx` a `prefers-reduced-motion` path (reuse/extract the `ChaosVisual` `matchMedia` pattern) and stop gating the above-the-fold hero so it is visible at first paint; add a print safeguard in `globals.css`.
+- **Fix 11 + Fix 12 (P2/P3, Motion)** — Remove or repurpose the `arrowPulse` rings, settle icons to a calm resting state, unify the arrow shaft/head tone, replace `cursor-crosshair`, shorten the mobile arrow, and disable `touchmove` repel on touch devices.
+- **Minor observations** — Address opportunistically: PricingToggle a11y (radiogroup + `aria-checked` + `aria-live`), hero `<br/>` removal, SiteHeader mobile menu focus trap + click-outside (consider shadcn `Sheet`), remove meaningless `z-10` on main/footer, add `overflow-x-auto` to the AI code mock.
+- **Verify** — `npm run build` + `npm run lint` + `npm run test:run` pass; manual checks for JS-on / JS-off / reduced-motion / status-bar hover / AI tags single-color / Features grid non-uniform / footer links resolve; re-run `/impeccable critique app/page.tsx` to confirm score > 25 and P0 count = 0.
+
 ## Notes
+
+- **Source**: `/impeccable critique app/page.tsx` on 2026-06-21; score 25/40 (Acceptable, 20-27 band).
+- **Snapshot**: `.impeccable/critique/2026-06-21T00-18-37Z__app-page-tsx.md`.
+- **Predecessor**: `context/fixes/homepage-critique-fixes-spec.md` (2026-06-20, 28/40 — gradient/palette/shadow fixes, largely implemented). Score dropped 28 → 25 because several prior fixes were partial or introduced new tells (solid snippet-blue span traded gradient-text for item-type-as-decoration; bento stretched only one card; AI tag row still sprinkles 5 item-type colors; uppercase eyebrows persisted; placeholder social links and TrustedStrip filler shipped live; zero security/privacy reassurance).
+- **Constraint**: Visual / structural / copy / a11y fixes only. No changes to page behaviors, routing, auth flow, or data unless explicitly noted. Preserve all existing interactions, click handlers, links, and responsive breakpoints.
+- **User decisions (2026-06-21)**:
+  - Keep snippet blue as the brand color. Formally adopt `--color-snippet` (oklch 0.623 0.214 259.815) as the DevStash brand accent via a `--color-brand` alias token so brand and item-type usage are disambiguated at the token layer. Update `DESIGN.md` to bless it.
+  - Priority clusters in order: (1) Trust and credibility, (2) Brand and color tells, (3) Features grid structure. Motion and reveal is included but deprioritized to the end.
+  - Scope: spec only this pass; no code changes during load.
+- **Implementation order**: Fix 1 → Fix 3+4 → Fix 2 → Fix 5 → Fix 6+7+8 → Fix 9 → Fix 10 → Fix 11+12 → Minor observations. End with `/impeccable polish app/page.tsx` then re-run `/impeccable critique app/page.tsx`.
+- **Detector note**: `detect.mjs` flagged `ChaosVisual.tsx:294` (`borderLeft: '20px solid ...`) as a `side-tab` anti-pattern — confirmed **false positive** (CSS-triangle arrowhead, not a decorative side-stripe). No action on that line beyond the motion/tonal items.
+- **Out of scope (file separately)**: real product screenshot above the fold; dashboard `--sidebar-primary` indigo reconciliation; Privacy/Security/Docs routes (Fix 3/4 link to them only if they exist); live testimonial/usage numbers (Fix 2 depends on a real signal being available).
 
 ## History
 

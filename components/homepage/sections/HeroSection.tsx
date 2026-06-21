@@ -6,13 +6,13 @@ import { ChaosVisual } from '@/components/homepage/chaosVisual/ChaosVisual';
 export function HeroSection() {
   return (
     <section className="max-w-6xl mx-auto px-5 pt-[120px] pb-10 grid gap-12 lg:pt-[140px] lg:gap-14 lg:text-center">
-      <Reveal className="lg:max-w-[760px] lg:mx-auto">
+      <Reveal defaultVisible className="lg:max-w-[760px] lg:mx-auto">
         <span className="inline-block text-xs font-medium text-muted-foreground mb-4">
           The developer knowledge hub
         </span>
         <h1 className="text-[clamp(34px,7vw,60px)] leading-[1.05] tracking-[-0.03em] font-extrabold text-balance">
-          Stop Losing Your<br />
-          <span className="text-[var(--color-snippet)]">
+          Stop Losing Your{' '}
+          <span className="text-[var(--color-brand)]">
             Developer Knowledge
           </span>
         </h1>

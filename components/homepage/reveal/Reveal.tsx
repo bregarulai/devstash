@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState, type ReactNode } from 'react';
+import { useRef, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
 interface RevealProps {
@@ -8,6 +8,21 @@ interface RevealProps {
   className?: string;
   rootMargin?: string;
   threshold?: number;
+  defaultVisible?: boolean;
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function getReducedMotionServerSnapshot() {
+  return false;
+}
+
+function subscribeToReducedMotion(callback: () => void) {
+  const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+  mql.addEventListener('change', callback);
+  return () => mql.removeEventListener('change', callback);
 }
 
 export function Reveal({
@@ -15,11 +30,19 @@ export function Reveal({
   className,
   rootMargin = '0px 0px -8% 0px',
   threshold = 0.12,
+  defaultVisible = false,
 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const prefersReducedMotion = useSyncExternalStore(
+    subscribeToReducedMotion,
+    getReducedMotionSnapshot,
+    getReducedMotionServerSnapshot
+  );
+  const [isVisible, setIsVisible] = useState(defaultVisible || prefersReducedMotion);
 
   useEffect(() => {
+    if (prefersReducedMotion || defaultVisible) return;
+
     const element = ref.current;
     if (!element) return;
 
@@ -44,16 +67,18 @@ export function Reveal({
     return () => {
       observer.unobserve(element);
     };
-  }, [rootMargin, threshold]);
+  }, [rootMargin, threshold, prefersReducedMotion, defaultVisible]);
 
   return (
     <div
       ref={ref}
       className={cn(
         'transition-[opacity,transform] duration-500 ease-out',
-        isVisible
+        prefersReducedMotion
           ? 'opacity-100 translate-y-0'
-          : '[html[data-js]_&]:opacity-0 [html[data-js]_&]:translate-y-6',
+          : isVisible
+            ? 'opacity-100 translate-y-0'
+            : '[html[data-js]_&]:opacity-0 [html[data-js]_&]:translate-y-6',
         className
       )}
     >

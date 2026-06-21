@@ -45,6 +45,17 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
     return () => window.removeEventListener('keydown', onKey);
   }, [isMobileMenuOpen, closeMobileMenu]);
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const onClickOutside = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        closeMobileMenu();
+      }
+    };
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, [isMobileMenuOpen, closeMobileMenu]);
+
   return (
     <nav
       className={cn(
@@ -62,7 +73,7 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
         >
           <span className="inline-flex" aria-hidden="true">
             <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
-              <rect x="3" y="3" width="26" height="26" rx="7" fill="var(--color-snippet)" />
+              <rect x="3" y="3" width="26" height="26" rx="7" fill="var(--color-brand)" />
               <path
                 d="M11 21V11h6.5a3.5 3.5 0 0 1 0 7H14"
                 stroke="#0b1020"

@@ -140,7 +140,13 @@ Dark mode is the default. Light mode is a secondary variant. The interface feels
 
 ## 2. Colors
 
-The palette is neutral-first. There is no brand accent color. Chromatic identity comes entirely from the seven item-type colors, which are the only saturated hues in the system.
+The palette is neutral-first with one brand accent. Item-type colors are the chromatic vocabulary.
+
+### Brand Accent
+
+- **Brand Blue** (oklch 0.623 0.214 259.815 / #3b82f6): The DevStash brand accent. Aliased from the snippet item-type color at the token layer (`--color-brand`). Used for the logo mark, the wordmark emphasis, primary CTAs, and brand glows. The item-type snippet blue is used only in item-type contexts (item chips, type dots, type labels) where the item type is explicit.
+
+**The Brand Rule.** Brand blue appears on the logo, primary CTA buttons, and brand glow accents. Item-type snippet blue appears on snippet-type chips, dots, and labels. Context disambiguates; do not use brand blue as a generic decorative accent outside brand-mark and primary-CTA contexts.
 
 ### Primary
 
@@ -263,7 +269,7 @@ Card containers use a 1px ring at 10% foreground opacity for subtle separation f
 - **Do** keep the palette restrained. Neutral base, functional color only.
 
 ### Don't:
-- **Don't** add a brand accent color. DevStash has no primary brand hue — item-type colors are the chromatic identity.
+- **Don't** use brand blue as a generic decorative accent. Brand blue is reserved for the logo mark, primary CTAs, and brand glows — not for cards, borders, or section backgrounds.
 - **Don't** use neon, glow, or gradient effects. Anti-reference: no neon cyberpunk aesthetics.
 - **Don't** add box-shadows to surfaces. Flat design is a deliberate choice, not a limitation.
 - **Don't** introduce a second font family. Geist is the type system.

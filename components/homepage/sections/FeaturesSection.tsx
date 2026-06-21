@@ -9,6 +9,7 @@ const FEATURES = [
     title: 'Code Snippets',
     description: 'Syntax-highlighted, language-tagged, and instantly searchable. Copy in one click.',
     color: 'var(--color-snippet)',
+    span: 'lg:col-span-2',
   },
   {
     type: 'prompt',
@@ -16,20 +17,23 @@ const FEATURES = [
     title: 'AI Prompts',
     description: 'Version, tag, and rate your prompts. Find the one that actually worked last Tuesday.',
     color: 'var(--color-prompt)',
+    span: 'lg:row-span-2',
   },
   {
     type: 'command',
     icon: Terminal,
-    title: 'Instant Search',
-    description: 'Cmd+K command palette with fuzzy search across items and collections. Open, find, done.',
+    title: 'Commands',
+    description: 'Shell one-liners with copy buttons and language detection. Never lose a command again.',
     color: 'var(--color-command)',
+    span: '',
   },
   {
     type: 'note',
     icon: FileText,
-    title: 'Commands & Notes',
-    description: "Shell one-liners with copy buttons, plus markdown notes for context that doesn't fit a snippet.",
+    title: 'Notes',
+    description: 'Markdown notes for context that doesn\'t fit a snippet. Rich previews built in.',
     color: 'var(--color-note)',
+    span: 'lg:col-span-2',
   },
   {
     type: 'file',
@@ -37,13 +41,15 @@ const FEATURES = [
     title: 'Files & Docs',
     description: 'Drop PDFs, config files, and screenshots. Secure cloud storage with one-click downloads.',
     color: 'var(--color-file)',
+    span: '',
   },
   {
     type: 'url',
     icon: Link,
-    title: 'Collections',
-    description: 'Group related items into collections. Color-coded by content type. Share with your team.',
+    title: 'Links',
+    description: 'Save external references with auto-generated previews. Never lose a useful tab again.',
     color: 'var(--color-link)',
+    span: '',
   },
 ];
 
@@ -55,14 +61,14 @@ export function FeaturesSection() {
           One stash for every kind of dev knowledge
         </h2>
         <p className="mt-3.5 mx-auto max-w-[560px] text-muted-foreground text-base text-pretty">
-          Seven item types, each with its own tailored UI. No more dumping everything into a notes app.
+          Six item types, each with its own tailored UI. No more dumping everything into a notes app.
         </p>
       </Reveal>
 
       <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4.5 lg:auto-rows-[minmax(0,1fr)]">
-        {FEATURES.map((feature, i) => (
-          <Reveal key={feature.type} className={cn(i === 0 && 'lg:col-span-2 lg:row-span-1')}>
-            <article className="group relative h-full bg-card border border-border rounded-xl p-[22px] overflow-hidden transition-colors duration-200 hover:border-border/40">
+        {FEATURES.map((feature) => (
+          <Reveal key={feature.type} className={cn(feature.span)}>
+            <article className="group relative h-full bg-card border border-border rounded-xl p-[22px] overflow-hidden transition-colors duration-200 hover:border-foreground/20">
               <div
                 className="inline-flex items-center justify-center w-11 h-11 rounded-xl mb-3.5"
                 style={{

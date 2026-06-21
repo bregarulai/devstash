@@ -19,7 +19,7 @@ export default async function Home() {
 
   return (
     <div className="relative">
-      <main className="relative z-10">
+      <main>
         <SiteHeader isAuthenticated={!!session?.user} />
         <HeroSection />
         <TrustedStrip />

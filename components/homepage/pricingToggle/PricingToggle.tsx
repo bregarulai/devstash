@@ -21,10 +21,13 @@ export function PricingToggle({ onToggle }: PricingToggleProps) {
   return (
     <div
       className="inline-flex items-center gap-1 p-1.5 bg-card border border-border rounded-full relative"
-      role="group"
+      role="radiogroup"
       aria-label="Billing period"
+      aria-live="polite"
     >
       <button
+        role="radio"
+        aria-checked={billing === 'monthly'}
         className={cn(
           'px-4.5 py-2 rounded-full text-[13px] font-semibold transition-colors',
           billing === 'monthly'
@@ -36,6 +39,8 @@ export function PricingToggle({ onToggle }: PricingToggleProps) {
         Monthly
       </button>
       <button
+        role="radio"
+        aria-checked={billing === 'yearly'}
         className={cn(
           'px-4.5 py-2 rounded-full text-[13px] font-semibold transition-colors',
           billing === 'yearly'
@@ -46,7 +51,7 @@ export function PricingToggle({ onToggle }: PricingToggleProps) {
       >
         Yearly
       </button>
-      <span className="text-[11px] font-bold text-success pr-2.5 pl-1">
+      <span className="text-[11px] font-bold text-brand pr-2.5 pl-1">
         Save 25%
       </span>
     </div>
