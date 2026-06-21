@@ -29,6 +29,7 @@ export default defineConfig({
         'lib/auth/authConfig/authConfig.ts',
         'lib/utils/utils.ts',
         'lib/constants.ts',
+        'lib/constants/limits.ts',
         'lib/db/collections/collections.ts',
         'lib/db/items/items.ts',
         'lib/r2.ts',

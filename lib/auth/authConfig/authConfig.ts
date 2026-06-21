@@ -22,8 +22,12 @@ export const authConfig = {
     async jwt({ token, user }) {
       if (user) {
         (token as { id: string }).id = String(user.id);
+      }
+
+      const userId = (token as { id?: string }).id ?? token.sub;
+      if (userId) {
         const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
+          where: { id: userId },
           select: { isPro: true },
         });
         (token as { isPro: boolean }).isPro = dbUser?.isPro ?? false;
