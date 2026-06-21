@@ -1,23 +1,16 @@
-# Current Feature: Add Homepage Nav to Auth Pages
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add the `SiteHeader` navigation component from the homepage to the sign-in (`/sign-in`) and register (`/register`) pages
-- Maintain consistent branding and navigation experience across public and auth pages
-- Authenticated users visiting auth pages should see Dashboard/Sign Out buttons (already handled by redirect, but nav should be consistent)
+<!-- What does success look like? -->
 
 ## Notes
 
-- The `SiteHeader` component is a client component at `components/homepage/siteHeader/SiteHeader.tsx`
-- It accepts an `isAuthenticated` boolean prop
-- The sign-in page already calls `auth()` for session check; register page does not
-- Both pages currently use a simple `min-h-screen flex items-center justify-center` layout
-- The nav is fixed-position (`fixed top-0`), so the auth card content may need top padding to avoid being hidden under it
-- Other auth pages (forgot-password, reset-password, verify-email, verify-required) may also benefit but are out of scope for this feature unless specified
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -119,3 +112,4 @@ In Progress
 - **Homepage Critique Fixes (Completed)** - Stripped indigo/cyan gradients/glows, enforced design system tokens, removed shadows, fixed typography/spacing, improved accessibility, and made Reveal no-JS safe across all homepage sections
 - **Homepage Critique Fixes (Completed)** - Trust/brand/motion/a11y improvements: added --color-brand token, replaced placeholder social links with trust signals, added security/privacy reassurance copy, added prefers-reduced-motion to Reveal, fixed PricingToggle accessibility, fixed FeaturesSection bento grid, and added print CSS safeguard
 - **Dashboard Top Bar Responsive Cleanup (Completed)** - Added DevStash logo SVG + brand text to sidebar, collapsed search to icon-only on mobile, replaced two create buttons with single + dropdown menu, used shadcn Sheet for mobile sidebar overlay, and supported controlled dialog open state
+- **Add Homepage Nav to Auth Pages (Completed)** - Added SiteHeader to /sign-in and /register pages with consistent branding, fixed import ordering, and passed isHomepage/isAuthPage props for nav context awareness
