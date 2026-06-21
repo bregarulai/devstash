@@ -7,6 +7,8 @@ const mockUpdateCollection = vi.fn()
 const mockDeleteCollection = vi.fn()
 const mockToggleCollectionFavorite = vi.fn()
 const mockRevalidatePath = vi.fn()
+const mockPrismaUserFindUnique = vi.fn()
+const mockPrismaCollectionCount = vi.fn()
 
 vi.mock('next/cache', () => ({
   revalidatePath: (...args: unknown[]) => mockRevalidatePath(...args),
@@ -14,6 +16,17 @@ vi.mock('next/cache', () => ({
 
 vi.mock('@/lib/auth/auth/auth', () => ({
   auth: (...args: unknown[]) => mockAuth(...args),
+}))
+
+vi.mock('@/lib/prisma/prisma', () => ({
+  prisma: {
+    user: {
+      findUnique: (...args: unknown[]) => mockPrismaUserFindUnique(...args),
+    },
+    collection: {
+      count: (...args: unknown[]) => mockPrismaCollectionCount(...args),
+    },
+  },
 }))
 
 vi.mock('@/lib/db/collections/collections', () => ({
@@ -27,6 +40,7 @@ vi.mock('@/lib/db/collections/collections', () => ({
 describe('createCollectionAction', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: true })
   })
 
   it('returns error when not authenticated', async () => {
@@ -159,6 +173,90 @@ describe('createCollectionAction', () => {
       data: null,
       error: 'Failed to create collection',
     })
+  })
+
+  it('rejects free user at 3-collection limit with upgrade error', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false })
+    mockPrismaCollectionCount.mockResolvedValue(3)
+
+    const { createCollectionAction } = await import('./Collections')
+    const result = await createCollectionAction({ name: 'Test' })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Free plan limited to 3 collections. Upgrade to Pro for unlimited collections.',
+    })
+    expect(mockCreateCollection).not.toHaveBeenCalled()
+  })
+
+  it('allows free user below 3-collection limit to create collection', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false })
+    mockPrismaCollectionCount.mockResolvedValue(2)
+    const mockCreated = {
+      id: 'col-new',
+      name: 'New Collection',
+      description: null,
+      isFavorite: false,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockCreateCollection.mockResolvedValue(mockCreated)
+
+    const { createCollectionAction } = await import('./Collections')
+    const result = await createCollectionAction({ name: 'New Collection' })
+
+    expect(result.success).toBe(true)
+    expect(mockCreateCollection).toHaveBeenCalledWith('user-1', { name: 'New Collection' })
+  })
+
+  it('does not count collections for Pro user', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: true })
+    mockCreateCollection.mockResolvedValue({
+      id: 'col-new',
+      name: 'New',
+      description: null,
+      isFavorite: false,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    const { createCollectionAction } = await import('./Collections')
+    await createCollectionAction({ name: 'New' })
+
+    expect(mockPrismaCollectionCount).not.toHaveBeenCalled()
+  })
+
+  it('checks Pro status from DB before enforcing collection limit', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false })
+    mockPrismaCollectionCount.mockResolvedValue(2)
+    mockCreateCollection.mockResolvedValue({
+      id: 'col-new',
+      name: 'New',
+      description: null,
+      isFavorite: false,
+      userId: 'user-1',
+      defaultTypeId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    const { createCollectionAction } = await import('./Collections')
+    await createCollectionAction({ name: 'New' })
+
+    expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({
+      where: { id: 'user-1' },
+      select: { isPro: true },
+    })
+    expect(mockPrismaCollectionCount).toHaveBeenCalledWith({ where: { userId: 'user-1' } })
   })
 })
 

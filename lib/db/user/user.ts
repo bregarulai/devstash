@@ -29,6 +29,7 @@ export async function loadProfileDataAsync(userId: string): Promise<ProfileData>
         isPro: true,
         createdAt: true,
         password: true,
+        stripeSubscriptionId: true,
       },
     });
 

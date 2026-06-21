@@ -67,6 +67,7 @@ export default async function ItemsTypePage({
           totalCount={totalCount}
           baseUrl={`/items/${type}`}
           perPage={ITEMS_PER_PAGE}
+          isPro={user.isPro}
         />
         <ItemDrawer />
       </ItemDrawerProvider>

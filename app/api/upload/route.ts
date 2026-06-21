@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth/auth';
+import { prisma } from '@/lib/prisma/prisma';
 import { uploadToR2 } from '@/lib/r2';
 import {
   IMAGE_TYPES,
@@ -15,6 +16,18 @@ export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { isPro: true },
+  });
+
+  if (!dbUser?.isPro) {
+    return NextResponse.json(
+      { error: 'File and image uploads are a Pro feature. Upgrade to Pro to enable them.' },
+      { status: 403 },
+    );
   }
 
   const formData = await request.formData();

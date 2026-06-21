@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
 import { collectionCreateSchema, collectionUpdateSchema, collectionUpdateFavoriteSchema, type CollectionCreateValues, type CollectionUpdateValues, type CollectionUpdateFavorite, type CollectionSelect } from '@/types/db';
 import { createCollection, getUserCollectionList, updateCollection, deleteCollection, toggleCollectionFavorite } from '@/lib/db/collections/collections';
+import { prisma } from '@/lib/prisma/prisma';
+import { FREE_TIER_LIMITS } from '@/lib/constants/limits';
 
 type ActionResult<T> =
   | { success: true; data: T; error: null }
@@ -31,6 +33,22 @@ export async function createCollectionAction(
   }
 
   try {
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { isPro: true },
+    });
+
+    if (!dbUser?.isPro) {
+      const count = await prisma.collection.count({ where: { userId } });
+      if (count >= FREE_TIER_LIMITS.maxCollections) {
+        return {
+          success: false,
+          data: null,
+          error: `Free plan limited to ${FREE_TIER_LIMITS.maxCollections} collections. Upgrade to Pro for unlimited collections.`,
+        };
+      }
+    }
+
     const created = await createCollection(userId, result.data);
     revalidatePath('/dashboard');
     return { success: true, data: created, error: null };

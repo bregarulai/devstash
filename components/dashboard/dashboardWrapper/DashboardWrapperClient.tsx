@@ -72,7 +72,7 @@ export function DashboardWrapperClient({
         {/* Main content area */}
         <div className='flex min-w-0 flex-1 flex-col'>
           {/* Top bar */}
-          <MobileSideBar onMenuToggle={() => setIsMobileOpen(true)} />
+          <MobileSideBar onMenuToggle={() => setIsMobileOpen(true)} isPro={user.isPro} />
 
           {/* Page content */}
           <main className='flex-1 overflow-y-auto p-6 lg:p-8'>{children}</main>

@@ -1,16 +1,34 @@
-# Current Feature
+# Current Feature: Stripe Integration Phase 2 — Integration & UI
+
+**Spec**: `context/features/stripe-integration-phase-2-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Free user can click "Upgrade — Monthly" or "Upgrade — Annual" in Settings and complete Stripe-hosted checkout.
+- After successful checkout, reloading `/settings` shows the Pro badge and "Manage subscription" button (no sign-out required).
+- Pro user can open the Stripe Customer Portal to cancel/update; cancellation reverts `isPro` to `false` via webhook.
+- Free users blocked at 50 items, 3 collections, and from uploading `file`/`image` types — enforced server-side.
+- Item create dialog visually disables `file`/`image` for free users with a lock icon.
+- `npm run test:run`, `npm run lint`, and `npm run build` stay green.
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- **Implement Phase 1 first** — depends on `lib/stripe/stripe.ts`, `lib/constants/limits.ts`, and the fixed JWT callback (Phase 1 marked Completed in History).
+- **Webhook route location**: `app/api/webhooks/stripe/route.ts` (not `app/api/stripe/webhook/route.ts`) — nested under `webhooks/` to accommodate future webhook integrations. Forward with `stripe listen --forward-to localhost:3000/api/webhooks/stripe`.
+- **Webhook handler is not unit-testable** in isolation (`stripe.webhooks.constructEvent` validates against Stripe's real signing scheme) — verify manually with `stripe listen --forward-to localhost:3000/api/webhooks/stripe` and `stripe trigger`.
+- Local vs production webhook secrets differ — `stripe listen` prints its own `whsec_...` unrelated to the dashboard endpoint's secret.
+- Checkout & Portal are Stripe-hosted pages — no `@stripe/stripe-js` / `@stripe/react-stripe-js` needed this phase.
+- Server-side enforcement is mandatory — `ItemTypeSelector` disable (Finding #11) is cosmetic; the upload route (Finding #9) and item action (Finding #8) are the real gates.
+- Plan tier display requires a live Stripe API call in `app/settings/page.tsx` — wrap in try/catch, fall back to `'free'`; settings page must never crash because Stripe is unavailable.
+- Reuse existing shadcn `Card`/`Button`/`Badge`/`Separator`/`Dialog` — do not install new components.
+- Read `isPro` from DB (not session) in create-item/create-collection/upload gates to avoid stale-JWT races right after a webhook fires.
+- Stripe Dashboard setup required before testing: DevStash Pro product with $8/mo and $72/yr prices, Customer Portal enabled, webhook endpoint for the three events.
+- Test cards (test mode): `4242 4242 4242 4242` (success), `4000 0000 0000 0002` (declined).
+- Findings #5–#11 covering: webhook route, checkout & portal routes, server actions, free-tier limit enforcement in create-item/create-collection, upload route 403 gate, BillingSection component + Settings wiring, and cosmetic ItemTypeSelector gate.
 
 ## History
 

@@ -3,8 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
 import { itemEditSchema, itemCreateSchema, itemUpdateSchema, type ItemEditValues, type ItemCreateValues, type ItemWithDetails } from '@/types/db';
-import { updateItem, deleteItem, createItem, updateItemFields, getItemById } from '@/lib/db/items/items';
+import { updateItem, deleteItem, createItem, updateItemFields, getItemById, getItemStats } from '@/lib/db/items/items';
 import { prisma } from '@/lib/prisma/prisma';
+import { FREE_TIER_LIMITS, isProOnlyItemType } from '@/lib/constants/limits';
 
 type ActionResult<T> =
   | { success: true; data: T; error: null }
@@ -32,6 +33,25 @@ export async function createItemAction(
   }
 
   try {
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { isPro: true },
+    });
+
+    if (!dbUser?.isPro) {
+      if (isProOnlyItemType(result.data.itemType)) {
+        return { success: false, data: null, error: 'File and image items are a Pro feature.' };
+      }
+      const stats = await getItemStats(userId);
+      if (stats.totalItems >= FREE_TIER_LIMITS.maxItems) {
+        return {
+          success: false,
+          data: null,
+          error: `Free plan limited to ${FREE_TIER_LIMITS.maxItems} items. Upgrade to Pro for unlimited items.`,
+        };
+      }
+    }
+
     const created = await createItem(userId, result.data);
     revalidatePath('/dashboard');
     return { success: true, data: created, error: null };

@@ -6,9 +6,11 @@ const mockUpdateItem = vi.fn()
 const mockDeleteItem = vi.fn()
 const mockUpdateItemFields = vi.fn()
 const mockGetItemById = vi.fn()
+const mockGetItemStats = vi.fn()
 const mockRevalidatePath = vi.fn()
 const mockPrismaItemFindUnique = vi.fn()
 const mockPrismaItemUpdate = vi.fn()
+const mockPrismaUserFindUnique = vi.fn()
 
 vi.mock('next/cache', () => ({
   revalidatePath: (...args: unknown[]) => mockRevalidatePath(...args),
@@ -24,6 +26,12 @@ vi.mock('@/lib/prisma/prisma', () => ({
       findUnique: (...args: unknown[]) => mockPrismaItemFindUnique(...args),
       update: (...args: unknown[]) => mockPrismaItemUpdate(...args),
     },
+    user: {
+      findUnique: (...args: unknown[]) => mockPrismaUserFindUnique(...args),
+    },
+    collection: {
+      count: vi.fn(),
+    },
   },
 }))
 
@@ -33,6 +41,7 @@ vi.mock('@/lib/db/items/items', () => ({
   deleteItem: (...args: unknown[]) => mockDeleteItem(...args),
   updateItemFields: (...args: unknown[]) => mockUpdateItemFields(...args),
   getItemById: (...args: unknown[]) => mockGetItemById(...args),
+  getItemStats: (...args: unknown[]) => mockGetItemStats(...args),
 }))
 
 describe('updateItemAction', () => {
@@ -325,6 +334,7 @@ describe('deleteItemAction', () => {
 describe('createItemAction', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: true })
   })
 
   it('returns error when not authenticated', async () => {
@@ -586,6 +596,153 @@ describe('createItemAction', () => {
       success: false,
       data: null,
       error: 'Unauthorized access to collection(s): invalid-col',
+    })
+  })
+
+  it('rejects free user creating file item with Pro-feature error', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false })
+
+    const { createItemAction } = await import('./Items')
+    const result = await createItemAction({
+      title: 'Test file',
+      itemType: 'file',
+      fileName: 'doc.pdf',
+      fileUrl: 'https://example.com/doc.pdf',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'File and image items are a Pro feature.',
+    })
+    expect(mockCreateItem).not.toHaveBeenCalled()
+  })
+
+  it('rejects free user creating image item with Pro-feature error', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false })
+
+    const { createItemAction } = await import('./Items')
+    const result = await createItemAction({
+      title: 'Test image',
+      itemType: 'image',
+      fileName: 'pic.png',
+      fileUrl: 'https://example.com/pic.png',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'File and image items are a Pro feature.',
+    })
+    expect(mockCreateItem).not.toHaveBeenCalled()
+  })
+
+  it('rejects free user at 50-item limit with upgrade error', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false })
+    mockGetItemStats.mockResolvedValue({
+      totalItems: 50,
+      totalCollections: 0,
+      favoriteItems: 0,
+      favoriteCollections: 0,
+    })
+
+    const { createItemAction } = await import('./Items')
+    const result = await createItemAction({
+      title: 'Test',
+      itemType: 'snippet',
+      content: 'code',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Free plan limited to 50 items. Upgrade to Pro for unlimited items.',
+    })
+    expect(mockCreateItem).not.toHaveBeenCalled()
+  })
+
+  it('allows free user below 50-item limit to create item', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false })
+    mockGetItemStats.mockResolvedValue({
+      totalItems: 49,
+      totalCollections: 0,
+      favoriteItems: 0,
+      favoriteCollections: 0,
+    })
+    mockCreateItem.mockResolvedValue({ id: 'item-1', title: 'Test' })
+
+    const { createItemAction } = await import('./Items')
+    const result = await createItemAction({
+      title: 'Test',
+      itemType: 'snippet',
+      content: 'code',
+    })
+
+    expect(result.success).toBe(true)
+    expect(mockCreateItem).toHaveBeenCalledWith('user-1', {
+      title: 'Test',
+      itemType: 'snippet',
+      content: 'code',
+    })
+  })
+
+  it('allows Pro user to create file item', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: true })
+    mockCreateItem.mockResolvedValue({ id: 'item-1', title: 'File' })
+
+    const { createItemAction } = await import('./Items')
+    const result = await createItemAction({
+      title: 'File',
+      itemType: 'file',
+      fileName: 'doc.pdf',
+      fileUrl: 'https://example.com/doc.pdf',
+    })
+
+    expect(result.success).toBe(true)
+    expect(mockGetItemStats).not.toHaveBeenCalled()
+  })
+
+  it('does not call getItemStats for Pro user', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: true })
+    mockCreateItem.mockResolvedValue({ id: 'item-1', title: 'New' })
+
+    const { createItemAction } = await import('./Items')
+    await createItemAction({
+      title: 'New',
+      itemType: 'snippet',
+      content: 'code',
+    })
+
+    expect(mockGetItemStats).not.toHaveBeenCalled()
+  })
+
+  it('checks Pro status from DB before enforcing limits', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false })
+    mockGetItemStats.mockResolvedValue({
+      totalItems: 49,
+      totalCollections: 0,
+      favoriteItems: 0,
+      favoriteCollections: 0,
+    })
+    mockCreateItem.mockResolvedValue({ id: 'item-1', title: 'Test' })
+
+    const { createItemAction } = await import('./Items')
+    await createItemAction({
+      title: 'Test',
+      itemType: 'snippet',
+      content: 'code',
+    })
+
+    expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({
+      where: { id: 'user-1' },
+      select: { isPro: true },
     })
   })
 })

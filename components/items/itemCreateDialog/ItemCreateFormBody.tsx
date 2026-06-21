@@ -30,6 +30,7 @@ interface ItemCreateFormBodyProps {
   isPending: boolean;
   isUploading: boolean;
   uploadProgress: number;
+  isPro: boolean;
   handleItemTypeSelect: (type: ItemType) => void;
   handleFileSelect: (file: File) => void;
   handleTagsChange: (value: string) => void;
@@ -47,6 +48,7 @@ export function ItemCreateFormBody({
   isPending,
   isUploading,
   uploadProgress,
+  isPro,
   handleItemTypeSelect,
   handleFileSelect,
   handleTagsChange,
@@ -66,6 +68,7 @@ export function ItemCreateFormBody({
         <ItemTypeSelector
           selectedType={selectedType}
           onSelect={handleItemTypeSelect}
+          isPro={isPro}
         />
       </CreateFormField>
 

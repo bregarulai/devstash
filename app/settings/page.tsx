@@ -5,7 +5,10 @@ import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/Dashbo
 import { SystemItemType, CollectionWithStats } from '@/types/db';
 import { getSystemItemTypesWithCounts } from '@/lib/db/items/items';
 import { getFavoriteCollections, getRecentCollections } from '@/lib/db/collections/collections';
+import { stripe, priceIdToPlan } from '@/lib/stripe/stripe';
 import { redirect } from 'next/navigation';
+
+type PlanTier = 'free' | 'monthly' | 'yearly';
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -40,6 +43,18 @@ export default async function SettingsPage() {
 
   const hasPassword = user.hasPassword;
 
+  let planTier: PlanTier = 'free';
+  if (user.isPro && user.stripeSubscriptionId) {
+    try {
+      const sub = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
+      const priceId = sub.items.data[0]?.price.id;
+      planTier = priceId ? (priceIdToPlan(priceId) ?? 'free') : 'free';
+    } catch (error) {
+      console.error('Failed to retrieve Stripe subscription:', error);
+      planTier = 'free';
+    }
+  }
+
   return (
     <DashboardWrapper
       user={{
@@ -53,7 +68,14 @@ export default async function SettingsPage() {
       favoriteCollections={favoriteCollections}
       recentCollections={recentCollections}
     >
-      <SettingsPageClient hasPassword={hasPassword} />
+      <SettingsPageClient
+        hasPassword={hasPassword}
+        planTier={planTier}
+        usage={{
+          totalItems: profileData.itemStats.totalItems,
+          totalCollections: profileData.itemStats.totalCollections,
+        }}
+      />
     </DashboardWrapper>
   );
 }

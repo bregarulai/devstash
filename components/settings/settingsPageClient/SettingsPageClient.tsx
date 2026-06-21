@@ -22,13 +22,23 @@ import {
 import { ChangePasswordForm } from '@/components/settings/changePasswordForm/ChangePasswordForm';
 import { DeleteAccountDialog } from '@/components/settings/deleteAccountDialog/DeleteAccountDialog';
 import { EditorPreferencesForm } from '@/components/settings/editorPreferencesForm/EditorPreferencesForm';
+import { BillingSection } from '@/components/settings/billingSection/BillingSection';
+
+type PlanTier = 'free' | 'monthly' | 'yearly';
 
 interface SettingsPageClientProps {
   hasPassword: boolean;
+  planTier: PlanTier;
+  usage?: {
+    totalItems: number;
+    totalCollections: number;
+  };
 }
 
 export function SettingsPageClient({
   hasPassword,
+  planTier,
+  usage,
 }: SettingsPageClientProps) {
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 
@@ -43,6 +53,9 @@ export function SettingsPageClient({
         </div>
 
         <Separator />
+
+        {/* Billing */}
+        <BillingSection planTier={planTier} usage={usage} />
 
         {/* Editor Preferences */}
         <EditorPreferencesForm />

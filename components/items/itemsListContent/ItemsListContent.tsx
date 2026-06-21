@@ -32,6 +32,7 @@ interface ItemsListContentProps {
   totalCount: number;
   baseUrl: string;
   perPage: number;
+  isPro: boolean;
 }
 
 export function ItemsListContent({
@@ -44,6 +45,7 @@ export function ItemsListContent({
   totalCount,
   baseUrl,
   perPage,
+  isPro,
 }: ItemsListContentProps) {
   const { openDrawer } = useItemDrawer();
   const router = useRouter();
@@ -108,7 +110,7 @@ export function ItemsListContent({
               Create your first {currentType.name} to get started.
             </EmptyDescription>
           </EmptyHeader>
-          <ItemCreateDialog />
+          <ItemCreateDialog isPro={isPro} />
         </Empty>
       ) : currentTypeName === 'file' ? (
         <div className='flex flex-col gap-1'>

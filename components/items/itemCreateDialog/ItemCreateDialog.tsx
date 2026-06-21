@@ -16,9 +16,10 @@ import { useItemCreateForm } from '@/hooks/useItemCreateForm/useItemCreateForm';
 interface ItemCreateDialogProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  isPro?: boolean;
 }
 
-export function ItemCreateDialog({ open: externalOpen, onOpenChange: externalOnOpenChange }: ItemCreateDialogProps) {
+export function ItemCreateDialog({ open: externalOpen, onOpenChange: externalOnOpenChange, isPro = false }: ItemCreateDialogProps) {
   const {
     open: internalOpen,
     isPending,
@@ -70,6 +71,7 @@ export function ItemCreateDialog({ open: externalOpen, onOpenChange: externalOnO
           isPending={isPending}
           isUploading={isUploading}
           uploadProgress={uploadProgress}
+          isPro={isPro}
           handleItemTypeSelect={handleItemTypeSelect}
           handleFileSelect={handleFileSelect}
           handleTagsChange={handleTagsChange}

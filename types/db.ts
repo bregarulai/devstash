@@ -387,6 +387,7 @@ export const profileUserDataSchema = z.object({
   isPro: z.boolean(),
   createdAt: z.coerce.date(),
   hasPassword: z.boolean(),
+  stripeSubscriptionId: z.string().or(z.null()),
 });
 
 export const profileDataSchema = z.object({

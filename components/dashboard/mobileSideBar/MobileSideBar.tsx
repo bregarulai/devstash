@@ -17,9 +17,10 @@ import { CollectionCreateDialog } from '@/components/collections/collectionCreat
 
 interface MobileSideBarProps {
   onMenuToggle?: () => void;
+  isPro?: boolean;
 }
 
-export function MobileSideBar({ onMenuToggle }: MobileSideBarProps) {
+export function MobileSideBar({ onMenuToggle, isPro = false }: MobileSideBarProps) {
   const [itemDialogOpen, setItemDialogOpen] = useState(false);
   const [collectionDialogOpen, setCollectionDialogOpen] = useState(false);
 
@@ -75,7 +76,7 @@ export function MobileSideBar({ onMenuToggle }: MobileSideBarProps) {
         </div>
       </header>
       <Separator />
-      <ItemCreateDialog open={itemDialogOpen} onOpenChange={setItemDialogOpen} />
+      <ItemCreateDialog open={itemDialogOpen} onOpenChange={setItemDialogOpen} isPro={isPro} />
       <CollectionCreateDialog open={collectionDialogOpen} onOpenChange={setCollectionDialogOpen} />
     </>
   );
