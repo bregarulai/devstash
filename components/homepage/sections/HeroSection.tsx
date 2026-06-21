@@ -5,7 +5,15 @@ import { ChaosVisual } from '@/components/homepage/chaosVisual/ChaosVisual';
 
 export function HeroSection() {
   return (
-    <section className="max-w-6xl mx-auto px-5 pt-[120px] pb-10 grid gap-12 lg:pt-[140px] lg:gap-14 lg:text-center">
+    <section className="relative max-w-6xl mx-auto px-5 pt-[120px] pb-10 grid gap-12 lg:pt-[140px] lg:gap-14 lg:text-center">
+      <div
+        className="absolute inset-0 -z-10 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 50% at 50% 30%, oklch(0.623 0.214 259.815 / 0.06), transparent)',
+        }}
+        aria-hidden="true"
+      />
       <Reveal defaultVisible className="lg:max-w-[760px] lg:mx-auto">
         <span className="inline-block text-xs font-medium text-muted-foreground mb-4">
           The developer knowledge hub

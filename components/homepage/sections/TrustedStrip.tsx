@@ -2,9 +2,9 @@ import { Reveal } from '@/components/homepage/reveal/Reveal';
 import { Shield, Lock, BrainCircuit } from 'lucide-react';
 
 const TRUST_SIGNALS = [
-  { icon: Shield, label: 'Open source' },
-  { icon: Lock, label: 'Encrypted at rest' },
-  { icon: BrainCircuit, label: 'Not used for AI training' },
+  { icon: Shield, label: 'Open source', color: 'var(--color-brand)' },
+  { icon: Lock, label: 'Encrypted at rest', color: 'var(--color-link)' },
+  { icon: BrainCircuit, label: 'Not used for AI training', color: 'var(--color-command)' },
 ];
 
 export function TrustedStrip() {
@@ -13,7 +13,7 @@ export function TrustedStrip() {
       <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
         {TRUST_SIGNALS.map((signal) => (
           <div key={signal.label} className="flex items-center gap-2 text-muted-foreground text-sm">
-            <signal.icon className="w-4 h-4 flex-none" />
+            <signal.icon className="w-4 h-4 flex-none" style={{ color: signal.color }} />
             <span>{signal.label}</span>
           </div>
         ))}

@@ -60,8 +60,8 @@ export function PricingSection() {
         </Reveal>
 
         <Reveal className="h-full">
-          <article className="relative bg-card border border-border rounded-2xl p-7 ring-1 ring-primary/40 transition-colors duration-200 hover:border-foreground/20 h-full flex flex-col">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-semibold normal-case py-[5px] px-3.5 rounded-full bg-primary text-primary-foreground">
+          <article className="relative bg-card border border-border rounded-2xl p-7 ring-1 ring-[var(--color-brand)]/40 transition-colors duration-200 hover:border-foreground/20 h-full flex flex-col">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-semibold normal-case py-[5px] px-3.5 rounded-full bg-[var(--color-brand)] text-white">
               Most Popular
             </span>
             <h3 className="text-xl font-bold mb-1 text-balance">Pro</h3>
