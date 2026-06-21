@@ -1,16 +1,53 @@
-# Current Feature
+# Current Feature: Stripe Integration Phase 1 — Core Infrastructure
+
+**Spec**: `context/features/stripe-integration-phase-1-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Stripe SDK importable from a single singleton (`lib/stripe/stripe.ts`) with typed price-ID helpers (`STRIPE_PRICE_IDS`, `PlanInterval`, `priceIdToPlan`)
+- Free-tier limits (50 items, 3 collections) and Pro-only item-type rules (`file`, `image`) live in one pure module (`lib/constants/limits.ts`) with full unit test coverage
+- Active user session picks up `isPro` changes from the database on the next request (no sign-out/in required) via fixed NextAuth JWT callback
+- `npm run test:run` and `npm run build` stay green
+- `lib/constants/limits.ts` unit test coverage ≥ 95% (aim for 100%)
+- `npm run lint` passes with no errors from new `stripe` import
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- **Severity**: P0 — Foundation. Phase 2 cannot ship without the singleton, the limits module, and the JWT sync fix.
+- **No Stripe Dashboard setup needed** for this phase — all env vars can be placeholder strings for unit tests
+- **No webhooks, no checkout, no UI changes** in this phase
+- The `stripe` package v19+ ships its own TypeScript types — do **not** add `@types/stripe`
+- Pin the Stripe `apiVersion` to the exact string the installed SDK defaults to (check `node_modules/stripe` after install); do not leave it unset
+- The JWT callback fix adds one DB query per session validation — intentional, revisit with caching only if profiling justifies it
+- Throw-on-missing-secret only fires at module load in runtime code paths, not in tests that don't import `lib/stripe/stripe.ts`
+- Mirror the env-missing throw pattern from `lib/prisma/prisma.ts:6-8`
+
+### Files to Create
+- `lib/stripe/stripe.ts` — Stripe SDK singleton + price ID helpers
+- `lib/constants/limits.ts` — Free-tier limits + Pro-only type guard (pure module, no Prisma/Stripe/React)
+- `lib/constants/limits.test.ts` — Unit tests for limits module
+
+### Files to Modify
+- `package.json` — Add `stripe` to `dependencies`
+- `lib/auth/authConfig/authConfig.ts` — Always-sync `isPro` in `jwt` callback (lines 22-32)
+- `lib/auth/authConfig/authConfig.test.ts` — Cover the no-`user` JWT path with mocked Prisma
+
+### Why a separate `lib/constants/limits.ts` file
+`lib/constants.ts` imports `lucide-react` icons, which pulls in React-side concerns. The limits module must stay pure so it can be imported from server actions, API routes, and unit tests without side effects.
+
+### Key References
+- `docs/stripe-integration-plan.md` — §1.2, §4.1.1, §4.1.2, §4.2.1
+- `prisma/schema.prisma:16-37` — User model with `isPro`, `stripeCustomerId`, `stripeSubscriptionId`
+- `lib/auth/authConfig/authConfig.ts:22-41` — current `jwt` + `session` callbacks
+- `lib/auth/authConfig/authConfig.test.ts:125,134` — existing test assertions to update
+- `lib/prisma/prisma.ts:6-8` — env-missing throw pattern to mirror
+- `lib/constants.ts:6-19` — existing `ITEM_TYPES` and `SHOW_FILE_UPLOAD` (do not modify here)
+- `context/project-overview.md:526-547` — free tier vs Pro feature matrix
+- `vitest.config.ts` — test runner config
 
 ## History
 

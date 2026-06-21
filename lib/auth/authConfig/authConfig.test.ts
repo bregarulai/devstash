@@ -1,10 +1,11 @@
-import { describe, it, expect, vi } from 'vitest'
-import type { User } from '@auth/core/types'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+const mockPrismaUserFindUnique = vi.fn()
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     user: {
-      findUnique: vi.fn().mockResolvedValue(null),
+      findUnique: (...args: unknown[]) => mockPrismaUserFindUnique(...args),
     },
   },
 }))
@@ -116,7 +117,23 @@ describe('authConfig.redirect', () => {
 describe('authConfig.jwt', () => {
   const jwt = authConfig.callbacks!.jwt!
 
-  it('adds user id to token on sign in', async () => {
+  beforeEach(() => {
+    mockPrismaUserFindUnique.mockReset()
+  })
+
+  it('adds user id to token on sign in and syncs isPro from DB', async () => {
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: true })
+    const token = {}
+    const user = { id: 'user-123' }
+
+    const result = await jwt({ token, user, account: null, profile: undefined, trigger: 'signIn', session: undefined })
+
+    expect(result).toEqual({ id: 'user-123', isPro: true })
+    expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({ where: { id: 'user-123' }, select: { isPro: true } })
+  })
+
+  it('defaults isPro to false when DB lookup returns null on sign in', async () => {
+    mockPrismaUserFindUnique.mockResolvedValue(null)
     const token = {}
     const user = { id: 'user-123' }
 
@@ -125,13 +142,51 @@ describe('authConfig.jwt', () => {
     expect(result).toEqual({ id: 'user-123', isPro: false })
   })
 
-  it('returns existing token without user', async () => {
-    const token = { existing: 'data' }
-    const user: User = { id: '', email: null, name: null, image: null }
+  it('syncs isPro from DB on subsequent calls without user (returning session)', async () => {
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: true })
+    const token = { id: 'user-123' }
 
-    const result = await jwt({ token, user, account: null, profile: undefined, trigger: 'signIn', session: undefined })
+    const result = await jwt({ token, account: null, profile: undefined, trigger: undefined, session: undefined } as unknown as Parameters<typeof jwt>[0])
 
-    expect(result).toEqual({ existing: 'data', id: '', isPro: false })
+    expect(result).toEqual({ id: 'user-123', isPro: true })
+    expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({ where: { id: 'user-123' }, select: { isPro: true } })
+  })
+
+  it('defaults isPro to false when DB lookup returns null on returning session', async () => {
+    mockPrismaUserFindUnique.mockResolvedValue(null)
+    const token = { id: 'user-123' }
+
+    const result = await jwt({ token, account: null, profile: undefined, trigger: undefined, session: undefined } as unknown as Parameters<typeof jwt>[0])
+
+    expect(result).toEqual({ id: 'user-123', isPro: false })
+  })
+
+  it('falls back to token.sub when token.id is unset', async () => {
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: true })
+    const token = { sub: 'user-from-sub' }
+
+    const result = await jwt({ token, account: null, profile: undefined, trigger: undefined, session: undefined } as unknown as Parameters<typeof jwt>[0])
+
+    expect(result).toEqual({ sub: 'user-from-sub', isPro: true })
+    expect(mockPrismaUserFindUnique).toHaveBeenCalledWith({ where: { id: 'user-from-sub' }, select: { isPro: true } })
+  })
+
+  it('preserves existing token data', async () => {
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false })
+    const token = { existing: 'data', id: 'user-123' }
+
+    const result = await jwt({ token, account: null, profile: undefined, trigger: undefined, session: undefined } as unknown as Parameters<typeof jwt>[0])
+
+    expect(result).toEqual({ existing: 'data', id: 'user-123', isPro: false })
+  })
+
+  it('does not query DB when neither token.id nor token.sub is set', async () => {
+    const token = {}
+
+    const result = await jwt({ token, account: null, profile: undefined, trigger: undefined, session: undefined } as unknown as Parameters<typeof jwt>[0])
+
+    expect(result).toEqual({})
+    expect(mockPrismaUserFindUnique).not.toHaveBeenCalled()
   })
 })
 
