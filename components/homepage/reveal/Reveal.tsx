@@ -3,12 +3,16 @@
 import { useRef, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
+type RevealVariant = 'fade' | 'scale' | 'fast' | 'stagger';
+
 interface RevealProps {
   children: ReactNode;
   className?: string;
   rootMargin?: string;
   threshold?: number;
   defaultVisible?: boolean;
+  variant?: RevealVariant;
+  delay?: number;
 }
 
 function getReducedMotionSnapshot() {
@@ -25,12 +29,37 @@ function subscribeToReducedMotion(callback: () => void) {
   return () => mql.removeEventListener('change', callback);
 }
 
+const VARIANT_STYLES: Record<RevealVariant, { hidden: string; visible: string; transition: string }> = {
+  fade: {
+    hidden: '[html[data-js]_&]:opacity-0 [html[data-js]_&]:translate-y-5',
+    visible: 'opacity-100 translate-y-0',
+    transition: 'transition-[opacity,transform] duration-500 ease-out',
+  },
+  scale: {
+    hidden: '[html[data-js]_&]:opacity-0 [html[data-js]_&]:scale-95',
+    visible: 'opacity-100 scale-100',
+    transition: 'transition-[opacity,transform] duration-600 ease-out',
+  },
+  fast: {
+    hidden: '[html[data-js]_&]:opacity-0 [html[data-js]_&]:translate-y-3',
+    visible: 'opacity-100 translate-y-0',
+    transition: 'transition-[opacity,transform] duration-300 ease-out',
+  },
+  stagger: {
+    hidden: '[html[data-js]_&]:opacity-0 [html[data-js]_&]:translate-y-4',
+    visible: 'opacity-100 translate-y-0',
+    transition: 'transition-[opacity,transform] duration-400 ease-out',
+  },
+};
+
 export function Reveal({
   children,
   className,
   rootMargin = '0px 0px -8% 0px',
   threshold = 0.12,
   defaultVisible = false,
+  variant = 'fade',
+  delay,
 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useSyncExternalStore(
@@ -69,18 +98,21 @@ export function Reveal({
     };
   }, [rootMargin, threshold, prefersReducedMotion, defaultVisible]);
 
+  const styles = VARIANT_STYLES[variant];
+
   return (
     <div
       ref={ref}
       className={cn(
-        'transition-[opacity,transform] duration-500 ease-out',
+        styles.transition,
         prefersReducedMotion
-          ? 'opacity-100 translate-y-0'
+          ? styles.visible
           : isVisible
-            ? 'opacity-100 translate-y-0'
-            : '[html[data-js]_&]:opacity-0 [html[data-js]_&]:translate-y-6',
+            ? styles.visible
+            : styles.hidden,
         className
       )}
+      style={delay !== undefined ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}
     </div>

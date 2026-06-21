@@ -301,17 +301,23 @@ export function ChaosVisual() {
         className="relative h-[44px] rotate-90 flex items-center justify-center lg:h-auto lg:min-h-[60px] lg:rotate-0"
         aria-hidden="true"
       >
-        <div className="w-[130px] h-1.5 bg-muted-foreground rounded-md relative">
-          <div
-            className="absolute -right-3.5 top-1/2 -translate-y-1/2"
-            style={{
-              width: 0,
-              height: 0,
-              borderTop: '13px solid transparent',
-              borderBottom: '13px solid transparent',
-              borderLeft: '20px solid var(--muted-foreground)',
-            }}
-          />
+        <div className="w-[120px] h-[3px] bg-muted-foreground/40 rounded-full relative">
+          <svg
+            className="absolute -right-3 top-1/2 -translate-y-1/2"
+            width="28"
+            height="14"
+            viewBox="0 0 28 14"
+            fill="none"
+          >
+            <path
+              d="M2 7h20m0 0L19 4M22 7l-3 3"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-muted-foreground"
+            />
+          </svg>
         </div>
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div

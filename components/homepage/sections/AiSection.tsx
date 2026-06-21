@@ -16,7 +16,7 @@ const AI_TAGS = ['react', 'hooks', 'typescript', 'state', 'toggle'];
 export function AiSection() {
   return (
     <section id="ai" className="max-w-6xl mx-auto px-5 py-10">
-      <Reveal>
+      <Reveal variant="scale">
         <div className="grid gap-8 bg-secondary border border-border rounded-2xl p-8 lg:grid-cols-2 lg:gap-12 lg:p-12">
           <div>
             <Badge

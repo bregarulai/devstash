@@ -53,10 +53,7 @@ export function Footer() {
           <div>
             <h4 className="text-[13px] font-bold mb-3">Resources</h4>
             <span className="block text-muted-foreground text-sm py-1">
-              Open source
-            </span>
-            <span className="block text-muted-foreground text-sm py-1">
-              MIT licensed
+              MIT licensed on GitHub
             </span>
           </div>
         </div>

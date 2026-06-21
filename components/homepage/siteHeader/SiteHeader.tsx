@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
 
+const NAV_SECTIONS = ['features', 'ai', 'pricing'] as const;
+
 interface SiteHeaderProps {
   isAuthenticated: boolean;
 }
@@ -13,6 +15,7 @@ interface SiteHeaderProps {
 export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -21,6 +24,25 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = NAV_SECTIONS.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: '-20% 0px -60% 0px', threshold: 0 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
   const closeMobileMenu = useCallback(() => {
@@ -87,15 +109,20 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
         </Link>
 
         <div className="hidden lg:flex gap-6.5 ml-4.5">
-          <a href="#features" className="text-muted-foreground text-sm font-medium hover:text-foreground transition-colors">
-            Features
-          </a>
-          <a href="#ai" className="text-muted-foreground text-sm font-medium hover:text-foreground transition-colors">
-            AI
-          </a>
-          <a href="#pricing" className="text-muted-foreground text-sm font-medium hover:text-foreground transition-colors">
-            Pricing
-          </a>
+          {NAV_SECTIONS.map((section) => (
+            <a
+              key={section}
+              href={`#${section}`}
+              className={cn(
+                'text-sm font-medium transition-colors',
+                activeSection === section
+                  ? 'text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              {section === 'ai' ? 'AI' : section.charAt(0).toUpperCase() + section.slice(1)}
+            </a>
+          ))}
         </div>
 
         <div className="hidden lg:flex gap-2.5 ml-auto">
@@ -145,27 +172,21 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
           aria-label="Site menu"
           className="lg:hidden flex flex-col gap-1.5 px-5 pb-4.5 bg-background/95 border-b border-border"
         >
-          <a
-            href="#features"
-            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
-            onClick={closeMobileMenu}
-          >
-            Features
-          </a>
-          <a
-            href="#ai"
-            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
-            onClick={closeMobileMenu}
-          >
-            AI
-          </a>
-          <a
-            href="#pricing"
-            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
-            onClick={closeMobileMenu}
-          >
-            Pricing
-          </a>
+          {NAV_SECTIONS.map((section) => (
+            <a
+              key={section}
+              href={`#${section}`}
+              className={cn(
+                'py-3 min-h-11 px-1 text-sm font-medium transition-colors',
+                activeSection === section
+                  ? 'text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+              onClick={closeMobileMenu}
+            >
+              {section === 'ai' ? 'AI' : section.charAt(0).toUpperCase() + section.slice(1)}
+            </a>
+          ))}
           {isAuthenticated ? (
             <>
               <Button variant="ghost" className="mt-1.5" asChild>
