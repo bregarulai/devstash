@@ -5,6 +5,11 @@ import { SystemItemType, CollectionWithStats } from '@/types/db';
 import { MobileSideBar } from '../mobileSideBar/MobileSideBar';
 import { Sidebar } from '../sidebar/Sidebar';
 import { EditorPreferencesProvider } from '@/contexts/editorPreferencesContext/EditorPreferencesContext';
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+} from '@/components/ui/sheet';
 
 export function DashboardWrapperClient({
   children,
@@ -26,39 +31,48 @@ export function DashboardWrapperClient({
   recentCollections: CollectionWithStats[];
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
-  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const sidebarProps = {
+    isExpanded,
+    onToggle: () => setIsExpanded(!isExpanded),
+    systemItemTypes,
+    favoriteCollections,
+    recentCollections,
+    user,
+  };
 
   return (
     <EditorPreferencesProvider>
       <div className='flex h-screen w-screen overflow-hidden'>
-        {/* Sidebar — always visible, compact on mobile */}
+        {/* Desktop sidebar — inline, collapsible */}
         <div className='hidden lg:flex lg:shrink-0'>
-          <Sidebar
-            isExpanded={isExpanded}
-            onToggle={() => setIsExpanded(!isExpanded)}
-            systemItemTypes={systemItemTypes}
-            favoriteCollections={favoriteCollections}
-            recentCollections={recentCollections}
-            user={user}
-          />
+          <Sidebar {...sidebarProps} />
         </div>
 
-        {/* Mobile sidebar (compact, icons-only) */}
-        <div className='flex w-14 shrink-0 lg:hidden'>
-          <Sidebar
-            isExpanded={isMobileExpanded}
-            onToggle={() => setIsMobileExpanded(!isMobileExpanded)}
-            systemItemTypes={systemItemTypes}
-            favoriteCollections={favoriteCollections}
-            recentCollections={recentCollections}
-            user={user}
-          />
-        </div>
+        {/* Mobile sidebar — Sheet overlay */}
+        <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
+          <SheetContent
+            side='left'
+            showCloseButton={false}
+            className='w-64 p-0'
+          >
+            <SheetTitle className='sr-only'>Navigation</SheetTitle>
+            <Sidebar
+              isExpanded={true}
+              onToggle={() => setIsMobileOpen(false)}
+              systemItemTypes={systemItemTypes}
+              favoriteCollections={favoriteCollections}
+              recentCollections={recentCollections}
+              user={user}
+            />
+          </SheetContent>
+        </Sheet>
 
         {/* Main content area */}
         <div className='flex min-w-0 flex-1 flex-col'>
           {/* Top bar */}
-          <MobileSideBar />
+          <MobileSideBar onMenuToggle={() => setIsMobileOpen(true)} />
 
           {/* Page content */}
           <main className='flex-1 overflow-y-auto p-6 lg:p-8'>{children}</main>

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { ProtectedLink } from '@/components/shared/protectedLink/ProtectedLink';
 import { ChevronDown, PanelLeft } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -43,9 +44,19 @@ export function Sidebar({
     <div className='relative flex h-screen flex-col bg-background'>
       {/* Header */}
       <div className='flex h-16 items-center px-4'>
-        <ProtectedLink href='/dashboard' className='text-lg font-bold'>
-          {isExpanded && 'DevStash'}
-        </ProtectedLink>
+        <Link href='/dashboard' className='flex items-center gap-2 shrink-0' aria-label='DevStash home'>
+          <svg viewBox='0 0 32 32' width='28' height='28' fill='none'>
+            <rect x='3' y='3' width='26' height='26' rx='7' fill='var(--color-brand)' />
+            <path
+              d='M11 21V11h6.5a3.5 3.5 0 0 1 0 7H14'
+              stroke='var(--color-brand-foreground)'
+              strokeWidth='2.4'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            />
+          </svg>
+          {isExpanded && <span className='text-lg font-bold'>DevStash</span>}
+        </Link>
       </div>
       <Separator />
       <div className='flex-1 overflow-y-auto py-2 border-r border-border'>

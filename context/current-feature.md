@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Dashboard Top Bar Responsive Cleanup
+
+**Spec**: `context/features/dashboard-topbar-responsive-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Add DevStash logo (SVG + brand text) to top bar; text hidden on mobile, logo always visible
+- Collapse search to icon-only below `sm`, still opens command palette
+- Replace two create buttons with single `+` dropdown menu ("New Item", "New Collection")
+- Favorites star unchanged
+- No text truncation or overflow at any breakpoint (375px, 640px, 1024px)
+- Lint and build pass
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- Logo SVG is identical to homepage header (`components/homepage/siteHeader/SiteHeader.tsx:97-106`)
+- CSS-only responsive approach — no JS breakpoint detection
+- Lift dialog open state into MobileSideBar (Option A from spec)
+- DropdownMenu already installed (shadcn)
 
 ## History
 

@@ -13,10 +13,14 @@ import {
 import { ItemCreateFormBody } from './ItemCreateFormBody';
 import { useItemCreateForm } from '@/hooks/useItemCreateForm/useItemCreateForm';
 
-export function ItemCreateDialog() {
+interface ItemCreateDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function ItemCreateDialog({ open: externalOpen, onOpenChange: externalOnOpenChange }: ItemCreateDialogProps) {
   const {
-    open,
-    setOpen,
+    open: internalOpen,
     isPending,
     isUploading,
     uploadProgress,
@@ -26,21 +30,26 @@ export function ItemCreateDialog() {
     contentValue,
     languageValue,
     collectionIds,
-    handleOpenChange,
+    handleOpenChange: internalHandleOpenChange,
     handleItemTypeSelect,
     handleFileSelect,
     handleTagsChange,
     handleCollectionChange,
   } = useItemCreateForm();
 
+  const isOpen = externalOpen ?? internalOpen;
+  const handleOpenChange = externalOnOpenChange ?? internalHandleOpenChange;
+
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button size='sm'>
-          <Plus className='mr-2 h-4 w-4' />
-          New Item
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {externalOpen === undefined && (
+        <DialogTrigger asChild>
+          <Button size='sm'>
+            <Plus className='mr-2 h-4 w-4' />
+            New Item
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent
         className='max-w-md p-6 sm:max-w-lg sm:p-6'
         showCloseButton={false}
@@ -65,7 +74,7 @@ export function ItemCreateDialog() {
           handleFileSelect={handleFileSelect}
           handleTagsChange={handleTagsChange}
           handleCollectionChange={handleCollectionChange}
-          setOpen={setOpen}
+          setOpen={handleOpenChange}
         />
       </DialogContent>
     </Dialog>

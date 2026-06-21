@@ -26,10 +26,18 @@ import {
 import { collectionCreateSchema, type CollectionCreateValues } from '@/types/db';
 import { createCollectionAction } from '@/actions';
 
-export function CollectionCreateDialog() {
-  const [open, setOpen] = useState(false);
+interface CollectionCreateDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function CollectionCreateDialog({ open: externalOpen, onOpenChange: externalOnOpenChange }: CollectionCreateDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  const isOpen = externalOpen ?? internalOpen;
+  const setOpen = externalOnOpenChange ?? setInternalOpen;
 
   const form = useForm<CollectionCreateValues>({
     resolver: zodResolver(collectionCreateSchema),
@@ -65,13 +73,15 @@ export function CollectionCreateDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button size='sm' variant='outline'>
-          <FolderDown className='mr-2 h-4 w-4' />
-          New Collection
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {externalOpen === undefined && (
+        <DialogTrigger asChild>
+          <Button size='sm' variant='outline'>
+            <FolderDown className='mr-2 h-4 w-4' />
+            New Collection
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className='max-w-md p-6' showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>Create New Collection</DialogTitle>

@@ -6,11 +6,24 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
+import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 import { useCommandPalette } from '@/hooks/useCommandPalette/useCommandPalette';
 
-export function SearchBar() {
+interface SearchBarProps {
+  iconOnly?: boolean;
+}
+
+export function SearchBar({ iconOnly = false }: SearchBarProps) {
   const { openPalette } = useCommandPalette();
+
+  if (iconOnly) {
+    return (
+      <Button variant='ghost' size='icon' onClick={openPalette} aria-label='Search'>
+        <Search className='h-4 w-4' />
+      </Button>
+    );
+  }
 
   return (
     <Field>
