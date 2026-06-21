@@ -1,8 +1,6 @@
-'use client'; // Required for ClientLoader interactivity (mounted state)
+'use client';
 
 import { Code, Folder, Heart, Star } from 'lucide-react';
-import { ClientLoader } from '../clientLoader/ClientLoader';
-import { StatsCardsSkeleton } from '../skeletons/StatsCardsSkeleton';
 
 interface StatsCardsProps {
   stats: {
@@ -45,7 +43,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
     },
   ];
 
-  const content = (
+  return (
     <div className='flex flex-wrap items-center gap-8 bg-muted/40 rounded-xl px-6 py-4'>
       {data.map((stat) => (
         <div key={stat.label} className='flex items-center gap-2'>
@@ -59,11 +57,5 @@ export function StatsCards({ stats }: StatsCardsProps) {
         </div>
       ))}
     </div>
-  );
-
-  return (
-    <ClientLoader fallback={<StatsCardsSkeleton />}>
-      {content}
-    </ClientLoader>
   );
 }

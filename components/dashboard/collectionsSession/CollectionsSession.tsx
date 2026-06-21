@@ -1,9 +1,7 @@
-'use client'; // Required for ClientLoader interactivity (mounted state)
+'use client';
 
 import Link from 'next/link';
 import { CollectionCard } from '../collectionCard/CollectionCard';
-import { ClientLoader } from '../clientLoader/ClientLoader';
-import { CollectionSessionSkeleton } from '../skeletons/CollectionSessionSkeleton';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -14,7 +12,7 @@ interface CollectionsSessionProps {
 }
 
 export function CollectionsSession({ collections }: CollectionsSessionProps) {
-  const content = (
+  return (
     <section className='space-y-6'>
       <div>
         <div className='flex items-center justify-between mb-4'>
@@ -52,11 +50,5 @@ export function CollectionsSession({ collections }: CollectionsSessionProps) {
         )}
       </div>
     </section>
-  );
-
-  return (
-    <ClientLoader fallback={<CollectionSessionSkeleton />}>
-      {content}
-    </ClientLoader>
   );
 }

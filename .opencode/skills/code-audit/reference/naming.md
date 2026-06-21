@@ -2,7 +2,7 @@
 
 ## Components
 - Components: PascalCase (`ItemCard.tsx`)?
-- Component folders: PascalCase matching the component name?
+- Component folders: camelCase matching the component name?
 
 ## Files
 - Files: match component name or kebab-case?

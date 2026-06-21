@@ -1,14 +1,10 @@
-'use client'; // Required for ClientLoader interactivity (mounted state)
+'use client';
 
-import { Pin, Star } from 'lucide-react';
+import { Pin, Star, ArrowRight } from 'lucide-react';
 import { CardContent } from '@/components/ui/card';
-
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
-import { ClientLoader } from '../clientLoader/ClientLoader';
-import { PinnedItemsSkeleton } from '../skeletons/PinnedItemsSkeleton';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import type { ItemWithDetails } from '@/types/db';
 
@@ -18,7 +14,32 @@ interface PinnedItemsProps {
 }
 
 export function PinnedItems({ items, onOpen }: PinnedItemsProps) {
-  const content = (
+  if (items.length === 0) {
+    return (
+      <section>
+        <div className='flex items-center gap-2 py-4'>
+          <Pin className='h-4 w-4 text-muted-foreground' />
+          <h2 className='text-lg font-semibold'>Pinned Items</h2>
+        </div>
+        <Empty>
+          <EmptyHeader>
+            <EmptyTitle>No pinned items</EmptyTitle>
+            <EmptyDescription>Pin your most important snippets, prompts, and links to find them instantly.</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button asChild>
+              <Link href='/items'>
+                Browse items
+                <ArrowRight className='ml-2 h-4 w-4' />
+              </Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
+      </section>
+    );
+  }
+
+  return (
     <section>
       <div className='flex items-center gap-2 py-4'>
         <Pin className='h-4 w-4 text-muted-foreground' />
@@ -55,36 +76,9 @@ export function PinnedItems({ items, onOpen }: PinnedItemsProps) {
                 </p>
               </div>
             </CardContent>
-            </button>
+          </button>
         ))}
       </div>
     </section>
-  );
-
-  if (items.length === 0) {
-    return (
-      <ClientLoader fallback={<PinnedItemsSkeleton />}>
-        <Empty>
-          <EmptyHeader>
-            <EmptyTitle>No pinned items</EmptyTitle>
-            <EmptyDescription>Pin your most important snippets, prompts, and links to find them instantly.</EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button asChild>
-              <Link href='/items'>
-                Browse items
-                <ArrowRight className='ml-2 h-4 w-4' />
-              </Link>
-            </Button>
-          </EmptyContent>
-        </Empty>
-      </ClientLoader>
-    );
-  }
-
-  return (
-    <ClientLoader fallback={<PinnedItemsSkeleton />}>
-      {content}
-    </ClientLoader>
   );
 }

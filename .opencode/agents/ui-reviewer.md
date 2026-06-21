@@ -1,6 +1,8 @@
 ---
 name: ui-reviewer
 description: Reviews UI for visual issues, responsiveness, and accessibility
+mode: subagent
+temperature: 0.1
 tools: "Read, Glob, Grep, mcp\_\_playwright\_\_*"
 ---
 

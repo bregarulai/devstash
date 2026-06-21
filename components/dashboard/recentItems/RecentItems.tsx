@@ -1,12 +1,9 @@
-'use client'; // Required for ClientLoader interactivity (mounted state)
+'use client';
 
 import { Clock, Star } from 'lucide-react';
 import { CardContent } from '@/components/ui/card';
-
 import { formatDaysAgo } from '@/lib/utils/utils';
 import { ItemTypeIcon } from '../itemTypeIcon/ItemTypeIcon';
-import { ClientLoader } from '../clientLoader/ClientLoader';
-import { RecentItemsSkeleton } from '../skeletons/RecentItemsSkeleton';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty';
 import type { ItemWithDetails } from '@/types/db';
 
@@ -16,7 +13,24 @@ interface RecentItemsProps {
 }
 
 export function RecentItems({ items, onOpen }: RecentItemsProps) {
-  const content = (
+  if (items.length === 0) {
+    return (
+      <section>
+        <div className='flex items-center gap-2 py-4'>
+          <Clock className='h-4 w-4 text-muted-foreground' />
+          <h2 className='text-lg font-semibold'>Recent Items</h2>
+        </div>
+        <Empty>
+          <EmptyHeader>
+            <EmptyTitle>No recent items</EmptyTitle>
+            <EmptyDescription>Items you view or edit will appear here for quick access.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </section>
+    );
+  }
+
+  return (
     <section>
       <div className='flex items-center gap-2 py-4'>
         <Clock className='h-4 w-4 text-muted-foreground' />
@@ -64,28 +78,9 @@ export function RecentItems({ items, onOpen }: RecentItemsProps) {
                 {formatDaysAgo(item.updatedAt)}
               </span>
             </CardContent>
-            </button>
+          </button>
         ))}
       </div>
     </section>
-  );
-
-  if (items.length === 0) {
-    return (
-      <ClientLoader fallback={<RecentItemsSkeleton />}>
-        <Empty>
-          <EmptyHeader>
-            <EmptyTitle>No recent items</EmptyTitle>
-            <EmptyDescription>Items you view or edit will appear here for quick access.</EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      </ClientLoader>
-    );
-  }
-
-  return (
-    <ClientLoader fallback={<RecentItemsSkeleton />}>
-      {content}
-    </ClientLoader>
   );
 }

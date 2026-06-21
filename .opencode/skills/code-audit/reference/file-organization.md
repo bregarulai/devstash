@@ -2,7 +2,7 @@
 
 ## Components
 - Components in `components/[feature]/[componentName]/ComponentName.tsx`?
-- Each component lives in its own folder named in PascalCase matching the component name?
+- Each component lives in its own folder named in camelCase matching the component name?
 
 ## Pages
 - Pages in `app/[route]/page.tsx`?
