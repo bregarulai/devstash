@@ -1,26 +1,16 @@
-# Current Feature: Dashboard Top Bar Responsive Cleanup
-
-**Spec**: `context/features/dashboard-topbar-responsive-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add DevStash logo (SVG + brand text) to top bar; text hidden on mobile, logo always visible
-- Collapse search to icon-only below `sm`, still opens command palette
-- Replace two create buttons with single `+` dropdown menu ("New Item", "New Collection")
-- Favorites star unchanged
-- No text truncation or overflow at any breakpoint (375px, 640px, 1024px)
-- Lint and build pass
+<!-- What does success look like? -->
 
 ## Notes
 
-- Logo SVG is identical to homepage header (`components/homepage/siteHeader/SiteHeader.tsx:97-106`)
-- CSS-only responsive approach — no JS breakpoint detection
-- Lift dialog open state into MobileSideBar (Option A from spec)
-- DropdownMenu already installed (shadcn)
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -121,3 +111,4 @@ In Progress
 - **Build Marketing Homepage (Completed)** - Replaced placeholder with full marketing homepage: auth-aware nav, hero with chaos-to-order visual, features/AI/pricing/CTA/footer sections, accent-indigo and accent-cyan design tokens, ghost-border and gradient button variants, public path bypass in proxy.ts, responsive mobile hamburger nav
 - **Homepage Critique Fixes (Completed)** - Stripped indigo/cyan gradients/glows, enforced design system tokens, removed shadows, fixed typography/spacing, improved accessibility, and made Reveal no-JS safe across all homepage sections
 - **Homepage Critique Fixes (Completed)** - Trust/brand/motion/a11y improvements: added --color-brand token, replaced placeholder social links with trust signals, added security/privacy reassurance copy, added prefers-reduced-motion to Reveal, fixed PricingToggle accessibility, fixed FeaturesSection bento grid, and added print CSS safeguard
+- **Dashboard Top Bar Responsive Cleanup (Completed)** - Added DevStash logo SVG + brand text to sidebar, collapsed search to icon-only on mobile, replaced two create buttons with single + dropdown menu, used shadcn Sheet for mobile sidebar overlay, and supported controlled dialog open state
