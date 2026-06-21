@@ -18,8 +18,6 @@ const buttonVariants = cva(
           "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
         "ghost-border":
           "border-border bg-background/5 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:hover:bg-muted/50",
-        gradient:
-          "bg-gradient-to-br from-accent-indigo to-accent-cyan text-white shadow-[0_8px_24px_-10px_oklch(from_var(--accent-indigo)_l_c_h_/_70%)] hover:shadow-[0_12px_30px_-8px_oklch(from_var(--accent-indigo)_l_c_h_/_85%)] hover:-translate-y-0.5",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",

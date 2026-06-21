@@ -2,13 +2,13 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="border-t border-border mt-15 bg-secondary relative z-1">
+    <footer className="border-t border-border mt-15 bg-secondary relative z-10">
       <div className="max-w-6xl mx-auto px-5 pt-12 pb-7 grid gap-8 lg:grid-cols-[1.2fr_2fr]">
         <div>
           <Link href="/" className="flex items-center gap-2.5 font-bold text-lg tracking-tight">
             <span className="inline-flex" aria-hidden="true">
               <svg viewBox="0 0 32 32" width="24" height="24" fill="none">
-                <rect x="3" y="3" width="26" height="26" rx="7" fill="url(#footer-gradient)" />
+                <rect x="3" y="3" width="26" height="26" rx="7" fill="var(--color-snippet)" />
                 <path
                   d="M11 21V11h6.5a3.5 3.5 0 0 1 0 7H14"
                   stroke="#0b1020"
@@ -16,12 +16,6 @@ export function Footer() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-                <defs>
-                  <linearGradient id="footer-gradient" x1="0" y1="0" x2="32" y2="32">
-                    <stop stopColor="#6366f1" />
-                    <stop offset="1" stopColor="#06b6d4" />
-                  </linearGradient>
-                </defs>
               </svg>
             </span>
             <span className="text-foreground">DevStash</span>
@@ -45,30 +39,12 @@ export function Footer() {
             </a>
           </div>
           <div>
-            <h4 className="text-[13px] font-bold mb-3">Item Types</h4>
-            <Link href="/items/snippet" className="block text-muted-foreground text-sm py-[5px] hover:text-foreground transition-colors">
-              Snippets
-            </Link>
-            <Link href="/items/prompt" className="block text-muted-foreground text-sm py-[5px] hover:text-foreground transition-colors">
-              Prompts
-            </Link>
-            <Link href="/items/command" className="block text-muted-foreground text-sm py-[5px] hover:text-foreground transition-colors">
-              Commands
-            </Link>
-            <Link href="/items/note" className="block text-muted-foreground text-sm py-[5px] hover:text-foreground transition-colors">
-              Notes
-            </Link>
-          </div>
-          <div>
             <h4 className="text-[13px] font-bold mb-3">Account</h4>
             <Link href="/sign-in" className="block text-muted-foreground text-sm py-[5px] hover:text-foreground transition-colors">
               Sign In
             </Link>
             <Link href="/register" className="block text-muted-foreground text-sm py-[5px] hover:text-foreground transition-colors">
               Get Started
-            </Link>
-            <Link href="/settings" className="block text-muted-foreground text-sm py-[5px] hover:text-foreground transition-colors">
-              Settings
             </Link>
           </div>
         </div>

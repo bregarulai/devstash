@@ -66,6 +66,8 @@
   --color-markdown-blockquote-border: var(--markdown-blockquote-border);
   --color-accent-indigo: var(--accent-indigo);
   --color-accent-cyan: var(--accent-cyan);
+  --color-code-window: var(--code-window);
+  --color-code-header: var(--code-header);
 }
 
 :root {
@@ -121,6 +123,8 @@
   --dot-green: oklch(0.723 0.219 149.58);
   --accent-indigo: oklch(0.546 0.245 264.376);
   --accent-cyan: oklch(0.715 0.143 215.22);
+  --code-window: oklch(0.145 0.025 260);
+  --code-header: oklch(0.165 0.025 260);
 }
 
 .dark {
@@ -175,6 +179,8 @@
   --dot-green: oklch(0.723 0.219 149.58);
   --accent-indigo: oklch(0.546 0.245 264.376);
   --accent-cyan: oklch(0.715 0.143 215.22);
+  --code-window: oklch(0.145 0.025 260);
+  --code-header: oklch(0.165 0.025 260);
 }
 
 .markdown-preview {
@@ -358,12 +364,6 @@
   html {
     @apply font-sans;
   }
-}
-
-.bg-hero-gradient {
-  background:
-    radial-gradient(60% 50% at 20% 0%, oklch(from var(--accent-indigo) l c h / 18%), transparent 60%),
-    radial-gradient(50% 40% at 90% 10%, oklch(from var(--accent-cyan) l c h / 14%), transparent 60%);
 }
 
 @keyframes arrowPulse {

@@ -9,7 +9,7 @@ import { CtaSection } from '@/components/homepage/sections/CtaSection';
 import { Footer } from '@/components/homepage/sections/Footer';
 
 export const metadata = {
-  title: 'DevStash — Stop Losing Your Developer Knowledge',
+  title: 'DevStash: Stop Losing Your Developer Knowledge',
   description:
     'DevStash is the developer knowledge hub for code snippets, AI prompts, commands, notes, files, images, and links. Stop scattering, start organizing.',
 };
@@ -19,8 +19,7 @@ export default async function Home() {
 
   return (
     <div className="relative">
-      <div className="bg-hero-gradient fixed inset-0 pointer-events-none z-0" />
-      <main className="relative z-1">
+      <main className="relative z-10">
         <SiteHeader isAuthenticated={!!session?.user} />
         <HeroSection />
         <TrustedStrip />

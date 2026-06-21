@@ -35,8 +35,15 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} dark`}
       style={{ color: "var(--foreground)", backgroundColor: "var(--background)" }}
+      suppressHydrationWarning
     >
-      <head />
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: 'document.documentElement.dataset.js = "true";',
+          }}
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background text-foreground antialiased`}>
         <CommandPaletteProvider>
           <UnsavedChangesProvider>

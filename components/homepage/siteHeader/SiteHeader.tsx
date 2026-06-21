@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -13,6 +13,8 @@ interface SiteHeaderProps {
 export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 24);
@@ -24,6 +26,24 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
   const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      const firstLink = panelRef.current?.querySelector<HTMLAnchorElement>('a, button');
+      firstLink?.focus();
+    } else {
+      toggleRef.current?.focus();
+    }
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeMobileMenu();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isMobileMenuOpen, closeMobileMenu]);
 
   return (
     <nav
@@ -42,7 +62,7 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
         >
           <span className="inline-flex" aria-hidden="true">
             <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
-              <rect x="3" y="3" width="26" height="26" rx="7" fill="url(#header-gradient)" />
+              <rect x="3" y="3" width="26" height="26" rx="7" fill="var(--color-snippet)" />
               <path
                 d="M11 21V11h6.5a3.5 3.5 0 0 1 0 7H14"
                 stroke="#0b1020"
@@ -50,12 +70,6 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-              <defs>
-                <linearGradient id="header-gradient" x1="0" y1="0" x2="32" y2="32">
-                  <stop stopColor="#6366f1" />
-                  <stop offset="1" stopColor="#06b6d4" />
-                </linearGradient>
-              </defs>
             </svg>
           </span>
           <span className="text-foreground">DevStash</span>
@@ -88,7 +102,7 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
               <Button variant="ghost-border" asChild>
                 <Link href="/sign-in">Sign In</Link>
               </Button>
-              <Button variant="gradient" asChild>
+              <Button variant="default" asChild>
                 <Link href="/register">Get Started</Link>
               </Button>
             </>
@@ -96,10 +110,12 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
         </div>
 
         <button
+          ref={toggleRef}
           className="lg:hidden inline-flex flex-col gap-1.5 ml-auto p-2 rounded-lg"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
           aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-menu"
         >
           {isMobileMenuOpen ? (
             <X className="w-[22px] h-[22px] text-foreground" />
@@ -110,24 +126,31 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="lg:hidden flex flex-col gap-1.5 px-5 pb-4.5 bg-background/95 border-b border-border">
+        <div
+          ref={panelRef}
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site menu"
+          className="lg:hidden flex flex-col gap-1.5 px-5 pb-4.5 bg-background/95 border-b border-border"
+        >
           <a
             href="#features"
-            className="py-2.5 px-1 text-muted-foreground font-medium"
+            className="py-3 min-h-11 px-1 text-muted-foreground font-medium"
             onClick={closeMobileMenu}
           >
             Features
           </a>
           <a
             href="#ai"
-            className="py-2.5 px-1 text-muted-foreground font-medium"
+            className="py-3 min-h-11 px-1 text-muted-foreground font-medium"
             onClick={closeMobileMenu}
           >
             AI
           </a>
           <a
             href="#pricing"
-            className="py-2.5 px-1 text-muted-foreground font-medium"
+            className="py-3 min-h-11 px-1 text-muted-foreground font-medium"
             onClick={closeMobileMenu}
           >
             Pricing
@@ -152,7 +175,7 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
                   Sign In
                 </Link>
               </Button>
-              <Button variant="gradient" asChild>
+              <Button variant="default" asChild>
                 <Link href="/register" onClick={closeMobileMenu}>
                   Get Started
                 </Link>

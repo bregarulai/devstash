@@ -1,5 +1,6 @@
 import { Reveal } from '@/components/homepage/reveal/Reveal';
 import { Code, Sparkles, Terminal, FileText, Folder, Link } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const FEATURES = [
   {
@@ -50,30 +51,20 @@ export function FeaturesSection() {
   return (
     <section id="features" className="max-w-6xl mx-auto px-5 pb-10">
       <Reveal className="max-w-6xl mx-auto pt-20 pb-9 text-center">
-        <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase text-cyan-500 mb-4">
-          Everything in one place
-        </span>
-        <h2 className="text-[clamp(26px,4.5vw,40px)] tracking-[-0.02em] font-bold leading-[1.15]">
+        <h2 className="text-[clamp(26px,4.5vw,40px)] tracking-[-0.02em] font-bold leading-[1.15] text-balance">
           One stash for every kind of dev knowledge
         </h2>
-        <p className="mt-3.5 mx-auto max-w-[560px] text-muted-foreground text-base">
+        <p className="mt-3.5 mx-auto max-w-[560px] text-muted-foreground text-base text-pretty">
           Seven item types, each with its own tailored UI. No more dumping everything into a notes app.
         </p>
       </Reveal>
 
-      <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4.5">
-        {FEATURES.map((feature) => (
-          <Reveal key={feature.type}>
-            <article
-              className="group relative bg-card border border-border rounded-[14px] p-[22px] overflow-hidden transition-transform duration-200 ease-out hover:-translate-y-[3px] hover:border-border/22"
-              style={{ '--tc': feature.color } as React.CSSProperties}
-            >
+      <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4.5 lg:auto-rows-[minmax(0,1fr)]">
+        {FEATURES.map((feature, i) => (
+          <Reveal key={feature.type} className={cn(i === 0 && 'lg:col-span-2 lg:row-span-1')}>
+            <article className="group relative h-full bg-card border border-border rounded-xl p-[22px] overflow-hidden transition-colors duration-200 hover:border-border/40">
               <div
-                className="absolute top-0 left-0 right-0 h-[3px] opacity-90"
-                style={{ background: feature.color }}
-              />
-              <div
-                className="inline-flex items-center justify-center w-11 h-11 rounded-[11px] mb-3.5"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-xl mb-3.5"
                 style={{
                   background: `color-mix(in srgb, ${feature.color} 16%, transparent)`,
                   color: feature.color,
@@ -81,7 +72,7 @@ export function FeaturesSection() {
               >
                 <feature.icon className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold mb-1.5">{feature.title}</h3>
+              <h3 className="text-lg font-bold mb-1.5 text-balance">{feature.title}</h3>
               <p className="text-muted-foreground text-[14.5px]">{feature.description}</p>
             </article>
           </Reveal>

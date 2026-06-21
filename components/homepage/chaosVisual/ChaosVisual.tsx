@@ -265,17 +265,15 @@ export function ChaosVisual() {
 
   return (
     <div className="relative grid grid-cols-1 gap-7 lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
-      <div className="bg-card border border-border rounded-[14px] p-[18px] relative overflow-hidden flex flex-col">
+      <div className="bg-card border border-border rounded-xl p-[18px] relative overflow-hidden flex flex-col">
         <span className="block text-xs font-semibold tracking-[0.04em] text-muted-foreground mb-3 flex-none">
           Your knowledge today&hellip;
         </span>
         <div
           ref={stageRef}
-          className="relative flex-1 min-h-[260px] rounded-[10px] overflow-hidden cursor-crosshair"
+          className="relative flex-1 min-h-[260px] rounded-lg overflow-hidden cursor-crosshair"
           style={{
-            background: `linear-gradient(180deg, rgba(99, 102, 241, 0.06), transparent),
-              radial-gradient(circle at 30% 40%, rgba(236, 72, 153, 0.08), transparent 50%),
-              radial-gradient(circle at 70% 60%, rgba(6, 182, 212, 0.08), transparent 50%)`,
+            background: `radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-snippet) 8%, transparent), transparent 70%)`,
           }}
           aria-hidden="true"
         />
@@ -285,7 +283,7 @@ export function ChaosVisual() {
         className="relative h-[70px] rotate-90 flex items-center justify-center lg:h-auto lg:min-h-[60px] lg:rotate-0"
         aria-hidden="true"
       >
-        <div className="w-[130px] h-1.5 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-[6px] relative shadow-[0_0_24px_rgba(99,102,241,0.55)]">
+        <div className="w-[130px] h-1.5 bg-muted-foreground rounded-md relative">
           <div
             className="absolute -right-3.5 top-1/2 -translate-y-1/2"
             style={{
@@ -293,49 +291,48 @@ export function ChaosVisual() {
               height: 0,
               borderTop: '13px solid transparent',
               borderBottom: '13px solid transparent',
-              borderLeft: '20px solid #06b6d4',
-              filter: 'drop-shadow(0 0 8px rgba(6, 182, 212, 0.6))',
+              borderLeft: '20px solid var(--color-foreground)',
             }}
           />
         </div>
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div
             className={cn(
-              'absolute w-[54px] h-[54px] border-2 border-indigo-500 rounded-full opacity-0',
+              'absolute w-[54px] h-[54px] border-2 border-primary rounded-full opacity-0',
               !prefersReduced && 'animate-[arrowPulse_2s_ease-out_infinite]'
             )}
           />
           <div
             className={cn(
-              'absolute w-[54px] h-[54px] border-2 border-indigo-500 rounded-full opacity-0',
+              'absolute w-[54px] h-[54px] border-2 border-primary rounded-full opacity-0',
               !prefersReduced && 'animate-[arrowPulse_2s_ease-out_infinite_1s]'
             )}
           />
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-[14px] p-[18px] relative overflow-hidden flex flex-col">
+      <div className="bg-card border border-border rounded-xl p-[18px] relative overflow-hidden flex flex-col">
         <span className="block text-xs font-semibold tracking-[0.04em] text-muted-foreground mb-3 flex-none">
           &hellip;with DevStash
         </span>
         <div className="grid gap-3 flex-1 min-h-[260px]" style={{ gridTemplateColumns: '110px 1fr' }}>
-          <div className="bg-accent border border-border rounded-[10px] p-3 flex flex-col gap-1.5">
-            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-[7px] font-medium bg-indigo-500/16 text-foreground">
+          <div className="bg-accent border border-border rounded-lg p-3 flex flex-col gap-1.5">
+            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-md font-medium bg-primary/16 text-foreground">
               All
             </span>
-            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-[7px] font-medium">
+            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-md font-medium">
               Snippets
             </span>
-            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-[7px] font-medium">
+            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-md font-medium">
               Prompts
             </span>
-            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-[7px] font-medium">
+            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-md font-medium">
               Commands
             </span>
-            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-[7px] font-medium">
+            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-md font-medium">
               Notes
             </span>
-            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-[7px] font-medium">
+            <span className="text-xs text-muted-foreground py-[7px] px-2.5 rounded-md font-medium">
               Files
             </span>
           </div>
@@ -343,29 +340,29 @@ export function ChaosVisual() {
             {['snippet', 'prompt', 'command', 'note', 'image', 'url'].map((type) => (
               <div
                 key={type}
-                className="bg-accent border border-border rounded-[9px] overflow-hidden min-h-0 flex flex-row items-stretch"
+                className="bg-accent border border-border rounded-lg overflow-hidden min-h-0 flex flex-row items-center"
               >
-                <div
-                  className="w-1 h-full flex-none"
-                  style={{
-                    background:
-                      type === 'snippet'
-                        ? 'var(--color-snippet)'
-                        : type === 'prompt'
-                        ? 'var(--color-prompt)'
-                        : type === 'command'
-                        ? 'var(--color-command)'
-                        : type === 'note'
-                        ? 'var(--color-note)'
-                        : type === 'image'
-                        ? 'var(--color-image)'
-                        : 'var(--color-link)',
-                  }}
-                />
                 <div className="px-3 flex items-center gap-2.5 flex-1 min-w-0">
-                  <span className="h-1.5 rounded-[3px] bg-border w-[38%] flex-none" />
-                  <span className="h-1.5 rounded-[3px] bg-border w-[22%] flex-none" />
-                  <span className="h-1.5 rounded-[3px] bg-border w-[14%] flex-none" />
+                  <span
+                    className="h-2 w-2 rounded-full flex-none"
+                    style={{
+                      background:
+                        type === 'snippet'
+                          ? 'var(--color-snippet)'
+                          : type === 'prompt'
+                          ? 'var(--color-prompt)'
+                          : type === 'command'
+                          ? 'var(--color-command)'
+                          : type === 'note'
+                          ? 'var(--color-note)'
+                          : type === 'image'
+                          ? 'var(--color-image)'
+                          : 'var(--color-link)',
+                    }}
+                  />
+                  <span className="h-1.5 rounded-sm bg-border w-[38%] flex-none" />
+                  <span className="h-1.5 rounded-sm bg-border w-[22%] flex-none" />
+                  <span className="h-1.5 rounded-sm bg-border w-[14%] flex-none" />
                 </div>
               </div>
             ))}

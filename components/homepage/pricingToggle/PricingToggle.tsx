@@ -28,7 +28,7 @@ export function PricingToggle({ onToggle }: PricingToggleProps) {
         className={cn(
           'px-4.5 py-2 rounded-full text-[13px] font-semibold transition-colors',
           billing === 'monthly'
-            ? 'bg-gradient-to-r from-indigo-500 to-cyan-500 text-white'
+            ? 'bg-primary text-primary-foreground'
             : 'text-muted-foreground hover:text-foreground'
         )}
         onClick={() => handleToggle('monthly')}
@@ -39,14 +39,14 @@ export function PricingToggle({ onToggle }: PricingToggleProps) {
         className={cn(
           'px-4.5 py-2 rounded-full text-[13px] font-semibold transition-colors',
           billing === 'yearly'
-            ? 'bg-gradient-to-r from-indigo-500 to-cyan-500 text-white'
+            ? 'bg-primary text-primary-foreground'
             : 'text-muted-foreground hover:text-foreground'
         )}
         onClick={() => handleToggle('yearly')}
       >
         Yearly
       </button>
-      <span className="text-[11px] font-bold text-green-500 pr-2.5 pl-1">
+      <span className="text-[11px] font-bold text-success pr-2.5 pl-1">
         Save 25%
       </span>
     </div>

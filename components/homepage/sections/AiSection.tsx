@@ -23,25 +23,25 @@ export function AiSection() {
   return (
     <section id="ai" className="max-w-6xl mx-auto px-5 py-10">
       <Reveal>
-        <div className="grid gap-8 bg-secondary border border-border rounded-[22px] p-8 lg:grid-cols-2 lg:gap-12 lg:p-12">
+        <div className="grid gap-8 bg-secondary border border-border rounded-2xl p-8 lg:grid-cols-2 lg:gap-12 lg:p-12">
           <div>
             <Badge
               variant="outline"
-              className="mb-3.5 bg-gradient-to-r from-amber-500 to-pink-500 text-black border-transparent font-bold uppercase tracking-[0.1em] text-[11px]"
+              className="mb-3.5 bg-secondary text-secondary-foreground border-border font-bold uppercase tracking-[0.1em] text-[11px]"
             >
               Pro Feature
             </Badge>
-            <h2 className="text-[clamp(24px,4vw,34px)] font-bold tracking-[-0.02em] leading-[1.15]">
+            <h2 className="text-[clamp(24px,4vw,34px)] font-bold tracking-[-0.02em] leading-[1.15] text-balance">
               Let AI tag, title, and tidy your stash
             </h2>
-            <p className="mt-3.5 mb-5 text-muted-foreground">
+            <p className="mt-3.5 mb-5 text-muted-foreground text-pretty">
               Stop hand-organizing. DevStash AI reads your snippets and prompts, then suggests tags,
               summaries, and related items automatically.
             </p>
             <ul className="flex flex-col gap-3 mb-6">
               {AI_FEATURES.map((feature) => (
                 <li key={feature} className="flex items-center gap-3 text-base">
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-none" />
+                  <CheckCircle className="w-5 h-5 text-success flex-none" />
                   {feature}
                 </li>
               ))}
@@ -51,13 +51,13 @@ export function AiSection() {
             </Button>
           </div>
 
-          <div className="bg-[#0a0f1f] border border-border/22 rounded-xl overflow-hidden shadow-[var(--shadow-lg)]">
-            <div className="flex gap-[7px] px-3.5 py-3 bg-[#0d1326]">
-              <span className="w-[11px] h-[11px] rounded-full bg-[#ff5f57]" />
-              <span className="w-[11px] h-[11px] rounded-full bg-[#febc2e]" />
-              <span className="w-[11px] h-[11px] rounded-full bg-[#28c840]" />
+          <div className="bg-code-window border border-border/22 rounded-xl overflow-hidden">
+            <div className="flex gap-[7px] px-3.5 py-3 bg-code-header">
+              <span className="w-[11px] h-[11px] rounded-full bg-dot-red" />
+              <span className="w-[11px] h-[11px] rounded-full bg-dot-yellow" />
+              <span className="w-[11px] h-[11px] rounded-full bg-dot-green" />
             </div>
-            <div className="flex gap-1 px-2 bg-[#0d1326] border-t border-b border-border/22">
+            <div className="flex gap-1 px-2 bg-code-header border-t border-b border-border/22">
               <span className="text-xs text-foreground py-2 px-3 border-b-2 border-snippet font-mono">
                 useState.ts
               </span>
@@ -65,7 +65,7 @@ export function AiSection() {
                 README.md
               </span>
             </div>
-            <div className="font-mono text-[13px] py-3.5 bg-[#0a0f1f]">
+            <div className="font-mono text-[13px] py-3.5 bg-code-window">
               <div className="flex px-3.5 hover:bg-white/[0.02]">
                 <span className="w-7 text-muted-foreground select-none flex-none">1</span>
                 <span className="text-foreground whitespace-pre">
@@ -117,8 +117,8 @@ export function AiSection() {
                 <span className="text-foreground">{'}'}</span>
               </div>
             </div>
-            <div className="border-t border-border/22 bg-[#0d1326] p-3.5">
-              <span className="block text-[11px] font-semibold tracking-[0.1em] uppercase text-amber-500 mb-2.5">
+            <div className="border-t border-border/22 bg-code-header p-3.5">
+              <span className="block text-[11px] font-semibold tracking-[0.1em] uppercase text-muted-foreground mb-2.5">
                 AI Generated Tags
               </span>
               <div className="flex flex-wrap gap-[7px]">

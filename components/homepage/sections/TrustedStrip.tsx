@@ -16,9 +16,9 @@ export function TrustedStrip() {
       <div className="flex flex-wrap justify-center gap-2.5 gap-x-[22px] font-mono text-[13px] text-muted-foreground">
         {STRIP_PHRASES.map((phrase) => (
           <span key={phrase}>
-            <span className="text-cyan-500">&ldquo;</span>
+            <span className="text-muted-foreground">&ldquo;</span>
             {phrase}
-            <span className="text-cyan-500">&rdquo;</span>
+            <span className="text-muted-foreground">&rdquo;</span>
           </span>
         ))}
       </div>

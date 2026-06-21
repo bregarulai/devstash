@@ -50,10 +50,10 @@ export function Reveal({
     <div
       ref={ref}
       className={cn(
-        'transition-opacity duration-600 ease-out transition-transform duration-600 ease-out',
+        'transition-[opacity,transform] duration-500 ease-out',
         isVisible
           ? 'opacity-100 translate-y-0'
-          : 'opacity-0 translate-y-6',
+          : '[html[data-js]_&]:opacity-0 [html[data-js]_&]:translate-y-6',
         className
       )}
     >
