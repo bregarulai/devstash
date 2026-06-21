@@ -36,10 +36,13 @@ export function UnsavedChangesProvider({ children }: { children: ReactNode }) {
   );
 }
 
+const defaultContext: UnsavedChangesContextValue = {
+  registerCheckFn: () => {},
+  unregisterCheckFn: () => {},
+  hasUnsavedChanges: () => false,
+};
+
 export function useUnsavedChanges() {
   const context = useContext(UnsavedChangesContext);
-  if (!context) {
-    throw new Error('useUnsavedChanges must be used within UnsavedChangesProvider');
-  }
-  return context;
+  return context ?? defaultContext;
 }
