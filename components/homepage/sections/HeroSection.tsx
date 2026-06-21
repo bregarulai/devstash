@@ -16,7 +16,7 @@ export function HeroSection() {
             Developer Knowledge
           </span>
         </h1>
-        <p className="mt-5 text-[clamp(16px,2.5vw,19px)] text-muted-foreground max-w-[620px] lg:mx-auto text-pretty">
+        <p className="mt-5 text-[clamp(16px,2.5vw,19px)] leading-relaxed text-muted-foreground max-w-[620px] lg:mx-auto text-pretty">
           Snippets scattered across Slack. Prompts buried in chat. Commands lost in shell history.
           DevStash brings every piece of dev knowledge into one fast, searchable home.
         </p>

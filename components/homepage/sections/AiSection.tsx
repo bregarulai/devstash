@@ -25,10 +25,10 @@ export function AiSection() {
             >
               Pro Feature
             </Badge>
-            <h2 className="text-[clamp(24px,4vw,34px)] font-bold tracking-[-0.02em] leading-[1.15] text-balance">
+            <h2 className="text-[clamp(1.625rem,3vw+0.75rem,2.5rem)] font-bold tracking-[-0.02em] leading-[1.15] text-balance">
               Let AI tag, title, and tidy your stash
             </h2>
-            <p className="mt-3.5 mb-5 text-muted-foreground text-pretty">
+            <p className="mt-3.5 mb-5 text-muted-foreground leading-relaxed text-pretty">
               Stop hand-organizing. DevStash AI reads your snippets and prompts, then suggests tags,
               summaries, and related items automatically.
             </p>

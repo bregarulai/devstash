@@ -57,10 +57,10 @@ export function FeaturesSection() {
   return (
     <section id="features" className="max-w-6xl mx-auto px-5 pb-10">
       <Reveal className="max-w-6xl mx-auto pt-20 pb-9 text-center">
-        <h2 className="text-[clamp(26px,4.5vw,40px)] tracking-[-0.02em] font-bold leading-[1.15] text-balance">
+        <h2 className="text-[clamp(1.625rem,3vw+0.75rem,2.5rem)] tracking-[-0.02em] font-bold leading-[1.15] text-balance">
           One stash for every kind of dev knowledge
         </h2>
-        <p className="mt-3.5 mx-auto max-w-[560px] text-muted-foreground text-base text-pretty">
+        <p className="mt-3.5 mx-auto max-w-[560px] text-muted-foreground text-base leading-relaxed text-pretty">
           Six item types, each with its own tailored UI. No more dumping everything into a notes app.
         </p>
       </Reveal>
@@ -79,7 +79,7 @@ export function FeaturesSection() {
                 <feature.icon className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold mb-1.5 text-balance">{feature.title}</h3>
-              <p className="text-muted-foreground text-[14.5px]">{feature.description}</p>
+              <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
             </article>
           </Reveal>
         ))}

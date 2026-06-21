@@ -6,10 +6,10 @@ export function CtaSection() {
   return (
     <Reveal>
       <section className="max-w-[760px] mx-auto my-10 py-14 px-6 text-center rounded-2xl border border-border bg-secondary">
-        <h2 className="text-[clamp(26px,4.5vw,36px)] font-bold tracking-[-0.02em] text-balance">
+        <h2 className="text-[clamp(1.625rem,3vw+0.75rem,2.5rem)] font-bold tracking-[-0.02em] leading-[1.15] text-balance">
           Ready to Organize Your Knowledge?
         </h2>
-        <p className="mt-3.5 mx-auto max-w-[460px] text-muted-foreground text-pretty">
+        <p className="mt-3.5 mx-auto max-w-[460px] text-muted-foreground leading-relaxed text-pretty">
           Join developers who turned their chaos into a searchable stash. Free to start, no credit
           card.
         </p>

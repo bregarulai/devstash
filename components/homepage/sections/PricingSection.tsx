@@ -27,7 +27,7 @@ export function PricingSection() {
   return (
     <section id="pricing" className="max-w-6xl mx-auto px-5 pb-10">
       <Reveal className="max-w-6xl mx-auto pt-20 pb-9 text-center">
-        <h2 className="text-[clamp(26px,4.5vw,40px)] tracking-[-0.02em] font-bold leading-[1.15] text-balance">
+        <h2 className="text-[clamp(1.625rem,3vw+0.75rem,2.5rem)] tracking-[-0.02em] font-bold leading-[1.15] text-balance">
           Start free. Upgrade when you outgrow it.
         </h2>
         <div className="mt-6">

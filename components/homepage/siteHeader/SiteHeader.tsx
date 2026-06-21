@@ -68,7 +68,7 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
       <div className="max-w-6xl mx-auto px-5 py-3.5 flex items-center gap-5">
         <Link
           href="/"
-          className="flex items-center gap-2.5 font-bold text-[17px] tracking-tight"
+          className="flex items-center gap-2.5 font-bold text-lg tracking-tight"
           aria-label="DevStash home"
         >
           <span className="inline-flex" aria-hidden="true">
@@ -147,21 +147,21 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
         >
           <a
             href="#features"
-            className="py-3 min-h-11 px-1 text-muted-foreground font-medium"
+            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium"
             onClick={closeMobileMenu}
           >
             Features
           </a>
           <a
             href="#ai"
-            className="py-3 min-h-11 px-1 text-muted-foreground font-medium"
+            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium"
             onClick={closeMobileMenu}
           >
             AI
           </a>
           <a
             href="#pricing"
-            className="py-3 min-h-11 px-1 text-muted-foreground font-medium"
+            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium"
             onClick={closeMobileMenu}
           >
             Pricing
