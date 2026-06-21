@@ -48,3 +48,6 @@ generated/
 # personal planning docs
 context/new-feature-list.md
 .playwright-mcp/
+
+# impeccable
+.impeccable/
