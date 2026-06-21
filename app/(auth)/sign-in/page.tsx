@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { auth } from '@/lib/auth/auth/auth';
 import { redirect } from 'next/navigation';
+
+import { auth } from '@/lib/auth/auth/auth';
 import {
   Card,
   CardContent,
@@ -13,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { SignInToast } from '@/components/auth/signInToast/SignInToast';
 import { SignInForm } from '@/components/signinForm/SigninForm';
 import { handleSignInWithGitHub } from '@/actions';
+import { SiteHeader } from '@/components/homepage/siteHeader/SiteHeader';
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -34,7 +36,8 @@ export default async function SignInPage({
   }
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-background px-4'>
+    <div className='min-h-screen flex flex-col items-center justify-center bg-background px-4 pt-16'>
+      <SiteHeader isAuthenticated={false} isHomepage={false} isAuthPage={true} />
       <SignInToast />
       <Card className='w-full max-w-md'>
         <CardHeader className='text-center'>

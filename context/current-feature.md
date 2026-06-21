@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Add Homepage Nav to Auth Pages
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Add the `SiteHeader` navigation component from the homepage to the sign-in (`/sign-in`) and register (`/register`) pages
+- Maintain consistent branding and navigation experience across public and auth pages
+- Authenticated users visiting auth pages should see Dashboard/Sign Out buttons (already handled by redirect, but nav should be consistent)
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- The `SiteHeader` component is a client component at `components/homepage/siteHeader/SiteHeader.tsx`
+- It accepts an `isAuthenticated` boolean prop
+- The sign-in page already calls `auth()` for session check; register page does not
+- Both pages currently use a simple `min-h-screen flex items-center justify-center` layout
+- The nav is fixed-position (`fixed top-0`), so the auth card content may need top padding to avoid being hidden under it
+- Other auth pages (forgot-password, reset-password, verify-email, verify-required) may also benefit but are out of scope for this feature unless specified
 
 ## History
 

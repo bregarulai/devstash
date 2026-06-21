@@ -10,9 +10,11 @@ const NAV_SECTIONS = ['features', 'ai', 'pricing'] as const;
 
 interface SiteHeaderProps {
   isAuthenticated: boolean;
+  isHomepage?: boolean;
+  isAuthPage?: boolean;
 }
 
-export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
+export function SiteHeader({ isAuthenticated, isHomepage = true, isAuthPage = false }: SiteHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -112,12 +114,13 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
           {NAV_SECTIONS.map((section) => (
             <a
               key={section}
-              href={`#${section}`}
+              href={isHomepage ? `#${section}` : `/#${section}`}
               className={cn(
-                'text-sm font-medium transition-colors',
-                activeSection === section
+                'font-medium transition-colors',
+                isAuthPage ? 'text-xs text-muted-foreground/70 hover:text-muted-foreground' : 'text-sm',
+                !isAuthPage && activeSection === section
                   ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
+                  : !isAuthPage && 'text-muted-foreground hover:text-foreground'
               )}
             >
               {section === 'ai' ? 'AI' : section.charAt(0).toUpperCase() + section.slice(1)}
@@ -175,12 +178,13 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
           {NAV_SECTIONS.map((section) => (
             <a
               key={section}
-              href={`#${section}`}
+              href={isHomepage ? `#${section}` : `/#${section}`}
               className={cn(
-                'py-3 min-h-11 px-1 text-sm font-medium transition-colors',
-                activeSection === section
+                'py-3 min-h-11 px-1 font-medium transition-colors',
+                isAuthPage ? 'text-xs text-muted-foreground/70 hover:text-muted-foreground' : 'text-sm',
+                !isAuthPage && activeSection === section
                   ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
+                  : !isAuthPage && 'text-muted-foreground hover:text-foreground'
               )}
               onClick={closeMobileMenu}
             >

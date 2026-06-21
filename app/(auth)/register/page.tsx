@@ -1,5 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+
+import { auth } from '@/lib/auth/auth/auth';
 import {
   Card,
   CardContent,
@@ -9,6 +12,7 @@ import {
 } from '@/components/ui/card';
 import { RegisterToast } from '@/components/auth/registerToast/RegisterToast';
 import { RegisterForm } from '@/components/registerForm/RegisterForm';
+import { SiteHeader } from '@/components/homepage/siteHeader/SiteHeader';
 
 export const metadata: Metadata = {
   title: 'Register',
@@ -20,10 +24,16 @@ export default async function RegisterPage({
 }: {
   searchParams: Promise<{ error?: string; success?: string }>;
 }) {
+  const session = await auth();
   const { error, success } = await searchParams;
 
+  if (session?.user) {
+    redirect('/dashboard');
+  }
+
   return (
-    <div className='min-h-screen flex items-center justify-center bg-background px-4'>
+    <div className='min-h-screen flex flex-col items-center justify-center bg-background px-4 pt-16'>
+      <SiteHeader isAuthenticated={false} isHomepage={false} isAuthPage={true} />
       <RegisterToast />
       <Card className='w-full max-w-md'>
         <CardHeader className='text-center'>
