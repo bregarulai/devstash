@@ -61,7 +61,7 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
-          ? 'bg-background/82 backdrop-blur-[14px] border-b border-border'
+          ? 'bg-background/80 backdrop-blur-lg border-b border-border'
           : 'bg-transparent border-b-transparent'
       )}
     >
@@ -76,7 +76,7 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
               <rect x="3" y="3" width="26" height="26" rx="7" fill="var(--color-brand)" />
               <path
                 d="M11 21V11h6.5a3.5 3.5 0 0 1 0 7H14"
-                stroke="#0b1020"
+                stroke="var(--color-brand-foreground)"
                 strokeWidth="2.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -122,7 +122,7 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
 
         <button
           ref={toggleRef}
-          className="lg:hidden inline-flex flex-col gap-1.5 ml-auto p-2 rounded-lg"
+          className="lg:hidden inline-flex flex-col gap-1.5 ml-auto p-2 rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
           aria-expanded={isMobileMenuOpen}
@@ -147,21 +147,21 @@ export function SiteHeader({ isAuthenticated }: SiteHeaderProps) {
         >
           <a
             href="#features"
-            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium"
+            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
             onClick={closeMobileMenu}
           >
             Features
           </a>
           <a
             href="#ai"
-            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium"
+            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
             onClick={closeMobileMenu}
           >
             AI
           </a>
           <a
             href="#pricing"
-            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium"
+            className="py-3 min-h-11 px-1 text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
             onClick={closeMobileMenu}
           >
             Pricing

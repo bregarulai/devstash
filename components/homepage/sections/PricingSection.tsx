@@ -39,13 +39,13 @@ export function PricingSection() {
         <Reveal className="h-full">
           <article className="bg-card border border-border rounded-2xl p-7 transition-colors duration-200 hover:border-foreground/20 h-full flex flex-col">
             <h3 className="text-xl font-bold mb-1 text-balance">Free</h3>
-            <p className="text-muted-foreground text-sm mb-4.5">For getting your stash in order</p>
-            <div className="flex items-baseline gap-[3px] mb-5.5">
+            <p className="text-muted-foreground text-sm mb-4">For getting your stash in order</p>
+            <div className="flex items-baseline gap-1 mb-5">
               <span className="text-lg text-muted-foreground font-semibold">$</span>
               <span className="text-[44px] font-extrabold tracking-[-0.02em] leading-none">0</span>
               <span className="text-muted-foreground text-sm ml-1">/forever</span>
             </div>
-            <ul className="flex flex-col gap-[11px] mb-6">
+            <ul className="flex flex-col gap-3 mb-6">
               {FREE_FEATURES.map((feature) => (
                 <li key={feature} className="flex items-center gap-2.5 text-sm">
                   <CheckCircle className="w-4 h-4 text-success flex-none" />
@@ -61,12 +61,12 @@ export function PricingSection() {
 
         <Reveal className="h-full">
           <article className="relative bg-card border border-border rounded-2xl p-7 ring-1 ring-[var(--color-brand)]/40 transition-colors duration-200 hover:border-foreground/20 h-full flex flex-col">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-semibold normal-case py-[5px] px-3.5 rounded-full bg-[var(--color-brand)] text-white">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-semibold normal-case py-1 px-3.5 rounded-full bg-[var(--color-brand)] text-[var(--color-brand-foreground)]">
               Most Popular
             </span>
             <h3 className="text-xl font-bold mb-1 text-balance">Pro</h3>
-            <p className="text-muted-foreground text-sm mb-4.5">For developers who live in their stash</p>
-            <div className="flex items-baseline gap-[3px] mb-5.5">
+            <p className="text-muted-foreground text-sm mb-4">For developers who live in their stash</p>
+            <div className="flex items-baseline gap-1 mb-5">
               <span className="text-lg text-muted-foreground font-semibold">$</span>
               <span
                 className={cn(
@@ -88,7 +88,7 @@ export function PricingSection() {
                 {billing === 'monthly' ? '/mo' : '/year'}
               </span>
             </div>
-            <ul className="flex flex-col gap-[11px] mb-6">
+            <ul className="flex flex-col gap-3 mb-6">
               {PRO_FEATURES.map((feature) => (
                 <li key={feature} className="flex items-center gap-2.5 text-sm">
                   <CheckCircle className="w-4 h-4 text-success flex-none" />

@@ -48,14 +48,14 @@ export function AiSection() {
             </Button>
           </div>
 
-          <div className="bg-code-window border border-border/22 rounded-xl overflow-hidden">
-            <div className="flex gap-[7px] px-3.5 py-3 bg-code-header">
-              <span className="w-[11px] h-[11px] rounded-full bg-dot-red" />
-              <span className="w-[11px] h-[11px] rounded-full bg-dot-yellow" />
-              <span className="w-[11px] h-[11px] rounded-full bg-dot-green" />
+          <div className="bg-code-window border border-border/20 rounded-xl overflow-hidden">
+            <div className="flex gap-2 px-3.5 py-3 bg-code-header">
+              <span className="w-3 h-3 rounded-full bg-dot-red" />
+              <span className="w-3 h-3 rounded-full bg-dot-yellow" />
+              <span className="w-3 h-3 rounded-full bg-dot-green" />
             </div>
-            <div className="flex gap-1 px-2 bg-code-header border-t border-b border-border/22">
-              <span className="text-xs text-foreground py-2 px-3 border-b-2 border-brand font-mono">
+            <div className="flex gap-1 px-2 bg-code-header border-t border-b border-border/20">
+              <span className="text-xs text-foreground py-2 px-3 border-b-2 border-b-brand font-mono">
                 useState.ts
               </span>
               <span className="text-xs text-muted-foreground py-2 px-3 border-b-2 border-transparent font-mono">
@@ -63,7 +63,7 @@ export function AiSection() {
               </span>
             </div>
             <div className="font-mono text-[13px] py-3.5 bg-code-window overflow-x-auto">
-              <div className="flex px-3.5 hover:bg-white/[0.02]">
+              <div className="flex px-3.5 hover:bg-foreground/[0.02]">
                 <span className="w-7 text-muted-foreground select-none flex-none">1</span>
                 <span className="text-foreground whitespace-pre">
                   <span className="text-[var(--syntax-keyword)]">import</span> {'{'} useState {'}'}{' '}
@@ -71,11 +71,11 @@ export function AiSection() {
                   <span className="text-[var(--syntax-string)]">&apos;react&apos;</span>
                 </span>
               </div>
-              <div className="flex px-3.5 hover:bg-white/[0.02]">
+              <div className="flex px-3.5 hover:bg-foreground/[0.02]">
                 <span className="w-7 text-muted-foreground select-none flex-none">2</span>
                 <span className="text-foreground" />
               </div>
-              <div className="flex px-3.5 hover:bg-white/[0.02]">
+              <div className="flex px-3.5 hover:bg-foreground/[0.02]">
                 <span className="w-7 text-muted-foreground select-none flex-none">3</span>
                 <span className="text-foreground whitespace-pre">
                   <span className="text-[var(--syntax-keyword)]">export function</span>{' '}
@@ -85,7 +85,7 @@ export function AiSection() {
                   {' ) {'}
                 </span>
               </div>
-              <div className="flex px-3.5 hover:bg-white/[0.02]">
+              <div className="flex px-3.5 hover:bg-foreground/[0.02]">
                 <span className="w-7 text-muted-foreground select-none flex-none">4</span>
                 <span className="text-foreground whitespace-pre">
                   {'  '}
@@ -94,7 +94,7 @@ export function AiSection() {
                   {'(initial)'}
                 </span>
               </div>
-              <div className="flex px-3.5 hover:bg-white/[0.02]">
+              <div className="flex px-3.5 hover:bg-foreground/[0.02]">
                 <span className="w-7 text-muted-foreground select-none flex-none">5</span>
                 <span className="text-foreground whitespace-pre">
                   {'  '}
@@ -102,23 +102,23 @@ export function AiSection() {
                   <span className="text-[var(--syntax-function)]">setOn</span>(o =&gt; !o)
                 </span>
               </div>
-              <div className="flex px-3.5 hover:bg-white/[0.02]">
+              <div className="flex px-3.5 hover:bg-foreground/[0.02]">
                 <span className="w-7 text-muted-foreground select-none flex-none">6</span>
                 <span className="text-foreground whitespace-pre">
                   {'  '}
                   <span className="text-[var(--syntax-keyword)]">return</span> {'{'} on, toggle, setOn {'}'}
                 </span>
               </div>
-              <div className="flex px-3.5 hover:bg-white/[0.02]">
+              <div className="flex px-3.5 hover:bg-foreground/[0.02]">
                 <span className="w-7 text-muted-foreground select-none flex-none">7</span>
                 <span className="text-foreground">{'}'}</span>
               </div>
             </div>
-            <div className="border-t border-border/22 bg-code-header p-3.5">
+            <div className="border-t border-border/20 bg-code-header p-3.5">
               <span className="block text-xs font-semibold text-muted-foreground mb-2.5">
                 AI Generated Tags
               </span>
-              <div className="flex flex-wrap gap-[7px]">
+              <div className="flex flex-wrap gap-1.5">
                 {AI_TAGS.map((tag) => (
                   <span
                     key={tag}

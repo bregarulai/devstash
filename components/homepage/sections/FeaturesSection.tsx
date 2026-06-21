@@ -68,7 +68,7 @@ export function FeaturesSection() {
       <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4.5 lg:auto-rows-[minmax(0,1fr)]">
         {FEATURES.map((feature) => (
           <Reveal key={feature.type} className={cn(feature.span)}>
-            <article className="group relative h-full bg-card border border-border rounded-xl p-[22px] overflow-hidden transition-colors duration-200 hover:border-foreground/20">
+            <article className="relative h-full bg-card border border-border rounded-xl p-5 overflow-hidden transition-colors duration-200 hover:border-foreground/20">
               <div
                 className="inline-flex items-center justify-center w-11 h-11 rounded-xl mb-3.5"
                 style={{
