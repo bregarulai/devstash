@@ -1,48 +1,12 @@
-# Current Feature: Homepage Critique Fixes
-
-**Spec**: `context/fixes/homepage-critique-fixes-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- **P1**: Remove gradient-text hero headline; replace emphasis word with Snippet-blue item-type color solid (`HeroSection.tsx`)
-- **P1**: Strip the invented indigo/cyan AI palette, gradients, and glows across all homepage surfaces (button `gradient` variant, logo gradients, PricingToggle, "Most Popular" badge + Pro card glow, CTA radial, ChaosVisual arrow/rings, AI section badge + code panel shadow, hero status-dot, `bg-hero-gradient`); keep `--accent-indigo`/`--accent-cyan` token definitions in `globals.css` for the dashboard
-- **P1**: Make `Reveal` visible by default (no-JS safe) via `data-js` attribute set by a blocking `<head>` script; collapse duplicate `transition-*` declarations into one `transition-[opacity,transform] duration-500 ease-out`
-- **P2**: Break the identical 6-card feature grid into a bento layout (first feature `lg:col-span-2`); remove `hover:-translate-y` lift and top-stripe accent bar (`FeaturesSection.tsx`)
-- **P2**: Remove the recurring uppercase tracked cyan eyebrow from Hero/Features/Pricing; optionally keep one sentence-case muted kicker on the hero only
-- **P2**: Replace ChaosVisual `w-1` side-stripe item rows with an 8px colored type dot
-- **P2**: Sweep all remaining `shadow-*`/`shadow-[...]` utilities on homepage cards/containers/badges (No-Shadow Rule)
-- **P3**: Fix invalid `z-1` → `z-10` (or remove) on `<main>`
-- **P3**: Replace em dash in metadata title with a colon
-- **P3**: Add `text-balance` to h1–h3 and `text-pretty` to long prose blocks across all sections
-- **P3**: Map arbitrary radii (`rounded-[14px]`, `rounded-[18px]`, `rounded-[22px]`, `rounded-[10px]`, `rounded-[9px]`, `rounded-[7px]`) onto the `--radius` token ramp
-- **P3**: Bring touch targets to ≥44px (mobile menu links `py-3 min-h-11`; hero CTAs `h-11`)
-- **P3**: Add Escape-to-close + focus management to the mobile menu (prefer a shadcn `Sheet`/`Dialog` if installed; else `onKeyDown` Escape, focus first link on open, return focus to toggle on close, `role="dialog"` + `aria-modal`)
-- **P3**: Fold `Reveal` duplicate transition + `duration-600` into Fix 3
-- **P3**: Verify footer link targets resolve for logged-out visitors (remove or redirect to `/sign-in` if auth-required; do not change routes)
-- **P3**: Replace `text-cyan-500` quotes (TrustedStrip) with `text-muted-foreground` or `text-[var(--color-snippet)]`; replace hardcoded `text-green-500` "Save 25%" (PricingToggle) with `text-success`
-- Verify: `npm run build`, `npm run lint`, `npm run test:run` all pass; manual sweep for no indigo/cyan gradients, no box-shadows, no blank no-JS sections; re-run `/impeccable critique app/page.tsx` to confirm score > 28 with P1 count = 0 (excluding deferred imagery item)
-
 ## Notes
-
-- **Direction**: Option 1 — enforce DESIGN.md strictly. The 7 item-type colors are the only chromatic elements allowed.
-- **Scope**: Visual/structural refactors only. No changes to page behavior, routing, auth flow, or data. Preserve all interactions, click handlers, links, and responsive breakpoints.
-- **Constraint**: No behavior or user-flow changes.
-- **Deferred**: P1 "No real product imagery" — keep ChaosVisual + AI code mock as decoration (de-gradientified). File a separate spec to ship a real dashboard screenshot above the fold.
-- **Out of scope**: `globals.css` `--sidebar-primary` indigo in the dashboard sidebar. Keep `--accent-indigo`/`--accent-cyan` token definitions in `globals.css` until a separate spec reconciles the dashboard surface with DESIGN.md; remove only homepage usage now.
-- **Implementation order** (per spec):
-  1. Fix 3 (P1) — `Reveal` safe-default + `data-js` in layout. Foundational.
-  2. Fix 2 (P1) — Strip gradients/glows/palette in sub-order 2a→2i.
-  3. Fix 1 (P1) — Hero gradient text (alongside 2b/2h).
-  4. Fix 7 (P2) — Sweep remaining shadows (after Fix 2).
-  5. Fix 5 (P2) — Remove eyebrows.
-  6. Fix 4 (P2) — Bento feature grid + remove top stripe.
-  7. Fix 6 (P2) — ChaosVisual side-stripe → dot.
-  8. Fixes 8-16 (P3) — z-1, em dash, text-wrap, radii, touch targets, focus, footer links, tokens.
-- **Affected files**: `components/ui/button.tsx`, `components/homepage/siteHeader/SiteHeader.tsx`, `components/homepage/sections/HeroSection.tsx`, `components/homepage/pricingToggle/PricingToggle.tsx`, `components/homepage/sections/PricingSection.tsx`, `components/homepage/sections/CtaSection.tsx`, `components/homepage/chaosVisual/ChaosVisual.tsx`, `components/homepage/sections/AiSection.tsx`, `components/homepage/reveal/Reveal.tsx`, `components/homepage/sections/FeaturesSection.tsx`, `components/homepage/sections/Footer.tsx`, `components/homepage/trustedStrip/TrustedStrip.tsx` (if present), `app/globals.css`, `app/layout.tsx`, `app/page.tsx`.
 
 ## History
 
@@ -141,3 +105,4 @@ In Progress
 - **Favorites Page Critique Fixes (Completed)** - Removed misleading aggregate count, added unfavoriting with toast, added loading skeleton, replaced FolderOpen with Folder icon, replaced hand-built buttons with shadcn Button
 - **Homepage Mockup (Completed)** - Created static marketing homepage with hero, features, pricing, and responsive design
 - **Build Marketing Homepage (Completed)** - Replaced placeholder with full marketing homepage: auth-aware nav, hero with chaos-to-order visual, features/AI/pricing/CTA/footer sections, accent-indigo and accent-cyan design tokens, ghost-border and gradient button variants, public path bypass in proxy.ts, responsive mobile hamburger nav
+- **Homepage Critique Fixes (Completed)** - Stripped indigo/cyan gradients/glows, enforced design system tokens, removed shadows, fixed typography/spacing, improved accessibility, and made Reveal no-JS safe across all homepage sections
