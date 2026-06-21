@@ -79,13 +79,16 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
             {...register('currentPassword')}
           />
 
-          <PasswordField
-            label='New Password'
-            show={newToggle.show}
-            toggle={newToggle.toggle}
-            error={fieldErrors.newPassword?.message}
-            {...register('newPassword')}
-          />
+          <div className='space-y-1.5'>
+            <PasswordField
+              label='New Password'
+              show={newToggle.show}
+              toggle={newToggle.toggle}
+              error={fieldErrors.newPassword?.message}
+              {...register('newPassword')}
+            />
+            <p className='text-xs text-muted-foreground'>Minimum 8 characters</p>
+          </div>
 
           <PasswordField
             label='Confirm New Password'

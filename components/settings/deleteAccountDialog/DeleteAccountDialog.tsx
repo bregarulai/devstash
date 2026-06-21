@@ -52,7 +52,7 @@ export function DeleteAccountDialog() {
                 reset();
               }}
               placeholder="DELETE MY ACCOUNT"
-              className={`${error ? 'border-destructive' : ''} mt-2`}
+              className={error ? 'border-destructive' : ''}
             />
           </div>
           <div className="space-y-2">
@@ -67,7 +67,7 @@ export function DeleteAccountDialog() {
                 reset();
               }}
               placeholder="Your password"
-              className={`${error ? 'border-destructive' : ''} mt-2`}
+              className={error ? 'border-destructive' : ''}
             />
           </div>
         </div>

@@ -53,7 +53,7 @@ export function EditorPreferencesForm() {
           {isLoading && <Skeleton className="size-4 rounded-full" />}
         </div>
         <CardDescription>
-          Customize your code editor settings. Changes are saved automatically.
+          Configure font size, tab width, and theme for the code editor. Changes save instantly.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

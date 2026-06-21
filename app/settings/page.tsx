@@ -1,14 +1,27 @@
+import { unstable_cache } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
 import { loadProfileDataAsync } from '@/lib/db/user/user';
 import { SettingsPageClient } from '@/components/settings/settingsPageClient/SettingsPageClient';
 import { DashboardWrapper } from '@/components/dashboard/dashboardWrapper/DashboardWrapper';
-import { SystemItemType, CollectionWithStats } from '@/types/db';
+import { type SystemItemType, type CollectionWithStats, type PlanTier } from '@/types/db';
 import { getSystemItemTypesWithCounts } from '@/lib/db/items/items';
 import { getFavoriteCollections, getRecentCollections } from '@/lib/db/collections/collections';
 import { stripe, priceIdToPlan } from '@/lib/stripe/stripe';
 import { redirect } from 'next/navigation';
 
-type PlanTier = 'free' | 'monthly' | 'yearly';
+const getCachedPlanTier = unstable_cache(
+  async (subscriptionId: string): Promise<PlanTier> => {
+    try {
+      const sub = await stripe.subscriptions.retrieve(subscriptionId);
+      const priceId = sub.items.data[0]?.price.id;
+      return priceId ? (priceIdToPlan(priceId) ?? 'free') : 'free';
+    } catch {
+      return 'free';
+    }
+  },
+  ['stripe-plan-tier'],
+  { revalidate: 60, tags: ['stripe-subscription'] }
+);
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -45,14 +58,7 @@ export default async function SettingsPage() {
 
   let planTier: PlanTier = 'free';
   if (user.isPro && user.stripeSubscriptionId) {
-    try {
-      const sub = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
-      const priceId = sub.items.data[0]?.price.id;
-      planTier = priceId ? (priceIdToPlan(priceId) ?? 'free') : 'free';
-    } catch (error) {
-      console.error('Failed to retrieve Stripe subscription:', error);
-      planTier = 'free';
-    }
+    planTier = await getCachedPlanTier(user.stripeSubscriptionId);
   }
 
   return (

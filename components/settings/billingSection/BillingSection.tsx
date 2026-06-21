@@ -15,8 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { createCheckoutAction, createPortalAction } from '@/actions';
 import { FREE_TIER_LIMITS } from '@/lib/constants/limits';
-
-type PlanTier = 'free' | 'monthly' | 'yearly';
+import type { PlanTier } from '@/types/db';
 
 interface UsageStats {
   totalItems: number;
@@ -73,62 +72,17 @@ export function BillingSection({ planTier, usage }: BillingSectionProps) {
     });
   }
 
-  if (planTier === 'free') {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className='text-lg'>Billing</CardTitle>
-          <CardDescription>
-            You are on the Free plan. Upgrade to unlock unlimited items, collections, and file uploads.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className='space-y-4'>
-          <div className='flex items-center justify-between'>
-            <div className='space-y-0.5'>
-              <p className='text-sm font-medium text-foreground'>Current plan</p>
-              <p className='text-sm text-muted-foreground'>Free</p>
-            </div>
-          </div>
-          {usage && (
-            <div className='space-y-3 rounded-lg border border-border bg-muted/40 p-4'>
-              <p className='text-xs font-medium text-muted-foreground uppercase tracking-wide'>
-                Plan usage
-              </p>
-              <UsageRow label='Items' used={usage.totalItems} limit={FREE_TIER_LIMITS.maxItems} />
-              <UsageRow label='Collections' used={usage.totalCollections} limit={FREE_TIER_LIMITS.maxCollections} />
-            </div>
-          )}
-          <div className='flex flex-col gap-3 sm:flex-row'>
-            <Button
-              onClick={() => handleCheckout('monthly')}
-              disabled={isPending}
-              className='sm:w-auto'
-            >
-              <Sparkles className='mr-2 h-4 w-4' />
-              {isPending && pendingInterval === 'monthly' ? 'Redirecting...' : 'Upgrade — $8/mo'}
-            </Button>
-            <Button
-              onClick={() => handleCheckout('yearly')}
-              disabled={isPending}
-              variant='outline'
-              className='sm:w-auto'
-            >
-              {isPending && pendingInterval === 'yearly' ? 'Redirecting...' : 'Upgrade — $72/yr'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const planLabel = planTier === 'monthly' ? 'Pro (Monthly)' : 'Pro (Annual)';
+  const planLabel = planTier === 'free' ? 'Free' : planTier === 'monthly' ? 'Pro (Monthly)' : 'Pro (Annual)';
+  const isPro = planTier !== 'free';
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className='text-lg'>Billing</CardTitle>
         <CardDescription>
-          Manage your subscription. Cancel anytime via the Stripe Customer Portal.
+          {isPro
+            ? 'Your Pro subscription is active. Manage billing, update payment methods, or cancel anytime.'
+            : 'Free plan includes 50 items and 3 collections. Pro unlocks unlimited storage, file uploads, and AI-powered tagging.'}
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-4'>
@@ -137,13 +91,43 @@ export function BillingSection({ planTier, usage }: BillingSectionProps) {
             <p className='text-sm font-medium text-foreground'>Current plan</p>
             <div className='flex items-center gap-2'>
               <p className='text-sm text-muted-foreground'>{planLabel}</p>
-              <Badge className='bg-sidebar-primary text-sidebar-primary-foreground'>PRO</Badge>
+              {isPro && <Badge className='bg-brand text-brand-foreground'>PRO</Badge>}
             </div>
           </div>
         </div>
-        <Button onClick={handlePortal} disabled={isPending} variant='outline'>
-          {isPending ? 'Redirecting...' : 'Manage subscription'}
-        </Button>
+        {usage && (
+          <div className='space-y-3 rounded-lg border border-border bg-muted/40 p-4'>
+            <p className='text-xs font-medium text-muted-foreground uppercase tracking-wide'>
+              Plan usage
+            </p>
+            <UsageRow label='Items' used={usage.totalItems} limit={FREE_TIER_LIMITS.maxItems} />
+            <UsageRow label='Collections' used={usage.totalCollections} limit={FREE_TIER_LIMITS.maxCollections} />
+          </div>
+        )}
+        {isPro ? (
+          <Button onClick={handlePortal} disabled={isPending} variant='outline'>
+            {isPending ? 'Redirecting...' : 'Manage subscription'}
+          </Button>
+        ) : (
+          <div className='flex flex-col gap-3 sm:flex-row'>
+            <Button
+              onClick={() => handleCheckout('monthly')}
+              disabled={isPending}
+              className='sm:w-auto'
+            >
+              <Sparkles className='mr-2 h-4 w-4' />
+              {isPending && pendingInterval === 'monthly' ? 'Redirecting...' : 'Upgrade: $8/mo'}
+            </Button>
+            <Button
+              onClick={() => handleCheckout('yearly')}
+              disabled={isPending}
+              variant='outline'
+              className='sm:w-auto'
+            >
+              {isPending && pendingInterval === 'yearly' ? 'Redirecting...' : 'Upgrade: $72/yr'}
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

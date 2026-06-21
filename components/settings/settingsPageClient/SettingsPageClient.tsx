@@ -2,14 +2,7 @@
 
 import { useState } from 'react';
 import { Lock } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import {
   Dialog,
   DialogContent,
@@ -23,8 +16,7 @@ import { ChangePasswordForm } from '@/components/settings/changePasswordForm/Cha
 import { DeleteAccountDialog } from '@/components/settings/deleteAccountDialog/DeleteAccountDialog';
 import { EditorPreferencesForm } from '@/components/settings/editorPreferencesForm/EditorPreferencesForm';
 import { BillingSection } from '@/components/settings/billingSection/BillingSection';
-
-type PlanTier = 'free' | 'monthly' | 'yearly';
+import type { PlanTier } from '@/types/db';
 
 interface SettingsPageClientProps {
   hasPassword: boolean;
@@ -43,16 +35,14 @@ export function SettingsPageClient({
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 
   return (
-      <div className='mx-auto max-w-4xl space-y-6'>
+      <div className='mx-auto max-w-4xl space-y-8'>
         {/* Page Title */}
         <div className='space-y-1'>
           <h1 className='text-2xl font-semibold text-foreground'>Settings</h1>
           <p className='text-sm text-muted-foreground'>
-            Manage your account settings and preferences.
+            Billing, editor preferences, and account management.
           </p>
         </div>
-
-        <Separator />
 
         {/* Billing */}
         <BillingSection planTier={planTier} usage={usage} />
@@ -60,37 +50,42 @@ export function SettingsPageClient({
         {/* Editor Preferences */}
         <EditorPreferencesForm />
 
-        {/* Account Actions Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle className='text-lg'>Account Actions</CardTitle>
-          </CardHeader>
-          <CardContent className='space-y-4'>
-            <div className='flex flex-col sm:flex-row gap-3'>
-              {hasPassword && (
-                <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant='outline'>
-                      <Lock className='size-4 mr-2' />
-                      Change Password
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className='sm:max-w-md'>
-                    <DialogHeader>
-                      <DialogTitle>Change Password</DialogTitle>
-                      <DialogDescription>
-                        Update your account password. Make sure to use a strong,
-                        unique password.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <ChangePasswordForm onSuccess={() => setPasswordDialogOpen(false)} />
-                  </DialogContent>
-                </Dialog>
-              )}
-              <DeleteAccountDialog />
-            </div>
-          </CardContent>
-        </Card>
+        {/* Account Security */}
+        {hasPassword && (
+          <div className='space-y-3'>
+            <h2 className='text-lg font-semibold text-foreground'>Password</h2>
+            <p className='text-sm text-muted-foreground'>
+              Update your password to keep your account secure.
+            </p>
+            <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant='outline'>
+                  <Lock className='size-4 mr-2' />
+                  Change password
+                </Button>
+              </DialogTrigger>
+              <DialogContent className='sm:max-w-md'>
+                <DialogHeader>
+                  <DialogTitle>Change password</DialogTitle>
+                  <DialogDescription>
+                    Enter your current password and choose a new one.
+                  </DialogDescription>
+                </DialogHeader>
+                <ChangePasswordForm onSuccess={() => setPasswordDialogOpen(false)} />
+              </DialogContent>
+            </Dialog>
+          </div>
+        )}
+
+        {/* Delete Account */}
+        <div className='space-y-3 rounded-xl border border-destructive/30 p-6'>
+          <h2 className='text-lg font-semibold text-destructive'>Delete account</h2>
+          <p className='text-sm text-muted-foreground'>
+            Permanently remove your account and all associated data. This action
+            cannot be undone.
+          </p>
+          <DeleteAccountDialog />
+        </div>
       </div>
   );
 }

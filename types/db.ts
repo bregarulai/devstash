@@ -1,6 +1,10 @@
 import { z } from 'zod';
 import { ContentType } from '../generated/prisma/enums';
 
+// ── Shared Types ─────────────────────────────────────────────────────────────
+
+export type PlanTier = 'free' | 'monthly' | 'yearly';
+
 // ── Auth / Form Schemas ──────────────────────────────────────────────────────
 
 export const registerSchema = z.object({
