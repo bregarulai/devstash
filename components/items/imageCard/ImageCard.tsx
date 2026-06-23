@@ -20,18 +20,11 @@ export function ImageCard({ item, onOpen }: ImageCardProps) {
     onOpen?.(item.id);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleClick();
-    }
-  };
-
   const handleCopy = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
     const textToCopy = item.content || item.fileUrl;
     if (!textToCopy) return;
-    
+
     try {
       await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
@@ -43,13 +36,9 @@ export function ImageCard({ item, onOpen }: ImageCardProps) {
 
   return (
     <div
-      role='button'
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      className='h-full w-full overflow-hidden rounded-xl border transition-colors hover:bg-accent/50 text-left cursor-pointer'
+      className='group relative h-full w-full overflow-hidden rounded-xl border transition-colors hover:bg-accent/50 focus-within:border-ring focus-within:ring-1 focus-within:ring-ring text-left border-foreground/10'
     >
-      <Card className='h-full overflow-hidden'>
+      <Card className='relative h-full overflow-hidden'>
         <div className='relative aspect-video w-full overflow-hidden'>
           {item.fileUrl ? (
             <Image
@@ -65,10 +54,17 @@ export function ImageCard({ item, onOpen }: ImageCardProps) {
               <span className='text-sm text-muted-foreground'>No image</span>
             </div>
           )}
-
         </div>
         <CardContent className='p-3'>
-          <h3 className='truncate text-sm font-medium'>{item.title}</h3>
+          <h3 className='truncate text-sm font-medium'>
+            <button
+              type='button'
+              onClick={handleClick}
+              className='relative text-left after:absolute after:inset-0 focus-visible:outline-none'
+            >
+              {item.title}
+            </button>
+          </h3>
           {item.description && (
             <p className='mt-1 truncate text-xs text-muted-foreground'>
               {item.description}
@@ -88,6 +84,7 @@ export function ImageCard({ item, onOpen }: ImageCardProps) {
                   size='icon-xs'
                   onClick={handleCopy}
                   title='Copy content'
+                  className='relative z-10'
                 >
                   {copied ? (
                     <Check className='text-success' />

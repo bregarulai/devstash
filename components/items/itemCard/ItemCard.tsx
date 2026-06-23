@@ -21,17 +21,10 @@ export function ItemCard({ item, onOpen }: ItemCardProps) {
     onOpen?.(item.id);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleClick();
-    }
-  };
-
   const handleCopy = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!item.content) return;
-    
+
     try {
       await navigator.clipboard.writeText(item.content);
       setCopied(true);
@@ -43,21 +36,17 @@ export function ItemCard({ item, onOpen }: ItemCardProps) {
 
   return (
     <div
-      role='button'
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
       className={cn(
-        'h-full w-full overflow-hidden rounded-xl border transition-colors hover:bg-accent/50 text-left cursor-pointer',
+        'group relative h-full w-full overflow-hidden rounded-xl border transition-colors hover:bg-accent/50 focus-within:border-ring focus-within:ring-1 focus-within:ring-ring text-left',
         'border-foreground/10',
       )}
     >
-      <Card className='h-full'>
+      <Card className='relative h-full'>
         <CardHeader className='flex flex-row items-center gap-3 space-y-0 pb-2'>
           <div
             className='flex h-8 w-8 shrink-0 items-center justify-center rounded-lg'
             style={{
-              backgroundColor: `${borderColor}15`,
+              backgroundColor: `color-mix(in oklch, ${borderColor} 12%, transparent)`,
               color: borderColor,
             }}
           >
@@ -66,7 +55,13 @@ export function ItemCard({ item, onOpen }: ItemCardProps) {
           <div className='min-w-0 flex-1'>
             <div className='flex items-center gap-1.5'>
               <CardTitle className='truncate text-sm font-medium'>
-                {item.title}
+                <button
+                  type='button'
+                  onClick={handleClick}
+                  className='relative text-left after:absolute after:inset-0 focus-visible:outline-none'
+                >
+                  {item.title}
+                </button>
               </CardTitle>
               {item.isFavorite && (
                 <Star className='size-3.5 shrink-0 fill-current text-favorite' />
@@ -112,6 +107,7 @@ export function ItemCard({ item, onOpen }: ItemCardProps) {
                 size='icon'
                 onClick={handleCopy}
                 title='Copy content'
+                className='relative z-10'
               >
                 {copied ? (
                   <Check className='text-success' />

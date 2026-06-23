@@ -11,6 +11,8 @@ interface CollectionsToolbarProps {
   onSearchChange: (value: string) => void;
   onSortChange: (value: SortOption) => void;
   onClearSearch: () => void;
+  placeholder?: string;
+  searchLabel?: string;
 }
 
 export function CollectionsToolbar({
@@ -19,6 +21,8 @@ export function CollectionsToolbar({
   onSearchChange,
   onSortChange,
   onClearSearch,
+  placeholder = 'Search collections',
+  searchLabel = 'Search collections',
 }: CollectionsToolbarProps) {
   return (
     <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
@@ -28,8 +32,8 @@ export function CollectionsToolbar({
           type='search'
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder='Search collections'
-          aria-label='Search collections'
+          placeholder={placeholder}
+          aria-label={searchLabel}
           className='h-9 pl-8 pr-8'
         />
         {search && (

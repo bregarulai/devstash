@@ -7,7 +7,7 @@ import { itemCreateSchema, type ItemCreateValues, type ItemType } from '@/types/
 import { createItemAction } from '@/actions';
 import { useFileUpload } from '@/hooks/useFileUpload/useFileUpload';
 
-export function useItemCreateForm() {
+export function useItemCreateForm(defaultCollectionIds: string[] = []) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -27,7 +27,7 @@ export function useItemCreateForm() {
       fileName: '',
       fileSize: undefined,
       tags: [],
-      collectionIds: [],
+      collectionIds: defaultCollectionIds,
     },
   });
 

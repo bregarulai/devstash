@@ -17,9 +17,10 @@ interface ItemCreateDialogProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   isPro?: boolean;
+  defaultCollectionIds?: string[];
 }
 
-export function ItemCreateDialog({ open: externalOpen, onOpenChange: externalOnOpenChange, isPro = false }: ItemCreateDialogProps) {
+export function ItemCreateDialog({ open: externalOpen, onOpenChange: externalOnOpenChange, isPro = false, defaultCollectionIds }: ItemCreateDialogProps) {
   const {
     open: internalOpen,
     isPending,
@@ -36,7 +37,7 @@ export function ItemCreateDialog({ open: externalOpen, onOpenChange: externalOnO
     handleFileSelect,
     handleTagsChange,
     handleCollectionChange,
-  } = useItemCreateForm();
+  } = useItemCreateForm(defaultCollectionIds);
 
   const isOpen = externalOpen ?? internalOpen;
   const handleOpenChange = externalOnOpenChange ?? internalHandleOpenChange;

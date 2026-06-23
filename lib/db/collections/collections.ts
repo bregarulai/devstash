@@ -27,6 +27,35 @@ function getCollectionOrderBy(
   }
 }
 
+function getItemCollectionOrderBy(
+  sortBy?: SortOption,
+): Prisma.ItemCollectionOrderByWithRelationInput[] {
+  switch (sortBy) {
+    case 'oldest':
+      return [{ item: { createdAt: 'asc' } }];
+    case 'name-asc':
+      return [{ item: { title: 'asc' } }];
+    case 'name-desc':
+      return [{ item: { title: 'desc' } }];
+    case 'type':
+      return [{ item: { itemType: { name: 'asc' } } }, { item: { createdAt: 'desc' } }];
+    case 'newest':
+    default:
+      return [{ item: { createdAt: 'desc' } }];
+  }
+}
+
+function getItemSearchWhere(search: string): Prisma.ItemCollectionWhereInput {
+  return {
+    item: {
+      OR: [
+        { title: { contains: search, mode: 'insensitive' } },
+        { content: { contains: search, mode: 'insensitive' } },
+      ],
+    },
+  };
+}
+
 export type { CollectionWithStats, CollectionDetail };
 
 function getDominantItemTypeColor(
@@ -435,6 +464,7 @@ export async function getCollectionByIdPaginated(
   collectionId: string,
   page: number,
   perPage: number = COLLECTIONS_PER_PAGE,
+  options?: { search?: string; sortBy?: SortOption },
 ): Promise<{
   collection: CollectionDetail | null;
   totalCount: number;
@@ -446,6 +476,9 @@ export async function getCollectionByIdPaginated(
   let hasError = false;
 
   const skip = (page - 1) * perPage;
+  const search = options?.search?.trim();
+  const itemWhere = search ? getItemSearchWhere(search) : undefined;
+  const itemOrderBy = getItemCollectionOrderBy(options?.sortBy);
 
   try {
     const dbCollection = await prisma.collection.findFirst({
@@ -460,6 +493,8 @@ export async function getCollectionByIdPaginated(
           },
         },
         items: {
+          where: itemWhere,
+          orderBy: itemOrderBy,
           skip,
           take: perPage,
           include: {
@@ -513,7 +548,13 @@ export async function getCollectionByIdPaginated(
         items,
       };
 
-      totalCount = dbCollection._count.items;
+      if (search) {
+        totalCount = await prisma.itemCollection.count({
+          where: { collectionId, ...itemWhere! },
+        });
+      } else {
+        totalCount = dbCollection._count.items;
+      }
     }
   } catch (error) {
     console.error('Failed to load collection by id:', error);

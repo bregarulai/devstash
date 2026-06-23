@@ -82,12 +82,13 @@ export function CollectionActions({
         />
         <Button
           variant='destructive'
-          size='icon'
+          size='sm'
           className='cursor-pointer'
           aria-label='Delete collection'
           onClick={() => setIsDeleteDialogOpen(true)}
         >
           <Trash2 className='size-4' />
+          <span className='text-xs'>Delete</span>
         </Button>
       </div>
 

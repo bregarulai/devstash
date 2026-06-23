@@ -27,14 +27,12 @@ function getFileExtension(fileName: string | null): string {
 }
 
 const EXT_ICON_MAP: Record<string, LucideIcon> = {
-  // Images
   '.png': FileImage,
   '.jpg': FileImage,
   '.jpeg': FileImage,
   '.gif': FileImage,
   '.webp': FileImage,
   '.svg': FileImage,
-  // Files
   '.pdf': FileText,
   '.txt': FileText,
   '.md': FileText,
@@ -65,21 +63,10 @@ export function FileListRow({ item, onOpen }: FileListRowProps) {
     triggerDownload(item.fileUrl, item.fileName);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleClick();
-    }
-  };
-
   return (
     <div
-      role='button'
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
       className={cn(
-        'flex w-full items-center gap-4 rounded-lg border bg-muted/50 px-4 py-3 text-left transition-colors hover:bg-muted/70 cursor-pointer',
+        'group relative flex w-full items-center gap-4 rounded-lg border bg-muted/50 px-4 py-3 text-left transition-colors hover:bg-muted/70 focus-within:border-ring focus-within:ring-1 focus-within:ring-ring',
       )}
     >
       <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted/50'>
@@ -87,7 +74,15 @@ export function FileListRow({ item, onOpen }: FileListRowProps) {
       </div>
 
       <div className='min-w-0 flex-1'>
-        <p className='truncate text-sm font-medium'>{item.title}</p>
+        <p className='truncate text-sm font-medium'>
+          <button
+            type='button'
+            onClick={handleClick}
+            className='relative text-left after:absolute after:inset-0 focus-visible:outline-none'
+          >
+            {item.title}
+          </button>
+        </p>
         {ext && (
           <p className='text-xs text-muted-foreground uppercase'>{ext}</p>
         )}
@@ -106,6 +101,8 @@ export function FileListRow({ item, onOpen }: FileListRowProps) {
           variant='ghost'
           size='icon'
           onClick={handleDownload}
+          aria-label={`Download ${item.fileName ?? item.title}`}
+          className='relative z-10'
         >
           <Download />
         </Button>
