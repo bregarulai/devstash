@@ -30,7 +30,7 @@ export function SidebarItemTypeLink({ type, isExpanded }: SidebarItemTypeLinkPro
         </span>
       )}
       {isExpanded && PRO_TYPES.has(type.name) && (
-        <Badge variant='outline' className='ml-2 h-4 w-fit rounded-full px-1 text-[10px] font-semibold uppercase'>
+        <Badge className='ml-2 h-4 w-fit rounded-full px-1 text-[10px] font-semibold uppercase bg-brand text-brand-foreground'>
           PRO
         </Badge>
       )}
