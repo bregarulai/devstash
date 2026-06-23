@@ -13,12 +13,14 @@ interface PaginationControlsProps {
   page: number;
   totalPages: number;
   baseUrl: string;
+  preserveParams?: string;
 }
 
 export function PaginationControls({
   page,
   totalPages,
   baseUrl,
+  preserveParams,
 }: PaginationControlsProps) {
   if (totalPages <= 1) return null;
 
@@ -27,7 +29,7 @@ export function PaginationControls({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={page > 1 ? getPageUrl(baseUrl, page - 1) : undefined}
+            href={page > 1 ? getPageUrl(baseUrl, page - 1, preserveParams) : undefined}
             className={page <= 1 ? 'pointer-events-none opacity-50' : ''}
             aria-disabled={page <= 1}
             tabIndex={page <= 1 ? -1 : undefined}
@@ -41,7 +43,7 @@ export function PaginationControls({
           ) : (
             <PaginationItem key={pageNum}>
               <PaginationLink
-                href={getPageUrl(baseUrl, pageNum)}
+                href={getPageUrl(baseUrl, pageNum, preserveParams)}
                 isActive={pageNum === page}
               >
                 {pageNum}
@@ -51,7 +53,7 @@ export function PaginationControls({
         )}
         <PaginationItem>
           <PaginationNext
-            href={page < totalPages ? getPageUrl(baseUrl, page + 1) : undefined}
+            href={page < totalPages ? getPageUrl(baseUrl, page + 1, preserveParams) : undefined}
             className={page >= totalPages ? 'pointer-events-none opacity-50' : ''}
             aria-disabled={page >= totalPages}
             tabIndex={page >= totalPages ? -1 : undefined}

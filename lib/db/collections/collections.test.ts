@@ -782,7 +782,7 @@ describe('getAllCollectionsPaginated', () => {
     await getAllCollectionsPaginated('user-1', 1, 10)
 
     expect(mockPrismaCollectionFindMany).toHaveBeenCalledWith(
-      expect.objectContaining({ orderBy: { updatedAt: 'desc' } })
+      expect.objectContaining({ orderBy: [{ updatedAt: 'desc' }] })
     )
   })
 })

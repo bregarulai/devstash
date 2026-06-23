@@ -196,7 +196,8 @@ The palette is neutral-first with one brand accent. Item-type colors are the chr
 
 ### Hierarchy
 
-- **Display** (600, clamp(2rem, 5vw, 3rem), 1.1): Page titles, dashboard heading. Reserved for the top of the hierarchy only.
+- **Display** (600, clamp(2rem, 5vw, 3rem), 1.1): Marketing surfaces, hero/empty-state headings. The clamp scale is fluid and reserved for surfaces where the design IS the product. Not used in product UI.
+- **Page Title** (600, 1.5rem / `text-2xl`, 1.1): Authenticated page titles (Collections, Favorites, Settings). Fixed rem scale per product-register guidance; weight + tracking provide hierarchy without fluid scaling. The top of the product hierarchy.
 - **Headline** (600, 1.25rem, 1.4): Section titles, card titles. The most frequently used bold weight.
 - **Body** (400, 0.875rem, 1.5): Item content, descriptions, body text. Max line length 65–75ch.
 - **Label** (500, 0.75rem, 1): Badge text, navigation labels, type indicators. Often uppercase with tracking.
@@ -214,7 +215,7 @@ Card containers use a 1px ring at 10% foreground opacity for subtle separation f
 
 ### Named Rules
 
-**The No-Shadow Rule.** Surfaces are flat. Elevation comes from background tone shifts and ring borders only. Never add a shadow to a card, button, or container.
+**The No-Shadow Rule.** Surfaces are flat. Elevation comes from background tone shifts and ring borders only. Never add a shadow to a card, button, or container. Card hover states use a tonal background shift (`hover:bg-muted/40` with `transition-colors`), never a `box-shadow`.
 
 ## 5. Components
 

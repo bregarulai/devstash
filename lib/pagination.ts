@@ -1,5 +1,13 @@
-export function getPageUrl(baseUrl: string, page: number): string {
-  return `${baseUrl}?page=${page}`;
+export function getPageUrl(
+  baseUrl: string,
+  page: number,
+  preserveParams?: string,
+): string {
+  const pageQuery = `page=${page}`;
+  if (preserveParams) {
+    return `${baseUrl}?${pageQuery}&${preserveParams}`;
+  }
+  return `${baseUrl}?${pageQuery}`;
 }
 
 export function getPageNumbers(

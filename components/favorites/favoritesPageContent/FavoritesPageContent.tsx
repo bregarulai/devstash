@@ -113,7 +113,7 @@ export function FavoritesPageContent({
   }, [localCollections]);
 
   return (
-    <div className='flex flex-1 flex-col gap-6 p-6'>
+    <div className='flex flex-1 flex-col gap-6'>
       {hasError && (
         <div className='flex items-center gap-2 rounded-lg bg-destructive/10 p-3 text-destructive'>
           <AlertCircle className='h-4 w-4 shrink-0' />

@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma/prisma';
+import { Prisma } from '@/generated/prisma/client';
 import {
   DEFAULT_FAVORITE_LIMIT,
   DEFAULT_RECENT_COLLECTIONS_LIMIT,
@@ -6,6 +7,25 @@ import {
   COLLECTIONS_PER_PAGE,
 } from '@/lib/db/constants/constants';
 import type { CollectionWithStats, CollectionDetail, CollectionSelect, ItemWithDetails } from '@/types/db';
+import type { SortOption } from '@/types/sort';
+
+function getCollectionOrderBy(
+  sortBy?: SortOption,
+): Prisma.CollectionOrderByWithRelationInput[] {
+  switch (sortBy) {
+    case 'oldest':
+      return [{ updatedAt: 'asc' }];
+    case 'name-asc':
+      return [{ name: 'asc' }];
+    case 'name-desc':
+      return [{ name: 'desc' }];
+    case 'type':
+      return [{ items: { _count: 'desc' } }, { name: 'asc' }];
+    case 'newest':
+    default:
+      return [{ updatedAt: 'desc' }];
+  }
+}
 
 export type { CollectionWithStats, CollectionDetail };
 
@@ -195,17 +215,30 @@ export async function getAllCollectionsPaginated(
   userId: string,
   page: number,
   perPage: number = COLLECTIONS_PER_PAGE,
+  options?: { search?: string; sortBy?: SortOption },
 ): Promise<{
   collections: CollectionWithStats[];
   totalCount: number;
   totalPages: number;
 }> {
   const skip = (page - 1) * perPage;
+  const search = options?.search?.trim();
+  const orderBy = getCollectionOrderBy(options?.sortBy);
+
+  const where: Prisma.CollectionWhereInput = search
+    ? {
+        userId,
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { description: { contains: search, mode: 'insensitive' } },
+        ],
+      }
+    : { userId };
 
   const [collections, totalCount] = await Promise.all([
     prisma.collection.findMany({
-      where: { userId },
-      orderBy: { updatedAt: 'desc' },
+      where,
+      orderBy,
       skip,
       take: perPage,
       include: {
@@ -231,7 +264,7 @@ export async function getAllCollectionsPaginated(
         },
       },
     }),
-    prisma.collection.count({ where: { userId } }),
+    prisma.collection.count({ where }),
   ]);
 
   const totalPages = Math.ceil(totalCount / perPage);
