@@ -26,53 +26,68 @@ export function MobileSideBar({ onMenuToggle, isPro = false }: MobileSideBarProp
 
   return (
     <>
-      <header className='flex align-middle sticky top-0 z-30 h-16 shrink-0 items-center gap-2 bg-background px-4 sm:px-6'>
-        {onMenuToggle && (
-          <Button
-            variant='ghost'
-            size='icon'
-            className='lg:hidden'
-            onClick={onMenuToggle}
-          >
-            <Menu className='h-4 w-4' />
-            <span className='sr-only'>Open menu</span>
-          </Button>
-        )}
-
-        <div className='flex-1' />
-
-        <div className='flex sm:hidden'>
-          <SearchBar iconOnly />
-        </div>
-        <div className='hidden sm:flex sm:w-full sm:max-w-md lg:absolute lg:left-1/2 lg:-translate-x-1/2'>
-          <SearchBar />
+      <header className='flex items-center sticky top-0 z-30 h-16 shrink-0 bg-background px-4 sm:px-6'>
+        {/* Left: menu button (mobile only) */}
+        <div className='flex items-center justify-start w-20 shrink-0 lg:hidden'>
+          {onMenuToggle && (
+            <Button
+              variant='ghost'
+              size='icon'
+              onClick={onMenuToggle}
+            >
+              <Menu className='h-4 w-4' />
+              <span className='sr-only'>Open menu</span>
+            </Button>
+          )}
         </div>
 
-        <div className='flex items-center gap-2 shrink-0 ml-auto'>
+        {/* Center: search bar */}
+        <div className='flex-1 flex justify-center'>
+          <div className='w-full max-w-md'>
+            <SearchBar />
+          </div>
+        </div>
+
+        {/* Right: action buttons */}
+        <div className='flex items-center justify-end gap-2 shrink-0'>
           <Button variant='ghost' size='icon' asChild>
             <Link href='/favorites'>
               <Star className='h-4 w-4' />
               <span className='sr-only'>Favorites</span>
             </Link>
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size='icon' variant='ghost'>
-                <Plus className='h-4 w-4' />
-                <span className='sr-only'>Create</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <DropdownMenuItem onSelect={() => setItemDialogOpen(true)}>
-                <Plus className='mr-2 h-4 w-4' />
-                New Item
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setCollectionDialogOpen(true)}>
-                <FolderDown className='mr-2 h-4 w-4' />
-                New Collection
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Mobile: dropdown with + icon */}
+          <div className='lg:hidden'>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size='icon' variant='ghost'>
+                  <Plus className='h-4 w-4' />
+                  <span className='sr-only'>Create</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                <DropdownMenuItem onSelect={() => setItemDialogOpen(true)}>
+                  <Plus className='mr-2 h-4 w-4' />
+                  New Item
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setCollectionDialogOpen(true)}>
+                  <FolderDown className='mr-2 h-4 w-4' />
+                  New Collection
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          {/* Desktop: full buttons */}
+          <div className='hidden lg:flex items-center gap-2'>
+            <Button size='sm' variant='outline' onClick={() => setItemDialogOpen(true)}>
+              <Plus className='mr-2 h-4 w-4' />
+              New Item
+            </Button>
+            <Button size='sm' onClick={() => setCollectionDialogOpen(true)}>
+              <FolderDown className='mr-2 h-4 w-4' />
+              New Collection
+            </Button>
+          </div>
         </div>
       </header>
       <Separator />
