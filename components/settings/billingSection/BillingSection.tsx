@@ -95,7 +95,7 @@ export function BillingSection({ planTier, usage }: BillingSectionProps) {
             </div>
           </div>
         </div>
-        {usage && (
+        {!isPro && usage && (
           <div className='space-y-3 rounded-lg border border-border bg-muted/40 p-4'>
             <p className='text-xs font-medium text-muted-foreground uppercase tracking-wide'>
               Plan usage
