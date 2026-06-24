@@ -1,59 +1,50 @@
 'use client';
 
-import { useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
+import type { PlanInterval } from '@/lib/stripe/stripe';
 
 interface PricingToggleProps {
-  onToggle?: (billing: 'monthly' | 'yearly') => void;
+  value: PlanInterval;
+  onToggle?: (billing: PlanInterval) => void;
 }
 
-export function PricingToggle({ onToggle }: PricingToggleProps) {
-  const [billing, setBilling] = useState<'monthly' | 'yearly'>('monthly');
-
-  const handleToggle = useCallback(
-    (newBilling: 'monthly' | 'yearly') => {
-      setBilling(newBilling);
-      onToggle?.(newBilling);
-    },
-    [onToggle]
-  );
-
+export function PricingToggle({ value, onToggle }: PricingToggleProps) {
   return (
-    <div
-      className="inline-flex items-center gap-1 p-1.5 bg-card border border-border rounded-full relative"
-      role="radiogroup"
-      aria-label="Billing period"
-      aria-live="polite"
-    >
-      <button
-        role="radio"
-        aria-checked={billing === 'monthly'}
-        className={cn(
-          'px-4.5 py-2 rounded-full text-[13px] font-semibold transition-colors',
-          billing === 'monthly'
-            ? 'bg-primary text-primary-foreground'
-            : 'text-muted-foreground hover:text-foreground'
-        )}
-        onClick={() => handleToggle('monthly')}
+    <div className='inline-flex items-center gap-2'>
+      <div
+        className='inline-flex items-center gap-1 p-1.5 bg-card border border-border rounded-full relative'
+        role='radiogroup'
+        aria-label='Billing period'
+        aria-live='polite'
       >
-        Monthly
-      </button>
-      <button
-        role="radio"
-        aria-checked={billing === 'yearly'}
-        className={cn(
-          'px-4.5 py-2 rounded-full text-[13px] font-semibold transition-colors',
-          billing === 'yearly'
-            ? 'bg-primary text-primary-foreground'
-            : 'text-muted-foreground hover:text-foreground'
-        )}
-        onClick={() => handleToggle('yearly')}
-      >
-        Yearly
-      </button>
-      <span className="text-[11px] font-bold text-brand pr-2.5 pl-1">
-        Save 25%
-      </span>
+        <button
+          role='radio'
+          aria-checked={value === 'monthly'}
+          className={cn(
+            'px-4.5 py-2 rounded-full text-[13px] font-semibold transition-colors',
+            value === 'monthly'
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+          )}
+          onClick={() => onToggle?.('monthly')}
+        >
+          Monthly
+        </button>
+        <button
+          role='radio'
+          aria-checked={value === 'yearly'}
+          className={cn(
+            'px-4.5 py-2 rounded-full text-[13px] font-semibold transition-colors',
+            value === 'yearly'
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+          )}
+          onClick={() => onToggle?.('yearly')}
+        >
+          Yearly
+        </button>
+      </div>
+      <span className='text-xs font-medium text-foreground'>Save 25%</span>
     </div>
   );
 }

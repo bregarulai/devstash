@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Star, Plus, FolderDown, Menu } from 'lucide-react';
+import { Star, Plus, FolderDown, Menu, Sparkles } from 'lucide-react';
 import { SearchBar } from '../searchBar/SearchBar';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ItemCreateDialog } from '@/components/items/itemCreateDialog/ItemCreateDialog';
@@ -50,6 +51,11 @@ export function MobileSideBar({ onMenuToggle, isPro = false }: MobileSideBarProp
 
         {/* Right: action buttons */}
         <div className='flex items-center justify-end gap-2 shrink-0'>
+          {!isPro && (
+            <Button variant='ghost' size='sm' className='hidden lg:inline-flex' asChild>
+              <Link href='/upgrade'>Upgrade</Link>
+            </Button>
+          )}
           <Button variant='ghost' size='icon' asChild>
             <Link href='/favorites'>
               <Star className='h-4 w-4' />
@@ -74,6 +80,17 @@ export function MobileSideBar({ onMenuToggle, isPro = false }: MobileSideBarProp
                   <FolderDown className='mr-2 h-4 w-4' />
                   New Collection
                 </DropdownMenuItem>
+                {!isPro && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href='/upgrade'>
+                        <Sparkles className='mr-2 h-4 w-4' />
+                        Upgrade to Pro
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

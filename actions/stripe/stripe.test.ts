@@ -207,6 +207,111 @@ describe('createCheckoutAction', () => {
   })
 })
 
+describe('createCheckoutAction — returnTo', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.stubEnv('APP_URL', 'http://localhost:3000')
+    mockAuth.mockResolvedValue({
+      user: { id: 'user-1', email: 'demo@example.com' },
+    })
+    mockPrismaUserFindUniqueOrThrow.mockResolvedValue({
+      stripeCustomerId: 'cus_existing',
+    })
+    mockStripeCheckoutCreate.mockResolvedValue({
+      url: 'https://checkout.stripe.com/session_rt',
+    })
+  })
+
+  it('appends checkout=success with & when returnTo has a query string', async () => {
+    const { createCheckoutAction } = await import('./stripe')
+    await createCheckoutAction('monthly', '/items/file?page=2')
+
+    expect(mockStripeCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success_url:
+          'http://localhost:3000/items/file?page=2&checkout=success',
+      }),
+    )
+  })
+
+  it('appends checkout=success with ? when returnTo has no query string', async () => {
+    const { createCheckoutAction } = await import('./stripe')
+    await createCheckoutAction('yearly', '/dashboard')
+
+    expect(mockStripeCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success_url: 'http://localhost:3000/dashboard?checkout=success',
+      }),
+    )
+  })
+
+  it('falls back to /settings?checkout=success when returnTo is omitted', async () => {
+    const { createCheckoutAction } = await import('./stripe')
+    await createCheckoutAction('monthly')
+
+    expect(mockStripeCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success_url: 'http://localhost:3000/settings?checkout=success',
+      }),
+    )
+  })
+
+  it('falls back to /settings?checkout=success when returnTo is an empty string', async () => {
+    const { createCheckoutAction } = await import('./stripe')
+    await createCheckoutAction('monthly', '')
+
+    expect(mockStripeCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success_url: 'http://localhost:3000/settings?checkout=success',
+      }),
+    )
+  })
+
+  it('rejects a protocol-relative open-redirect attempt', async () => {
+    const { createCheckoutAction } = await import('./stripe')
+    await createCheckoutAction('monthly', '//evil.com/phish')
+
+    expect(mockStripeCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success_url: 'http://localhost:3000/settings?checkout=success',
+      }),
+    )
+  })
+
+  it('rejects an absolute https URL', async () => {
+    const { createCheckoutAction } = await import('./stripe')
+    await createCheckoutAction('monthly', 'https://evil.com/phish')
+
+    expect(mockStripeCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success_url: 'http://localhost:3000/settings?checkout=success',
+      }),
+    )
+  })
+
+  it('rejects a backslash-prefixed value', async () => {
+    const { createCheckoutAction } = await import('./stripe')
+    await createCheckoutAction('monthly', '\\\\evil.com')
+
+    expect(mockStripeCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success_url: 'http://localhost:3000/settings?checkout=success',
+      }),
+    )
+  })
+
+  it('rejects a value containing whitespace', async () => {
+    const { createCheckoutAction } = await import('./stripe')
+    await createCheckoutAction('monthly', '/foo bar')
+
+    expect(mockStripeCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success_url: 'http://localhost:3000/settings?checkout=success',
+      }),
+    )
+  })
+})
+
 describe('createPortalAction', () => {
   beforeEach(() => {
     vi.clearAllMocks()

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Reveal } from '@/components/homepage/reveal/Reveal';
 import { PricingToggle } from '@/components/homepage/pricingToggle/PricingToggle';
 import { CheckCircle } from 'lucide-react';
+import type { PlanInterval } from '@/lib/stripe/stripe';
 
 
 const FREE_FEATURES = ['50 items to start exploring', '3 collections for organization', 'All 6 item types', 'Instant search across everything', 'GitHub & email sign-in'];
@@ -22,7 +23,7 @@ const PRO_FEATURES = [
 const PRO_REASSURANCE = 'Files encrypted at rest. Private to your account.';
 
 export function PricingSection() {
-  const [billing, setBilling] = useState<'monthly' | 'yearly'>('monthly');
+  const [billing, setBilling] = useState<PlanInterval>('monthly');
 
   return (
     <section id="pricing" className="max-w-6xl mx-auto px-5 pb-10">
@@ -31,7 +32,7 @@ export function PricingSection() {
           Start free. Upgrade when you outgrow it.
         </h2>
         <div className="mt-6">
-          <PricingToggle onToggle={setBilling} />
+          <PricingToggle value={billing} onToggle={setBilling} />
         </div>
       </Reveal>
 

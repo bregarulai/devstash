@@ -28,6 +28,7 @@ export default defineConfig({
         'lib/auth/accountDeletion/accountDeletion.ts',
         'lib/auth/authConfig/authConfig.ts',
         'lib/utils/utils.ts',
+        'lib/utils/safeReturn.ts',
         'lib/constants.ts',
         'lib/constants/limits.ts',
         'lib/db/collections/collections.ts',

@@ -3,6 +3,7 @@
 import { auth } from '@/lib/auth/auth/auth';
 import { stripe, STRIPE_PRICE_IDS, type PlanInterval } from '@/lib/stripe/stripe';
 import { prisma } from '@/lib/prisma/prisma';
+import { getSafeReturnPath } from '@/lib/utils/safeReturn';
 
 type ActionResult =
   | { success: true; data: { url: string }; error: null }
@@ -16,6 +17,7 @@ function baseUrl(): string {
 
 export async function createCheckoutAction(
   interval: PlanInterval,
+  returnTo?: string,
 ): Promise<ActionResult> {
   const session = await auth();
   if (!session?.user?.id) {
@@ -47,11 +49,16 @@ export async function createCheckoutAction(
       });
     }
 
+    const safeReturn = getSafeReturnPath(returnTo);
+    const successUrl = safeReturn
+      ? `${baseUrl()}${safeReturn}${safeReturn.includes('?') ? '&' : '?'}checkout=success`
+      : `${baseUrl()}/settings?checkout=success`;
+
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: stripeCustomerId,
       mode: 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${baseUrl()}/settings?checkout=success`,
+      success_url: successUrl,
       cancel_url: `${baseUrl()}/settings?checkout=cancelled`,
       client_reference_id: session.user.id,
       subscription_data: {
