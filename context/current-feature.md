@@ -1,31 +1,16 @@
-# Current Feature: AI Explain Code
-
-**Spec**: `context/features/ai-explain-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create an `explainCode` server action with auth, Pro gating, Zod validation, rate limiting
-- Add "Explain" button (Sparkles icon) to code editor window controls header (next to Copy button)
-- Only show for snippet and command types in the item drawer (not in create/edit forms)
-- After generating, show Code/Explain tabs in the editor header to toggle between views
-- Render explanation as markdown in the same container space as the code editor
-- Explanation should be concise (~200-300 words) covering what the code does and key concepts
-- Loading state: Loader2 spinner while generating
-- Pro gating in UI: show Crown icon + tooltip ("AI features require Pro subscription") for free users
-- Error handling via toast (Pro gating, rate limit, AI service errors)
-- Follow existing patterns
-- Unit tests for server action
+<!-- What does success look like? -->
 
 ## Notes
 
-- Explanations are not saved to the database — regenerated on each click
-- Not available in create/edit forms, only in the item drawer read view
-- `isPro` needs to be passed as a prop to the item drawer / code editor
-- See `docs/ai-integration-plan.md` for full architectural context
+<!-- Additional context, constraints, or details -->
 
 
 ## History
@@ -134,3 +119,4 @@ In Progress
 - **Language Selector Dropdown (Completed)** - Replaced free-text language Input with shared LanguageSelect dropdown using shadcn Select, added LANGUAGE_OPTIONS constant with 30 Monaco language IDs, positioned dropdown above content editor in both create and edit surfaces, added unit tests
 - **AI Auto-Tagging (Completed)** - Implemented AI-powered tag suggestions using OpenAI Responses API with DeepSeek V4 Flash, added generateAutoTags server action with auth/Pro gating/rate limiting, Suggest Tags button in create dialog and drawer edit mode, tag badges with accept/reject controls, and comprehensive unit tests
 - **AI Description Generator (Completed)** - Implemented AI-powered description generation using OpenAI Responses API with DeepSeek V4 Flash, added generateDescription server action with auth/Pro gating/rate limiting, Sparkles icon button in create dialog and drawer edit mode, descriptionInputSchema with type-specific fields, AiDescription client component, and comprehensive unit tests
+- **AI Explain Code (Completed)** - Implemented explainCode server action with auth/Pro gating/rate limiting, added Explain button to CodeEditor with Sparkles icon for Pro users and Crown icon with tooltip for free users, Code/Explain tabs for toggling between views, markdown-rendered explanations, Loader2 loading state, and comprehensive unit tests
