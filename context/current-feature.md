@@ -1,16 +1,33 @@
-# Current Feature
+# Current Feature: AI Auto-Tagging
+
+**Spec**: `context/features/ai-auto-tag-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Create OpenAI client utility with `AI_MODEL` constant (if not already present)
+- Add `generateAutoTags` server action with auth, Pro gating, Zod validation, rate limiting
+- Add AI rate limit config (20 requests/hour per user) to existing rate limit utility (if not already added)
+- Add "Suggest Tags" button (Sparkles icon, ghost variant) to create item dialog and item drawer edit mode
+- Display suggested tags as badges with accept (check) and reject (X) controls per tag
+- Accepted tags added to item's tag list; tags are freeform (not limited to existing DB tags)
+- Truncate content to 2000 chars before API call
+- Hide Suggest Tags button for free users (Pro-only UI gating)
+- Use OpenAI Responses API (not Chat Completions) for DeepSeek V4 Flash; parse both `{"tags": [...]}` and `[...]` response formats; lowercase normalize
+- Error handling via toast (Pro gating, rate limit, AI service errors)
+- Follow existing patterns; add unit tests for server action
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- `OPENAI_API_KEY` already in `.env`
+- `isPro` available server-side via session but not passed to create/edit UI components — use server-side gating for enforcement; UI gating requires passing `isPro` as a prop or fetching it client-side
+- DeepSeek V4 Flash does NOT work with Chat Completions API (returns empty content) — must use Responses API (`client.responses.create()` with `instructions`, `input`, `text.format` json_object, read `response.output_text`)
+- `max_tokens` not supported by DeepSeek V4 Flash — use `max_output_tokens` if needed (prefer Responses API)
+- `zodResponseFormat` structured output consumes excessive tokens — use `json_object` format and parse manually
+- See `docs/ai-integration-plan.md` for full architectural context
 
 ## History
 

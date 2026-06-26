@@ -84,7 +84,7 @@ export default async function ItemsTypePage({
       favoriteCollections={[]}
       recentCollections={[]}
     >
-      <ItemDrawerProvider>
+      <ItemDrawerProvider isPro={user.isPro}>
         <ItemsListContent
           items={items}
           types={types}

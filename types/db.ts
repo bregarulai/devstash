@@ -66,6 +66,20 @@ export const editorPreferencesSchema = z.object({
 
 export type EditorPreferences = z.infer<typeof editorPreferencesSchema>;
 
+// ── AI Auto-Tagging ────────────────────────────────────────────────────────────
+
+export const autoTagsInputSchema = z
+  .object({
+    title: z.string().max(200).optional(),
+    content: z.string().max(20_000).optional(),
+    language: z.string().optional(),
+  })
+  .refine((data) => (data.title?.trim().length ?? 0) > 0 || (data.content?.trim().length ?? 0) > 0, {
+    message: 'Title or content is required',
+  });
+
+export type AutoTagsInput = z.infer<typeof autoTagsInputSchema>;
+
 export const DEFAULT_EDITOR_PREFERENCES: EditorPreferences = {
   fontSize: 13,
   tabSize: 2,

@@ -53,7 +53,7 @@ export default async function FavoritesPage() {
       favoriteCollections={favoriteCollections}
       recentCollections={recentCollections}
     >
-      <ItemDrawerProvider>
+      <ItemDrawerProvider isPro={user.isPro}>
         <FavoritesPageContent
           favoriteItems={favoriteItems}
           favoriteCollections={favoriteCollections}

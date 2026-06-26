@@ -127,7 +127,7 @@ export default async function DashboardPage() {
       favoriteCollections={data.favoriteCollections}
       recentCollections={data.recentCollections}
     >
-      <ItemDrawerProvider>
+      <ItemDrawerProvider isPro={user.isPro}>
         <DashboardContent
           recentCollections={data.recentCollections}
           itemStats={data.itemStats}

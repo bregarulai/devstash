@@ -23,6 +23,7 @@ function ItemDrawerContent() {
     isLoading,
     error,
     isEditing,
+    isPro,
     closeDrawer,
     updateItem,
     startEditing,
@@ -166,7 +167,7 @@ function ItemDrawerContent() {
               <DrawerContent item={item} onDownload={handleDownload} />
             )}
             {!isLoading && !error && item && isEditing && (
-              <DrawerEditContent ref={editRef} item={item} onCanSaveChange={setCanSave} />
+              <DrawerEditContent ref={editRef} item={item} isPro={isPro} onCanSaveChange={setCanSave} />
             )}
           </div>
         </SheetContent>

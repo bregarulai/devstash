@@ -10,6 +10,7 @@ import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
 import { LanguageSelect } from '@/components/codeEditor/LanguageSelect/LanguageSelect';
 import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
 import { CollectionPicker } from '@/components/collections/collectionPicker/CollectionPicker';
+import { AiTagSuggestions } from '@/components/ai/aiTagSuggestions/AiTagSuggestions';
 import type { ItemWithDetails } from '@/types/db';
 import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES, SHOW_CONTENT, SHOW_LANGUAGE, SHOW_URL } from '@/lib/constants';
 
@@ -28,11 +29,12 @@ export interface DrawerEditContentHandle {
 
 interface DrawerEditContentProps {
   item: ItemWithDetails;
+  isPro: boolean;
   onCanSaveChange: (canSave: boolean) => void;
 }
 
 export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditContentProps>(
-  function DrawerEditContent({ item, onCanSaveChange }, ref) {
+  function DrawerEditContent({ item, isPro, onCanSaveChange }, ref) {
     const [title, setTitle] = useState(item.title);
     const [description, setDescription] = useState(item.description ?? '');
     const [content, setContent] = useState(item.content ?? '');
@@ -183,6 +185,26 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
             onChange={(e) => setTagInput(e.target.value)}
             placeholder='Comma-separated tags'
             className='h-9'
+          />
+          <AiTagSuggestions
+            isPro={isPro}
+            existingTags={tagInput
+              .split(',')
+              .map((t) => t.trim().toLowerCase())
+              .filter(Boolean)}
+            getItemData={() => ({
+              title,
+              content: showContent ? content : showUrl ? url : description,
+              language,
+            })}
+            onAcceptTags={(accepted) => {
+              const current = tagInput
+                .split(',')
+                .map((t) => t.trim())
+                .filter(Boolean);
+              const merged = Array.from(new Set([...current, ...accepted]));
+              setTagInput(merged.join(', '));
+            }}
           />
         </div>
 

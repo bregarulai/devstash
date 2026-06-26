@@ -140,7 +140,7 @@ export default async function CollectionDetailPage({
       favoriteCollections={favoriteCollections}
       recentCollections={recentWithCurrent}
     >
-      <ItemDrawerProvider>
+      <ItemDrawerProvider isPro={user.isPro}>
         <CollectionItemsContent
           collection={collection}
           hasError={hasError}

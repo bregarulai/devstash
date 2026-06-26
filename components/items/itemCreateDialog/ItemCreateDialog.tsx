@@ -32,10 +32,13 @@ export function ItemCreateDialog({ open: externalOpen, onOpenChange: externalOnO
     contentValue,
     languageValue,
     collectionIds,
+    tags,
+    tagsInput,
     handleOpenChange: internalHandleOpenChange,
     handleItemTypeSelect,
     handleFileSelect,
     handleTagsChange,
+    handleAcceptTags,
     handleCollectionChange,
   } = useItemCreateForm(defaultCollectionIds);
 
@@ -69,6 +72,8 @@ export function ItemCreateDialog({ open: externalOpen, onOpenChange: externalOnO
           contentValue={contentValue}
           languageValue={languageValue}
           collectionIds={collectionIds}
+          tags={tags}
+          tagsInput={tagsInput}
           isPending={isPending}
           isUploading={isUploading}
           uploadProgress={uploadProgress}
@@ -76,6 +81,7 @@ export function ItemCreateDialog({ open: externalOpen, onOpenChange: externalOnO
           handleItemTypeSelect={handleItemTypeSelect}
           handleFileSelect={handleFileSelect}
           handleTagsChange={handleTagsChange}
+          handleAcceptTags={handleAcceptTags}
           handleCollectionChange={handleCollectionChange}
           setOpen={handleOpenChange}
         />

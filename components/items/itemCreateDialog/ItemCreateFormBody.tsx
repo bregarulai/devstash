@@ -11,6 +11,7 @@ import { ContentTypeField } from './ContentTypeField';
 import { UploadProgressIndicator } from './UploadProgressIndicator';
 import { CreateFormField } from './CreateFormField';
 import { CollectionPicker } from '@/components/collections/collectionPicker/CollectionPicker';
+import { AiTagSuggestions } from '@/components/ai/aiTagSuggestions/AiTagSuggestions';
 import {
   SHOW_CONTENT,
   SHOW_URL,
@@ -28,6 +29,8 @@ interface ItemCreateFormBodyProps {
   contentValue: string | null | undefined;
   languageValue: string | null | undefined;
   collectionIds: string[];
+  tags: string[];
+  tagsInput: string;
   isPending: boolean;
   isUploading: boolean;
   uploadProgress: number;
@@ -35,6 +38,7 @@ interface ItemCreateFormBodyProps {
   handleItemTypeSelect: (type: ItemType) => void;
   handleFileSelect: (file: File) => void;
   handleTagsChange: (value: string) => void;
+  handleAcceptTags: (tags: string[]) => void;
   handleCollectionChange: (ids: string[]) => void;
   setOpen: (open: boolean) => void;
 }
@@ -46,6 +50,8 @@ export function ItemCreateFormBody({
   contentValue,
   languageValue,
   collectionIds,
+  tags,
+  tagsInput,
   isPending,
   isUploading,
   uploadProgress,
@@ -53,6 +59,7 @@ export function ItemCreateFormBody({
   handleItemTypeSelect,
   handleFileSelect,
   handleTagsChange,
+  handleAcceptTags,
   handleCollectionChange,
   setOpen,
 }: ItemCreateFormBodyProps) {
@@ -169,8 +176,23 @@ export function ItemCreateFormBody({
       >
         <Input
           id='tags'
+          value={tagsInput}
           placeholder='Comma-separated tags'
           onChange={(e) => handleTagsChange(e.target.value)}
+        />
+        <AiTagSuggestions
+          isPro={isPro}
+          existingTags={tags}
+          getItemData={() => ({
+            title: form.getValues('title'),
+            content:
+              contentValue ??
+              form.getValues('url') ??
+              form.getValues('description') ??
+              '',
+            language: languageValue ?? undefined,
+          })}
+          onAcceptTags={handleAcceptTags}
         />
       </CreateFormField>
 

@@ -10,6 +10,7 @@ import { useFileUpload } from '@/hooks/useFileUpload/useFileUpload';
 export function useItemCreateForm(defaultCollectionIds: string[] = []) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [tagsInput, setTagsInput] = useState('');
   const router = useRouter();
   const fileUpload = useFileUpload();
 
@@ -42,6 +43,7 @@ export function useItemCreateForm(defaultCollectionIds: string[] = []) {
   const contentValue = useWatch({ control, name: 'content' });
   const languageValue = useWatch({ control, name: 'language' });
   const collectionIds = (useWatch({ control, name: 'collectionIds' }) ?? []) as string[];
+  const tags = (useWatch({ control, name: 'tags' }) ?? []) as string[];
 
   const onSubmit = handleSubmit((data) => {
     startTransition(async () => {
@@ -84,6 +86,7 @@ export function useItemCreateForm(defaultCollectionIds: string[] = []) {
     setOpen(nextOpen);
     if (!nextOpen) {
       reset();
+      setTagsInput('');
       fileUpload.reset();
     }
   }
@@ -106,11 +109,18 @@ export function useItemCreateForm(defaultCollectionIds: string[] = []) {
   }
 
   function handleTagsChange(value: string) {
+    setTagsInput(value);
     const tags = value
       .split(',')
       .map((t) => t.trim())
       .filter(Boolean);
     reset((prev) => ({ ...prev, tags }));
+  }
+
+  function handleAcceptTags(accepted: string[]) {
+    const merged = Array.from(new Set([...tags, ...accepted]));
+    setValue('tags', merged, { shouldValidate: true });
+    setTagsInput(merged.join(', '));
   }
 
   function handleCollectionChange(ids: string[]) {
@@ -131,10 +141,13 @@ export function useItemCreateForm(defaultCollectionIds: string[] = []) {
     contentValue,
     languageValue,
     collectionIds,
+    tags,
+    tagsInput,
     handleOpenChange,
     handleItemTypeSelect,
     handleFileSelect,
     handleTagsChange,
+    handleAcceptTags,
     handleCollectionChange,
   };
 }

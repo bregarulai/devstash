@@ -9,6 +9,7 @@ interface ItemDrawerContextValue {
   isLoading: boolean;
   error: string | null;
   isEditing: boolean;
+  isPro: boolean;
   openDrawer: (itemId: string) => Promise<void>;
   closeDrawer: () => void;
   updateItem: ReturnType<typeof useItemDrawerHook>['updateItem'];
@@ -18,11 +19,14 @@ interface ItemDrawerContextValue {
 
 const ItemDrawerContext = createContext<ItemDrawerContextValue | null>(null);
 
-export function ItemDrawerProvider({ children }: { children: ReactNode }) {
+export function ItemDrawerProvider({
+  children,
+  isPro,
+}: { children: ReactNode; isPro?: boolean }) {
   const drawer = useItemDrawerHook();
 
   return (
-    <ItemDrawerContext.Provider value={drawer}>
+    <ItemDrawerContext.Provider value={{ ...drawer, isPro: isPro ?? false }}>
       {children}
     </ItemDrawerContext.Provider>
   );
