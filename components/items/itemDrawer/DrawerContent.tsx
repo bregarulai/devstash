@@ -93,6 +93,8 @@ export function DrawerContent({ item, isPro, onDownload }: DrawerContentProps) {
               enableExplain
               isPro={isPro}
               itemTitle={item.title}
+              itemId={item.id}
+              persistedExplanation={item.explanation}
             />
           ) : MARKDOWN_EDITOR_TYPES.includes(typeName) ? (
             <MarkdownEditor

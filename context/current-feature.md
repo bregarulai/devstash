@@ -1,16 +1,33 @@
-# Current Feature
+# Current Feature: Persisted AI Code Explanations
+
+**Spec**: `context/features/ai-explain-persist-spec.md`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like? -->
+- Lazy-persist AI-generated code explanations on first `explainCode` call for an item; subsequent opens render instantly with no spinner.
+- Add `explanation`, `explanationUpdatedAt`, `explanationModel` columns to the `Item` model and update corresponding Zod schemas in `types/db.ts`.
+- Extend `explainCode` to upsert the result into the Item row on success and return cached value when present and not stale.
+- Invalidate the three columns inside `updateItemAction` (and PATCH endpoint if it stays the source of truth) whenever `content` or `language` changes, so stale answers never render.
+- Keep an explicit "Regenerate" control (Sparkles icon) in the Explain tab for Pro users; regeneration overwrites stored explanation, updates `explanationUpdatedAt`, and still applies rate limiting.
+- Preserve Pro gating: Free users keep Crown icon + tooltip ("AI features require Pro subscription"); persistence only applies once a Pro user generates.
+- Integrate with item drawer: if a persisted explanation exists, allow toggling to "Explain" with no generation step; otherwise keep current behavior (Explain button generates + persists).
+- Keep create/edit forms unchanged — explanations are never generated or shown there.
+- Rely on existing delete-account → item cascade for data deletion (no new cascade needed).
+- Do not persist AI tags or descriptions — only code explanations.
+- Add unit tests covering: upsert on generate, return cached on repeat, invalidate on content/language change (Vitest scope: actions + lib).
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+- **Schema choice**: Store columns on the `Item` row (not a junction table) — each item has at most one current explanation.
+- **Model staleness**: Store `explanationModel` so a future "regenerate all" feature can find items whose model differs from current `AI_MODEL`.
+- **Storage cost**: Small markdown blob per item — negligible relative to per-call API savings.
+- **Future unlocks**: Persisted explanations enable "export item with explanation" and "share with explanation" features.
+- **Out of scope**: Batch/backfill generation, manual editing of explanations, persisting tags/descriptions, shared/versioned explanations across forks.
+- **Verification**: Lint, build, and `npm run test:run` must pass.
 
 
 ## History
