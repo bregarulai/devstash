@@ -31,7 +31,7 @@ vi.mock('@/lib/ai/openai', () => ({
 vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
   createRateLimiter: vi.fn(() => ({})),
   checkRateLimit: (...args: unknown[]) => mockCheckRateLimit(...args),
-  RATE_LIMIT_CONFIGS: { aiTags: { limit: 15, duration: 3600 }, aiDescription: { limit: 10, duration: 3600 } },
+  RATE_LIMIT_CONFIGS: { aiTags: { limit: 15, duration: 3600 }, aiDescription: { limit: 10, duration: 3600 }, aiExplain: { limit: 10, duration: 3600 } },
   formatRetryAfter: (s: number) => `${s}s`,
 }));
 
@@ -516,6 +516,180 @@ describe('generateDescription', () => {
 
     const { generateDescription } = await import('./Ai');
     const result = await generateDescription({ title: 'Test', content: 'code' });
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'AI request failed',
+    });
+  });
+});
+
+describe('explainCode', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: true });
+    mockCheckRateLimit.mockResolvedValue({
+      success: true,
+      remaining: 9,
+      limit: 10,
+      reset: Date.now() + 3600_000,
+    });
+  });
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null);
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({ content: 'code' });
+
+    expect(result).toEqual({ success: false, data: null, error: 'Unauthorized' });
+  });
+
+  it('returns error when user is not Pro', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false });
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({ content: 'code' });
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'AI features require a Pro plan.',
+    });
+  });
+
+  it('returns validation error when content is empty', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({ content: '' });
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Content is required',
+    });
+  });
+
+  it('generates explanation from content and language', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'A quick sort implementation.' } }],
+    });
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({
+      title: 'Quicksort',
+      content: 'function quickSort(arr) { /* ... */ }',
+      language: 'typescript',
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: 'A quick sort implementation.',
+      error: null,
+    });
+    const callArgs = mockChatCompletionsCreate.mock.calls[0][0];
+    expect(callArgs.messages[1].content).toContain('Title: Quicksort');
+    expect(callArgs.messages[1].content).toContain('Language: typescript');
+    expect(callArgs.messages[1].content).toContain('Code:\n');
+  });
+
+  it('omits title/language lines when not provided', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'explain' } }],
+    });
+
+    const { explainCode } = await import('./Ai');
+    await explainCode({ content: 'ls -la' });
+
+    const callArgs = mockChatCompletionsCreate.mock.calls[0][0];
+    expect(callArgs.messages[1].content).not.toContain('Title:');
+    expect(callArgs.messages[1].content).not.toContain('Language:');
+    expect(callArgs.messages[1].content).toContain('Code:\nls -la');
+  });
+
+  it('returns rate limit error when limited', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockCheckRateLimit.mockResolvedValue({
+      success: false,
+      remaining: 0,
+      limit: 10,
+      reset: Date.now() + 3600_000,
+      retryAfter: 3600,
+    });
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({ content: 'code' });
+
+    expect(result.success).toBe(false);
+    expect(result.error).toContain('Retry in');
+    expect(mockChatCompletionsCreate).not.toHaveBeenCalled();
+  });
+
+  it('strips markdown code fences from response', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: '```markdown\nSorted explanation.\n```' } }],
+    });
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({ content: 'code' });
+
+    expect(result).toEqual({ success: true, data: 'Sorted explanation.', error: null });
+  });
+
+  it('truncates content to 2000 chars before API call', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'explain' } }],
+    });
+
+    const { explainCode } = await import('./Ai');
+    await explainCode({ content: 'x'.repeat(5000) });
+
+    const callArgs = mockChatCompletionsCreate.mock.calls[0][0];
+    const inputContent = callArgs.messages[1].content.split('Code:\n')[1];
+    expect(inputContent.length).toBe(2000);
+  });
+
+  it('clamps explanation to 2000 chars', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    const longExplanation = 'a'.repeat(3000);
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: longExplanation } }],
+    });
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({ content: 'code' });
+
+    expect(result.success).toBe(true);
+    expect(result.data).toHaveLength(2000);
+  });
+
+  it('returns error when OpenAI throws', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockRejectedValue(new Error('AI service unavailable'));
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({ content: 'code' });
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'AI service unavailable',
+    });
+  });
+
+  it('returns generic error for non-Error exceptions', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockRejectedValue('unknown failure');
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({ content: 'code' });
 
     expect(result).toEqual({
       success: false,

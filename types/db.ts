@@ -102,6 +102,16 @@ export const descriptionInputSchema = z
 
 export type DescriptionInput = z.infer<typeof descriptionInputSchema>;
 
+// ── AI Code Explanation ───────────────────────────────────────────────────────
+
+export const explainCodeInputSchema = z.object({
+  title: z.string().max(200).optional(),
+  content: z.string().min(1, 'Content is required').max(20_000),
+  language: z.string().optional(),
+});
+
+export type ExplainCodeInput = z.infer<typeof explainCodeInputSchema>;
+
 export const DEFAULT_EDITOR_PREFERENCES: EditorPreferences = {
   fontSize: 13,
   tabSize: 2,

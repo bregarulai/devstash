@@ -7,7 +7,7 @@ import {
   MAX_TAG_SUGGESTIONS,
   MAX_CONTENT_CHARS,
 } from './_shared';
-import { autoTagsInputSchema, type AutoTagsInput, descriptionInputSchema, type DescriptionInput } from '@/types/db';
+import { autoTagsInputSchema, type AutoTagsInput, descriptionInputSchema, type DescriptionInput, explainCodeInputSchema, type ExplainCodeInput } from '@/types/db';
 import {
   checkRateLimit,
   createRateLimiter,
@@ -172,6 +172,76 @@ export async function generateDescription(
 
     const description = cleanDescription(completion.choices[0]?.message?.content ?? '');
     return { success: true, data: description, error: null };
+  } catch (err) {
+    return {
+      success: false,
+      data: null,
+      error: err instanceof Error ? err.message : 'AI request failed',
+    };
+  }
+}
+
+const EXPLAIN_INSTRUCTIONS =
+  'You are a developer tool assistant explaining code to another developer. Write a concise explanation (~200-300 words) of what the following code does and the key concepts it uses. Use markdown with short sections and bullet points where helpful. Do not repeat the code back. Do not use code fences unless showing a tiny inline snippet is essential.';
+
+const MAX_EXPLANATION_CHARS = 2000;
+
+function cleanExplanation(raw: string): string {
+  let text = raw.trim();
+  const fenceMatch = text.match(/^```[a-zA-Z]*\n?([\s\S]*?)\n?```$/);
+  if (fenceMatch) text = fenceMatch[1].trim();
+  return text.slice(0, MAX_EXPLANATION_CHARS);
+}
+
+function buildExplainUserMessage(data: ExplainCodeInput): string {
+  const parts: string[] = [];
+  const title = data.title?.trim();
+  if (title) parts.push(`Title: ${title}`);
+  const language = data.language?.trim();
+  if (language) parts.push(`Language: ${language}`);
+  parts.push(`Code:\n${data.content.slice(0, MAX_CONTENT_CHARS)}`);
+  return parts.join('\n');
+}
+
+export async function explainCode(
+  input: ExplainCodeInput,
+): Promise<ActionResult<string>> {
+  const user = await requireProUser();
+  if ('error' in user) return { success: false, data: null, error: user.error };
+
+  const result = explainCodeInputSchema.safeParse(input);
+  if (!result.success) {
+    const firstError = result.error.issues[0]?.message ?? 'Invalid input';
+    return { success: false, data: null, error: firstError };
+  }
+
+  const ratelimit = createRateLimiter(RATE_LIMIT_CONFIGS.aiExplain);
+  const rl = await checkRateLimit(
+    ratelimit,
+    user.userId,
+    RATE_LIMIT_CONFIGS.aiExplain,
+    true,
+  );
+  if (!rl.success) {
+    return {
+      success: false,
+      data: null,
+      error: `Too many requests. Retry in ${formatRetryAfter(rl.retryAfter ?? 0)}.`,
+    };
+  }
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: AI_MODEL,
+      temperature: 0.3,
+      messages: [
+        { role: 'system', content: EXPLAIN_INSTRUCTIONS },
+        { role: 'user', content: buildExplainUserMessage(result.data) },
+      ],
+    });
+
+    const explanation = cleanExplanation(completion.choices[0]?.message?.content ?? '');
+    return { success: true, data: explanation, error: null };
   } catch (err) {
     return {
       success: false,

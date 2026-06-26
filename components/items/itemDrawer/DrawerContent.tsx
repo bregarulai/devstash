@@ -9,12 +9,14 @@ import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES } from '@/lib/constants';
 
 interface DrawerContentProps {
   item: ItemWithDetails;
+  isPro: boolean;
   onDownload?: () => void;
 }
 
-export function DrawerContent({ item, onDownload }: DrawerContentProps) {
-  const isFileOrImage = item.itemType.name.toLowerCase() === 'file' || item.itemType.name.toLowerCase() === 'image';
-  const isImage = item.itemType.name.toLowerCase() === 'image';
+export function DrawerContent({ item, isPro, onDownload }: DrawerContentProps) {
+  const typeName = item.itemType.name.toLowerCase();
+  const isFileOrImage = typeName === 'file' || typeName === 'image';
+  const isImage = typeName === 'image';
 
   return (
     <div className='space-y-4 py-6'>
@@ -83,13 +85,16 @@ export function DrawerContent({ item, onDownload }: DrawerContentProps) {
           <div className='text-xs font-medium text-muted-foreground'>
             Content
           </div>
-          {CODE_EDITOR_TYPES.includes(item.itemType.name.toLowerCase()) ? (
+          {CODE_EDITOR_TYPES.includes(typeName) ? (
             <CodeEditor
               value={item.content}
               language={item.language || 'plaintext'}
               readOnly
+              enableExplain
+              isPro={isPro}
+              itemTitle={item.title}
             />
-          ) : MARKDOWN_EDITOR_TYPES.includes(item.itemType.name.toLowerCase()) ? (
+          ) : MARKDOWN_EDITOR_TYPES.includes(typeName) ? (
             <MarkdownEditor
               value={item.content}
               readOnly

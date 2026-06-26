@@ -165,7 +165,7 @@ function ItemDrawerContent() {
             {isLoading && <DrawerSkeleton />}
             {error && <DrawerError message={error} />}
             {!isLoading && !error && item && !isEditing && (
-              <DrawerContent item={item} onDownload={handleDownload} />
+              <DrawerContent item={item} isPro={isPro} onDownload={handleDownload} />
             )}
             {!isLoading && !error && item && isEditing && (
               <DrawerEditContent ref={editRef} item={item} isPro={isPro} onCanSaveChange={setCanSave} />
