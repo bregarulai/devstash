@@ -1,30 +1,16 @@
-# Current Feature: Language Selector Dropdown for Code Editor
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Replace the free-text `Language` `Input` with a dropdown (Select) of supported Monaco language IDs, on both the New Item modal and the Item Drawer edit view
-- Position the language dropdown ABOVE the Content editor (currently it sits below Content in both surfaces)
-- Selecting a language immediately applies Monaco syntax highlighting in the `CodeEditor` as the user types (snippet & command item types)
-- Pre-select the existing `item.language` value when editing an existing item in the drawer
-- Reuse a single shared language option list between create and edit surfaces
-- Preserve existing Zod validation behavior for the `language` field
-- Build passes (`npm run build`) and lint passes (`npm run lint`)
+<!-- What does success look like? -->
 
 ## Notes
 
-- `CodeEditor` (`components/codeEditor/CodeEditor/CodeEditor.tsx`) already accepts a `language` prop and forwards it to Monaco — no editor change required for highlighting; only the control needs to switch from `Input` to `Select`
-- The `CodeEditor` header currently renders the `language` string as static text next to the macOS window dots; with a Select above it this becomes redundant in edit mode — keep it for read-only/view context, do not remove
-- `SHOW_LANGUAGE` (`lib/constants.ts`) controls language field visibility for `snippet` and `command` types
-- shadcn `Select` is already installed at `components/ui/select.tsx` — use it; if the language list is long, consider the shadcn Combobox pattern (Popover + Command) for searchability
-- Create surface: `ItemCreateFormBody.tsx` renders the language `Input` in a `CreateFormField` block below `Content`; `ContentTypeField.tsx` renders the `CodeEditor`. The Select should appear above the `ContentTypeField`/`CodeEditor`
-- Edit surface: `DrawerEditContent.tsx` holds `language` in local state and renders the `Input` below the `Content` block; lift the new Select above the `CodeEditor`
-- Suggested Monaco language IDs to include: `plaintext`, `typescript`, `javascript`, `jsx`, `tsx`, `python`, `json`, `bash`, `shell`, `sql`, `go`, `rust`, `java`, `c`, `cpp`, `csharp`, `php`, `ruby`, `html`, `css`, `scss`, `markdown`, `yaml`, `xml`, `dockerfile`, `ini`, `powershell`, `kotlin`, `swift`, `scala` — store as a shared constant
-- The language dropdown only applies to edit/create modes; the read-only `CodeEditor` view in the drawer is unaffected
-- Add tests for the new shared language list constant
+<!-- Additional context, constraints, or details -->
 
 ## History
 
@@ -129,3 +115,4 @@ In Progress
 - **Add Homepage Nav to Auth Pages (Completed)** - Added SiteHeader to /sign-in and /register pages with consistent branding, fixed import ordering, and passed isHomepage/isAuthPage props for nav context awareness
 - **Stripe Integration Phase 1 — Core Infrastructure (Completed)** - Added Stripe SDK singleton with pinned apiVersion and price-ID helpers (lib/stripe/stripe.ts), pure limits module with FREE_TIER_LIMITS and PRO_ONLY_ITEM_TYPES guard (lib/constants/limits.ts, 100% test coverage), fixed NextAuth JWT callback to always-sync isPro from DB so Pro status propagates without re-login, added 7 new authConfig tests covering no-user JWT path, added stripe v22.2.2 dependency
 - **Stripe Integration Phase 2 — Integration & UI (Completed)** - Added Stripe checkout/portal server actions, webhook route for subscription events, BillingSection component with upgrade/manage UI, Progress component for usage display, wired settings page with live plan tier from Stripe, free-tier usage display, comprehensive test coverage (15 tests)
+- **Language Selector Dropdown (Completed)** - Replaced free-text language Input with shared LanguageSelect dropdown using shadcn Select, added LANGUAGE_OPTIONS constant with 30 Monaco language IDs, positioned dropdown above content editor in both create and edit surfaces, added unit tests
