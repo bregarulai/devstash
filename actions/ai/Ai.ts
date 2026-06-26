@@ -7,7 +7,7 @@ import {
   MAX_TAG_SUGGESTIONS,
   MAX_CONTENT_CHARS,
 } from './_shared';
-import { autoTagsInputSchema, type AutoTagsInput, descriptionInputSchema, type DescriptionInput, explainCodeInputSchema, type ExplainCodeInput } from '@/types/db';
+import { autoTagsInputSchema, type AutoTagsInput, descriptionInputSchema, type DescriptionInput, explainCodeInputSchema, type ExplainCodeInput, optimizePromptInputSchema, type OptimizePromptInput } from '@/types/db';
 import {
   checkRateLimit,
   createRateLimiter,
@@ -259,6 +259,78 @@ export async function explainCode(
     }
 
     return { success: true, data: explanation, error: null };
+  } catch (err) {
+    return {
+      success: false,
+      data: null,
+      error: err instanceof Error ? err.message : 'AI request failed',
+    };
+  }
+}
+
+const OPTIMIZE_INSTRUCTIONS =
+  'You are a developer tool assistant helping a developer refine prompts they save in their stash. Given the current prompt (and title if any), return an improved, clearer, more effective version. Preserve the author\'s intent, variables/placeholders, and constraints. Tighten wording, fix ambiguity, improve structure, and add brief context only where it materially helps. If the prompt is already well-structured, return it largely unchanged or with only minor clarity tweaks — do not over-engineer or invent new requirements. Return ONLY the optimized prompt text, no preamble, no markdown code fences, no commentary.';
+
+const MAX_OPTIMIZED_CHARS = 4000;
+
+function cleanOptimizedPrompt(raw: string, original: string): string {
+  let text = raw.trim();
+  const fenceMatch = text.match(/^```[a-zA-Z]*\n?([\s\S]*?)\n?```$/);
+  if (fenceMatch) text = fenceMatch[1].trim();
+  if (!text) return original.trim();
+  return text.slice(0, MAX_OPTIMIZED_CHARS);
+}
+
+function buildOptimizeUserMessage(data: OptimizePromptInput): string {
+  const parts: string[] = [];
+  const title = data.title?.trim();
+  if (title) parts.push(`Title: ${title}`);
+  parts.push(`Prompt:\n${data.content.slice(0, MAX_CONTENT_CHARS)}`);
+  return parts.join('\n');
+}
+
+export async function optimizePrompt(
+  input: OptimizePromptInput,
+): Promise<ActionResult<string>> {
+  const user = await requireProUser();
+  if ('error' in user) return { success: false, data: null, error: user.error };
+
+  const result = optimizePromptInputSchema.safeParse(input);
+  if (!result.success) {
+    const firstError = result.error.issues[0]?.message ?? 'Invalid input';
+    return { success: false, data: null, error: firstError };
+  }
+
+  const ratelimit = createRateLimiter(RATE_LIMIT_CONFIGS.aiOptimize);
+  const rl = await checkRateLimit(
+    ratelimit,
+    user.userId,
+    RATE_LIMIT_CONFIGS.aiOptimize,
+    true,
+  );
+  if (!rl.success) {
+    return {
+      success: false,
+      data: null,
+      error: `Too many requests. Retry in ${formatRetryAfter(rl.retryAfter ?? 0)}.`,
+    };
+  }
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: AI_MODEL,
+      temperature: 0.3,
+      messages: [
+        { role: 'system', content: OPTIMIZE_INSTRUCTIONS },
+        { role: 'user', content: buildOptimizeUserMessage(result.data) },
+      ],
+    });
+
+    const optimized = cleanOptimizedPrompt(
+      completion.choices[0]?.message?.content ?? '',
+      result.data.content,
+    );
+    return { success: true, data: optimized, error: null };
   } catch (err) {
     return {
       success: false,

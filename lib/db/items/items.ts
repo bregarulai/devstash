@@ -382,6 +382,8 @@ export async function updateItem(
     updateData.explanation = null;
     updateData.explanationUpdatedAt = null;
     updateData.explanationModel = null;
+    updateData.optimized = false;
+    updateData.optimizedAt = null;
   }
 
   if (collectionIds !== undefined) {

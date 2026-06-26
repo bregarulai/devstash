@@ -1210,3 +1210,144 @@ describe('getItemAction', () => {
     expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 })
+
+describe('applyOptimizedPromptAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { applyOptimizedPromptAction } = await import('./Items')
+    const result = await applyOptimizedPromptAction({
+      itemId: 'item-1',
+      content: 'optimized prompt',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Unauthorized',
+    })
+  })
+
+  it('returns validation error when content is empty', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+
+    const { applyOptimizedPromptAction } = await import('./Items')
+    const result = await applyOptimizedPromptAction({
+      itemId: 'item-1',
+      content: '',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Content is required',
+    })
+  })
+
+  it('returns validation error when itemId is empty', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+
+    const { applyOptimizedPromptAction } = await import('./Items')
+    const result = await applyOptimizedPromptAction({
+      itemId: '',
+      content: 'optimized prompt',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Item ID is required',
+    })
+  })
+
+  it('returns error when item not found', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue(null)
+
+    const { applyOptimizedPromptAction } = await import('./Items')
+    const result = await applyOptimizedPromptAction({
+      itemId: 'item-1',
+      content: 'optimized prompt',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Item not found',
+    })
+    expect(mockUpdateItemFields).not.toHaveBeenCalled()
+  })
+
+  it('applies optimized prompt and marks optimized flag', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      id: 'item-1',
+      itemType: { name: 'prompt' },
+    })
+    mockUpdateItemFields.mockResolvedValue(undefined)
+
+    const { applyOptimizedPromptAction } = await import('./Items')
+    const result = await applyOptimizedPromptAction({
+      itemId: 'item-1',
+      content: 'optimized prompt',
+    })
+
+    expect(result).toEqual({ success: true, data: null, error: null })
+    expect(mockUpdateItemFields).toHaveBeenCalledWith(
+      'item-1',
+      'user-1',
+      expect.objectContaining({
+        content: 'optimized prompt',
+        optimized: true,
+      }),
+    )
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/dashboard')
+    expect(mockRevalidatePath).toHaveBeenCalledWith('/items/prompt')
+  })
+
+  it('returns error when updateItemFields throws', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      id: 'item-1',
+      itemType: { name: 'prompt' },
+    })
+    mockUpdateItemFields.mockRejectedValue(new Error('Database error'))
+
+    const { applyOptimizedPromptAction } = await import('./Items')
+    const result = await applyOptimizedPromptAction({
+      itemId: 'item-1',
+      content: 'optimized prompt',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Database error',
+    })
+  })
+
+  it('returns generic error for non-Error exceptions', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } })
+    mockPrismaItemFindUnique.mockResolvedValue({
+      id: 'item-1',
+      itemType: { name: 'prompt' },
+    })
+    mockUpdateItemFields.mockRejectedValue('Unknown error')
+
+    const { applyOptimizedPromptAction } = await import('./Items')
+    const result = await applyOptimizedPromptAction({
+      itemId: 'item-1',
+      content: 'optimized prompt',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Failed to apply optimized prompt',
+    })
+  })
+})

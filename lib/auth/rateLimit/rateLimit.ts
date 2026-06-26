@@ -110,6 +110,10 @@ export const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
     limit: 10,
     duration: 60 * 60, // 1 hour
   },
+  aiOptimize: {
+    limit: 10,
+    duration: 60 * 60, // 1 hour
+  },
 };
 
 /**

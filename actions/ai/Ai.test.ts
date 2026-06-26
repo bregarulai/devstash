@@ -31,7 +31,7 @@ vi.mock('@/lib/ai/openai', () => ({
 vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
   createRateLimiter: vi.fn(() => ({})),
   checkRateLimit: (...args: unknown[]) => mockCheckRateLimit(...args),
-  RATE_LIMIT_CONFIGS: { aiTags: { limit: 15, duration: 3600 }, aiDescription: { limit: 10, duration: 3600 }, aiExplain: { limit: 10, duration: 3600 } },
+  RATE_LIMIT_CONFIGS: { aiTags: { limit: 15, duration: 3600 }, aiDescription: { limit: 10, duration: 3600 }, aiExplain: { limit: 10, duration: 3600 }, aiOptimize: { limit: 10, duration: 3600 } },
   formatRetryAfter: (s: number) => `${s}s`,
 }));
 
@@ -853,5 +853,206 @@ describe('explainCode', () => {
       error: null,
     });
     expect(mockChatCompletionsCreate).toHaveBeenCalled();
+  });
+});
+
+describe('optimizePrompt', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: true });
+    mockCheckRateLimit.mockResolvedValue({
+      success: true,
+      remaining: 9,
+      limit: 10,
+      reset: Date.now() + 3600_000,
+    });
+  });
+
+  it('returns error when not authenticated', async () => {
+    mockAuth.mockResolvedValue(null);
+
+    const { optimizePrompt } = await import('./Ai');
+    const result = await optimizePrompt({ content: 'Write a function' });
+
+    expect(result).toEqual({ success: false, data: null, error: 'Unauthorized' });
+  });
+
+  it('returns error when user is not Pro', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockPrismaUserFindUnique.mockResolvedValue({ isPro: false });
+
+    const { optimizePrompt } = await import('./Ai');
+    const result = await optimizePrompt({ content: 'Write a function' });
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'AI features require a Pro plan.',
+    });
+  });
+
+  it('returns validation error when content is empty', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+
+    const { optimizePrompt } = await import('./Ai');
+    const result = await optimizePrompt({ content: '' });
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'Content is required',
+    });
+  });
+
+  it('optimizes a prompt from content alone', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'Write a function that sorts an array using quicksort.' } }],
+    });
+
+    const { optimizePrompt } = await import('./Ai');
+    const result = await optimizePrompt({
+      content: 'write a function sort array quicksort',
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: 'Write a function that sorts an array using quicksort.',
+      error: null,
+    });
+    expect(mockChatCompletionsCreate).toHaveBeenCalled();
+  });
+
+  it('includes title in the AI message when provided', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'Refined prompt.' } }],
+    });
+
+    const { optimizePrompt } = await import('./Ai');
+    await optimizePrompt({
+      title: 'Sorting Helper',
+      content: 'sort an array',
+    });
+
+    const callArgs = mockChatCompletionsCreate.mock.calls[0][0];
+    expect(callArgs.messages[1].content).toContain('Title: Sorting Helper');
+    expect(callArgs.messages[1].content).toContain('Prompt:\nsort an array');
+  });
+
+  it('omits title line when not provided', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'Refined.' } }],
+    });
+
+    const { optimizePrompt } = await import('./Ai');
+    await optimizePrompt({ content: 'sort' });
+
+    const callArgs = mockChatCompletionsCreate.mock.calls[0][0];
+    expect(callArgs.messages[1].content).not.toContain('Title:');
+    expect(callArgs.messages[1].content).toContain('Prompt:\nsort');
+  });
+
+  it('returns rate limit error when limited', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockCheckRateLimit.mockResolvedValue({
+      success: false,
+      remaining: 0,
+      limit: 10,
+      reset: Date.now() + 3600_000,
+      retryAfter: 3600,
+    });
+
+    const { optimizePrompt } = await import('./Ai');
+    const result = await optimizePrompt({ content: 'prompt' });
+
+    expect(result.success).toBe(false);
+    expect(result.error).toContain('Retry in');
+    expect(mockChatCompletionsCreate).not.toHaveBeenCalled();
+  });
+
+  it('strips markdown code fences from response', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: '```text\nRefined prompt.\n```' } }],
+    });
+
+    const { optimizePrompt } = await import('./Ai');
+    const result = await optimizePrompt({ content: 'prompt' });
+
+    expect(result).toEqual({ success: true, data: 'Refined prompt.', error: null });
+  });
+
+  it('falls back to original content when model returns empty/whitespace', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: '   \n  ' } }],
+    });
+
+    const { optimizePrompt } = await import('./Ai');
+    const result = await optimizePrompt({ content: 'original prompt' });
+
+    expect(result).toEqual({
+      success: true,
+      data: 'original prompt',
+      error: null,
+    });
+  });
+
+  it('truncates content to 2000 chars before API call', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'refined' } }],
+    });
+
+    const { optimizePrompt } = await import('./Ai');
+    await optimizePrompt({ content: 'x'.repeat(5000) });
+
+    const callArgs = mockChatCompletionsCreate.mock.calls[0][0];
+    const inputContent = callArgs.messages[1].content.split('Prompt:\n')[1];
+    expect(inputContent.length).toBe(2000);
+  });
+
+  it('clamps optimized prompt to 4000 chars', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    const longOutput = 'a'.repeat(5000);
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: longOutput } }],
+    });
+
+    const { optimizePrompt } = await import('./Ai');
+    const result = await optimizePrompt({ content: 'prompt' });
+
+    expect(result.success).toBe(true);
+    expect(result.data).toHaveLength(4000);
+  });
+
+  it('returns error when OpenAI throws', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockRejectedValue(new Error('AI service unavailable'));
+
+    const { optimizePrompt } = await import('./Ai');
+    const result = await optimizePrompt({ content: 'prompt' });
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'AI service unavailable',
+    });
+  });
+
+  it('returns generic error for non-Error exceptions', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockChatCompletionsCreate.mockRejectedValue('unknown failure');
+
+    const { optimizePrompt } = await import('./Ai');
+    const result = await optimizePrompt({ content: 'prompt' });
+
+    expect(result).toEqual({
+      success: false,
+      data: null,
+      error: 'AI request failed',
+    });
   });
 });

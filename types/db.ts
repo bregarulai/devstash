@@ -114,6 +114,15 @@ export const explainCodeInputSchema = z.object({
 
 export type ExplainCodeInput = z.infer<typeof explainCodeInputSchema>;
 
+// ── AI Prompt Optimization ───────────────────────────────────────────────────
+
+export const optimizePromptInputSchema = z.object({
+  title: z.string().max(200).optional(),
+  content: z.string().min(1, 'Content is required').max(20_000),
+});
+
+export type OptimizePromptInput = z.infer<typeof optimizePromptInputSchema>;
+
 export const DEFAULT_EDITOR_PREFERENCES: EditorPreferences = {
   fontSize: 13,
   tabSize: 2,
@@ -162,6 +171,8 @@ export const itemInsertSchema = z.object({
   explanation: z.string().or(z.null()).optional(),
   explanationUpdatedAt: z.coerce.date().or(z.null()).optional(),
   explanationModel: z.string().or(z.null()).optional(),
+  optimized: z.boolean().optional(),
+  optimizedAt: z.coerce.date().or(z.null()).optional(),
   userId: z.string(),
   itemTypeId: z.string(),
 });
@@ -176,6 +187,13 @@ export const itemUpdateSchema = z.object({
   isFavorite: z.boolean().optional(),
   isPinned: z.boolean().optional(),
 });
+
+export const applyOptimizedPromptSchema = z.object({
+  itemId: z.string().min(1, 'Item ID is required'),
+  content: z.string().min(1, 'Content is required').max(20_000),
+});
+
+export type ApplyOptimizedPromptInput = z.infer<typeof applyOptimizedPromptSchema>;
 
 export const itemEditSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255).trim(),
@@ -396,6 +414,8 @@ export const itemWithDetailsSchema = z.object({
   explanation: z.string().or(z.null()),
   explanationUpdatedAt: z.coerce.date().or(z.null()),
   explanationModel: z.string().or(z.null()),
+  optimized: z.boolean(),
+  optimizedAt: z.coerce.date().or(z.null()),
   isFavorite: z.boolean(),
   isPinned: z.boolean(),
   itemType: z.object({

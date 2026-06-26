@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth/auth/auth';
-import { itemEditSchema, itemCreateSchema, itemUpdateSchema, type ItemEditValues, type ItemCreateValues, type ItemWithDetails } from '@/types/db';
+import { itemEditSchema, itemCreateSchema, itemUpdateSchema, applyOptimizedPromptSchema, type ItemEditValues, type ItemCreateValues, type ItemWithDetails, type ApplyOptimizedPromptInput } from '@/types/db';
 import { updateItem, deleteItem, createItem, updateItemFields, getItemById, getItemStats } from '@/lib/db/items/items';
 import { prisma } from '@/lib/prisma/prisma';
 import { FREE_TIER_LIMITS, isProOnlyItemType } from '@/lib/constants/limits';
@@ -208,6 +208,47 @@ export async function getItemAction(
       success: false,
       data: null,
       error: err instanceof Error ? err.message : 'Failed to fetch item',
+    };
+  }
+}
+
+export async function applyOptimizedPromptAction(
+  input: ApplyOptimizedPromptInput,
+): Promise<ActionResult<null>> {
+  const authResult = await requireAuth();
+  if (authResult.error) return { success: false, data: null, error: authResult.error };
+  const { userId } = authResult;
+
+  const result = applyOptimizedPromptSchema.safeParse(input);
+  if (!result.success) {
+    const firstError = result.error.issues[0]?.message ?? 'Invalid input';
+    return { success: false, data: null, error: firstError };
+  }
+
+  try {
+    const item = await prisma.item.findUnique({
+      where: { id: result.data.itemId, userId },
+      select: { id: true, itemType: { select: { name: true } } },
+    });
+
+    if (!item) {
+      return { success: false, data: null, error: 'Item not found' };
+    }
+
+    await updateItemFields(result.data.itemId, userId, {
+      content: result.data.content,
+      optimized: true,
+      optimizedAt: new Date(),
+    });
+
+    revalidatePath('/dashboard');
+    revalidatePath(`/items/${item.itemType.name.toLowerCase()}`);
+    return { success: true, data: null, error: null };
+  } catch (err) {
+    return {
+      success: false,
+      data: null,
+      error: err instanceof Error ? err.message : 'Failed to apply optimized prompt',
     };
   }
 }

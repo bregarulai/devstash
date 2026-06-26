@@ -100,6 +100,12 @@ export function DrawerContent({ item, isPro, onDownload }: DrawerContentProps) {
             <MarkdownEditor
               value={item.content}
               readOnly
+              enableOptimize={typeName === 'prompt'}
+              isPro={isPro}
+              itemTitle={item.title}
+              itemId={item.id}
+              optimized={item.optimized}
+              optimizedAt={item.optimizedAt}
             />
           ) : (
             <div className='rounded-lg bg-muted/50 p-4'>
