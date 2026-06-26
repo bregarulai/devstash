@@ -10,8 +10,7 @@ Not Started
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
-
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -121,3 +120,4 @@ Not Started
 - **AI Description Generator (Completed)** - Implemented AI-powered description generation using OpenAI Responses API with DeepSeek V4 Flash, added generateDescription server action with auth/Pro gating/rate limiting, Sparkles icon button in create dialog and drawer edit mode, descriptionInputSchema with type-specific fields, AiDescription client component, and comprehensive unit tests
 - **AI Explain Code (Completed)** - Implemented explainCode server action with auth/Pro gating/rate limiting, added Explain button to CodeEditor with Sparkles icon for Pro users and Crown icon with tooltip for free users, Code/Explain tabs for toggling between views, markdown-rendered explanations, Loader2 loading state, and comprehensive unit tests
 - **Persisted AI Code Explanations (Completed)** - Added explanation, explanationUpdatedAt, explanationModel columns to Item model, extended explainCode to cache/persist explanations, invalidate stale explanations on content/language change, added Regenerate button with cooldown, comprehensive unit tests
+- **AI Prompt Optimization (Completed)** - Implemented optimizePrompt server action with Pro gating and rate limiting, added Optimize button to MarkdownEditor with accept/reject AlertDialog flow, persisted optimized boolean on Item model, added idempotency warning for re-optimization, client-side cooldown, and comprehensive unit tests
