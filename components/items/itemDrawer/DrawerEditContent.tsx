@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Info } from 'lucide-react';
 import { formatDaysAgo } from '@/lib/utils/utils';
 import { CodeEditor } from '@/components/codeEditor/CodeEditor/CodeEditor';
+import { LanguageSelect } from '@/components/codeEditor/LanguageSelect/LanguageSelect';
 import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
 import { CollectionPicker } from '@/components/collections/collectionPicker/CollectionPicker';
 import type { ItemWithDetails } from '@/types/db';
@@ -115,6 +116,19 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
           />
         </div>
 
+        {showLanguage && (
+          <div className='space-y-2'>
+            <Label htmlFor='edit-language' className='text-xs font-medium text-muted-foreground'>
+              Language
+            </Label>
+            <LanguageSelect
+              id='edit-language'
+              value={language}
+              onChange={setLanguage}
+            />
+          </div>
+        )}
+
         {showContent && (
           <div className='space-y-2'>
             <Label htmlFor='edit-content' className='text-xs font-medium text-muted-foreground'>
@@ -154,21 +168,6 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder='https://...'
-              className='h-9'
-            />
-          </div>
-        )}
-
-        {showLanguage && (
-          <div className='space-y-2'>
-            <Label htmlFor='edit-language' className='text-xs font-medium text-muted-foreground'>
-              Language
-            </Label>
-            <Input
-              id='edit-language'
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              placeholder='e.g. typescript, python'
               className='h-9'
             />
           </div>

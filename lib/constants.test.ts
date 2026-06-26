@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   IMAGE_EXTENSIONS,
   IMAGE_ACCEPT,
-  FILE_ACCEPT,
   ITEM_TYPES,
   CODE_EDITOR_TYPES,
   MARKDOWN_EDITOR_TYPES,
@@ -10,6 +9,7 @@ import {
   SHOW_LANGUAGE,
   SHOW_URL,
   SHOW_FILE_UPLOAD,
+  LANGUAGE_OPTIONS,
 } from './constants'
 
 describe('IMAGE_EXTENSIONS', () => {
@@ -81,5 +81,36 @@ describe('type categories', () => {
   it('SHOW_FILE_UPLOAD includes file and image', () => {
     expect(SHOW_FILE_UPLOAD).toContain('file')
     expect(SHOW_FILE_UPLOAD).toContain('image')
+  })
+})
+
+describe('LANGUAGE_OPTIONS', () => {
+  it('is a non-empty list of options', () => {
+    expect(LANGUAGE_OPTIONS.length).toBeGreaterThan(0)
+  })
+
+  it('each option has a value and label', () => {
+    for (const opt of LANGUAGE_OPTIONS) {
+      expect(typeof opt.value).toBe('string')
+      expect(opt.value.length).toBeGreaterThan(0)
+      expect(typeof opt.label).toBe('string')
+      expect(opt.label.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('has unique values', () => {
+    const values = LANGUAGE_OPTIONS.map((o) => o.value)
+    expect(new Set(values).size).toBe(values.length)
+  })
+
+  it('includes plaintext, typescript, and python', () => {
+    const values = LANGUAGE_OPTIONS.map((o) => o.value)
+    expect(values).toContain('plaintext')
+    expect(values).toContain('typescript')
+    expect(values).toContain('python')
+  })
+
+  it('includes plaintext as first option', () => {
+    expect(LANGUAGE_OPTIONS[0].value).toBe('plaintext')
   })
 })

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { FileUpload } from '@/components/fileUpload/FileUpload/FileUpload';
+import { LanguageSelect } from '@/components/codeEditor/LanguageSelect/LanguageSelect';
 import { ItemTypeSelector } from './ItemTypeSelector';
 import { ContentTypeField } from './ContentTypeField';
 import { UploadProgressIndicator } from './UploadProgressIndicator';
@@ -115,6 +116,20 @@ export function ItemCreateFormBody({
         </CreateFormField>
       )}
 
+      {SHOW_LANGUAGE.includes(selectedType) && (
+        <CreateFormField
+          label='Language'
+          htmlFor='language'
+          error={errors.language?.message}
+        >
+          <LanguageSelect
+            id='language'
+            value={languageValue || ''}
+            onChange={(value) => form.setValue('language', value, { shouldValidate: true })}
+          />
+        </CreateFormField>
+      )}
+
       {SHOW_CONTENT.includes(selectedType) && (
         <CreateFormField
           label='Content'
@@ -143,20 +158,6 @@ export function ItemCreateFormBody({
             id='url'
             {...register('url')}
             placeholder='https://...'
-          />
-        </CreateFormField>
-      )}
-
-      {SHOW_LANGUAGE.includes(selectedType) && (
-        <CreateFormField
-          label='Language'
-          htmlFor='language'
-          error={errors.language?.message}
-        >
-          <Input
-            id='language'
-            {...register('language')}
-            placeholder='e.g. typescript, python'
           />
         </CreateFormField>
       )}
