@@ -1,27 +1,12 @@
-# Current Feature: AI Description Generator
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add an icon button next to the description input in both the item create dialog and the drawer edit content that generates a concise description from the current (unsaved) form data without requiring a save first
-- Create a `generateDescription` Server Action in `actions/ai/Ai.ts` that mirrors the existing `generateAutoTags` pattern: `'use server'`, `requireProUser` gating, Zod validation, rate limiting via `RATE_LIMIT_CONFIGS.aiTags`, OpenAI Responses call with DeepSeek V4 Flash, and `ActionResult<string>` return type
-- Use an item-type-aware system prompt instructing the model to produce 1-3 concise sentences summarizing the item, drawing on whatever fields are available for that type (title, content, language, URL, file name/size, etc.); handle empty/minimal input gracefully
-- Define a `descriptionInputSchema` and `DescriptionInput` type in `types/db.ts` (reusing the auto-tags input shape plus optional type-specific fields like `url`, `fileName`, `fileSize`)
-- Export `generateDescription` from `actions/index.ts`
-- Build a reusable client component (e.g. `components/ai/aiDescription/AiDescription.tsx`) mirroring `AiTagSuggestions`: `getItemData` callback returning current form fields, `onAccept(description: string)` to populate the description input, `isPro` prop hiding the control for free users, Sparkles icon button with Loader2 spinner, and toast for errors/empty input
-- Wire the component into `ItemCreateDialog` (next to the description field) and `DrawerEditContent` (next to the description field) so users can generate a description for any item type from whatever info is currently filled in
-- Add comprehensive unit tests for `generateDescription` (auth/Pro gating, rate limiting, validation, parsing, AI failure) mirroring the existing `Ai.test.ts` coverage
 
-## Notes
-
-- Reuse existing infrastructure: `requireProUser`, `ActionResult`, `MAX_CONTENT_CHARS`, `checkRateLimit`, `RATE_LIMIT_CONFIGS.aiTags`, `openai`/`AI_MODEL` from `lib/ai/openai`
-- The model should not write the item; it only summarizes what is already present in the form — title, content, language, url, file name/size, tags — so no DB read is needed
-- Keep output to 1-3 sentences; prompt should forbid markdown, code fences, and bullet lists
-- Place the icon button inline with the description field label/input so it reads as a quick helper, similar to how "Suggest Tags" sits in the create dialog footer
-- Follow `context/coding-standards.md` — use `cn()`, shadcn components only, no direct `clsx`/`tailwind-merge`
 
 ## History
 
@@ -128,3 +113,4 @@ In Progress
 - **Stripe Integration Phase 2 — Integration & UI (Completed)** - Added Stripe checkout/portal server actions, webhook route for subscription events, BillingSection component with upgrade/manage UI, Progress component for usage display, wired settings page with live plan tier from Stripe, free-tier usage display, comprehensive test coverage (15 tests)
 - **Language Selector Dropdown (Completed)** - Replaced free-text language Input with shared LanguageSelect dropdown using shadcn Select, added LANGUAGE_OPTIONS constant with 30 Monaco language IDs, positioned dropdown above content editor in both create and edit surfaces, added unit tests
 - **AI Auto-Tagging (Completed)** - Implemented AI-powered tag suggestions using OpenAI Responses API with DeepSeek V4 Flash, added generateAutoTags server action with auth/Pro gating/rate limiting, Suggest Tags button in create dialog and drawer edit mode, tag badges with accept/reject controls, and comprehensive unit tests
+- **AI Description Generator (Completed)** - Implemented AI-powered description generation using OpenAI Responses API with DeepSeek V4 Flash, added generateDescription server action with auth/Pro gating/rate limiting, Sparkles icon button in create dialog and drawer edit mode, descriptionInputSchema with type-specific fields, AiDescription client component, and comprehensive unit tests
