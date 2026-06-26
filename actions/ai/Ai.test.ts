@@ -35,6 +35,14 @@ vi.mock('@/lib/auth/rateLimit/rateLimit', () => ({
   formatRetryAfter: (s: number) => `${s}s`,
 }));
 
+const mockGetItemExplanation = vi.fn();
+const mockPersistItemExplanation = vi.fn();
+
+vi.mock('@/lib/db/items/items', () => ({
+  getItemExplanation: (...args: unknown[]) => mockGetItemExplanation(...args),
+  persistItemExplanation: (...args: unknown[]) => mockPersistItemExplanation(...args),
+}));
+
 describe('generateAutoTags', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -696,5 +704,154 @@ describe('explainCode', () => {
       data: null,
       error: 'AI request failed',
     });
+  });
+
+  it('returns cached explanation when itemId provided and content matches', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockGetItemExplanation.mockResolvedValue({
+      explanation: 'Cached explanation.',
+      explanationUpdatedAt: new Date(),
+      explanationModel: 'deepseek-v4-flash',
+      content: 'code',
+      language: 'typescript',
+    });
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({
+      itemId: 'item-1',
+      content: 'code',
+      language: 'typescript',
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: 'Cached explanation.',
+      error: null,
+    });
+    expect(mockChatCompletionsCreate).not.toHaveBeenCalled();
+    expect(mockPersistItemExplanation).not.toHaveBeenCalled();
+  });
+
+  it('regenerates and persists when forceRegenerate is true', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockGetItemExplanation.mockResolvedValue({
+      explanation: 'Old explanation.',
+      explanationUpdatedAt: new Date(),
+      explanationModel: 'deepseek-v4-flash',
+      content: 'code',
+      language: 'typescript',
+    });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'New explanation.' } }],
+    });
+    mockPersistItemExplanation.mockResolvedValue(undefined);
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({
+      itemId: 'item-1',
+      content: 'code',
+      language: 'typescript',
+      forceRegenerate: true,
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: 'New explanation.',
+      error: null,
+    });
+    expect(mockChatCompletionsCreate).toHaveBeenCalled();
+    expect(mockPersistItemExplanation).toHaveBeenCalledWith(
+      'item-1',
+      'user-1',
+      'New explanation.',
+      'deepseek-v4-flash',
+    );
+  });
+
+  it('persists explanation after generation when itemId provided', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockGetItemExplanation.mockResolvedValue(null);
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'Fresh explanation.' } }],
+    });
+    mockPersistItemExplanation.mockResolvedValue(undefined);
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({
+      itemId: 'item-1',
+      content: 'code',
+      language: 'typescript',
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: 'Fresh explanation.',
+      error: null,
+    });
+    expect(mockChatCompletionsCreate).toHaveBeenCalled();
+    expect(mockPersistItemExplanation).toHaveBeenCalledWith(
+      'item-1',
+      'user-1',
+      'Fresh explanation.',
+      'deepseek-v4-flash',
+    );
+  });
+
+  it('does not return cache when stored content differs', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockGetItemExplanation.mockResolvedValue({
+      explanation: 'Stale explanation.',
+      explanationUpdatedAt: new Date(),
+      explanationModel: 'deepseek-v4-flash',
+      content: 'old code',
+      language: 'typescript',
+    });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'Fresh explanation.' } }],
+    });
+    mockPersistItemExplanation.mockResolvedValue(undefined);
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({
+      itemId: 'item-1',
+      content: 'new code',
+      language: 'typescript',
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: 'Fresh explanation.',
+      error: null,
+    });
+    expect(mockChatCompletionsCreate).toHaveBeenCalled();
+  });
+
+  it('does not return cache when stored language differs', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1' } });
+    mockGetItemExplanation.mockResolvedValue({
+      explanation: 'Stale explanation.',
+      explanationUpdatedAt: new Date(),
+      explanationModel: 'deepseek-v4-flash',
+      content: 'code',
+      language: 'javascript',
+    });
+    mockChatCompletionsCreate.mockResolvedValue({
+      choices: [{ message: { content: 'Fresh explanation.' } }],
+    });
+    mockPersistItemExplanation.mockResolvedValue(undefined);
+
+    const { explainCode } = await import('./Ai');
+    const result = await explainCode({
+      itemId: 'item-1',
+      content: 'code',
+      language: 'typescript',
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: 'Fresh explanation.',
+      error: null,
+    });
+    expect(mockChatCompletionsCreate).toHaveBeenCalled();
   });
 });

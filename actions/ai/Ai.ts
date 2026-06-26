@@ -14,6 +14,7 @@ import {
   RATE_LIMIT_CONFIGS,
   formatRetryAfter,
 } from '@/lib/auth/rateLimit/rateLimit';
+import { getItemExplanation, persistItemExplanation } from '@/lib/db/items/items';
 
 const SYSTEM_INSTRUCTIONS =
   'You are a developer tool assistant. Propose up to 5 concise lowercase tags (1-3 words each, kebab-case) describing the following DevStash item based on its title and content. Do not include the programming language name. Return JSON: {"tags": ["..."]}';
@@ -215,6 +216,17 @@ export async function explainCode(
     return { success: false, data: null, error: firstError };
   }
 
+  if (result.data.itemId && !result.data.forceRegenerate) {
+    const cached = await getItemExplanation(result.data.itemId, user.userId);
+    if (
+      cached?.explanation &&
+      cached.content === result.data.content &&
+      (cached.language ?? null) === (result.data.language ?? null)
+    ) {
+      return { success: true, data: cached.explanation, error: null };
+    }
+  }
+
   const ratelimit = createRateLimiter(RATE_LIMIT_CONFIGS.aiExplain);
   const rl = await checkRateLimit(
     ratelimit,
@@ -241,6 +253,11 @@ export async function explainCode(
     });
 
     const explanation = cleanExplanation(completion.choices[0]?.message?.content ?? '');
+
+    if (result.data.itemId) {
+      await persistItemExplanation(result.data.itemId, user.userId, explanation, AI_MODEL);
+    }
+
     return { success: true, data: explanation, error: null };
   } catch (err) {
     return {

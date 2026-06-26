@@ -109,6 +109,9 @@ describe('getItemById', () => {
       fileName: null,
       fileSize: null,
       language: null,
+      explanation: null,
+      explanationUpdatedAt: null,
+      explanationModel: null,
       isFavorite: false,
       isPinned: false,
       itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
@@ -280,6 +283,9 @@ describe('getPinnedItems', () => {
         fileSize: null,
         url: null,
         language: 'typescript',
+        explanation: null,
+        explanationUpdatedAt: null,
+        explanationModel: null,
         isFavorite: false,
         isPinned: true,
         itemType: { name: 'File', icon: '📄', color: '#ff0000' },
@@ -327,6 +333,9 @@ describe('getRecentItems', () => {
         fileSize: null,
         url: null,
         language: null,
+        explanation: null,
+        explanationUpdatedAt: null,
+        explanationModel: null,
         isFavorite: false,
         isPinned: false,
         itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
@@ -386,6 +395,9 @@ describe('getAllItems', () => {
         fileSize: null,
         url: null,
         language: null,
+        explanation: null,
+        explanationUpdatedAt: null,
+        explanationModel: null,
         isFavorite: false,
         isPinned: false,
         itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
@@ -445,6 +457,9 @@ describe('getFavoriteItems', () => {
         fileSize: null,
         url: null,
         language: null,
+        explanation: null,
+        explanationUpdatedAt: null,
+        explanationModel: null,
         isFavorite: true,
         isPinned: false,
         itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
@@ -493,6 +508,9 @@ describe('getItemsByType', () => {
         fileSize: null,
         url: null,
         language: null,
+        explanation: null,
+        explanationUpdatedAt: null,
+        explanationModel: null,
         isFavorite: false,
         isPinned: false,
         itemType: { name: 'File', icon: '📄', color: '#ff0000' },
@@ -541,6 +559,9 @@ describe('getItemsByTypeWithMeta', () => {
         fileSize: null,
         url: null,
         language: null,
+        explanation: null,
+        explanationUpdatedAt: null,
+        explanationModel: null,
         isFavorite: false,
         isPinned: false,
         itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
@@ -596,6 +617,9 @@ describe('updateItem', () => {
       fileSize: null,
       url: null,
       language: 'typescript',
+      explanation: null,
+      explanationUpdatedAt: null,
+      explanationModel: null,
       isFavorite: false,
       isPinned: true,
       itemType: { name: 'File', icon: '📄', color: '#ff0000' },
@@ -626,6 +650,9 @@ describe('updateItem', () => {
       fileSize: null,
       url: null,
       language: 'typescript',
+      explanation: null,
+      explanationUpdatedAt: null,
+      explanationModel: null,
       isFavorite: false,
       isPinned: true,
       itemType: { name: 'File', icon: '📄', color: '#ff0000' },
@@ -643,6 +670,9 @@ describe('updateItem', () => {
         content: 'const x = 2',
         url: null,
         language: 'typescript',
+        explanation: null,
+        explanationUpdatedAt: null,
+        explanationModel: null,
         tags: {
           set: [],
           connectOrCreate: [
@@ -674,6 +704,9 @@ describe('updateItem', () => {
       fileSize: null,
       url: null,
       language: null,
+      explanation: null,
+      explanationUpdatedAt: null,
+      explanationModel: null,
       isFavorite: false,
       isPinned: false,
       itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
@@ -709,6 +742,9 @@ describe('updateItem', () => {
       fileSize: null,
       url: null,
       language: null,
+      explanation: null,
+      explanationUpdatedAt: null,
+      explanationModel: null,
       isFavorite: false,
       isPinned: false,
       itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
@@ -758,6 +794,9 @@ describe('updateItem', () => {
       fileSize: null,
       url: null,
       language: null,
+      explanation: null,
+      explanationUpdatedAt: null,
+      explanationModel: null,
       isFavorite: false,
       isPinned: false,
       itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
@@ -814,6 +853,9 @@ describe('updateItem', () => {
       fileSize: null,
       url: null,
       language: null,
+      explanation: null,
+      explanationUpdatedAt: null,
+      explanationModel: null,
       isFavorite: false,
       isPinned: false,
       itemType: { name: 'Text', icon: '📝', color: '#0000ff' },
@@ -847,6 +889,126 @@ describe('updateItem', () => {
         collectionIds: ['col-1'],
       })
     ).rejects.toThrow('Unauthorized access to collection(s): col-1')
+  })
+
+  it('invalidates explanation when content changes', async () => {
+    const mockUpdatedItem: ItemWithDetails = {
+      id: 'item-1',
+      title: 'Title',
+      description: null,
+      contentType: 'TEXT',
+      content: 'new code',
+      fileUrl: null,
+      fileName: null,
+      fileSize: null,
+      url: null,
+      language: 'typescript',
+      explanation: null,
+      explanationUpdatedAt: null,
+      explanationModel: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'snippet', icon: '📝', color: '#0000ff' },
+      tags: [],
+      collections: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaItemUpdate.mockResolvedValue(mockUpdatedItem)
+
+    const { updateItem } = await import('./items')
+    await updateItem('item-1', 'user-1', {
+      title: 'Title',
+      content: 'new code',
+    })
+
+    expect(mockPrismaItemUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          explanation: null,
+          explanationUpdatedAt: null,
+          explanationModel: null,
+        }),
+      })
+    )
+  })
+
+  it('invalidates explanation when language changes', async () => {
+    const mockUpdatedItem: ItemWithDetails = {
+      id: 'item-1',
+      title: 'Title',
+      description: null,
+      contentType: 'TEXT',
+      content: 'code',
+      fileUrl: null,
+      fileName: null,
+      fileSize: null,
+      url: null,
+      language: 'javascript',
+      explanation: null,
+      explanationUpdatedAt: null,
+      explanationModel: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'snippet', icon: '📝', color: '#0000ff' },
+      tags: [],
+      collections: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaItemUpdate.mockResolvedValue(mockUpdatedItem)
+
+    const { updateItem } = await import('./items')
+    await updateItem('item-1', 'user-1', {
+      title: 'Title',
+      language: 'javascript',
+    })
+
+    expect(mockPrismaItemUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          explanation: null,
+          explanationUpdatedAt: null,
+          explanationModel: null,
+        }),
+      })
+    )
+  })
+
+  it('does not invalidate explanation when content/language unchanged', async () => {
+    const mockUpdatedItem: ItemWithDetails = {
+      id: 'item-1',
+      title: 'New Title',
+      description: null,
+      contentType: 'TEXT',
+      content: 'code',
+      fileUrl: null,
+      fileName: null,
+      fileSize: null,
+      url: null,
+      language: 'typescript',
+      explanation: null,
+      explanationUpdatedAt: null,
+      explanationModel: null,
+      isFavorite: false,
+      isPinned: false,
+      itemType: { name: 'snippet', icon: '📝', color: '#0000ff' },
+      tags: [],
+      collections: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockPrismaItemUpdate.mockResolvedValue(mockUpdatedItem)
+
+    const { updateItem } = await import('./items')
+    await updateItem('item-1', 'user-1', {
+      title: 'New Title',
+    })
+
+    const call = mockPrismaItemUpdate.mock.calls[0][0]
+    expect(call.data).not.toHaveProperty('explanation')
+    expect(call.data).not.toHaveProperty('explanationUpdatedAt')
+    expect(call.data).not.toHaveProperty('explanationModel')
   })
 })
 
@@ -1279,6 +1441,9 @@ describe('getItemsByTypeWithMetaPaginated', () => {
         fileSize: null,
         url: null,
         language: null,
+        explanation: null,
+        explanationUpdatedAt: null,
+        explanationModel: null,
         isFavorite: false,
         isPinned: false,
         itemType: { name: 'File', icon: '📄', color: '#ff0000' },

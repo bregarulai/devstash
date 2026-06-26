@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma/prisma';
 import { Prisma } from '@/generated/prisma/client';
 import { DEFAULT_RECENT_LIMIT, ITEMS_PER_PAGE } from '@/lib/db/constants/constants';
 import { deleteFromR2, extractR2Key } from '@/lib/r2';
-import type { ItemWithDetails, SystemItemType, ItemEditValues, ItemCreateValues, ItemStats } from '@/types/db';
+import type { ItemWithDetails, SystemItemType, ItemEditValues, ItemCreateValues, ItemStats, ItemExplanation } from '@/types/db';
 
 export const ITEM_INCLUDE = {
   itemType: {
@@ -319,6 +319,38 @@ export async function updateItemFields(
   });
 }
 
+export async function getItemExplanation(
+  itemId: string,
+  userId: string,
+): Promise<ItemExplanation | null> {
+  return prisma.item.findUnique({
+    where: { id: itemId, userId },
+    select: {
+      explanation: true,
+      explanationUpdatedAt: true,
+      explanationModel: true,
+      content: true,
+      language: true,
+    },
+  });
+}
+
+export async function persistItemExplanation(
+  itemId: string,
+  userId: string,
+  explanation: string,
+  model: string,
+): Promise<void> {
+  await prisma.item.update({
+    where: { id: itemId, userId },
+    data: {
+      explanation,
+      explanationUpdatedAt: new Date(),
+      explanationModel: model,
+    },
+  });
+}
+
 export async function updateItem(
   itemId: string,
   userId: string,
@@ -345,6 +377,12 @@ export async function updateItem(
       })),
     },
   };
+
+  if (data.content !== undefined || data.language !== undefined) {
+    updateData.explanation = null;
+    updateData.explanationUpdatedAt = null;
+    updateData.explanationModel = null;
+  }
 
   if (collectionIds !== undefined) {
     updateData.collections = {

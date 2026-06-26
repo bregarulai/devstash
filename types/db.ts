@@ -105,9 +105,11 @@ export type DescriptionInput = z.infer<typeof descriptionInputSchema>;
 // ── AI Code Explanation ───────────────────────────────────────────────────────
 
 export const explainCodeInputSchema = z.object({
+  itemId: z.string().min(1).optional(),
   title: z.string().max(200).optional(),
   content: z.string().min(1, 'Content is required').max(20_000),
   language: z.string().optional(),
+  forceRegenerate: z.boolean().optional(),
 });
 
 export type ExplainCodeInput = z.infer<typeof explainCodeInputSchema>;
@@ -157,6 +159,9 @@ export const itemInsertSchema = z.object({
   isFavorite: z.boolean().optional(),
   isPinned: z.boolean().optional(),
   language: z.string().or(z.null()).optional(),
+  explanation: z.string().or(z.null()).optional(),
+  explanationUpdatedAt: z.coerce.date().or(z.null()).optional(),
+  explanationModel: z.string().or(z.null()).optional(),
   userId: z.string(),
   itemTypeId: z.string(),
 });
@@ -388,6 +393,9 @@ export const itemWithDetailsSchema = z.object({
   fileSize: z.number().int().or(z.null()),
   url: z.string().url().or(z.literal('')).or(z.null()),
   language: z.string().or(z.null()),
+  explanation: z.string().or(z.null()),
+  explanationUpdatedAt: z.coerce.date().or(z.null()),
+  explanationModel: z.string().or(z.null()),
   isFavorite: z.boolean(),
   isPinned: z.boolean(),
   itemType: z.object({
@@ -408,6 +416,16 @@ export const itemWithDetailsSchema = z.object({
 });
 
 export type ItemWithDetails = z.infer<typeof itemWithDetailsSchema>;
+
+export const itemExplanationSchema = z.object({
+  explanation: z.string().or(z.null()),
+  explanationUpdatedAt: z.coerce.date().or(z.null()),
+  explanationModel: z.string().or(z.null()),
+  content: z.string().or(z.null()),
+  language: z.string().or(z.null()),
+});
+
+export type ItemExplanation = z.infer<typeof itemExplanationSchema>;
 
 export const collectionWithStatsSchema = z.object({
   id: z.string(),

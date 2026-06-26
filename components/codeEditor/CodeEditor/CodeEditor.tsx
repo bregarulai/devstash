@@ -10,6 +10,7 @@ import { EditorPreferencesContext } from '@/contexts/editorPreferencesContext/Ed
 import { DEFAULT_EDITOR_PREFERENCES } from '@/types/db';
 import { explainCode } from '@/actions';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.default), {
@@ -21,6 +22,8 @@ const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.de
   ),
 });
 
+const REGENERATE_COOLDOWN_MS = 3_000;
+
 interface CodeEditorProps {
   value: string;
   onChange?: (value: string) => void;
@@ -30,6 +33,8 @@ interface CodeEditorProps {
   enableExplain?: boolean;
   isPro?: boolean;
   itemTitle?: string;
+  itemId?: string;
+  persistedExplanation?: string | null;
 }
 
 export function CodeEditor({
@@ -41,10 +46,13 @@ export function CodeEditor({
   enableExplain = false,
   isPro = false,
   itemTitle,
+  itemId,
+  persistedExplanation = null,
 }: CodeEditorProps) {
   const [copied, setCopied] = useState(false);
-  const [explanation, setExplanation] = useState<string | null>(null);
+  const [explanation, setExplanation] = useState<string | null>(persistedExplanation);
   const [isExplaining, setIsExplaining] = useState(false);
+  const [cooldown, setCooldown] = useState(false);
   const [activeView, setActiveView] = useState<'code' | 'explain'>('code');
   const context = useContext(EditorPreferencesContext);
   const preferences = context?.preferences ?? DEFAULT_EDITOR_PREFERENCES;
@@ -70,11 +78,14 @@ export function CodeEditor({
     }
 
     setIsExplaining(true);
+    const wasRegenerate = explanation !== null;
     try {
       const result = await explainCode({
+        itemId,
         title: itemTitle,
         content: value,
         language,
+        forceRegenerate: wasRegenerate,
       });
       if (result.success) {
         setExplanation(result.data);
@@ -89,8 +100,12 @@ export function CodeEditor({
       toast.error('Failed to generate explanation');
     } finally {
       setIsExplaining(false);
+      if (wasRegenerate) {
+        setCooldown(true);
+        setTimeout(() => setCooldown(false), REGENERATE_COOLDOWN_MS);
+      }
     }
-  }, [isPro, itemTitle, value, language]);
+  }, [isPro, itemId, itemTitle, value, language, explanation]);
 
   const renderExplainButton = () => {
     if (!showExplainFeature) return null;
@@ -100,14 +115,10 @@ export function CodeEditor({
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
-                type='button'
-                onClick={handleExplain}
-                className='flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
-              >
+              <Button variant='ghost' size='xs' onClick={handleExplain} className='text-muted-foreground'>
                 <Crown className='h-3.5 w-3.5' />
                 Explain
-              </button>
+              </Button>
             </TooltipTrigger>
             <TooltipContent>AI features require Pro subscription</TooltipContent>
           </Tooltip>
@@ -115,20 +126,33 @@ export function CodeEditor({
       );
     }
 
+    const onCooldown = cooldown && !isExplaining;
+
+    if (onCooldown) {
+      return (
+        <TooltipProvider delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='ghost' size='xs' disabled className='text-muted-foreground'>
+                <Sparkles className='h-3.5 w-3.5' />
+                {explanation ? 'Regenerate' : 'Explain'}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Please wait a moment before regenerating</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
     return (
-      <button
-        type='button'
-        onClick={handleExplain}
-        disabled={isExplaining}
-        className='flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:opacity-50'
-      >
+      <Button variant='ghost' size='xs' onClick={handleExplain} disabled={isExplaining} className='text-muted-foreground'>
         {isExplaining ? (
           <Loader2 className='h-3.5 w-3.5 animate-spin' />
         ) : (
           <Sparkles className='h-3.5 w-3.5' />
         )}
-        {isExplaining ? 'Explaining' : 'Explain'}
-      </button>
+        {isExplaining ? 'Explaining' : explanation ? 'Regenerate' : 'Explain'}
+      </Button>
     );
   };
 
