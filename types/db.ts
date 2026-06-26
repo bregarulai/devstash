@@ -80,6 +80,28 @@ export const autoTagsInputSchema = z
 
 export type AutoTagsInput = z.infer<typeof autoTagsInputSchema>;
 
+// ── AI Description Generator ───────────────────────────────────────────────────
+
+export const descriptionInputSchema = z
+  .object({
+    title: z.string().max(200).optional(),
+    content: z.string().max(20_000).optional(),
+    language: z.string().optional(),
+    url: z.string().max(2000).optional(),
+    fileName: z.string().max(255).optional(),
+    fileSize: z.number().int().nonnegative().optional(),
+  })
+  .refine(
+    (data) =>
+      (data.title?.trim().length ?? 0) > 0 ||
+      (data.content?.trim().length ?? 0) > 0 ||
+      (data.url?.trim().length ?? 0) > 0 ||
+      (data.fileName?.trim().length ?? 0) > 0,
+    { message: 'Title, content, URL, or file is required' },
+  );
+
+export type DescriptionInput = z.infer<typeof descriptionInputSchema>;
+
 export const DEFAULT_EDITOR_PREFERENCES: EditorPreferences = {
   fontSize: 13,
   tabSize: 2,

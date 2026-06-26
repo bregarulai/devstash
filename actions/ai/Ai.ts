@@ -7,7 +7,7 @@ import {
   MAX_TAG_SUGGESTIONS,
   MAX_CONTENT_CHARS,
 } from './_shared';
-import { autoTagsInputSchema, type AutoTagsInput } from '@/types/db';
+import { autoTagsInputSchema, type AutoTagsInput, descriptionInputSchema, type DescriptionInput } from '@/types/db';
 import {
   checkRateLimit,
   createRateLimiter,
@@ -91,6 +91,87 @@ export async function generateAutoTags(
 
     const tags = parseTags(completion.choices[0]?.message?.content ?? '');
     return { success: true, data: tags, error: null };
+  } catch (err) {
+    return {
+      success: false,
+      data: null,
+      error: err instanceof Error ? err.message : 'AI request failed',
+    };
+  }
+}
+
+const DESCRIPTION_INSTRUCTIONS =
+  'You are a developer tool assistant. Write a concise description (1-3 sentences) summarizing the following DevStash item based on whatever fields are provided (title, content, language, URL, file name/size). Draw on the available information for this item type and handle minimal input gracefully. Do not use markdown, code fences, or bullet lists. Return only the description text.';
+
+const MAX_DESCRIPTION_CHARS = 500;
+
+function cleanDescription(raw: string): string {
+  let text = raw.trim();
+  const fenceMatch = text.match(/^```[a-zA-Z]*\n?([\s\S]*?)\n?```$/);
+  if (fenceMatch) text = fenceMatch[1].trim();
+  return text.slice(0, MAX_DESCRIPTION_CHARS);
+}
+
+function buildDescriptionUserMessage(data: DescriptionInput): string {
+  const parts: string[] = [];
+  const title = data.title?.trim();
+  if (title) parts.push(`Title: ${title}`);
+  const language = data.language?.trim();
+  if (language) parts.push(`Language: ${language}`);
+  const url = data.url?.trim();
+  if (url) parts.push(`URL: ${url}`);
+  const fileName = data.fileName?.trim();
+  if (fileName) {
+    parts.push(
+      data.fileSize != null ? `File: ${fileName} (${data.fileSize} bytes)` : `File: ${fileName}`,
+    );
+  }
+  const content = (data.content ?? '').trim();
+  if (content) {
+    parts.push(`Content:\n${content.slice(0, MAX_CONTENT_CHARS)}`);
+  }
+  return parts.join('\n');
+}
+
+export async function generateDescription(
+  input: DescriptionInput,
+): Promise<ActionResult<string>> {
+  const user = await requireProUser();
+  if ('error' in user) return { success: false, data: null, error: user.error };
+
+  const result = descriptionInputSchema.safeParse(input);
+  if (!result.success) {
+    const firstError = result.error.issues[0]?.message ?? 'Invalid input';
+    return { success: false, data: null, error: firstError };
+  }
+
+  const ratelimit = createRateLimiter(RATE_LIMIT_CONFIGS.aiDescription);
+  const rl = await checkRateLimit(
+    ratelimit,
+    user.userId,
+    RATE_LIMIT_CONFIGS.aiDescription,
+    true,
+  );
+  if (!rl.success) {
+    return {
+      success: false,
+      data: null,
+      error: `Too many requests. Retry in ${formatRetryAfter(rl.retryAfter ?? 0)}.`,
+    };
+  }
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: AI_MODEL,
+      temperature: 0.4,
+      messages: [
+        { role: 'system', content: DESCRIPTION_INSTRUCTIONS },
+        { role: 'user', content: buildDescriptionUserMessage(result.data) },
+      ],
+    });
+
+    const description = cleanDescription(completion.choices[0]?.message?.content ?? '');
+    return { success: true, data: description, error: null };
   } catch (err) {
     return {
       success: false,

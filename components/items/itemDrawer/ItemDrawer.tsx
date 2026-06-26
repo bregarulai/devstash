@@ -116,7 +116,8 @@ function ItemDrawerContent() {
 
       if (result.success) {
         updateItem(result.data);
-        handleStopEditing();
+        setCanSave(false);
+        stopEditing();
         toast.success('Item updated');
         router.refresh();
       } else {
@@ -127,7 +128,7 @@ function ItemDrawerContent() {
     } finally {
       setIsSaving(false);
     }
-  }, [item, updateItem, handleStopEditing, router]);
+  }, [item, updateItem, stopEditing, router]);
 
   const handleDownload = useCallback(() => {
     triggerDownload(item?.fileUrl, item?.fileName);

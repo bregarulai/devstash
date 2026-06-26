@@ -12,6 +12,7 @@ import { UploadProgressIndicator } from './UploadProgressIndicator';
 import { CreateFormField } from './CreateFormField';
 import { CollectionPicker } from '@/components/collections/collectionPicker/CollectionPicker';
 import { AiTagSuggestions } from '@/components/ai/aiTagSuggestions/AiTagSuggestions';
+import { AiDescription } from '@/components/ai/aiDescription/AiDescription';
 import {
   SHOW_CONTENT,
   SHOW_URL,
@@ -97,6 +98,22 @@ export function ItemCreateFormBody({
         label='Description'
         htmlFor='description'
         error={errors.description?.message}
+        labelAction={
+          <AiDescription
+            isPro={isPro}
+            getItemData={() => ({
+              title: form.getValues('title'),
+              content: contentValue ?? '',
+              language: languageValue ?? undefined,
+              url: form.getValues('url') ?? undefined,
+              fileName: form.getValues('fileName') ?? undefined,
+              fileSize: form.getValues('fileSize') ?? undefined,
+            })}
+            onAccept={(description) =>
+              form.setValue('description', description, { shouldValidate: true })
+            }
+          />
+        }
       >
         <Textarea
           id='description'

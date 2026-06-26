@@ -11,6 +11,7 @@ import { LanguageSelect } from '@/components/codeEditor/LanguageSelect/LanguageS
 import { MarkdownEditor } from '@/components/markdownEditor/MarkdownEditor/MarkdownEditor';
 import { CollectionPicker } from '@/components/collections/collectionPicker/CollectionPicker';
 import { AiTagSuggestions } from '@/components/ai/aiTagSuggestions/AiTagSuggestions';
+import { AiDescription } from '@/components/ai/aiDescription/AiDescription';
 import type { ItemWithDetails } from '@/types/db';
 import { CODE_EDITOR_TYPES, MARKDOWN_EDITOR_TYPES, SHOW_CONTENT, SHOW_LANGUAGE, SHOW_URL } from '@/lib/constants';
 
@@ -84,7 +85,7 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
           (showUrl ? (url.trim() || null) : undefined) !== (item.url ?? null) ||
           (showLanguage ? (language.trim() || null) : undefined) !== (item.language ?? null) ||
           tagInput.trim() !== initialTags ||
-          JSON.stringify(collectionIds) !== JSON.stringify(initialCollections)
+          collectionIds.toSorted().join(',') !== initialCollections.toSorted().join(',')
         );
       },
     }));
@@ -105,9 +106,23 @@ export const DrawerEditContent = forwardRef<DrawerEditContentHandle, DrawerEditC
         </div>
 
         <div className='space-y-2'>
-          <Label htmlFor='edit-description' className='text-xs font-medium text-muted-foreground'>
-            Description
-          </Label>
+          <div className='flex items-center justify-between gap-2'>
+            <Label htmlFor='edit-description' className='text-xs font-medium text-muted-foreground'>
+              Description
+            </Label>
+            <AiDescription
+              isPro={isPro}
+              getItemData={() => ({
+                title,
+                content: showContent ? content : '',
+                language: showLanguage ? language : undefined,
+                url: showUrl ? url : undefined,
+                fileName: item.fileName ?? undefined,
+                fileSize: item.fileSize ?? undefined,
+              })}
+              onAccept={(d) => setDescription(d)}
+            />
+          </div>
           <Textarea
             id='edit-description'
             value={description}

@@ -99,7 +99,11 @@ export const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
     duration: 15 * 60, // 15 minutes
   },
   aiTags: {
-    limit: 20,
+    limit: 15,
+    duration: 60 * 60, // 1 hour
+  },
+  aiDescription: {
+    limit: 10,
     duration: 60 * 60, // 1 hour
   },
 };
