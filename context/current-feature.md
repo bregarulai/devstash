@@ -1,33 +1,16 @@
-# Current Feature: AI Auto-Tagging
-
-**Spec**: `context/features/ai-auto-tag-spec.md`
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create OpenAI client utility with `AI_MODEL` constant (if not already present)
-- Add `generateAutoTags` server action with auth, Pro gating, Zod validation, rate limiting
-- Add AI rate limit config (20 requests/hour per user) to existing rate limit utility (if not already added)
-- Add "Suggest Tags" button (Sparkles icon, ghost variant) to create item dialog and item drawer edit mode
-- Display suggested tags as badges with accept (check) and reject (X) controls per tag
-- Accepted tags added to item's tag list; tags are freeform (not limited to existing DB tags)
-- Truncate content to 2000 chars before API call
-- Hide Suggest Tags button for free users (Pro-only UI gating)
-- Use OpenAI Responses API (not Chat Completions) for DeepSeek V4 Flash; parse both `{"tags": [...]}` and `[...]` response formats; lowercase normalize
-- Error handling via toast (Pro gating, rate limit, AI service errors)
-- Follow existing patterns; add unit tests for server action
+<!-- What does success look like? -->
 
 ## Notes
 
-- `OPENAI_API_KEY` already in `.env`
-- `isPro` available server-side via session but not passed to create/edit UI components — use server-side gating for enforcement; UI gating requires passing `isPro` as a prop or fetching it client-side
-- DeepSeek V4 Flash does NOT work with Chat Completions API (returns empty content) — must use Responses API (`client.responses.create()` with `instructions`, `input`, `text.format` json_object, read `response.output_text`)
-- `max_tokens` not supported by DeepSeek V4 Flash — use `max_output_tokens` if needed (prefer Responses API)
-- `zodResponseFormat` structured output consumes excessive tokens — use `json_object` format and parse manually
-- See `docs/ai-integration-plan.md` for full architectural context
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -133,3 +116,4 @@ In Progress
 - **Stripe Integration Phase 1 — Core Infrastructure (Completed)** - Added Stripe SDK singleton with pinned apiVersion and price-ID helpers (lib/stripe/stripe.ts), pure limits module with FREE_TIER_LIMITS and PRO_ONLY_ITEM_TYPES guard (lib/constants/limits.ts, 100% test coverage), fixed NextAuth JWT callback to always-sync isPro from DB so Pro status propagates without re-login, added 7 new authConfig tests covering no-user JWT path, added stripe v22.2.2 dependency
 - **Stripe Integration Phase 2 — Integration & UI (Completed)** - Added Stripe checkout/portal server actions, webhook route for subscription events, BillingSection component with upgrade/manage UI, Progress component for usage display, wired settings page with live plan tier from Stripe, free-tier usage display, comprehensive test coverage (15 tests)
 - **Language Selector Dropdown (Completed)** - Replaced free-text language Input with shared LanguageSelect dropdown using shadcn Select, added LANGUAGE_OPTIONS constant with 30 Monaco language IDs, positioned dropdown above content editor in both create and edit surfaces, added unit tests
+- **AI Auto-Tagging (Completed)** - Implemented AI-powered tag suggestions using OpenAI Responses API with DeepSeek V4 Flash, added generateAutoTags server action with auth/Pro gating/rate limiting, Suggest Tags button in create dialog and drawer edit mode, tag badges with accept/reject controls, and comprehensive unit tests
